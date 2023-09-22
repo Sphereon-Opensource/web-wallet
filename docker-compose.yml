@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  issuer-agent:
+    container_name: issuer-agent
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    env_file:
+      - ./docker/.env.issuer-agent
+    tty: true
+    build:
+      context: ./
+      dockerfile: ./docker/Dockerfile.issuer-agent
+    ports:
+      - "5000:5000"
+  customer-agent:
+    container_name: customer-agent
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    env_file:
+      - ./docker/.env.customer-agent
+    tty: true
+    build:
+      context: ./
+      dockerfile: ./docker/Dockerfile.customer-agent
+    ports:
+      - "5001:5001"
