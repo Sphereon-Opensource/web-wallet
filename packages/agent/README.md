@@ -156,11 +156,7 @@ Example body:
 ```json
 {
   "credential": {
-    "@context": [
-      "https://www.w3.org/2018/credentials/v1",
-      "https://w3id.org/vc/status-list/2021/v1",
-      "https://ref.gs1.org/gs1/vc/license-context/"
-    ],
+    "@context": ["https://www.w3.org/2018/credentials/v1", "https://w3id.org/vc/status-list/2021/v1", "https://ref.gs1.org/gs1/vc/license-context/"],
     "id": "https://verification.gs1.nl/vc/license/company_prefix/8790171",
     "type": ["VerifiableCredential", "GS1CompanyPrefixLicenseCredential"],
     "issuer": "did:jwk:eyJhbGciOiJFZERTQSIsInVzZSI6InNpZyIsImt0eSI6Ik9LUCIsImNydiI6IkVkMjU1MTkiLCJ4IjoiaWFSbUhrUnJSa0FUSmFPTk95QllMUjNTZC10RWlqR0JBU3BuRzNyaFdEYyJ9",
@@ -655,12 +651,8 @@ Example response:
           "type": "JsonWebKey2020"
         }
       ],
-      "assertionMethod": [
-        "did:web:verification.gs1.nl:did:party_gln:12345678#02cf2419d5b12348a7c8249abd69671090d7b5016fe819aa85e886165d18c08fb4"
-      ],
-      "authentication": [
-        "did:web:verification.gs1.nl:did:party_gln:12345678#02cf2419d5b12348a7c8249abd69671090d7b5016fe819aa85e886165d18c08fb4"
-      ]
+      "assertionMethod": ["did:web:verification.gs1.nl:did:party_gln:12345678#02cf2419d5b12348a7c8249abd69671090d7b5016fe819aa85e886165d18c08fb4"],
+      "authentication": ["did:web:verification.gs1.nl:did:party_gln:12345678#02cf2419d5b12348a7c8249abd69671090d7b5016fe819aa85e886165d18c08fb4"]
     }
   }
 }
@@ -729,12 +721,8 @@ Response example:
         "type": "JsonWebKey2020"
       }
     ],
-    "assertionMethod": [
-      "did:web:verification.gs1.nl:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"
-    ],
-    "authentication": [
-      "did:web:verification.gs1.nl:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"
-    ]
+    "assertionMethod": ["did:web:verification.gs1.nl:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"],
+    "authentication": ["did:web:verification.gs1.nl:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"]
   },
   "didResolutionMetadata": {},
   "didDocumentMetadata": {
@@ -786,12 +774,8 @@ If a DID is found it will return the DID Document (not a resolution result)
       "type": "JsonWebKey2020"
     }
   ],
-  "assertionMethod": [
-    "did:web:verification.gs1.nl:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"
-  ],
-  "authentication": [
-    "did:web:verification.gs1.nl:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"
-  ]
+  "assertionMethod": ["did:web:verification.gs1.nl:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"],
+  "authentication": ["did:web:verification.gs1.nl:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"]
 }
 ```
 
