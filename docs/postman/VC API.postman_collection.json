@@ -1,0 +1,438 @@
+{
+	"info": {
+		"_postman_id": "22f31f52-5ae1-4dd0-b7de-81628f53f95c",
+		"name": "GS1 NL VC API",
+		"description": "This is an API for GS1 NL to issue, verify and manage credentials, resolve and create DIDs.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17494151"
+	},
+	"item": [
+		{
+			"name": "DID",
+			"item": [
+				{
+					"name": "DID methods supported",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyJ9.eyJhdWQiOiIxNGYzNDQ3NC1iN2E5LTQyOGItYTdlNi1lN2VkYTkxNjc1YjAiLCJpc3MiOiJodHRwczovL2xvZ2luLm1pY3Jvc29mdG9ubGluZS5jb20vZTJhNDJiMmYtNzQ2MC00NDk5LWFmYzItNDI1MzE1ZWYwNThhL3YyLjAiLCJpYXQiOjE2OTAyMzA0MjAsIm5iZiI6MTY5MDIzMDQyMCwiZXhwIjoxNjkwMjM0MzIwLCJhaW8iOiJFMlpnWUxCWmEvTnA4WlhvUGEyNmM5YXJadDBVMWZEdCtOZjRRMHRYZEtMSnJoOU8vTGNBIiwiYXpwIjoiMTRmMzQ0NzQtYjdhOS00MjhiLWE3ZTYtZTdlZGE5MTY3NWIwIiwiYXpwYWNyIjoiMSIsIm9pZCI6IjEyMzliMmJkLWFkYzctNGU3Ny1iZDFhLTZhZDMwNzYwMzRlNSIsInJoIjoiMC5BUzhBTHl1azRtQjBtVVN2d2tKVEZlOEZpblJFOHhTcHQ0dENwLWJuN2FrV2RiQXZBQUEuIiwic3ViIjoiMTIzOWIyYmQtYWRjNy00ZTc3LWJkMWEtNmFkMzA3NjAzNGU1IiwidGlkIjoiZTJhNDJiMmYtNzQ2MC00NDk5LWFmYzItNDI1MzE1ZWYwNThhIiwidXRpIjoiYzE2ck05aFMwMGl2Uk44S0V5a05BQSIsInZlciI6IjIuMCJ9.O1ThP8oX4MeONVKd2F6wTp87a1lDlkwedICgbgjRYRJ_XfUcYvxfEo1MaavHMNKrdv44w8IwCImZFq6xLHVily3I9U9BV-zXY4MAAizotX6rygK1NdcP3r4OWlojxnNN2jT8CvGpvmZVGyTvX0SIpjJ3Qn2YLPTn3hI6AKZDyr5NCezC2LdhUTyk9mFQiFAv_PgsdJTuQ2Y8PxYjVukCA8QsxXO5jZrq1yIZbd5OSPxToc-bV4Zc-2Z6lDaTb6-bVIRUCo0CYc5SUh1d7suZtxeWzXiJYBfapYoK9w38x-QPJ6s73eyYy_A-im1A8QaasH6dBb_L9BV3SYvPOl0pwg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5001/did/methods",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"did",
+								"methods"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create DID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyJ9.eyJhdWQiOiIxNGYzNDQ3NC1iN2E5LTQyOGItYTdlNi1lN2VkYTkxNjc1YjAiLCJpc3MiOiJodHRwczovL2xvZ2luLm1pY3Jvc29mdG9ubGluZS5jb20vZTJhNDJiMmYtNzQ2MC00NDk5LWFmYzItNDI1MzE1ZWYwNThhL3YyLjAiLCJpYXQiOjE2OTAyMzA0MjAsIm5iZiI6MTY5MDIzMDQyMCwiZXhwIjoxNjkwMjM0MzIwLCJhaW8iOiJFMlpnWUxCWmEvTnA4WlhvUGEyNmM5YXJadDBVMWZEdCtOZjRRMHRYZEtMSnJoOU8vTGNBIiwiYXpwIjoiMTRmMzQ0NzQtYjdhOS00MjhiLWE3ZTYtZTdlZGE5MTY3NWIwIiwiYXpwYWNyIjoiMSIsIm9pZCI6IjEyMzliMmJkLWFkYzctNGU3Ny1iZDFhLTZhZDMwNzYwMzRlNSIsInJoIjoiMC5BUzhBTHl1azRtQjBtVVN2d2tKVEZlOEZpblJFOHhTcHQ0dENwLWJuN2FrV2RiQXZBQUEuIiwic3ViIjoiMTIzOWIyYmQtYWRjNy00ZTc3LWJkMWEtNmFkMzA3NjAzNGU1IiwidGlkIjoiZTJhNDJiMmYtNzQ2MC00NDk5LWFmYzItNDI1MzE1ZWYwNThhIiwidXRpIjoiYzE2ck05aFMwMGl2Uk44S0V5a05BQSIsInZlciI6IjIuMCJ9.O1ThP8oX4MeONVKd2F6wTp87a1lDlkwedICgbgjRYRJ_XfUcYvxfEo1MaavHMNKrdv44w8IwCImZFq6xLHVily3I9U9BV-zXY4MAAizotX6rygK1NdcP3r4OWlojxnNN2jT8CvGpvmZVGyTvX0SIpjJ3Qn2YLPTn3hI6AKZDyr5NCezC2LdhUTyk9mFQiFAv_PgsdJTuQ2Y8PxYjVukCA8QsxXO5jZrq1yIZbd5OSPxToc-bV4Zc-2Z6lDaTb6-bVIRUCo0CYc5SUh1d7suZtxeWzXiJYBfapYoK9w38x-QPJ6s73eyYy_A-im1A8QaasH6dBb_L9BV3SYvPOl0pwg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"did\": \"did:web:verification.gs1.nl:did:party_gln:8720796007237-test2\",\r\n    \"options\": {\r\n        \"storeSecrets\": true\r\n    }\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/did/identifiers?method=web",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"did",
+								"identifiers"
+							],
+							"query": [
+								{
+									"key": "method",
+									"value": "web"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deactivate DID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyJ9.eyJhdWQiOiIxNGYzNDQ3NC1iN2E5LTQyOGItYTdlNi1lN2VkYTkxNjc1YjAiLCJpc3MiOiJodHRwczovL2xvZ2luLm1pY3Jvc29mdG9ubGluZS5jb20vZTJhNDJiMmYtNzQ2MC00NDk5LWFmYzItNDI1MzE1ZWYwNThhL3YyLjAiLCJpYXQiOjE2OTAyMzA0MjAsIm5iZiI6MTY5MDIzMDQyMCwiZXhwIjoxNjkwMjM0MzIwLCJhaW8iOiJFMlpnWUxCWmEvTnA4WlhvUGEyNmM5YXJadDBVMWZEdCtOZjRRMHRYZEtMSnJoOU8vTGNBIiwiYXpwIjoiMTRmMzQ0NzQtYjdhOS00MjhiLWE3ZTYtZTdlZGE5MTY3NWIwIiwiYXpwYWNyIjoiMSIsIm9pZCI6IjEyMzliMmJkLWFkYzctNGU3Ny1iZDFhLTZhZDMwNzYwMzRlNSIsInJoIjoiMC5BUzhBTHl1azRtQjBtVVN2d2tKVEZlOEZpblJFOHhTcHQ0dENwLWJuN2FrV2RiQXZBQUEuIiwic3ViIjoiMTIzOWIyYmQtYWRjNy00ZTc3LWJkMWEtNmFkMzA3NjAzNGU1IiwidGlkIjoiZTJhNDJiMmYtNzQ2MC00NDk5LWFmYzItNDI1MzE1ZWYwNThhIiwidXRpIjoiYzE2ck05aFMwMGl2Uk44S0V5a05BQSIsInZlciI6IjIuMCJ9.O1ThP8oX4MeONVKd2F6wTp87a1lDlkwedICgbgjRYRJ_XfUcYvxfEo1MaavHMNKrdv44w8IwCImZFq6xLHVily3I9U9BV-zXY4MAAizotX6rygK1NdcP3r4OWlojxnNN2jT8CvGpvmZVGyTvX0SIpjJ3Qn2YLPTn3hI6AKZDyr5NCezC2LdhUTyk9mFQiFAv_PgsdJTuQ2Y8PxYjVukCA8QsxXO5jZrq1yIZbd5OSPxToc-bV4Zc-2Z6lDaTb6-bVIRUCo0CYc5SUh1d7suZtxeWzXiJYBfapYoK9w38x-QPJ6s73eyYy_A-im1A8QaasH6dBb_L9BV3SYvPOl0pwg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5001/did/identifiers/did:web:verification.gs1.nl:did:test",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"did",
+								"identifiers",
+								"did:web:verification.gs1.nl:did:test"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Resolve DID external",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyJ9.eyJhdWQiOiIxNGYzNDQ3NC1iN2E5LTQyOGItYTdlNi1lN2VkYTkxNjc1YjAiLCJpc3MiOiJodHRwczovL2xvZ2luLm1pY3Jvc29mdG9ubGluZS5jb20vZTJhNDJiMmYtNzQ2MC00NDk5LWFmYzItNDI1MzE1ZWYwNThhL3YyLjAiLCJpYXQiOjE2OTAyMzA0MjAsIm5iZiI6MTY5MDIzMDQyMCwiZXhwIjoxNjkwMjM0MzIwLCJhaW8iOiJFMlpnWUxCWmEvTnA4WlhvUGEyNmM5YXJadDBVMWZEdCtOZjRRMHRYZEtMSnJoOU8vTGNBIiwiYXpwIjoiMTRmMzQ0NzQtYjdhOS00MjhiLWE3ZTYtZTdlZGE5MTY3NWIwIiwiYXpwYWNyIjoiMSIsIm9pZCI6IjEyMzliMmJkLWFkYzctNGU3Ny1iZDFhLTZhZDMwNzYwMzRlNSIsInJoIjoiMC5BUzhBTHl1azRtQjBtVVN2d2tKVEZlOEZpblJFOHhTcHQ0dENwLWJuN2FrV2RiQXZBQUEuIiwic3ViIjoiMTIzOWIyYmQtYWRjNy00ZTc3LWJkMWEtNmFkMzA3NjAzNGU1IiwidGlkIjoiZTJhNDJiMmYtNzQ2MC00NDk5LWFmYzItNDI1MzE1ZWYwNThhIiwidXRpIjoiYzE2ck05aFMwMGl2Uk44S0V5a05BQSIsInZlciI6IjIuMCJ9.O1ThP8oX4MeONVKd2F6wTp87a1lDlkwedICgbgjRYRJ_XfUcYvxfEo1MaavHMNKrdv44w8IwCImZFq6xLHVily3I9U9BV-zXY4MAAizotX6rygK1NdcP3r4OWlojxnNN2jT8CvGpvmZVGyTvX0SIpjJ3Qn2YLPTn3hI6AKZDyr5NCezC2LdhUTyk9mFQiFAv_PgsdJTuQ2Y8PxYjVukCA8QsxXO5jZrq1yIZbd5OSPxToc-bV4Zc-2Z6lDaTb6-bVIRUCo0CYc5SUh1d7suZtxeWzXiJYBfapYoK9w38x-QPJ6s73eyYy_A-im1A8QaasH6dBb_L9BV3SYvPOl0pwg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5001/did/identifiers/did:web:ddip.sphereon.com?mode=resolve",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"did",
+								"identifiers",
+								"did:web:ddip.sphereon.com"
+							],
+							"query": [
+								{
+									"key": "mode",
+									"value": "resolve"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Resolve DID hybrid",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyJ9.eyJhdWQiOiIxNGYzNDQ3NC1iN2E5LTQyOGItYTdlNi1lN2VkYTkxNjc1YjAiLCJpc3MiOiJodHRwczovL2xvZ2luLm1pY3Jvc29mdG9ubGluZS5jb20vZTJhNDJiMmYtNzQ2MC00NDk5LWFmYzItNDI1MzE1ZWYwNThhL3YyLjAiLCJpYXQiOjE2OTAyMzA0MjAsIm5iZiI6MTY5MDIzMDQyMCwiZXhwIjoxNjkwMjM0MzIwLCJhaW8iOiJFMlpnWUxCWmEvTnA4WlhvUGEyNmM5YXJadDBVMWZEdCtOZjRRMHRYZEtMSnJoOU8vTGNBIiwiYXpwIjoiMTRmMzQ0NzQtYjdhOS00MjhiLWE3ZTYtZTdlZGE5MTY3NWIwIiwiYXpwYWNyIjoiMSIsIm9pZCI6IjEyMzliMmJkLWFkYzctNGU3Ny1iZDFhLTZhZDMwNzYwMzRlNSIsInJoIjoiMC5BUzhBTHl1azRtQjBtVVN2d2tKVEZlOEZpblJFOHhTcHQ0dENwLWJuN2FrV2RiQXZBQUEuIiwic3ViIjoiMTIzOWIyYmQtYWRjNy00ZTc3LWJkMWEtNmFkMzA3NjAzNGU1IiwidGlkIjoiZTJhNDJiMmYtNzQ2MC00NDk5LWFmYzItNDI1MzE1ZWYwNThhIiwidXRpIjoiYzE2ck05aFMwMGl2Uk44S0V5a05BQSIsInZlciI6IjIuMCJ9.O1ThP8oX4MeONVKd2F6wTp87a1lDlkwedICgbgjRYRJ_XfUcYvxfEo1MaavHMNKrdv44w8IwCImZFq6xLHVily3I9U9BV-zXY4MAAizotX6rygK1NdcP3r4OWlojxnNN2jT8CvGpvmZVGyTvX0SIpjJ3Qn2YLPTn3hI6AKZDyr5NCezC2LdhUTyk9mFQiFAv_PgsdJTuQ2Y8PxYjVukCA8QsxXO5jZrq1yIZbd5OSPxToc-bV4Zc-2Z6lDaTb6-bVIRUCo0CYc5SUh1d7suZtxeWzXiJYBfapYoK9w38x-QPJ6s73eyYy_A-im1A8QaasH6dBb_L9BV3SYvPOl0pwg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5001/did/identifiers/did:web:verification.gs1.nl:did:party_gln:8720796007237-test?mode=hybrid",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"did",
+								"identifiers",
+								"did:web:verification.gs1.nl:did:party_gln:8720796007237-test"
+							],
+							"query": [
+								{
+									"key": "mode",
+									"value": "hybrid"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Resolve DID local",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyJ9.eyJhdWQiOiIxNGYzNDQ3NC1iN2E5LTQyOGItYTdlNi1lN2VkYTkxNjc1YjAiLCJpc3MiOiJodHRwczovL2xvZ2luLm1pY3Jvc29mdG9ubGluZS5jb20vZTJhNDJiMmYtNzQ2MC00NDk5LWFmYzItNDI1MzE1ZWYwNThhL3YyLjAiLCJpYXQiOjE2OTAyMzA0MjAsIm5iZiI6MTY5MDIzMDQyMCwiZXhwIjoxNjkwMjM0MzIwLCJhaW8iOiJFMlpnWUxCWmEvTnA4WlhvUGEyNmM5YXJadDBVMWZEdCtOZjRRMHRYZEtMSnJoOU8vTGNBIiwiYXpwIjoiMTRmMzQ0NzQtYjdhOS00MjhiLWE3ZTYtZTdlZGE5MTY3NWIwIiwiYXpwYWNyIjoiMSIsIm9pZCI6IjEyMzliMmJkLWFkYzctNGU3Ny1iZDFhLTZhZDMwNzYwMzRlNSIsInJoIjoiMC5BUzhBTHl1azRtQjBtVVN2d2tKVEZlOEZpblJFOHhTcHQ0dENwLWJuN2FrV2RiQXZBQUEuIiwic3ViIjoiMTIzOWIyYmQtYWRjNy00ZTc3LWJkMWEtNmFkMzA3NjAzNGU1IiwidGlkIjoiZTJhNDJiMmYtNzQ2MC00NDk5LWFmYzItNDI1MzE1ZWYwNThhIiwidXRpIjoiYzE2ck05aFMwMGl2Uk44S0V5a05BQSIsInZlciI6IjIuMCJ9.O1ThP8oX4MeONVKd2F6wTp87a1lDlkwedICgbgjRYRJ_XfUcYvxfEo1MaavHMNKrdv44w8IwCImZFq6xLHVily3I9U9BV-zXY4MAAizotX6rygK1NdcP3r4OWlojxnNN2jT8CvGpvmZVGyTvX0SIpjJ3Qn2YLPTn3hI6AKZDyr5NCezC2LdhUTyk9mFQiFAv_PgsdJTuQ2Y8PxYjVukCA8QsxXO5jZrq1yIZbd5OSPxToc-bV4Zc-2Z6lDaTb6-bVIRUCo0CYc5SUh1d7suZtxeWzXiJYBfapYoK9w38x-QPJ6s73eyYy_A-im1A8QaasH6dBb_L9BV3SYvPOl0pwg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5001/did/identifiers/did:web:verification.gs1.nl:did:party_gln:8720796007237-test2?mode=local",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"did",
+								"identifiers",
+								"did:web:verification.gs1.nl:did:party_gln:8720796007237-test2"
+							],
+							"query": [
+								{
+									"key": "mode",
+									"value": "local"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DID Web global resolution",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/did/party_gln/8720796007237-test2/did.json",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"did",
+								"party_gln",
+								"8720796007237-test2",
+								"did.json"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "VC",
+			"item": [
+				{
+					"name": "Issue Credential",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyJ9.eyJhdWQiOiIxNGYzNDQ3NC1iN2E5LTQyOGItYTdlNi1lN2VkYTkxNjc1YjAiLCJpc3MiOiJodHRwczovL2xvZ2luLm1pY3Jvc29mdG9ubGluZS5jb20vZTJhNDJiMmYtNzQ2MC00NDk5LWFmYzItNDI1MzE1ZWYwNThhL3YyLjAiLCJpYXQiOjE2OTAxNjI2MDQsIm5iZiI6MTY5MDE2MjYwNCwiZXhwIjoxNjkwMTY2NTA0LCJhaW8iOiJFMlpnWUtpMjduaDJmZWZxNkZXKzdZbS8rT2FKeGltZlRCZk1lV3IrLzZ6cHBmbTZ5UVlBIiwiYXpwIjoiMTRmMzQ0NzQtYjdhOS00MjhiLWE3ZTYtZTdlZGE5MTY3NWIwIiwiYXpwYWNyIjoiMSIsIm9pZCI6IjEyMzliMmJkLWFkYzctNGU3Ny1iZDFhLTZhZDMwNzYwMzRlNSIsInJoIjoiMC5BUzhBTHl1azRtQjBtVVN2d2tKVEZlOEZpblJFOHhTcHQ0dENwLWJuN2FrV2RiQXZBQUEuIiwic3ViIjoiMTIzOWIyYmQtYWRjNy00ZTc3LWJkMWEtNmFkMzA3NjAzNGU1IiwidGlkIjoiZTJhNDJiMmYtNzQ2MC00NDk5LWFmYzItNDI1MzE1ZWYwNThhIiwidXRpIjoiLUVxQnM5RTJoMEczSUlLX0ZGVUxBQSIsInZlciI6IjIuMCJ9.EiUFAUeHf4Qc8KCcRBFNclCc-4KNVYrvmLh9ChoHs2xTzJMG1em0xur3neER5J5iX8co_F6cR7YxCyJUTGgmakCJAbLp3eYCWQn1Aj0N7-9TzEW1ofnNIv-dfhWrYcwnEyPoIc84GekWTJxV_u_wQcLJVR84sKrdMcI78czoyo20b9lj_VBliKmV_UscaitvAbetf0yHAJfL2fxUkKSGYQGawGEnSCEmZazY9cYYqQz1PuMdTIFvWA5IFzwCavPE2GSj5tLWi50kB7AJ9iyIRCzQ7bIIbNksllL_gQqI1NJn2AlnoqDumb9Wix7ys1Xq5fZgf8EOGhc8VW-bEhaQLQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"credential\":{\r\n          \"@context\": [\r\n            \"https://www.w3.org/2018/credentials/v1\",\r\n            \"https://w3id.org/vc/status-list/2021/v1\",\r\n            \"https://ref.gs1.org/gs1/vc/license-context/\"\r\n          ],\r\n          \"id\": \"https://verification.gs1.nl/vc/license/company_prefix/8790171\",\r\n          \"type\": [\r\n            \"VerifiableCredential\",\r\n            \"GS1CompanyPrefixLicenseCredential\"\r\n          ],\r\n          \"issuer\": \"did:jwk:eyJhbGciOiJFZERTQSIsInVzZSI6InNpZyIsImt0eSI6Ik9LUCIsImNydiI6IkVkMjU1MTkiLCJ4IjoiaWFSbUhrUnJSa0FUSmFPTk95QllMUjNTZC10RWlqR0JBU3BuRzNyaFdEYyJ9\",\r\n          \"issuanceDate\": \"2023-06-22T00:00:00Z\",\r\n          \"validUntil\": \"2024-06-22T00:00:00Z\",\r\n          \"credentialSubject\": {\r\n            \"id\": \"did:web:verification.gs1.nl:did:party_gln:8720796007237\",\r\n            \"organization\": {\r\n              \"gs1:partyGLN\": \"8720796007237\",\r\n              \"gs1:organizationName\": \"Test Account\",\r\n              \"gs1:additionalOrganizationID\": [\r\n                {\r\n                  \"gs1:organizationID\": \"90001745\",\r\n                  \"gs1:organizationID_Type\": \"CoC\"\r\n                }\r\n              ]\r\n            },\r\n            \"licenseValue\": \"8790171\"\r\n          }\r\n        }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/vc/credentials/issue",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"vc",
+								"credentials",
+								"issue"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Credential",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"verifiableCredential\": {\r\n        \"@context\": [\r\n            \"https://www.w3.org/2018/credentials/v1\",\r\n            \"https://w3id.org/vc/status-list/2021/v1\",\r\n            \"https://ref.gs1.org/gs1/vc/license-context/\",\r\n            \"https://w3id.org/security/suites/jws-2020/v1\"\r\n        ],\r\n        \"id\": \"https://verification.gs1.nl/vc/license/company_prefix/8790171\",\r\n        \"type\": [\r\n            \"VerifiableCredential\",\r\n            \"GS1CompanyPrefixLicenseCredential\"\r\n        ],\r\n        \"issuer\": \"did:jwk:eyJhbGciOiJFZERTQSIsInVzZSI6InNpZyIsImt0eSI6Ik9LUCIsImNydiI6IkVkMjU1MTkiLCJ4IjoiaWFSbUhrUnJSa0FUSmFPTk95QllMUjNTZC10RWlqR0JBU3BuRzNyaFdEYyJ9\",\r\n        \"issuanceDate\": \"2023-06-22T00:00:00Z\",\r\n        \"validUntil\": \"2024-06-22T00:00:00Z\",\r\n        \"credentialSubject\": {\r\n            \"id\": \"did:web:verification.gs1.nl:did:party_gln:8720796007237\",\r\n            \"organization\": {\r\n                \"gs1:partyGLN\": \"8720796007237\",\r\n                \"gs1:organizationName\": \"Test Account\",\r\n                \"gs1:additionalOrganizationID\": [\r\n                    {\r\n                        \"gs1:organizationID\": \"90001745\",\r\n                        \"gs1:organizationID_Type\": \"CoC\"\r\n                    }\r\n                ]\r\n            },\r\n            \"licenseValue\": \"8790171\"\r\n        },\r\n        \"proof\": {\r\n            \"type\": \"JsonWebSignature2020\",\r\n            \"created\": \"2023-07-25T09:35:16Z\",\r\n            \"verificationMethod\": \"did:jwk:eyJhbGciOiJFZERTQSIsInVzZSI6InNpZyIsImt0eSI6Ik9LUCIsImNydiI6IkVkMjU1MTkiLCJ4IjoiaWFSbUhrUnJSa0FUSmFPTk95QllMUjNTZC10RWlqR0JBU3BuRzNyaFdEYyJ9#0\",\r\n            \"proofPurpose\": \"assertionMethod\",\r\n            \"jws\": \"eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19.._zyNcm5-eW9SwjgD-WHzm9WmyZsQR1VBu4_79ogxoF0ItcdU1gJ2ePbT9gCis69bNPLkwLh1spBttqlfPputDQ\"\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/vc/credentials/verify",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"vc",
+								"credentials",
+								"verify"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All Credentials",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5001/vc/credentials",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"vc",
+								"credentials"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Single Credential",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/vc/credentials/urn:uuid:0b64bc42-1d10-4616-9885-0870b77b5d48",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"vc",
+								"credentials",
+								"urn:uuid:0b64bc42-1d10-4616-9885-0870b77b5d48"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Credential",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/vc/credentials/urn:uuid:0b64bc42-1d10-4616-9885-0870b77b5d48",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"vc",
+								"credentials",
+								"urn:uuid:0b64bc42-1d10-4616-9885-0870b77b5d48"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Azure AD access token",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "client_id=14f34474-b7a9-428b-a7e6-e7eda91675b0&scope=14f34474-b7a9-428b-a7e6-e7eda91675b0/vc.issue&client_secret=L.48Q~YCbCfDcZC~-j2-ssfKG~OIayxrDDku-arI&grant_type=client_credentials",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://login.microsoftonline.com:443/sphereon.com/oauth2/v2.0/token",
+					"protocol": "https",
+					"host": [
+						"login",
+						"microsoftonline",
+						"com"
+					],
+					"port": "443",
+					"path": [
+						"sphereon.com",
+						"oauth2",
+						"v2.0",
+						"token"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
