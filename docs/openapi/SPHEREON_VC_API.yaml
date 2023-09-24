@@ -350,7 +350,7 @@ paths:
                     - https://www.w3.org/2018/credentials/v1
                     - https://w3id.org/vc/status-list/2021/v1
                     - https://ref.sphereon.com/vc/license-context/
-                  id: https://verification.sphereon.com/vc/license/company_prefix/8790171
+                  id: http://localhost/vc/license/company_prefix/8790171
                   type: [
                     VerifiableCredential,
                     SphereonCompanyPrefixLicenseCredential
@@ -369,11 +369,11 @@ paths:
                     licenseValue: "8790171"
 
                   credentialStatus:
-                    id: https://verification.sphereon.com/vc/status/1#8790171
+                    id: http://localhost/vc/status/1#8790171
                     type: StatusList2021Entry
                     statusPurpose: revocation
                     statusListIndex: "8790171"
-                    statusListCredential: https://verification.sphereon.com/vc/status/1
+                    statusListCredential: http://localhost/vc/status/1
             application/ld+json;profile="https://w3id.org/did-resolution":
               schema:
                 $ref: '#/components/schemas/ResolutionResult'
@@ -539,7 +539,7 @@ components:
           - https://www.w3.org/2018/credentials/v1
           - https://w3id.org/vc/status-list/2021/v1
           - https://ref.sphereon.com/vc/license-context/
-        id: https://verification.sphereon.com/vc/license/company_prefix/8790171
+        id: http://localhost/vc/license/company_prefix/8790171
         type: [
           VerifiableCredential,
           SphereonCompanyPrefixLicenseCredential
@@ -558,11 +558,11 @@ components:
           licenseValue: "8790171"
 
         credentialStatus:
-          id: https://verification.sphereon.com/vc/status/1#8790171
+          id: http://localhost/vc/status/1#8790171
           type: StatusList2021Entry
           statusPurpose: revocation
           statusListIndex: "8790171"
-          statusListCredential: https://verification.sphereon.com/vc/status/1
+          statusListCredential: http://localhost/vc/status/1
     LinkedDataProof:
       type: object
       description: A JSON-LD Linked Data proof.
@@ -619,7 +619,7 @@ components:
           - https://www.w3.org/2018/credentials/v1
           - https://w3id.org/vc/status-list/2021/v1
           - https://ref.sphereon.com/vc/license-context/
-        id: https://verification.sphereon.com/vc/license/company_prefix/8790171
+        id: http://localhost/vc/license/company_prefix/8790171
         type: [
           VerifiableCredential,
           SphereonCompanyPrefixLicenseCredential
@@ -638,11 +638,11 @@ components:
           licenseValue: "8790171"
 
         credentialStatus:
-          id: https://verification.sphereon.com/vc/status/1#8790171
+          id: http://localhost/vc/status/1#8790171
           type: StatusList2021Entry
           statusPurpose: revocation
           statusListIndex: "8790171"
-          statusListCredential: https://verification.sphereon.com/vc/status/1
+          statusListCredential: http://localhost/vc/status/1
         proof:
           type: JsonWebSignature2020
           created: 2023-06-29T22:20:27Z

@@ -20,7 +20,7 @@ export const ENV_VAR_PREFIX = process.env.ENV_VAR_PREFIX ?? ''
 
 export const DB_TYPE = env('DB_TYPE', ENV_VAR_PREFIX) ?? 'sqlite'
 
-export const MEMORY_DB = DB_TYPE.toLowerCase().startsWith('mem')
+export const MEMORY_DB = DB_TYPE.toLowerCase().includes('mem')
 export const DB_URL = env('DB_URL', ENV_VAR_PREFIX) ?? (MEMORY_DB ? ':memory:' : 'database/agent_default.sqlite')
 
 if (MEMORY_DB) {
@@ -37,12 +37,12 @@ export const DB_USE_SSL = env('DB_USE_SSL', ENV_VAR_PREFIX)
 export const DB_SSL_CA = env('DB_SSL_CA', ENV_VAR_PREFIX)
 export const DB_SSL_ALLOW_SELF_SIGNED = env('DB_SSL_ALLOW_SELF_SIGNED', ENV_VAR_PREFIX) ?? true
 export const DB_CONNECTION_NAME = env('DB_CONNECTION_NAME', ENV_VAR_PREFIX) ?? 'default'
-export const DB_DATABASE_NAME = env('DB_DATABASE_NAME', ENV_VAR_PREFIX) ?? 'vc-customer'
+export const DB_DATABASE_NAME = env('DB_DATABASE_NAME', ENV_VAR_PREFIX) ?? 'web-wallet-agent'
 export const DB_CACHE_ENABLED = env('DB_CACHE_ENABLED', ENV_VAR_PREFIX) ?? 'true'
 export const DB_ENCRYPTION_KEY = env('DB_ENCRYPTION_KEY', ENV_VAR_PREFIX) ?? '29739248cad1bd1a0fc4d9b75cd4d2990de535baf5caadfdf8d8f86664aa830c'
 export const INTERNAL_HOSTNAME_OR_IP = env('INTERNAL_HOSTNAME_OR_IP', ENV_VAR_PREFIX) ?? env('HOSTNAME', ENV_VAR_PREFIX) ?? '0.0.0.0'
 export const INTERNAL_PORT = env('PORT', ENV_VAR_PREFIX) ? Number.parseInt(env('PORT', ENV_VAR_PREFIX)!) : 5000
-export const EXTERNAL_HOSTNAME = env('EXTERNAL_HOSTNAME', ENV_VAR_PREFIX) ?? 'test.verification.sphereon.com'
+export const EXTERNAL_HOSTNAME = env('EXTERNAL_HOSTNAME', ENV_VAR_PREFIX) ?? 'localhost'
 export const DEFAULT_DID = env('DEFAULT_DID', ENV_VAR_PREFIX)
 export const DEFAULT_KID = env('DEFAULT_KID', ENV_VAR_PREFIX)
 export const CONF_PATH = env('CONF_PATH', ENV_VAR_PREFIX) ? resolve(env('CONF_PATH', ENV_VAR_PREFIX)!) : resolve('../../conf')
@@ -60,7 +60,7 @@ export const STATUS_LIST_API_FEATURES: statusListFeatures[] = env('STATUS_LIST_A
 
 export const STATUS_LIST_API_BASE_PATH = env('STATUS_LIST_API_BASE_PATH', ENV_VAR_PREFIX) ?? VC_API_BASE_PATH
 export const STATUS_LIST_ISSUER = env('STATUS_LIST_ISSUER', ENV_VAR_PREFIX) ?? DEFAULT_DID
-export const STATUS_LIST_ID = env('STATUS_LIST_ID', ENV_VAR_PREFIX) ?? 'https://verification.sphereon.com/vc/credentials/status-lists/1'
+export const STATUS_LIST_ID = env('STATUS_LIST_ID', ENV_VAR_PREFIX) ?? 'http://localhost/vc/credentials/status-lists/1'
 export const STATUS_LIST_CORRELATION_ID = env('STATUS_LIST_CORRELATION_ID', ENV_VAR_PREFIX) ?? 'default-sl'
 export const STATUS_LIST_LENGTH = env('STATUS_LIST_LENGTH', ENV_VAR_PREFIX) ?? '150000' // at least 150k to ensure herd privacy
 export const STATUS_LIST_PURPOSE = env('STATUS_LIST_PURPOSE', ENV_VAR_PREFIX) ?? 'revocation' // revocation or suspension

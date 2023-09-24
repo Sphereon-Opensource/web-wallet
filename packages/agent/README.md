@@ -116,7 +116,7 @@ Note: The `keys` property is an array, so you could import multiple keys (and ce
 
 The `did` and `alias` values should be kept the same. If you are going to host the main DID on let's
 say `verification.sphereon.com`, the the value would become `did:web:verification.sphereon.com`. The agent will be able to use these
-did:web values even if the DID document is not hosted at https://verification.sphereon.com/.well-known/did.json yet (via copy
+did:web values even if the DID document is not hosted at http://localhost/.well-known/did.json yet (via copy
 to webhosting server, or via reverse proxy to the agent did:web hosting facility).
 
 # Issuer agent
@@ -157,13 +157,13 @@ Example body:
 {
   "credential": {
     "@context": ["https://www.w3.org/2018/credentials/v1", "https://w3id.org/vc/status-list/2021/v1", "https://ref.sphereon.com/sphereon/vc/license-context/"],
-    "id": "https://verification.sphereon.com/vc/license/company_prefix/8790171",
+    "id": "http://localhost/vc/license/company_prefix/8790171",
     "type": ["VerifiableCredential", "SPHEREONCompanyPrefixLicenseCredential"],
     "issuer": "did:jwk:eyJhbGciOiJFZERTQSIsInVzZSI6InNpZyIsImt0eSI6Ik9LUCIsImNydiI6IkVkMjU1MTkiLCJ4IjoiaWFSbUhrUnJSa0FUSmFPTk95QllMUjNTZC10RWlqR0JBU3BuRzNyaFdEYyJ9",
     "issuanceDate": "2023-06-22T00:00:00Z",
     "validUntil": "2024-06-22T00:00:00Z",
     "credentialStatus": {
-      "statusListCredential": "https://verification.sphereon.com/vc/status-lists/1"
+      "statusListCredential": "http://localhost/vc/status-lists/1"
     },
     "credentialSubject": {
       "id": "did:web:verification.sphereon.com:did:party_gln:8720796007237",
@@ -194,14 +194,14 @@ Response:
       "https://ref.sphereon.com/sphereon/vc/license-context/",
       "https://w3id.org/security/suites/jws-2020/v1"
     ],
-    "id": "https://verification.sphereon.com/vc/license/company_prefix/8790171",
+    "id": "http://localhost/vc/license/company_prefix/8790171",
     "type": ["VerifiableCredential", "SPHEREONCompanyPrefixLicenseCredential"],
     "issuer": "did:jwk:eyJhbGciOiJFZERTQSIsInVzZSI6InNpZyIsImt0eSI6Ik9LUCIsImNydiI6IkVkMjU1MTkiLCJ4IjoiaWFSbUhrUnJSa0FUSmFPTk95QllMUjNTZC10RWlqR0JBU3BuRzNyaFdEYyJ9",
     "issuanceDate": "2023-06-22T00:00:00Z",
     "validUntil": "2024-06-22T00:00:00Z",
     "credentialStatus": {
-      "statusListCredential": "https://verification.sphereon.com/vc/status-lists/1",
-      "id": "https://verification.sphereon.com/vc/status-lists/1",
+      "statusListCredential": "http://localhost/vc/status-lists/1",
+      "id": "http://localhost/vc/status-lists/1",
       "type": "StatusList2021Entry",
       "statusPurpose": "suspension",
       "statusListIndex": "221154"
@@ -253,14 +253,14 @@ Example verification body:
       "https://ref.sphereon.com/sphereon/vc/license-context/",
       "https://w3id.org/security/suites/jws-2020/v1"
     ],
-    "id": "https://verification.sphereon.com/vc/license/company_prefix/8790171",
+    "id": "http://localhost/vc/license/company_prefix/8790171",
     "type": ["VerifiableCredential", "SPHEREONCompanyPrefixLicenseCredential"],
     "issuer": "did:jwk:eyJhbGciOiJFZERTQSIsInVzZSI6InNpZyIsImt0eSI6Ik9LUCIsImNydiI6IkVkMjU1MTkiLCJ4IjoiaWFSbUhrUnJSa0FUSmFPTk95QllMUjNTZC10RWlqR0JBU3BuRzNyaFdEYyJ9",
     "issuanceDate": "2023-06-22T00:00:00Z",
     "validUntil": "2024-06-22T00:00:00Z",
     "credentialStatus": {
-      "statusListCredential": "https://verification.sphereon.com/credentials/status-lists/1",
-      "id": "https://verification.sphereon.com/vc/status-lists/1#221154",
+      "statusListCredential": "http://localhost/credentials/status-lists/1",
+      "id": "http://localhost/vc/status-lists/1#221154",
       "type": "StatusList2021Entry",
       "statusPurpose": "suspension",
       "statusListIndex": "221154"
@@ -544,7 +544,7 @@ Example partial VC during the request phase (see [Issue credentials](#issue-cred
   ...
   "issuanceDate": "2023-06-22T00:00:00Z",
   "credentialStatus": {
-    "statusListCredential": "https://verification.sphereon.com/vc/status-lists/1"
+    "statusListCredential": "http://localhost/vc/status-lists/1"
   },
   "credentialSubject": {
     ...
@@ -559,8 +559,8 @@ Response:
 {
   "issuanceDate": "2023-06-22T00:00:00Z",
   "credentialStatus": {
-    "statusListCredential": "https://verification.sphereon.com/credentials/status-lists/1",
-    "id": "https://verification.sphereon.com/vc/status-lists/1#221154",
+    "statusListCredential": "http://localhost/credentials/status-lists/1",
+    "id": "http://localhost/vc/status-lists/1#221154",
     "type": "StatusList2021Entry",
     "statusPurpose": "suspension",
     "statusListIndex": "221154"
@@ -584,7 +584,7 @@ Example request:
 
 ```json
 {
-  "credentialId": "https://verification.sphereon.com/vc/license/company_prefix/8790171",
+  "credentialId": "http://localhost/vc/license/company_prefix/8790171",
   "credentialStatus": [
     {
       "type": "StatusList2021",
@@ -661,7 +661,7 @@ Example response:
 Please be aware that this is [did:web](https://w3c-ccg.github.io/did-method-web/), so follow
 the [specification](https://w3c-ccg.github.io/did-method-web/).
 In the above example a did:web is created which should be hosted at the following location:
-https://verification.sphereon.com/did/party_gln/12345678/did.json
+http://localhost/did/party_gln/12345678/did.json
 By default the agent will be able to resolve any did:web hosted by the agent. Meaning that you can both issue and verify
 Credentials with the respective did:web even if the actual web-server or reverse proxy is not hosting the did:web yet
 
@@ -750,7 +750,7 @@ If no DID is found for the URL, it will return the below response, with an HTTP 
 ```
 
 Please be aware that the agent is using the URL to determine the hostname. So the below example only works if the agent
-is running behind a reverse proxy or load-balancer on the URL `https://verification.sphereon.com`. If you want to test during
+is running behind a reverse proxy or load-balancer on the URL `http://localhost`. If you want to test during
 development, simply replace the URL with `http://localhost:5001`
 
 If a DID is found it will return the DID Document (not a resolution result)

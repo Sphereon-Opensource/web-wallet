@@ -36,6 +36,7 @@ export enum KMS {
  * Predefined DID methods. In case more DID methods should be support, you will also have to import SSI-SDK modules
  */
 export enum DIDMethods {
+  DID_ION = 'ion',
   DID_JWK = 'jwk',
   DID_WEB = 'web',
 }

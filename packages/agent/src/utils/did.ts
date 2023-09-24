@@ -19,6 +19,7 @@ import {
   DID_WEB_PRIVATE_KEY_PEM,
   didOptConfigs,
 } from '../environment'
+import {IonDIDProvider} from "@veramo/did-provider-ion";
 
 export function createDidResolver() {
   return new Resolver({
@@ -33,6 +34,9 @@ export function createDidProviders() {
       defaultKms: KMS.LOCAL,
     }),
     [`${DID_PREFIX}:${DIDMethods.DID_JWK}`]: new JwkDIDProvider({
+      defaultKms: KMS.LOCAL,
+    }),
+    [`${DID_PREFIX}:${DIDMethods.DID_ION}`]: new IonDIDProvider({
       defaultKms: KMS.LOCAL,
     }),
   }

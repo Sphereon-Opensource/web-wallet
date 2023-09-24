@@ -1,6 +1,7 @@
 import { createNewStatusList } from '@sphereon/ssi-sdk.vc-status-list'
 import { getDriver } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
 import {
+  DB_CONNECTION_NAME,
   DB_DATABASE_NAME,
   DEFAULT_DID,
   STATUS_LIST_API_FEATURES,
@@ -20,7 +21,7 @@ export async function getOrCreateConfiguredStatusList(args?: { issuer?: string; 
   const driver = await getDriver({
     correlationId: STATUS_LIST_CORRELATION_ID,
     id: STATUS_LIST_ID,
-    dbName: DB_DATABASE_NAME,
+    dbName: DB_CONNECTION_NAME,
   })
   let statusList = undefined
   try {
