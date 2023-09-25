@@ -230,15 +230,15 @@ if (STATUS_LIST_API_FEATURES.length > 0) {
         globalAuth,
         basePath: STATUS_LIST_API_BASE_PATH ?? '',
         vcApiCredentialStatus: {
-          dbName: DB_DATABASE_NAME,
+          dbName: DB_CONNECTION_NAME,
           disableGlobalAuth: true,
           correlationId: STATUS_LIST_CORRELATION_ID,
         },
         getStatusList: {
-          dbName: DB_DATABASE_NAME,
+          dbName: DB_CONNECTION_NAME,
         },
         createStatusList: {
-          dbName: DB_DATABASE_NAME,
+          dbName: DB_CONNECTION_NAME,
         },
       },
       enableFeatures: STATUS_LIST_API_FEATURES,
