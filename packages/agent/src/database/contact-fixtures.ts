@@ -16,8 +16,8 @@ const PRIVATE_DID1_KEY_HEX = 'e0453c226bd4458740c45f0d0590e696da2fe9c5c66f81908a
 const PRIVATE_DID2_KEY_HEX = '74213f5204ea414deb4dc2c470d1700b8cc2076ddd8d3ddb06dae08902dddd0c'
 const PRIVATE_DID3_KEY_HEX = '90868704b3bb2bdd27e2e831654c4adb2ea7e4f0e090d03aa3ae38020346aa12'
 const PRIVATE_DID4_KEY_HEX = 'f367873323bf0dd701ec972d8a17aee7a9dcad13bd6deb64e8653da113094261'
-const PRIVATE_DID5_KEY_HEX = 'a1868704b3bb2bdd27e2e831654aeadb2ea7e4f0e090d03aa3ae38020346aa34'
-const PRIVATE_DID6_KEY_HEX = 'a167873323bf0dd701ec972d8a17aee7aaecad13bd6deb64e8653da113094256'
+const PRIVATE_DID5_KEY_HEX = 'a167873323bf1ed701ec972d8a17aee7aaecad13bd6deb64e8653da113094256'
+const PRIVATE_DID6_KEY_HEX  = 'a167873323bf0dd701ec972d8a17aee7aaecad13bd6deb64e8653da113094256'
 const toContactIdentityDTO = (contact: Record<string, any>, identifier: IIdentifier): NonPersistedIdentity => {
     console.log(`Contact received did ${identifier.did}, contact: ${JSON.stringify(contact)}`)
     return {
