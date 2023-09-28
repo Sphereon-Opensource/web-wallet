@@ -58,6 +58,10 @@ import {ContactManagerApiServer} from '@sphereon/ssi-sdk.contact-manager-rest-ap
 import {ContactManager} from '@sphereon/ssi-sdk.contact-manager'
 import {ContactStore} from '@sphereon/ssi-sdk.data-store'
 import {addContacts} from "./database/contact-fixtures";
+import { OID4VCIIssuer } from '@sphereon/ssi-sdk.oid4vci-issuer'
+import { OID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
+import { OID4VCIRestAPI } from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
+import { CredentialDataSupplier, CredentialDataSupplierArgs,CredentialDataSupplierResult } from '@sphereon/oid4vci-issuer'
 
 /**
  * Are we using a in mory database or not
@@ -110,6 +114,22 @@ const plugins: IAgentPlugin[] = [
         keyStore: privateKeyStore,
     }),
     new ContactManager({store: new ContactStore(dbConnection)}),
+    new OID4VCIStore({
+        defaultOpts: {
+            userPinRequired: false,
+            didOpts: {
+                identifierOpts: {
+                    identifier: 'did:jwk:eyJhbGciOiJFUzI1NiIsInVzZSI6InNpZyIsImt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiVEcySDJ4MmRXWE4zdUNxWnBxRjF5c0FQUVZESkVOX0gtQ010YmdqYi1OZyIsInkiOiI5TThOeGQwUE4yMk05bFBEeGRwRHBvVEx6MTV3ZnlaSnM2WmhLSVVKMzM4In0',
+                    kid: '4c6d87db1d9d597377b82a99a6a175cac00f4150c910dfc7f8232d6e08dbf8d8'
+                }
+            }
+        }
+    }),
+    new OID4VCIIssuer({
+        resolveOpts: {
+            resolver
+        }
+    })
 ]
 
 /**
@@ -166,7 +186,7 @@ if (VC_API_FEATURES.length > 0) {
         opts: {
             endpointOpts: {
                 globalAuth,
-                basePath: VC_API_BASE_PATH,
+                basePath: VC_API_BASE_PATH
             },
             issueCredentialOpts: {
                 enableFeatures: VC_API_FEATURES,
@@ -266,6 +286,38 @@ if (CONTACT_MANAGER_API_FEATURES.length > 0) {
         agent,
     })
 }
+
+const credentialDataSupplier: CredentialDataSupplier = (args: CredentialDataSupplierArgs) => {
+    const description = args.credentialDataSupplierInput?.id ?? ''
+    // TODO replace with call to web-wallet /credentials/:id endpoint
+    return Promise.resolve({
+        format: 'jwt_vc_json',
+        credential: {
+            '@context': ['https://www.w3.org/2018/credentials/v1'],
+            type: ['VerifiableCredential', 'GuestCredential'],
+            expirationDate: new Date(+new Date() + 24 * 60 * 60 * 3600).toISOString(),
+            credentialSubject: {
+
+            },
+        },
+    } as unknown as CredentialDataSupplierResult)
+}
+
+
+OID4VCIRestAPI.init({
+  opts: {
+    baseUrl: '',
+    endpointOpts: {
+
+    }
+  },
+  context: { ...agent.context as any },
+    issuerInstanceArgs: {
+        credentialIssuer: `/issuer`
+    },
+    credentialDataSupplier: credentialDataSupplier,
+    expressSupport
+})
 
 
 await addContacts().catch((e) => console.log(`Error: ${e}`)).then(res => {
