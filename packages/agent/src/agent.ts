@@ -26,27 +26,27 @@ import {
   getOrCreateDIDWebFromEnv,
 } from './utils'
 import {
-  AUTHENTICATION_ENABLED,
-  AUTHENTICATION_STRATEGY,
-  AUTHORIZATION_ENABLED,
-  AUTHORIZATION_GLOBAL_REQUIRE_USER_IN_ROLES,
-  CONTACT_MANAGER_API_FEATURES,
-  DB_CONNECTION_NAME,
-  DB_ENCRYPTION_KEY,
-  DB_TYPE,
-  DID_API_BASE_PATH,
-  DID_API_FEATURES,
-  DID_API_RESOLVE_MODE,
-  DID_WEB_SERVICE_FEATURES,
-  MEMORY_DB,
-  OID4VCI_API_BASE_PATH,
-  STATUS_LIST_API_BASE_PATH,
-  STATUS_LIST_API_FEATURES,
-  STATUS_LIST_CORRELATION_ID,
-  STATUS_LIST_ISSUER,
-  VC_API_BASE_PATH,
-  VC_API_DEFAULT_PROOF_FORMAT,
-  VC_API_FEATURES,
+    AUTHENTICATION_ENABLED,
+    AUTHENTICATION_STRATEGY,
+    AUTHORIZATION_ENABLED,
+    AUTHORIZATION_GLOBAL_REQUIRE_USER_IN_ROLES,
+    CONTACT_MANAGER_API_FEATURES,
+    DB_CONNECTION_NAME,
+    DB_ENCRYPTION_KEY,
+    DB_TYPE,
+    DID_API_BASE_PATH,
+    DID_API_FEATURES,
+    DID_API_RESOLVE_MODE,
+    DID_WEB_SERVICE_FEATURES,
+    MEMORY_DB,
+    OID4VCI_API_BASE_PATH, oid4vciInstanceOpts, oid4vciMetadataOpts,
+    STATUS_LIST_API_BASE_PATH,
+    STATUS_LIST_API_FEATURES,
+    STATUS_LIST_CORRELATION_ID,
+    STATUS_LIST_ISSUER,
+    VC_API_BASE_PATH,
+    VC_API_DEFAULT_PROOF_FORMAT,
+    VC_API_FEATURES,
 } from './environment'
 import {VcApiServer} from '@sphereon/ssi-sdk.w3c-vc-api'
 import {UniResolverApiServer} from '@sphereon/ssi-sdk.uni-resolver-registrar-api'
@@ -117,15 +117,8 @@ const plugins: IAgentPlugin[] = [
     }),
     new ContactManager({store: new ContactStore(dbConnection)}),
     new OID4VCIStore({
-        defaultOpts: {
-            userPinRequired: false,
-            didOpts: {
-                identifierOpts: {
-                    identifier: 'did:jwk:eyJhbGciOiJFUzI1NiIsInVzZSI6InNpZyIsImt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiVEcySDJ4MmRXWE4zdUNxWnBxRjF5c0FQUVZESkVOX0gtQ010YmdqYi1OZyIsInkiOiI5TThOeGQwUE4yMk05bFBEeGRwRHBvVEx6MTV3ZnlaSnM2WmhLSVVKMzM4In0',
-                    kid: '4c6d87db1d9d597377b82a99a6a175cac00f4150c910dfc7f8232d6e08dbf8d8'
-                }
-            }
-        }
+        importIssuerOpts: oid4vciInstanceOpts.asArray,
+        importMetadatas: oid4vciMetadataOpts.asArray,
     }),
     new OID4VCIIssuer({
         resolveOpts: {
@@ -296,7 +289,9 @@ OID4VCIRestAPI.init({
   },
   context: context as unknown as IRequiredContext,
     issuerInstanceArgs: {
-        credentialIssuer: VC_API_BASE_PATH
+        credentialIssuer: VC_API_BASE_PATH,
+        storeId: '_default', // TODO configurable?
+        namespace: 'oid4vci' // TODO configurable?
     },
     credentialDataSupplier: async (args: CredentialDataSupplierArgs): Promise<CredentialDataSupplierResult> => {
       const hashOrId = args.credentialDataSupplierInput?.hashOrId ?? ''

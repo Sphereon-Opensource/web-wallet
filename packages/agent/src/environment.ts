@@ -7,6 +7,7 @@ import { DidApiFeatures, DidWebServiceFeatures } from '@sphereon/ssi-sdk.uni-res
 import { env } from '@sphereon/ssi-express-support/dist/functions'
 import { statusListFeatures } from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
 import { ContactManagerMRestApiFeatures } from '@sphereon/ssi-sdk.contact-manager-rest-api'
+import {IIssuerOptsImportArgs, IMetadataImportArgs} from "@sphereon/ssi-sdk.oid4vci-issuer-store"
 
 await dotenvConfig()
 
@@ -47,6 +48,8 @@ export const DEFAULT_DID = env('DEFAULT_DID', ENV_VAR_PREFIX)
 export const DEFAULT_KID = env('DEFAULT_KID', ENV_VAR_PREFIX)
 export const CONF_PATH = env('CONF_PATH', ENV_VAR_PREFIX) ? resolve(env('CONF_PATH', ENV_VAR_PREFIX)!) : resolve('../../conf')
 export const OID4VCI_API_BASE_PATH = env('OID4VCI_API_BASE_PATH', ENV_VAR_PREFIX) ?? '/oid4vci'
+export const OID4VCI_ISSUER_OPTIONS_PATH = `${CONF_PATH}/oid4vci_options`
+export const OID4VCI_ISSUER_METADATA_PATH = `${CONF_PATH}/oid4vci_metadata`
 export const VC_API_BASE_PATH = env('VC_API_BASE_PATH', ENV_VAR_PREFIX) ?? '/vc'
 export const VC_API_DEFAULT_PROOF_FORMAT = env('VC_API_DEFAULT_PROOF_FORMAT', ENV_VAR_PREFIX) ?? 'lds'
 export const VC_API_FEATURES: vcApiFeatures[] = env('VC_API_FEATURES', ENV_VAR_PREFIX)
@@ -91,3 +94,6 @@ export const AUTHORIZATION_GLOBAL_REQUIRE_USER_IN_ROLES = env('AUTHORIZATION_GLO
 export const didOptConfigs = loadJsonFiles<IDIDOpts>({
   path: DID_OPTIONS_PATH,
 })
+
+export const oid4vciInstanceOpts = loadJsonFiles<IIssuerOptsImportArgs>({path: OID4VCI_ISSUER_OPTIONS_PATH})
+export const oid4vciMetadataOpts = loadJsonFiles<IMetadataImportArgs>({path: OID4VCI_ISSUER_METADATA_PATH})
