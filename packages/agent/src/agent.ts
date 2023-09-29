@@ -1,12 +1,12 @@
 import {createAgent, IAgentContext, IAgentPlugin, ProofFormat, TAgent} from '@veramo/core'
 import {
-    CredentialHandlerLDLocal,
-    LdDefaultContexts,
-    MethodNames,
-    SphereonEd25519Signature2018,
-    SphereonEd25519Signature2020,
-    SphereonJsonWebSignature2020,
-    SphereonEcdsaSecp256k1RecoverySignature2020
+  CredentialHandlerLDLocal,
+  LdDefaultContexts,
+  MethodNames,
+  SphereonEcdsaSecp256k1RecoverySignature2020,
+  SphereonEd25519Signature2018,
+  SphereonEd25519Signature2020,
+  SphereonJsonWebSignature2020
 } from '@sphereon/ssi-sdk.vc-handler-ld-local'
 import {CredentialPlugin} from '@veramo/credential-w3c'
 import {DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore} from '@veramo/data-store'
@@ -17,35 +17,36 @@ import {SecretBox} from '@veramo/kms-local'
 import {SphereonKeyManagementSystem} from '@sphereon/ssi-sdk-ext.kms-local'
 import {getDbConnection} from './database'
 import {
-    createDidProviders,
-    createDidResolver,
-    expressBuilder,
-    getDefaultDID,
-    getDefaultKid,
-    getOrCreateDIDsFromFS,
-    getOrCreateDIDWebFromEnv,
+  createDidProviders,
+  createDidResolver,
+  expressBuilder,
+  getDefaultDID,
+  getDefaultKid,
+  getOrCreateDIDsFromFS,
+  getOrCreateDIDWebFromEnv,
 } from './utils'
 import {
-    AUTHENTICATION_ENABLED,
-    AUTHENTICATION_STRATEGY,
-    AUTHORIZATION_ENABLED,
-    AUTHORIZATION_GLOBAL_REQUIRE_USER_IN_ROLES,
-    CONTACT_MANAGER_API_FEATURES,
-    DB_CONNECTION_NAME,
-    DB_DATABASE_NAME,
-    DB_ENCRYPTION_KEY,
-    DB_TYPE,
-    DID_API_BASE_PATH,
-    DID_API_FEATURES,
-    DID_API_RESOLVE_MODE,
-    DID_WEB_SERVICE_FEATURES,
-    MEMORY_DB,
-    STATUS_LIST_API_BASE_PATH,
-    STATUS_LIST_API_FEATURES,
-    STATUS_LIST_CORRELATION_ID, STATUS_LIST_ISSUER,
-    VC_API_BASE_PATH,
-    VC_API_DEFAULT_PROOF_FORMAT,
-    VC_API_FEATURES,
+  AUTHENTICATION_ENABLED,
+  AUTHENTICATION_STRATEGY,
+  AUTHORIZATION_ENABLED,
+  AUTHORIZATION_GLOBAL_REQUIRE_USER_IN_ROLES,
+  CONTACT_MANAGER_API_FEATURES,
+  DB_CONNECTION_NAME,
+  DB_ENCRYPTION_KEY,
+  DB_TYPE,
+  DID_API_BASE_PATH,
+  DID_API_FEATURES,
+  DID_API_RESOLVE_MODE,
+  DID_WEB_SERVICE_FEATURES,
+  MEMORY_DB,
+  OID4VCI_API_BASE_PATH,
+  STATUS_LIST_API_BASE_PATH,
+  STATUS_LIST_API_FEATURES,
+  STATUS_LIST_CORRELATION_ID,
+  STATUS_LIST_ISSUER,
+  VC_API_BASE_PATH,
+  VC_API_DEFAULT_PROOF_FORMAT,
+  VC_API_FEATURES,
 } from './environment'
 import {VcApiServer} from '@sphereon/ssi-sdk.w3c-vc-api'
 import {UniResolverApiServer} from '@sphereon/ssi-sdk.uni-resolver-registrar-api'
@@ -58,10 +59,11 @@ import {ContactManagerApiServer} from '@sphereon/ssi-sdk.contact-manager-rest-ap
 import {ContactManager} from '@sphereon/ssi-sdk.contact-manager'
 import {ContactStore} from '@sphereon/ssi-sdk.data-store'
 import {addContacts} from "./database/contact-fixtures";
-import { OID4VCIIssuer } from '@sphereon/ssi-sdk.oid4vci-issuer'
-import { OID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
-import { OID4VCIRestAPI } from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
-import { CredentialDataSupplier, CredentialDataSupplierArgs,CredentialDataSupplierResult } from '@sphereon/oid4vci-issuer'
+import {OID4VCIIssuer} from '@sphereon/ssi-sdk.oid4vci-issuer'
+import {OID4VCIStore} from '@sphereon/ssi-sdk.oid4vci-issuer-store'
+import {IRequiredContext, OID4VCIRestAPI} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
+import {CredentialDataSupplierArgs, CredentialDataSupplierResult} from '@sphereon/oid4vci-issuer'
+import {getCredentialByIdOrHash} from "@sphereon/ssi-sdk.core";
 
 /**
  * Are we using a in mory database or not
@@ -287,38 +289,21 @@ if (CONTACT_MANAGER_API_FEATURES.length > 0) {
     })
 }
 
-const credentialDataSupplier: CredentialDataSupplier = (args: CredentialDataSupplierArgs) => {
-    const description = args.credentialDataSupplierInput?.id ?? ''
-    // TODO replace with call to web-wallet /credentials/:id endpoint
-    return Promise.resolve({
-        format: 'jwt_vc_json',
-        credential: {
-            '@context': ['https://www.w3.org/2018/credentials/v1'],
-            type: ['VerifiableCredential', 'GuestCredential'],
-            expirationDate: new Date(+new Date() + 24 * 60 * 60 * 3600).toISOString(),
-            credentialSubject: {
-
-            },
-        },
-    } as unknown as CredentialDataSupplierResult)
-}
-
-
 OID4VCIRestAPI.init({
   opts: {
-    baseUrl: '',
-    endpointOpts: {
-
-    }
+    baseUrl: OID4VCI_API_BASE_PATH,
+    endpointOpts: {}
   },
-  context: { ...agent.context as any },
+  context: context as IRequiredContext,
     issuerInstanceArgs: {
-        credentialIssuer: `/issuer`
+        credentialIssuer: VC_API_BASE_PATH
     },
-    credentialDataSupplier: credentialDataSupplier,
+    credentialDataSupplier: async (args: CredentialDataSupplierArgs): Promise<CredentialDataSupplierResult> => {
+      const hashOrId = args.credentialDataSupplierInput?.hashOrId ?? ''
+      return ( await getCredentialByIdOrHash(context as IRequiredContext, hashOrId)) as CredentialDataSupplierResult
+    },
     expressSupport
 })
-
 
 await addContacts().catch((e) => console.log(`Error: ${e}`)).then(res => {
 
