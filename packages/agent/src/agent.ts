@@ -294,13 +294,14 @@ OID4VCIRestAPI.init({
     baseUrl: OID4VCI_API_BASE_PATH,
     endpointOpts: {}
   },
-  context: context as IRequiredContext,
+  context: context as unknown as IRequiredContext,
     issuerInstanceArgs: {
         credentialIssuer: VC_API_BASE_PATH
     },
     credentialDataSupplier: async (args: CredentialDataSupplierArgs): Promise<CredentialDataSupplierResult> => {
       const hashOrId = args.credentialDataSupplierInput?.hashOrId ?? ''
-      return ( await getCredentialByIdOrHash(context as IRequiredContext, hashOrId)) as CredentialDataSupplierResult
+        const credentialResult = await getCredentialByIdOrHash(context, hashOrId) // as unknown because IContactManager is not in IRequiredContext of the oid4vci-issuer-rest-api module
+        return {credential: credentialResult.vc} as CredentialDataSupplierResult
     },
     expressSupport
 })
