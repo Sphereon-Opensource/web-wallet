@@ -64,6 +64,10 @@
           "CertificationOfOrigin"
         ],
         "format": "ldp_vc",
+        "@context": [
+          "https://www.w3.org/2018/credentials/v1",
+          "https://w3id.org/traceability/v1"
+        ],
         "cryptographic_binding_methods_supported": [
           "did:web",
           "did:jwk",
