@@ -9,6 +9,7 @@ import agent from "../agent";
 import {v4} from "uuid";
 import {AddContactArgs} from "@sphereon/ssi-sdk.contact-manager";
 import {IonPublicKeyPurpose} from "@decentralized-identity/ion-sdk";
+import {VC_API_BASE_PATH} from "../environment"
 
 const PRIVATE_RECOVERY_KEY_HEX = 'd39e66e720c00b244923eb861122ed25116555ae771ee9a57b749640173d7cf8'
 const PRIVATE_UPDATE_KEY_HEX = '0121009becfa9caf6221dce6f4f7b55dd3376e79c4ca83ce92bd43861c2393ec'
@@ -137,7 +138,7 @@ function existingDidConfig(anchor: boolean = false, kid: string, privateDIDKeyHe
         {
             id: "traceability",
             type: "TraceabilityAPI",
-            serviceEndpoint: "http://localhost:5010/vc"
+            serviceEndpoint: VC_API_BASE_PATH
         }
     ] : undefined
     return {

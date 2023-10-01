@@ -39,7 +39,7 @@ import {
     DID_API_RESOLVE_MODE,
     DID_WEB_SERVICE_FEATURES,
     MEMORY_DB,
-    OID4VCI_API_BASE_PATH, oid4vciInstanceOpts, oid4vciMetadataOpts,
+    OID4VCI_API_BASE_URL, oid4vciInstanceOpts, oid4vciMetadataOpts,
     STATUS_LIST_API_BASE_PATH,
     STATUS_LIST_API_FEATURES,
     STATUS_LIST_CORRELATION_ID,
@@ -59,11 +59,12 @@ import {ContactManagerApiServer} from '@sphereon/ssi-sdk.contact-manager-rest-ap
 import {ContactManager} from '@sphereon/ssi-sdk.contact-manager'
 import {ContactStore} from '@sphereon/ssi-sdk.data-store'
 import {addContacts} from "./database/contact-fixtures";
-import {OID4VCIIssuer} from '@sphereon/ssi-sdk.oid4vci-issuer'
+import {IIssuerInstanceArgs, OID4VCIIssuer} from '@sphereon/ssi-sdk.oid4vci-issuer'
 import {OID4VCIStore} from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import {IRequiredContext, OID4VCIRestAPI} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
 import {CredentialDataSupplierArgs, CredentialDataSupplierResult} from '@sphereon/oid4vci-issuer'
 import {getCredentialByIdOrHash} from "@sphereon/ssi-sdk.core";
+import {IOID4VCIRestAPIOpts} from "@sphereon/ssi-sdk.oid4vci-issuer-rest-api/src/OID4VCIRestAPI"
 
 /**
  * Are we using a in mory database or not
@@ -284,19 +285,20 @@ if (CONTACT_MANAGER_API_FEATURES.length > 0) {
 
 OID4VCIRestAPI.init({
   opts: {
-    baseUrl: OID4VCI_API_BASE_PATH,
-    endpointOpts: {}
-  },
+    baseUrl: OID4VCI_API_BASE_URL,
+    endpointOpts: {},
+  } as IOID4VCIRestAPIOpts,
   context: context as unknown as IRequiredContext,
     issuerInstanceArgs: {
-        credentialIssuer: VC_API_BASE_PATH,
+        credentialIssuer: OID4VCI_API_BASE_URL,
         storeId: '_default', // TODO configurable?
         namespace: 'oid4vci' // TODO configurable?
-    },
+    } as IIssuerInstanceArgs,
     credentialDataSupplier: async (args: CredentialDataSupplierArgs): Promise<CredentialDataSupplierResult> => {
+      console.log('CredentialDataSupplierArgs', JSON.stringify(args))
       const hashOrId = args.credentialDataSupplierInput?.hashOrId ?? ''
         const credentialResult = await getCredentialByIdOrHash(context, hashOrId) // as unknown because IContactManager is not in IRequiredContext of the oid4vci-issuer-rest-api module
-        return {credential: credentialResult.vc} as CredentialDataSupplierResult
+        return {credential: credentialResult.vc, format: args.credentialRequest.format} as CredentialDataSupplierResult
     },
     expressSupport
 })
