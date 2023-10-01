@@ -153,6 +153,17 @@ if (!defaultDID || !defaultKid) {
     console.log('[DID] Agent has no default DID and Key Identifier!')
 }
 
+
+await addContacts().catch((e) => console.log(`Error: ${e}`)).then(res => {
+
+        getOrCreateConfiguredStatusList({
+            issuer: STATUS_LIST_ISSUER ?? defaultDID,
+            // keyRef: defaultKid,
+        }).catch((e) => console.log(`ERROR statuslist ${e}`))
+    }
+)
+
+
 /**
  * Build a common express REST API configuration first, used by the exposed Routers/Services below
  */
@@ -286,9 +297,14 @@ if (CONTACT_MANAGER_API_FEATURES.length > 0) {
 OID4VCIRestAPI.init({
   opts: {
     baseUrl: OID4VCI_API_BASE_URL,
-    endpointOpts: {},
+    endpointOpts: {
+
+        tokenEndpointOpts: {
+
+        }
+    },
   } as IOID4VCIRestAPIOpts,
-  context: context as unknown as IRequiredContext,
+    context: context as unknown as IRequiredContext,
     issuerInstanceArgs: {
         credentialIssuer: OID4VCI_API_BASE_URL,
         storeId: '_default', // TODO configurable?
@@ -303,13 +319,5 @@ OID4VCIRestAPI.init({
     expressSupport
 })
 
-await addContacts().catch((e) => console.log(`Error: ${e}`)).then(res => {
-
-        getOrCreateConfiguredStatusList({
-            issuer: STATUS_LIST_ISSUER ?? defaultDID,
-            // keyRef: defaultKid,
-        }).catch((e) => console.log(`ERROR statuslist ${e}`))
-    }
-)
 
 expressSupport.start()

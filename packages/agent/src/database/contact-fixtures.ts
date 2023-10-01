@@ -98,6 +98,7 @@ export async function addContacts() {
         } as AddContactArgs;
 
         identifier = await agent.didManagerCreate(existingDidConfig(false, 'rws-auth', PRIVATE_DID4_KEY_HEX, {traceability: true}));
+        console.log(JSON.stringify(identifier, null, 2))
         organization1.identities = [toContactIdentityDTO(organization1, identifier)];
         await agent.cmAddContact(organization1);
         // did:ion:EiCgT4nciFugDoVYcImyRBKAoDhTQXF3iHMyF6oS1cMqiA:eyJkZWx0YSI6eyJwYXRjaGVzIjpbeyJhY3Rpb24iOiJyZXBsYWNlIiwiZG9jdW1lbnQiOnsicHVibGljS2V5cyI6W3siaWQiOiJyd3MiLCJwdWJsaWNLZXlKd2siOnsiY3J2Ijoic2VjcDI1NmsxIiwia3R5IjoiRUMiLCJ4IjoiWm5HbFAwT3F3QU9XTF9IZUlJSTZtczlLbkxCQXV2WnJtRjFPTzhnMkhBNCIsInkiOiJsd2Y4QXpmZ1lGXzU5RWRFYnhvQ1pOTXdTaVFRQ1NvY1hFQ0RtbmRfclhzIn0sInB1cnBvc2VzIjpbImF1dGhlbnRpY2F0aW9uIiwiYXNzZXJ0aW9uTWV0aG9kIl0sInR5cGUiOiJFY2RzYVNlY3AyNTZrMVZlcmlmaWNhdGlvbktleTIwMTkifV19fV0sInVwZGF0ZUNvbW1pdG1lbnQiOiJFaURJTzZRODNadjJBSUdPWG9nUWx1WGxKcDU3NllTQTlnNHVRdTM1Q0VXNGN3In0sInN1ZmZpeERhdGEiOnsiZGVsdGFIYXNoIjoiRWlDVjNUMkpuYTdMaVk4MVU2d2RhX1ZPX1VwcTU3eEtqeVh6R2JrME1xYTdUZyIsInJlY292ZXJ5Q29tbWl0bWVudCI6IkVpQzVUOWk1TUo1c0ZvRWg4OHE3SmtPallDUDFwRDg0eTgwTUs0QmVCZnhiSmcifX0
