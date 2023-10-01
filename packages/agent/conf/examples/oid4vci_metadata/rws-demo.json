@@ -24,7 +24,7 @@
             },
             "background_image": {
               "url": "https://web-wallet.demo.sphereon.com/images/card_background.png",
-              "alt_text": "RWSbackground"
+              "alt_text": "RWS background"
             }
           },
           {
@@ -39,7 +39,7 @@
             },
             "background_image": {
               "url": "https://web-wallet.demo.sphereon.com/images/card_background.png",
-              "alt_text": "RWSbackground"
+              "alt_text": "RWS background"
             }
           },
           {
@@ -54,7 +54,7 @@
             },
             "background_image": {
               "url": "https://web-wallet.demo.sphereon.com/images/card_background.png",
-              "alt_text": "RWSbackground"
+              "alt_text": "RWS background"
             }
           }
         ],
@@ -63,16 +63,15 @@
           "VerifiableCredential",
           "CertificationOfOrigin"
         ],
-        "format": "jwt_vc_json",
+        "format": "ldp_vc",
         "cryptographic_binding_methods_supported": [
           "did:web",
           "did:jwk",
           "did:ion"
         ],
         "cryptographic_suites_supported": [
-          "ES256",
-          "ES256K",
-          "EdDSA"
+          "Ed25519Signature2018",
+          "JsonWebSignature2020"
         ]
       }
     ]
