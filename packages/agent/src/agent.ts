@@ -1,12 +1,20 @@
-import {createAgent, IAgentContext, IAgentPlugin, ProofFormat, TAgent} from '@veramo/core'
 import {
-  CredentialHandlerLDLocal,
-  LdDefaultContexts,
-  MethodNames,
-  SphereonEcdsaSecp256k1RecoverySignature2020,
-  SphereonEd25519Signature2018,
-  SphereonEd25519Signature2020,
-  SphereonJsonWebSignature2020
+    createAgent,
+    DIDDocument,
+    IAgentContext,
+    IAgentPlugin,
+    ProofFormat,
+    TAgent,
+    W3CVerifiableCredential
+} from '@veramo/core'
+import {
+    CredentialHandlerLDLocal,
+    LdDefaultContexts,
+    MethodNames,
+    SphereonEcdsaSecp256k1RecoverySignature2020,
+    SphereonEd25519Signature2018,
+    SphereonEd25519Signature2020,
+    SphereonJsonWebSignature2020
 } from '@sphereon/ssi-sdk.vc-handler-ld-local'
 import {CredentialPlugin} from '@veramo/credential-w3c'
 import {DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore} from '@veramo/data-store'
@@ -17,13 +25,13 @@ import {SecretBox} from '@veramo/kms-local'
 import {SphereonKeyManagementSystem} from '@sphereon/ssi-sdk-ext.kms-local'
 import {getDbConnection} from './database'
 import {
-  createDidProviders,
-  createDidResolver,
-  expressBuilder,
-  getDefaultDID,
-  getDefaultKid,
-  getOrCreateDIDsFromFS,
-  getOrCreateDIDWebFromEnv,
+    createDidProviders,
+    createDidResolver,
+    expressBuilder,
+    getDefaultDID,
+    getDefaultKid,
+    getOrCreateDIDsFromFS,
+    getOrCreateDIDWebFromEnv,
 } from './utils'
 import {
     AUTHENTICATION_ENABLED,
@@ -62,9 +70,14 @@ import {addContacts} from "./database/contact-fixtures";
 import {IIssuerInstanceArgs, OID4VCIIssuer} from '@sphereon/ssi-sdk.oid4vci-issuer'
 import {OID4VCIStore} from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import {IRequiredContext, OID4VCIRestAPI} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
-import {CredentialDataSupplierArgs, CredentialDataSupplierResult} from '@sphereon/oid4vci-issuer'
+import {
+    CredentialDataSupplierArgs,
+    CredentialDataSupplierResult,
+    CredentialSignerCallback
+} from '@sphereon/oid4vci-issuer'
 import {getCredentialByIdOrHash} from "@sphereon/ssi-sdk.core";
 import {IOID4VCIRestAPIOpts} from "@sphereon/ssi-sdk.oid4vci-issuer-rest-api/src/OID4VCIRestAPI"
+import {CredentialMapper, OriginalVerifiableCredential} from "@sphereon/ssi-types";
 
 /**
  * Are we using a in mory database or not
@@ -295,15 +308,10 @@ if (CONTACT_MANAGER_API_FEATURES.length > 0) {
 }
 
 OID4VCIRestAPI.init({
-  opts: {
-    baseUrl: OID4VCI_API_BASE_URL,
-    endpointOpts: {
-
-        tokenEndpointOpts: {
-
-        }
-    },
-  } as IOID4VCIRestAPIOpts,
+    opts: {
+        baseUrl: OID4VCI_API_BASE_URL,
+        endpointOpts: {},
+    } as IOID4VCIRestAPIOpts,
     context: context as unknown as IRequiredContext,
     issuerInstanceArgs: {
         credentialIssuer: OID4VCI_API_BASE_URL,
@@ -311,10 +319,16 @@ OID4VCIRestAPI.init({
         namespace: 'oid4vci' // TODO configurable?
     } as IIssuerInstanceArgs,
     credentialDataSupplier: async (args: CredentialDataSupplierArgs): Promise<CredentialDataSupplierResult> => {
-      console.log('CredentialDataSupplierArgs', JSON.stringify(args))
-      const hashOrId = args.credentialDataSupplierInput?.hashOrId ?? ''
+        console.log('CredentialDataSupplierArgs', JSON.stringify(args))
+        const hashOrId = args.credentialDataSupplierInput?.hashOrId ?? ''
         const credentialResult = await getCredentialByIdOrHash(context, hashOrId) // as unknown because IContactManager is not in IRequiredContext of the oid4vci-issuer-rest-api module
-        return {credential: credentialResult.vc, format: args.credentialRequest.format} as CredentialDataSupplierResult
+        if (!credentialResult?.vc) {
+            throw Error(`Could not get credential for id ${hashOrId}`)
+        }
+        const credential = CredentialMapper.storedCredentialToOriginalFormat(credentialResult.vc as OriginalVerifiableCredential)
+        const signCallback: CredentialSignerCallback<DIDDocument> = () => Promise.resolve(credential)
+        // fixme: the argument on credential should be a W3CCredential not an ICredential
+        return {credential: CredentialMapper.toUniformCredential(credential), format: args.credentialRequest.format, signCallback}
     },
     expressSupport
 })
