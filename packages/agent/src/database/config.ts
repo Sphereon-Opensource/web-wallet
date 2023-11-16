@@ -17,6 +17,7 @@ import { TlsOptions } from 'tls'
 import {DataStoreContactEntities, DataStoreStatusListEntities} from '@sphereon/ssi-sdk.data-store'
 import {DataStoreContactMigrations, DataStoreStatusListMigrations} from '@sphereon/ssi-sdk.data-store/dist/migrations/generic'
 
+import { CreateWallet1700163641000 } from './1700163641000-CreateWallet'
 // We access the env var instead of the constant on purpose here
 if (!process.env.DB_ENCRYPTION_KEY) {
   console.warn(
@@ -28,6 +29,7 @@ if (!process.env.DB_ENCRYPTION_KEY) {
  * Setup SSL options
  */
 const enableSSL = DB_USE_SSL === 'true' || DB_URL?.includes('sslmode=require')
+const WalletMigrations = [CreateWallet1700163641000]
 let ssl: TlsOptions | boolean = enableSSL
   ? {
       ...(DB_SSL_CA && { ca: DB_SSL_CA }),
@@ -54,7 +56,7 @@ const postgresConfig: PostgresConnectionOptions = {
   database: DB_DATABASE_NAME,
   cache: DB_CACHE_ENABLED !== 'false',
   entities: [...VeramoDataStoreEntities, ...DataStoreStatusListEntities, ...DataStoreContactEntities],
-  migrations: [...VeramoDataStoreMigrations, ...DataStoreStatusListMigrations, ...DataStoreContactMigrations],
+  migrations: [...VeramoDataStoreMigrations, ...DataStoreStatusListMigrations, ...DataStoreContactMigrations, ...WalletMigrations],
   migrationsRun: false, // We run migrations from code to ensure proper ordering with Redux
   synchronize: false, // We do not enable synchronize, as we use migrations from code
   migrationsTransactionMode: 'each', // protect every migration with a separate transaction
@@ -69,7 +71,7 @@ const sqliteConfig: SqliteConnectionOptions = {
   type: 'sqlite',
   database: DB_URL,
   entities: [...VeramoDataStoreEntities, ...DataStoreStatusListEntities, ...DataStoreContactEntities],
-  migrations: [...VeramoDataStoreMigrations, ...DataStoreStatusListMigrations, ...DataStoreContactMigrations],
+  migrations: [...VeramoDataStoreMigrations, ...DataStoreStatusListMigrations, ...DataStoreContactMigrations, ...WalletMigrations],
   migrationsRun: false, // We run migrations from code to ensure proper ordering with Redux
   synchronize: false, // We do not enable synchronize, as we use migrations from code
   migrationsTransactionMode: 'each', // protect every migration with a separate transaction
