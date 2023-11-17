@@ -1,8 +1,8 @@
 import { MigrationInterface, QueryRunner } from 'typeorm'
-import { enableUuidv4 } from './uuid'
+import {enableUuidv4} from "@sphereon/ssi-sdk.data-store/dist/migrations/postgres/uuid";
 
-export class CreateWallet1700163641000 implements MigrationInterface {
-  name = 'CreateWallet1700163641000'
+export class CreateWebWallet1700163641000 implements MigrationInterface {
+  name = 'CreateWebWallet1700163641000'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await enableUuidv4(queryRunner)
@@ -14,11 +14,11 @@ export class CreateWallet1700163641000 implements MigrationInterface {
         CREATE TABLE "asset"
         (
             "id"          uuid                   NOT NULL DEFAULT uuid_generate_v4(),
-            "name"        character varying(255) NOT NULL,
+            "name"        text                   NOT NULL,
             "description" text,
-            "contact_id"  character varying,
+            "contact_id"  text,
             "owner_id"    text,
-            "owner_alias" character varying,
+            "owner_alias" text,
             CONSTRAINT "asset_pkey" PRIMARY KEY ("id")
         )
     `);
@@ -70,10 +70,10 @@ export class CreateWallet1700163641000 implements MigrationInterface {
             "message"                 text,
             "status" public.workflow_status,
             "workflow_id"             uuid,
-            "sender_id"               text,
-            "action"                  character varying,
+            "sender_id"               uuid,
+            "action"                  text,
             "code"                    integer,
-            "recipient_id"            text,
+            "recipient_id"            uuid,
             "document_correlation_id" text,
             CONSTRAINT "step_pkey" PRIMARY KEY ("id")
         )
@@ -153,6 +153,18 @@ export class CreateWallet1700163641000 implements MigrationInterface {
         ALTER TABLE "workflow_step"
             ADD CONSTRAINT "FK_workflow_step_workflow_id"
                 FOREIGN KEY ("workflow_id") REFERENCES "workflow" ("id") ON DELETE CASCADE
+    `);
+
+    await queryRunner.query(`
+        ALTER TABLE "workflow_step"
+            ADD CONSTRAINT "FK_workflow_step_sender_id"
+                FOREIGN KEY ("sender_id") REFERENCES "Identity" ("id") ON DELETE CASCADE
+    `);
+
+    await queryRunner.query(`
+        ALTER TABLE "workflow_step"
+            ADD CONSTRAINT "FK_workflow_step_recipient_id"
+                FOREIGN KEY ("recipient_id") REFERENCES "Identity" ("id") ON DELETE CASCADE
     `);
 
   }
