@@ -7,7 +7,7 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await enableUuidv4(queryRunner)
     await queryRunner.query(`
-         CREATE TYPE "workflow_status" AS ENUM ('new', 'approved', 'pending', 'declined')
+         CREATE TYPE "workflow_status" AS ENUM ('New', 'Approved', 'Pending', 'Declined', 'Done', 'Archived')
     `);
 
     await queryRunner.query(`
@@ -70,10 +70,10 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
             "message"                 text,
             "status" public.workflow_status,
             "workflow_id"             uuid,
-            "sender_id"               uuid,
+            "sender_id"               text,
             "action"                  text,
             "code"                    integer,
-            "recipient_id"            uuid,
+            "recipient_id"            text,
             "document_correlation_id" text,
             CONSTRAINT "step_pkey" PRIMARY KEY ("id")
         )
@@ -122,7 +122,7 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
           JOIN workflow w ON ws.workflow_id = w.id
           JOIN asset a ON w.asset_id = a.id
         WHERE
-          ws.status <> 'approved'::workflow_status
+          ws.status <> 'Approved'::workflow_status
     `);
 
     await queryRunner.query(`
@@ -158,13 +158,13 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
     await queryRunner.query(`
         ALTER TABLE "workflow_step"
             ADD CONSTRAINT "FK_workflow_step_sender_id"
-                FOREIGN KEY ("sender_id") REFERENCES "Identity" ("id") ON DELETE CASCADE
+                FOREIGN KEY ("sender_id") REFERENCES "CorrelationIdentifier" ("correlation_id")
     `);
 
     await queryRunner.query(`
         ALTER TABLE "workflow_step"
             ADD CONSTRAINT "FK_workflow_step_recipient_id"
-                FOREIGN KEY ("recipient_id") REFERENCES "Identity" ("id") ON DELETE CASCADE
+                FOREIGN KEY ("recipient_id") REFERENCES "CorrelationIdentifier" ("correlation_id")
     `);
 
   }
