@@ -1,5 +1,5 @@
 import { MigrationInterface, QueryRunner } from 'typeorm'
-import {enableUuidv4} from "@sphereon/ssi-sdk.data-store/dist/migrations/postgres/uuid";
+import { enableUuidv4 } from '@sphereon/ssi-sdk.data-store'
 
 export class CreateWebWallet1700163641000 implements MigrationInterface {
   name = 'CreateWebWallet1700163641000'
