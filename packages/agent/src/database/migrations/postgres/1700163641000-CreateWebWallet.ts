@@ -1,11 +1,13 @@
 import { MigrationInterface, QueryRunner } from 'typeorm'
-import { enableUuidv4 } from '@sphereon/ssi-sdk.data-store'
+import { enablePostgresUuidExtension } from '@sphereon/ssi-sdk.core'
+import { createQueryRunnerAdapter } from './utils'
 
 export class CreateWebWallet1700163641000 implements MigrationInterface {
   name = 'CreateWebWallet1700163641000'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await enableUuidv4(queryRunner)
+    await enablePostgresUuidExtension(createQueryRunnerAdapter(queryRunner))
+
     await queryRunner.query(`
          CREATE TYPE "workflow_status" AS ENUM ('New', 'Approved', 'Pending', 'Declined', 'Done', 'Archived')
     `);

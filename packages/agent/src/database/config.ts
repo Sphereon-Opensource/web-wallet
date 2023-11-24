@@ -17,7 +17,7 @@ import { TlsOptions } from 'tls'
 import { DataStoreContactEntities, DataStoreStatusListEntities } from '@sphereon/ssi-sdk.data-store'
 import { DataStoreContactMigrations, DataStoreStatusListMigrations } from '@sphereon/ssi-sdk.data-store/dist/migrations/generic'
 
-import { DataStoreMigrations } from './migrations'
+import { WebWalletMigrations } from './migrations'
 
 
 if (!process.env.DB_ENCRYPTION_KEY) {
@@ -61,7 +61,7 @@ const postgresConfig: PostgresConnectionOptions = {
     ...VeramoDataStoreMigrations,
     ...DataStoreStatusListMigrations,
     ...DataStoreContactMigrations,
-    ...DataStoreMigrations
+    ...WebWalletMigrations
   ],
   migrationsRun: false, // We run migrations from code to ensure proper ordering with Redux
   synchronize: false, // We do not enable synchronize, as we use migrations from code
