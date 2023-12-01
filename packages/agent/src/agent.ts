@@ -1,12 +1,20 @@
-import {createAgent, IAgentContext, IAgentPlugin, ProofFormat, TAgent} from '@veramo/core'
+import {
+    createAgent,
+    DIDDocument,
+    IAgentContext,
+    IAgentPlugin,
+    ProofFormat,
+    TAgent,
+    W3CVerifiableCredential
+} from '@veramo/core'
 import {
     CredentialHandlerLDLocal,
     LdDefaultContexts,
     MethodNames,
+    SphereonEcdsaSecp256k1RecoverySignature2020,
     SphereonEd25519Signature2018,
     SphereonEd25519Signature2020,
-    SphereonJsonWebSignature2020,
-    SphereonEcdsaSecp256k1RecoverySignature2020
+    SphereonJsonWebSignature2020
 } from '@sphereon/ssi-sdk.vc-handler-ld-local'
 import {CredentialPlugin} from '@veramo/credential-w3c'
 import {DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore} from '@veramo/data-store'
@@ -32,7 +40,6 @@ import {
     AUTHORIZATION_GLOBAL_REQUIRE_USER_IN_ROLES,
     CONTACT_MANAGER_API_FEATURES,
     DB_CONNECTION_NAME,
-    DB_DATABASE_NAME,
     DB_ENCRYPTION_KEY,
     DB_TYPE,
     DID_API_BASE_PATH,
@@ -40,9 +47,11 @@ import {
     DID_API_RESOLVE_MODE,
     DID_WEB_SERVICE_FEATURES,
     MEMORY_DB,
+    OID4VCI_API_BASE_URL, oid4vciInstanceOpts, oid4vciMetadataOpts,
     STATUS_LIST_API_BASE_PATH,
     STATUS_LIST_API_FEATURES,
-    STATUS_LIST_CORRELATION_ID, STATUS_LIST_ISSUER,
+    STATUS_LIST_CORRELATION_ID,
+    STATUS_LIST_ISSUER,
     VC_API_BASE_PATH,
     VC_API_DEFAULT_PROOF_FORMAT,
     VC_API_FEATURES,
@@ -58,6 +67,17 @@ import {ContactManagerApiServer} from '@sphereon/ssi-sdk.contact-manager-rest-ap
 import {ContactManager} from '@sphereon/ssi-sdk.contact-manager'
 import {ContactStore} from '@sphereon/ssi-sdk.data-store'
 import {addContacts} from "./database/contact-fixtures";
+import {IIssuerInstanceArgs, OID4VCIIssuer} from '@sphereon/ssi-sdk.oid4vci-issuer'
+import {OID4VCIStore} from '@sphereon/ssi-sdk.oid4vci-issuer-store'
+import {IRequiredContext, OID4VCIRestAPI} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
+import {
+    CredentialDataSupplierArgs,
+    CredentialDataSupplierResult,
+    CredentialSignerCallback
+} from '@sphereon/oid4vci-issuer'
+import {getCredentialByIdOrHash} from "@sphereon/ssi-sdk.core";
+import {IOID4VCIRestAPIOpts} from "@sphereon/ssi-sdk.oid4vci-issuer-rest-api/src/OID4VCIRestAPI"
+import {CredentialMapper, OriginalVerifiableCredential} from "@sphereon/ssi-types";
 
 /**
  * Are we using a in mory database or not
@@ -110,6 +130,15 @@ const plugins: IAgentPlugin[] = [
         keyStore: privateKeyStore,
     }),
     new ContactManager({store: new ContactStore(dbConnection)}),
+    new OID4VCIStore({
+        importIssuerOpts: oid4vciInstanceOpts.asArray,
+        importMetadatas: oid4vciMetadataOpts.asArray,
+    }),
+    new OID4VCIIssuer({
+        resolveOpts: {
+            resolver
+        }
+    })
 ]
 
 /**
@@ -136,6 +165,17 @@ console.log(`[DID] default key identifier: ${defaultKid}`)
 if (!defaultDID || !defaultKid) {
     console.log('[DID] Agent has no default DID and Key Identifier!')
 }
+
+
+await addContacts().catch((e) => console.log(`Error: ${e}`)).then(res => {
+
+        getOrCreateConfiguredStatusList({
+            issuer: STATUS_LIST_ISSUER ?? defaultDID,
+            // keyRef: defaultKid,
+        }).catch((e) => console.log(`ERROR statuslist ${e}`))
+    }
+)
+
 
 /**
  * Build a common express REST API configuration first, used by the exposed Routers/Services below
@@ -166,7 +206,7 @@ if (VC_API_FEATURES.length > 0) {
         opts: {
             endpointOpts: {
                 globalAuth,
-                basePath: VC_API_BASE_PATH,
+                basePath: VC_API_BASE_PATH
             },
             issueCredentialOpts: {
                 enableFeatures: VC_API_FEATURES,
@@ -267,14 +307,31 @@ if (CONTACT_MANAGER_API_FEATURES.length > 0) {
     })
 }
 
+OID4VCIRestAPI.init({
+    opts: {
+        baseUrl: OID4VCI_API_BASE_URL,
+        endpointOpts: {},
+    } as IOID4VCIRestAPIOpts,
+    context: context as unknown as IRequiredContext,
+    issuerInstanceArgs: {
+        credentialIssuer: OID4VCI_API_BASE_URL,
+        storeId: '_default', // TODO configurable?
+        namespace: 'oid4vci' // TODO configurable?
+    } as IIssuerInstanceArgs,
+    credentialDataSupplier: async (args: CredentialDataSupplierArgs): Promise<CredentialDataSupplierResult> => {
+        console.log('CredentialDataSupplierArgs', JSON.stringify(args))
+        const hashOrId = args.credentialDataSupplierInput?.hashOrId ?? ''
+        const credentialResult = await getCredentialByIdOrHash(context, hashOrId) // as unknown because IContactManager is not in IRequiredContext of the oid4vci-issuer-rest-api module
+        if (!credentialResult?.vc) {
+            throw Error(`Could not get credential for id ${hashOrId}`)
+        }
+        const credential = CredentialMapper.storedCredentialToOriginalFormat(credentialResult.vc as OriginalVerifiableCredential)
+        const signCallback: CredentialSignerCallback<DIDDocument> = () => Promise.resolve(credential)
+        // fixme: the argument on credential should be a W3CCredential not an ICredential
+        return {credential: CredentialMapper.toUniformCredential(credential), format: args.credentialRequest.format, signCallback}
+    },
+    expressSupport
+})
 
-await addContacts().catch((e) => console.log(`Error: ${e}`)).then(res => {
-
-        getOrCreateConfiguredStatusList({
-            issuer: STATUS_LIST_ISSUER ?? defaultDID,
-            // keyRef: defaultKid,
-        }).catch((e) => console.log(`ERROR statuslist ${e}`))
-    }
-)
 
 expressSupport.start()

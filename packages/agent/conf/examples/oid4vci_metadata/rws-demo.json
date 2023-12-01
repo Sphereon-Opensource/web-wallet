@@ -1,0 +1,84 @@
+{
+  "correlationId": "https://web-wallet.demo.sphereon.com/agent",
+  "overwriteExisting": true,
+  "metadata": {
+    "credential_issuer": "https://web-wallet.demo.sphereon.com/agent",
+    "credential_endpoint": "https://web-wallet.demo.sphereon.com/agent/credentials",
+    "display": [
+      {
+        "name": "Zout leverancier",
+        "description": "Zout leverancier"
+      }
+    ],
+    "credentials_supported": [
+      {
+        "display": [
+          {
+            "name": "Certificate of Origin",
+            "description": "Certificate of Origin",
+            "background_color": "rgba(0, 0, 0, 0.2)",
+            "text_color": "#FBFBFB",
+            "logo": {
+              "url": "https://web-wallet.demo.sphereon.com/images/card_logo.png",
+              "alt_text": "RWS Logo"
+            },
+            "background_image": {
+              "url": "https://web-wallet.demo.sphereon.com/images/card_background.png",
+              "alt_text": "RWS background"
+            }
+          },
+          {
+            "locale": "en-US",
+            "name": "Certificate of Origin",
+            "description": "Certificate of Origin",
+            "background_color": "rgba(0, 0, 0, 0.2)",
+            "text_color": "#FBFBFB",
+            "logo": {
+              "url": "https://web-wallet.demo.sphereon.com/images/card_logo.png",
+              "alt_text": "RWS Logo"
+            },
+            "background_image": {
+              "url": "https://web-wallet.demo.sphereon.com/images/card_background.png",
+              "alt_text": "RWS background"
+            }
+          },
+          {
+            "locale": "nl-NL",
+            "name": "Certificaat van oorsprong",
+            "description": "Certificaat van oorsprong",
+            "background_color": "rgba(0, 0, 0, 0.2)",
+            "text_color": "#FBFBFB",
+            "logo": {
+              "url": "https://web-wallet.demo.sphereon.com/images/card_logo.png",
+              "alt_text": "RWS Logo"
+            },
+            "background_image": {
+              "url": "https://web-wallet.demo.sphereon.com/images/card_background.png",
+              "alt_text": "RWS background"
+            }
+          }
+        ],
+        "id": "coo",
+        "types": [
+          "VerifiableCredential",
+          "CertificationOfOrigin"
+        ],
+        "format": "ldp_vc",
+        "@context": [
+          "https://www.w3.org/2018/credentials/v1",
+          "https://w3id.org/traceability/v1"
+        ],
+        "cryptographic_binding_methods_supported": [
+          "did:web",
+          "did:key",
+          "did:jwk",
+          "did:ion"
+        ],
+        "cryptographic_suites_supported": [
+          "Ed25519Signature2018",
+          "JsonWebSignature2020"
+        ]
+      }
+    ]
+  }
+}
