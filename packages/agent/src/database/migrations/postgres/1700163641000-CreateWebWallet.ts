@@ -94,7 +94,8 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
           ws.action,
           ws.code,
           w.owner_id AS owner,
-          a.name AS asset
+          a.name AS asset_name,
+          a.id AS asset_id
         FROM
           workflow_step ws
           JOIN workflow w ON ws.workflow_id = w.id
@@ -117,7 +118,8 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
           ws.action,
           ws.code,
           w.owner_id AS owner,
-          a.name AS asset
+          a.name AS asset_name,
+          a.id AS asset_id
         FROM
           workflow_step ws
           JOIN workflow w ON ws.workflow_id = w.id
