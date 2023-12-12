@@ -34,27 +34,28 @@ import {
     getOrCreateDIDWebFromEnv,
 } from './utils'
 import {
-    AUTHENTICATION_ENABLED,
-    AUTHENTICATION_STRATEGY,
-    AUTHORIZATION_ENABLED,
-    AUTHORIZATION_GLOBAL_REQUIRE_USER_IN_ROLES,
-    CONTACT_MANAGER_API_FEATURES,
-    DB_CONNECTION_NAME,
-    DB_ENCRYPTION_KEY,
-    DB_TYPE,
-    DID_API_BASE_PATH,
-    DID_API_FEATURES,
-    DID_API_RESOLVE_MODE,
-    DID_WEB_SERVICE_FEATURES,
-    MEMORY_DB,
-    OID4VCI_API_BASE_URL, oid4vciInstanceOpts, oid4vciMetadataOpts,
-    STATUS_LIST_API_BASE_PATH,
-    STATUS_LIST_API_FEATURES,
-    STATUS_LIST_CORRELATION_ID,
-    STATUS_LIST_ISSUER,
-    VC_API_BASE_PATH,
-    VC_API_DEFAULT_PROOF_FORMAT,
-    VC_API_FEATURES,
+  ASSET_DEFAULT_DID_METHOD,
+  AUTHENTICATION_ENABLED,
+  AUTHENTICATION_STRATEGY,
+  AUTHORIZATION_ENABLED,
+  AUTHORIZATION_GLOBAL_REQUIRE_USER_IN_ROLES,
+  CONTACT_MANAGER_API_FEATURES,
+  DB_CONNECTION_NAME,
+  DB_ENCRYPTION_KEY,
+  DB_TYPE,
+  DID_API_BASE_PATH,
+  DID_API_FEATURES,
+  DID_API_RESOLVE_MODE,
+  DID_WEB_SERVICE_FEATURES,
+  MEMORY_DB,
+  OID4VCI_API_BASE_URL, oid4vciInstanceOpts, oid4vciMetadataOpts,
+  STATUS_LIST_API_BASE_PATH,
+  STATUS_LIST_API_FEATURES,
+  STATUS_LIST_CORRELATION_ID,
+  STATUS_LIST_ISSUER,
+  VC_API_BASE_PATH,
+  VC_API_DEFAULT_PROOF_FORMAT,
+  VC_API_FEATURES,
 } from './environment'
 import {VcApiServer} from '@sphereon/ssi-sdk.w3c-vc-api'
 import {UniResolverApiServer} from '@sphereon/ssi-sdk.uni-resolver-registrar-api'
@@ -231,6 +232,7 @@ if (DID_API_FEATURES.length > 0) {
                 createDid: {
                     noErrorOnExistingDid: true,
                     storeSecrets: true,
+                    defaultMethod: ASSET_DEFAULT_DID_METHOD
                 },
                 resolveDid: {
                     // @ts-ignore
