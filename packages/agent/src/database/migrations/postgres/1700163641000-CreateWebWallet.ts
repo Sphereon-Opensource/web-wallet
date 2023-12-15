@@ -16,6 +16,7 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
         (
             "id"          uuid                   NOT NULL DEFAULT uuid_generate_v4(),
             "name"        text                   NOT NULL,
+            "did"         text                   NOT NULL UNIQUE,
             "description" text,
             "contact_id"  text,
             "owner_id"    text,

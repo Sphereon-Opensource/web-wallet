@@ -70,6 +70,7 @@ export const STATUS_LIST_LENGTH = env('STATUS_LIST_LENGTH', ENV_VAR_PREFIX) ?? '
 export const STATUS_LIST_PURPOSE = env('STATUS_LIST_PURPOSE', ENV_VAR_PREFIX) ?? 'revocation' // revocation or suspension
 
 export const DID_API_BASE_PATH = env('DID_API_BASE_PATH', ENV_VAR_PREFIX) ?? '/did'
+export const ASSET_DEFAULT_DID_METHOD = env('ASSET_DEFAULT_DID_METHOD', ENV_VAR_PREFIX) ?? 'jwk'
 
 export const DID_API_RESOLVE_MODE = env('DID_API_RESOLVE_MODE', ENV_VAR_PREFIX) ?? 'hybrid'
 export const DID_OPTIONS_PATH = env('DID_OPTIONS_PATH', ENV_VAR_PREFIX) ?? `${CONF_PATH}/dids`
