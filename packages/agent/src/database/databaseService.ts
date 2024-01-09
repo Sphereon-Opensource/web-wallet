@@ -1,8 +1,8 @@
-import { DataSource } from 'typeorm'
+import {DataSource} from 'typeorm'
 
-import { postgresConfig, sqliteConfig } from './config'
-import { DB_TYPE } from '../environment'
-import { DataSources } from '@sphereon/ssi-sdk.agent-config'
+import {postgresConfig, sqliteConfig} from './config'
+import {DB_TYPE} from '../environment'
+import {DataSources} from '@sphereon/ssi-sdk.agent-config'
 
 const config = DB_TYPE.toLowerCase().includes('postgres') ? postgresConfig : sqliteConfig
 

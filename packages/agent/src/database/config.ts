@@ -1,5 +1,5 @@
-import { Entities as VeramoDataStoreEntities, migrations as VeramoDataStoreMigrations } from '@veramo/data-store'
-import { SqliteConnectionOptions } from 'typeorm/driver/sqlite/SqliteConnectionOptions'
+import {Entities as VeramoDataStoreEntities, migrations as VeramoDataStoreMigrations} from '@veramo/data-store'
+import {SqliteConnectionOptions} from 'typeorm/driver/sqlite/SqliteConnectionOptions'
 import {
   DB_CACHE_ENABLED,
   DB_DATABASE_NAME,
@@ -12,13 +12,16 @@ import {
   DB_USE_SSL,
   DB_USERNAME,
 } from '../environment'
-import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions'
-import { TlsOptions } from 'tls'
-import { DataStoreContactEntities, DataStoreStatusListEntities } from '@sphereon/ssi-sdk.data-store'
-import { DataStoreContactMigrations, DataStoreStatusListMigrations } from '@sphereon/ssi-sdk.data-store/dist/migrations/generic'
+import {PostgresConnectionOptions} from 'typeorm/driver/postgres/PostgresConnectionOptions'
+import {TlsOptions} from 'tls'
+import {DataStoreContactEntities, DataStoreStatusListEntities, DataStoreEventLoggerEntities} from '@sphereon/ssi-sdk.data-store'
+import {
+  DataStoreContactMigrations,
+  DataStoreStatusListMigrations,
+  DataStoreEventLoggerMigrations,
+} from '@sphereon/ssi-sdk.data-store/dist/migrations/generic'
 
-import { WebWalletMigrations } from './migrations'
-
+import {WebWalletMigrations} from './migrations'
 
 if (!process.env.DB_ENCRYPTION_KEY) {
   console.warn(
@@ -33,7 +36,7 @@ const enableSSL = DB_USE_SSL === 'true' || DB_URL?.includes('sslmode=require')
 
 let ssl: TlsOptions | boolean = enableSSL
   ? {
-      ...(DB_SSL_CA && { ca: DB_SSL_CA }),
+      ...(DB_SSL_CA && {ca: DB_SSL_CA}),
       ...(DB_SSL_ALLOW_SELF_SIGNED && {
         rejectUnauthorized: DB_SSL_ALLOW_SELF_SIGNED === 'false',
       }),
@@ -48,20 +51,21 @@ if (enableSSL && Object.keys(ssl).length === 0) {
  */
 const postgresConfig: PostgresConnectionOptions = {
   type: 'postgres',
-  ...(DB_URL && { url: DB_URL }),
-  ...(DB_HOST && { host: DB_HOST }),
-  ...(DB_PORT && { port: Number.parseInt(DB_PORT) }),
-  ...(DB_USERNAME && { username: DB_USERNAME }),
-  ...(DB_PASSWORD && { username: DB_PASSWORD }),
+  ...(DB_URL && {url: DB_URL}),
+  ...(DB_HOST && {host: DB_HOST}),
+  ...(DB_PORT && {port: Number.parseInt(DB_PORT)}),
+  ...(DB_USERNAME && {username: DB_USERNAME}),
+  ...(DB_PASSWORD && {username: DB_PASSWORD}),
   ssl,
   database: DB_DATABASE_NAME,
   cache: DB_CACHE_ENABLED !== 'false',
-  entities: [...VeramoDataStoreEntities, ...DataStoreStatusListEntities, ...DataStoreContactEntities],
+  entities: [...VeramoDataStoreEntities, ...DataStoreStatusListEntities, ...DataStoreContactEntities, ...DataStoreEventLoggerEntities],
   migrations: [
     ...VeramoDataStoreMigrations,
     ...DataStoreStatusListMigrations,
     ...DataStoreContactMigrations,
-    ...WebWalletMigrations
+    ...WebWalletMigrations,
+    ...DataStoreEventLoggerMigrations,
   ],
   migrationsRun: false, // We run migrations from code to ensure proper ordering with Redux
   synchronize: false, // We do not enable synchronize, as we use migrations from code
@@ -76,8 +80,8 @@ const postgresConfig: PostgresConnectionOptions = {
 const sqliteConfig: SqliteConnectionOptions = {
   type: 'sqlite',
   database: DB_URL,
-  entities: [...VeramoDataStoreEntities, ...DataStoreStatusListEntities, ...DataStoreContactEntities],
-  migrations: [...VeramoDataStoreMigrations, ...DataStoreStatusListMigrations, ...DataStoreContactMigrations],
+  entities: [...VeramoDataStoreEntities, ...DataStoreStatusListEntities, ...DataStoreContactEntities, ...DataStoreEventLoggerEntities],
+  migrations: [...VeramoDataStoreMigrations, ...DataStoreStatusListMigrations, ...DataStoreContactMigrations, ...DataStoreEventLoggerMigrations],
   migrationsRun: false, // We run migrations from code to ensure proper ordering with Redux
   synchronize: false, // We do not enable synchronize, as we use migrations from code
   migrationsTransactionMode: 'each', // protect every migration with a separate transaction
@@ -85,4 +89,4 @@ const sqliteConfig: SqliteConnectionOptions = {
   logger: 'advanced-console',
 }
 
-export { sqliteConfig, postgresConfig }
+export {sqliteConfig, postgresConfig}
