@@ -5,7 +5,7 @@ import * as fs from 'fs'
  *
  * @param path The path to search for files with .json extension
  */
-export function loadJsonFiles<T>({ path }: { path: string }): {
+export function loadJsonFiles<T>({path}: {path: string}): {
   names: string[]
   fileNames: string[]
   asObject: Record<string, T>
@@ -13,10 +13,10 @@ export function loadJsonFiles<T>({ path }: { path: string }): {
 } {
   if (!fs.existsSync(path)) {
     console.log(`WARN: Path ${path} does not exist. Will not load json files`)
-    return { names: [], fileNames: [], asArray: [], asObject: {} }
+    return {names: [], fileNames: [], asArray: [], asObject: {}}
   }
   // Note we restrict files to .json extension. Do not remove as the method has no guards for the path, meaning it could have security consequences
-  const fileNames = fs.readdirSync(path).filter((file) => file.match(/\.json$/))
+  const fileNames = fs.readdirSync(path).filter(file => file.match(/\.json$/))
   const names: string[] = []
   const files: string[] = []
   const asObject: Record<string, T> = {}
@@ -33,5 +33,5 @@ export function loadJsonFiles<T>({ path }: { path: string }): {
       asArray.push(object)
     }
   })
-  return { names, fileNames: files, asObject, asArray }
+  return {names, fileNames: files, asObject, asArray}
 }

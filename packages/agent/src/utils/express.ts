@@ -1,7 +1,7 @@
-import { ExpressBuilder, ExpressCorsConfigurer, IExpressServerOpts } from '@sphereon/ssi-express-support'
-import { InitializeOptions } from 'passport'
-import { Enforcer } from 'casbin'
-import { AUTHENTICATION_ENABLED, ENV_VAR_PREFIX, INTERNAL_HOSTNAME_OR_IP, INTERNAL_PORT } from '../environment'
+import {ExpressBuilder, ExpressCorsConfigurer, IExpressServerOpts} from '@sphereon/ssi-express-support'
+import {InitializeOptions} from 'passport'
+import {Enforcer} from 'casbin'
+import {AUTHENTICATION_ENABLED, ENV_VAR_PREFIX, INTERNAL_HOSTNAME_OR_IP, INTERNAL_PORT} from '../environment'
 
 /**
  * Return an Express JS builder from provided Options. Takes into account several environment variables
@@ -42,8 +42,8 @@ export function expressBuilder(opts?: {
     existingExpress: opts?.server?.existingExpress,
     listenCallback: opts?.server?.listenCallback,
   }
-  const builder = ExpressBuilder.fromServerOpts({ ...serverOpts, envVarPrefix })
-    .withMorganLogging({ format: 'dev' })
+  const builder = ExpressBuilder.fromServerOpts({...serverOpts, envVarPrefix})
+    .withMorganLogging({format: 'dev'})
     .withCorsConfigurer(
       new ExpressCorsConfigurer({
         existingExpress: opts?.server?.existingExpress,

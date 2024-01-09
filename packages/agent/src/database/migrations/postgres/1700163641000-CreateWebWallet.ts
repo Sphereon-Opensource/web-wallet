@@ -1,5 +1,5 @@
-import { MigrationInterface, QueryRunner } from 'typeorm'
-import { enablePostgresUuidExtension } from '@sphereon/ssi-sdk.core'
+import {MigrationInterface, QueryRunner} from 'typeorm'
+import {enablePostgresUuidExtension} from '@sphereon/ssi-sdk.core'
 
 export class CreateWebWallet1700163641000 implements MigrationInterface {
   name = 'CreateWebWallet1700163641000'
@@ -9,7 +9,7 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
 
     await queryRunner.query(`
          CREATE TYPE "workflow_status" AS ENUM ('New', 'Approved', 'Pending', 'Declined', 'Done', 'Archived')
-    `);
+    `)
 
     await queryRunner.query(`
         CREATE TABLE "asset"
@@ -23,7 +23,7 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
             "owner_alias" text,
             CONSTRAINT "asset_pkey" PRIMARY KEY ("id")
         )
-    `);
+    `)
 
     await queryRunner.query(`
         CREATE TABLE "credential_reference"
@@ -34,7 +34,7 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
             "credential_id"     text,
             CONSTRAINT "credential_pkey" PRIMARY KEY ("id")
         )
-    `);
+    `)
 
     await queryRunner.query(`
         CREATE TABLE "workflow"
@@ -45,7 +45,7 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
             "asset_id"   uuid,
             CONSTRAINT "workflow_pkey" PRIMARY KEY ("id")
         )
-    `);
+    `)
 
     await queryRunner.query(`
         CREATE TABLE "workflow_document"
@@ -62,7 +62,7 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
             "storage_object_path" text NOT NULL,
             CONSTRAINT "workflow_document_pkey" PRIMARY KEY ("id")
         )
-    `);
+    `)
 
     await queryRunner.query(`
         CREATE TABLE "workflow_step"
@@ -79,7 +79,7 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
             "document_correlation_id" text,
             CONSTRAINT "step_pkey" PRIMARY KEY ("id")
         )
-    `);
+    `)
 
     await queryRunner.query(`
         CREATE VIEW "view_all_workflow_step" AS
@@ -103,7 +103,7 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
           JOIN asset a ON w.asset_id = a.id
         ORDER BY
           ws.created_at DESC
-    `);
+    `)
 
     await queryRunner.query(`
         CREATE VIEW "view_latest_workflow_step" AS
@@ -127,103 +127,102 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
           JOIN asset a ON w.asset_id = a.id
         WHERE
           ws.status <> 'Approved'::workflow_status
-    `);
+    `)
 
     await queryRunner.query(`
         ALTER TABLE "credential_reference"
             ADD CONSTRAINT "FK_credential_reference_asset_id"
                 FOREIGN KEY ("asset_id") REFERENCES "asset" ("id")
-    `);
+    `)
 
     await queryRunner.query(`
         ALTER TABLE "workflow"
             ADD CONSTRAINT "FK_workflow_asset_id"
                 FOREIGN KEY ("asset_id") REFERENCES "asset" ("id") ON DELETE SET NULL
-    `);
+    `)
 
     await queryRunner.query(`
         ALTER TABLE "workflow_document"
             ADD CONSTRAINT "FK_workflow_document_storage_object_id"
                 FOREIGN KEY ("storage_object_id") REFERENCES "storage"."objects" ("id")
-    `);
+    `)
 
     await queryRunner.query(`
         ALTER TABLE "workflow_document"
             ADD CONSTRAINT "FK_workflow_document_workflow_id"
                 FOREIGN KEY ("workflow_id") REFERENCES "workflow" ("id")
-    `);
+    `)
 
     await queryRunner.query(`
         ALTER TABLE "workflow_step"
             ADD CONSTRAINT "FK_workflow_step_workflow_id"
                 FOREIGN KEY ("workflow_id") REFERENCES "workflow" ("id") ON DELETE CASCADE
-    `);
+    `)
 
     await queryRunner.query(`
         ALTER TABLE "workflow_step"
             ADD CONSTRAINT "FK_workflow_step_sender_id"
                 FOREIGN KEY ("sender_id") REFERENCES "CorrelationIdentifier" ("correlation_id")
-    `);
+    `)
 
     await queryRunner.query(`
         ALTER TABLE "workflow_step"
             ADD CONSTRAINT "FK_workflow_step_recipient_id"
                 FOREIGN KEY ("recipient_id") REFERENCES "CorrelationIdentifier" ("correlation_id")
-    `);
-
+    `)
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
         ALTER TABLE "credential_reference" DROP CONSTRAINT "FK_credential_reference_asset_id"
-    `);
+    `)
 
     await queryRunner.query(`
         ALTER TABLE "workflow" DROP CONSTRAINT "FK_workflow_asset_id"
-    `);
+    `)
 
     await queryRunner.query(`
         ALTER TABLE "workflow_document" DROP CONSTRAINT "FK_workflow_document_storage_object_id"
-    `);
+    `)
 
     await queryRunner.query(`
         ALTER TABLE "workflow_document" DROP CONSTRAINT "FK_workflow_document_workflow_id"
-    `);
+    `)
 
     await queryRunner.query(`
         ALTER TABLE "workflow_step" DROP CONSTRAINT "FK_workflow_step_workflow_id"
-    `);
+    `)
 
     await queryRunner.query(`
         DROP TABLE IF EXISTS "workflow_step"
-    `);
+    `)
 
     await queryRunner.query(`
         DROP TABLE IF EXISTS "workflow_document"
-    `);
+    `)
 
     await queryRunner.query(`
         DROP TABLE IF EXISTS "workflow"
-    `);
+    `)
 
     await queryRunner.query(`
         DROP TABLE IF EXISTS "credential_reference"
-    `);
+    `)
 
     await queryRunner.query(`
         DROP TABLE IF EXISTS "asset"
-    `);
+    `)
 
     await queryRunner.query(`
         DROP VIEW IF EXISTS "view_all_workflow_step"
-    `);
+    `)
 
     await queryRunner.query(`
         DROP VIEW IF EXISTS "view_latest_workflow_step"
-    `);
+    `)
 
     await queryRunner.query(`
         DROP TYPE IF EXISTS "workflow_status"
-    `);
+    `)
   }
 }

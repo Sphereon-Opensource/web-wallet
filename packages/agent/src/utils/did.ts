@@ -1,13 +1,13 @@
-import { Resolver } from 'did-resolver'
-import { getDidJwkResolver } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
-import { getResolver as getDidWebResolver } from 'web-did-resolver'
-import { WebDIDProvider } from '@sphereon/ssi-sdk-ext.did-provider-web'
-import { JwkDIDProvider } from '@sphereon/ssi-sdk-ext.did-provider-jwk'
-import agent, { context } from '../agent'
-import { DIDDocumentSection, IIdentifier } from '@veramo/core'
-import { DID_PREFIX, DIDMethods, IDIDResult, KMS } from '../index'
-import { getAgentResolver, mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-ext.did-utils'
-import { generatePrivateKeyHex, TKeyType, toJwk } from '@sphereon/ssi-sdk-ext.key-utils'
+import {Resolver} from 'did-resolver'
+import {getDidJwkResolver} from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
+import {getResolver as getDidWebResolver} from 'web-did-resolver'
+import {WebDIDProvider} from '@sphereon/ssi-sdk-ext.did-provider-web'
+import {JwkDIDProvider} from '@sphereon/ssi-sdk-ext.did-provider-jwk'
+import agent, {context} from '../agent'
+import {DIDDocumentSection, IIdentifier} from '@veramo/core'
+import {DID_PREFIX, DIDMethods, IDIDResult, KMS} from '../index'
+import {getAgentResolver, mapIdentifierKeysToDocWithJwkSupport} from '@sphereon/ssi-sdk-ext.did-utils'
+import {generatePrivateKeyHex, TKeyType, toJwk} from '@sphereon/ssi-sdk-ext.key-utils'
 import {
   DEFAULT_DID,
   DEFAULT_KID,
@@ -19,7 +19,7 @@ import {
   DID_WEB_PRIVATE_KEY_PEM,
   didOptConfigs,
 } from '../environment'
-import {IonDIDProvider} from "@veramo/did-provider-ion";
+import {IonDIDProvider} from '@veramo/did-provider-ion'
 
 export function createDidResolver() {
   return new Resolver({
@@ -43,7 +43,7 @@ export function createDidProviders() {
 }
 
 export async function getIdentifier(did: string): Promise<IIdentifier | undefined> {
-  return await agent.didManagerGet({ did }).catch((e) => {
+  return await agent.didManagerGet({did}).catch(e => {
     console.log(`DID ${did} not available in agent`)
     return undefined
   })
@@ -53,7 +53,7 @@ export async function getDefaultDID(): Promise<string | undefined> {
   if (DEFAULT_DID) {
     return DEFAULT_DID
   }
-  return agent.didManagerFind().then((ids) => {
+  return agent.didManagerFind().then(ids => {
     if (!ids || ids.length === 0) {
       return
     }
@@ -84,7 +84,7 @@ export async function getDefaultKid({
   const didDocument =
     (await getAgentResolver(context)
       .resolve(identifier.did)
-      .then((result) => result.didDocument ?? undefined)) ?? undefined
+      .then(result => result.didDocument ?? undefined)) ?? undefined
   let keys = await mapIdentifierKeysToDocWithJwkSupport(identifier, verificationMethodName ?? 'assertionMethod', context, didDocument)
   if (keys.length === 0 && (verificationMethodFallback === undefined || verificationMethodFallback)) {
     keys = await mapIdentifierKeysToDocWithJwkSupport(identifier, 'verificationMethod', context, didDocument)
@@ -105,7 +105,7 @@ export async function getOrCreateDIDWebFromEnv(): Promise<IDIDResult[]> {
   if (identifier) {
     console.log(`Identifier exists for DID ${did}`)
     console.log(`${JSON.stringify(identifier)}`)
-    identifier.keys.map((key: { kid: any; publicKeyHex: any; type: any }) =>
+    identifier.keys.map((key: {kid: any; publicKeyHex: any; type: any}) =>
       console.log(`kid: ${key.kid}:\r\n ` + JSON.stringify(toJwk(key.publicKeyHex, key.type), null, 2)),
     )
   } else {
@@ -134,7 +134,7 @@ export async function getOrCreateDIDWebFromEnv(): Promise<IDIDResult[]> {
   }
   console.log(`${JSON.stringify(identifier, null, 2)}`)
 
-  return [{ did, identifier }] as IDIDResult[]
+  return [{did, identifier}] as IDIDResult[]
 }
 
 export async function getOrCreateDIDsFromFS(): Promise<IDIDResult[]> {
@@ -149,14 +149,14 @@ export async function getOrCreateDIDsFromFS(): Promise<IDIDResult[]> {
     if (identifier) {
       console.log(`Identifier exists for DID ${did}`)
       console.log(`${JSON.stringify(identifier)}`)
-      identifier.keys.map((key: { kid: any; publicKeyHex: any; type: any }) =>
+      identifier.keys.map((key: {kid: any; publicKeyHex: any; type: any}) =>
         console.log(`kid: ${key.kid}:\r\n ` + JSON.stringify(toJwk(key.publicKeyHex, key.type), null, 2)),
       )
     } else {
       console.log(`No identifier for DID ${did} exists yet. Will create the DID...`)
       let args = opts.createArgs
       if (!args) {
-        args = { options: {} }
+        args = {options: {}}
       }
 
       if (!privateKeyHex && !did?.startsWith('did:web')) {
@@ -167,7 +167,7 @@ export async function getOrCreateDIDsFromFS(): Promise<IDIDResult[]> {
       if (privateKeyHex) {
         if (args.options && !('key' in args.options)) {
           // @ts-ignore
-          args.options['key'] = { privateKeyHex }
+          args.options['key'] = {privateKeyHex}
           // @ts-ignore
         } else if (
           args.options &&
@@ -187,13 +187,13 @@ export async function getOrCreateDIDsFromFS(): Promise<IDIDResult[]> {
         console.error(JSON.stringify(identifier, null, 2))
         throw Error('Exit. Please see instructions')
       }
-      identifier.keys.map((key) => console.log(`kid: ${key.kid}:\r\n ` + JSON.stringify(toJwk(key.publicKeyHex, key.type), null, 2)))
+      identifier.keys.map(key => console.log(`kid: ${key.kid}:\r\n ` + JSON.stringify(toJwk(key.publicKeyHex, key.type), null, 2)))
       console.log(`Identifier created for DID ${did}`)
     }
 
     console.log(`${JSON.stringify(identifier, null, 2)}`)
 
-    return { ...opts, did, identifier } as IDIDResult
+    return {...opts, did, identifier} as IDIDResult
   })
   return Promise.all(result)
 }

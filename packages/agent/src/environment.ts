@@ -1,13 +1,13 @@
-import { config as dotenvConfig } from 'dotenv-flow'
-import { resolve } from 'path'
-import { loadJsonFiles } from './utils'
-import { IDIDOpts } from './types'
-import { vcApiFeatures } from '@sphereon/ssi-sdk.w3c-vc-api'
-import { DidApiFeatures, DidWebServiceFeatures } from '@sphereon/ssi-sdk.uni-resolver-registrar-api'
-import { env } from '@sphereon/ssi-express-support/dist/functions'
-import { statusListFeatures } from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
-import { ContactManagerMRestApiFeatures } from '@sphereon/ssi-sdk.contact-manager-rest-api'
-import {IIssuerOptsImportArgs, IMetadataImportArgs} from "@sphereon/ssi-sdk.oid4vci-issuer-store"
+import {config as dotenvConfig} from 'dotenv-flow'
+import {resolve} from 'path'
+import {loadJsonFiles} from './utils'
+import {IDIDOpts} from './types'
+import {vcApiFeatures} from '@sphereon/ssi-sdk.w3c-vc-api'
+import {DidApiFeatures, DidWebServiceFeatures} from '@sphereon/ssi-sdk.uni-resolver-registrar-api'
+import {env} from '@sphereon/ssi-express-support/dist/functions'
+import {statusListFeatures} from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
+import {ContactManagerMRestApiFeatures} from '@sphereon/ssi-sdk.contact-manager-rest-api'
+import {IIssuerOptsImportArgs, IMetadataImportArgs} from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 
 await dotenvConfig()
 
@@ -96,5 +96,9 @@ export const didOptConfigs = loadJsonFiles<IDIDOpts>({
   path: DID_OPTIONS_PATH,
 })
 
-export const oid4vciInstanceOpts = loadJsonFiles<IIssuerOptsImportArgs>({path: OID4VCI_ISSUER_OPTIONS_PATH})
-export const oid4vciMetadataOpts = loadJsonFiles<IMetadataImportArgs>({path: OID4VCI_ISSUER_METADATA_PATH})
+export const oid4vciInstanceOpts = loadJsonFiles<IIssuerOptsImportArgs>({
+  path: OID4VCI_ISSUER_OPTIONS_PATH,
+})
+export const oid4vciMetadataOpts = loadJsonFiles<IMetadataImportArgs>({
+  path: OID4VCI_ISSUER_METADATA_PATH,
+})

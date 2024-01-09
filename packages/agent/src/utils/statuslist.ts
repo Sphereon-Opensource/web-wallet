@@ -1,5 +1,5 @@
-import { createNewStatusList } from '@sphereon/ssi-sdk.vc-status-list'
-import { getDriver } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
+import {createNewStatusList} from '@sphereon/ssi-sdk.vc-status-list'
+import {getDriver} from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
 import {
   DB_CONNECTION_NAME,
   DB_DATABASE_NAME,
@@ -11,9 +11,9 @@ import {
   STATUS_LIST_LENGTH,
   STATUS_LIST_PURPOSE,
 } from '../environment'
-import { context } from '../agent'
+import {context} from '../agent'
 
-export async function getOrCreateConfiguredStatusList(args?: { issuer?: string; keyRef?: string }) {
+export async function getOrCreateConfiguredStatusList(args?: {issuer?: string; keyRef?: string}) {
   if (!STATUS_LIST_API_FEATURES || STATUS_LIST_API_FEATURES.length === 0) {
     return
   }
