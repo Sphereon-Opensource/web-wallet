@@ -14,11 +14,15 @@ import {
 } from '../environment'
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions'
 import { TlsOptions } from 'tls'
-import { DataStoreContactEntities, DataStoreStatusListEntities } from '@sphereon/ssi-sdk.data-store'
-import { DataStoreContactMigrations, DataStoreStatusListMigrations } from '@sphereon/ssi-sdk.data-store/dist/migrations/generic'
-
+import {
+  DataStoreContactEntities,
+  DataStoreContactMigrations,
+  DataStoreEventLoggerEntities,
+  DataStoreEventLoggerMigrations,
+  DataStoreStatusListEntities,
+  DataStoreStatusListMigrations
+} from '@sphereon/ssi-sdk.data-store'
 import { WebWalletMigrations } from './migrations'
-
 
 if (!process.env.DB_ENCRYPTION_KEY) {
   console.warn(
@@ -56,12 +60,18 @@ const postgresConfig: PostgresConnectionOptions = {
   ssl,
   database: DB_DATABASE_NAME,
   cache: DB_CACHE_ENABLED !== 'false',
-  entities: [...VeramoDataStoreEntities, ...DataStoreStatusListEntities, ...DataStoreContactEntities],
+  entities: [
+    ...VeramoDataStoreEntities,
+    ...DataStoreStatusListEntities,
+    ...DataStoreContactEntities,
+    ...DataStoreEventLoggerEntities
+  ],
   migrations: [
     ...VeramoDataStoreMigrations,
     ...DataStoreStatusListMigrations,
     ...DataStoreContactMigrations,
-    ...WebWalletMigrations
+    ...WebWalletMigrations,
+    ...DataStoreEventLoggerMigrations
   ],
   migrationsRun: false, // We run migrations from code to ensure proper ordering with Redux
   synchronize: false, // We do not enable synchronize, as we use migrations from code
@@ -76,8 +86,18 @@ const postgresConfig: PostgresConnectionOptions = {
 const sqliteConfig: SqliteConnectionOptions = {
   type: 'sqlite',
   database: DB_URL,
-  entities: [...VeramoDataStoreEntities, ...DataStoreStatusListEntities, ...DataStoreContactEntities],
-  migrations: [...VeramoDataStoreMigrations, ...DataStoreStatusListMigrations, ...DataStoreContactMigrations],
+  entities: [
+    ...VeramoDataStoreEntities,
+    ...DataStoreStatusListEntities,
+    ...DataStoreContactEntities,
+    ...DataStoreEventLoggerEntities
+  ],
+  migrations: [
+    ...VeramoDataStoreMigrations,
+    ...DataStoreStatusListMigrations,
+    ...DataStoreContactMigrations,
+    ...DataStoreEventLoggerMigrations
+  ],
   migrationsRun: false, // We run migrations from code to ensure proper ordering with Redux
   synchronize: false, // We do not enable synchronize, as we use migrations from code
   migrationsTransactionMode: 'each', // protect every migration with a separate transaction
