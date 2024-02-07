@@ -5,7 +5,6 @@ import {
     IAgentPlugin,
     ProofFormat,
     TAgent,
-    W3CVerifiableCredential
 } from '@veramo/core'
 import {
     CredentialHandlerLDLocal,
@@ -34,28 +33,31 @@ import {
     getOrCreateDIDWebFromEnv,
 } from './utils'
 import {
-  ASSET_DEFAULT_DID_METHOD,
-  AUTHENTICATION_ENABLED,
-  AUTHENTICATION_STRATEGY,
-  AUTHORIZATION_ENABLED,
-  AUTHORIZATION_GLOBAL_REQUIRE_USER_IN_ROLES,
-  CONTACT_MANAGER_API_FEATURES,
-  DB_CONNECTION_NAME,
-  DB_ENCRYPTION_KEY,
-  DB_TYPE,
-  DID_API_BASE_PATH,
-  DID_API_FEATURES,
-  DID_API_RESOLVE_MODE,
-  DID_WEB_SERVICE_FEATURES,
-  MEMORY_DB,
-  OID4VCI_API_BASE_URL, oid4vciInstanceOpts, oid4vciMetadataOpts,
-  STATUS_LIST_API_BASE_PATH,
-  STATUS_LIST_API_FEATURES,
-  STATUS_LIST_CORRELATION_ID,
-  STATUS_LIST_ISSUER,
-  VC_API_BASE_PATH,
-  VC_API_DEFAULT_PROOF_FORMAT,
-  VC_API_FEATURES,
+    ASSET_DEFAULT_DID_METHOD,
+    AUTHENTICATION_ENABLED,
+    AUTHENTICATION_STRATEGY,
+    AUTHORIZATION_ENABLED,
+    AUTHORIZATION_GLOBAL_REQUIRE_USER_IN_ROLES,
+    CONTACT_MANAGER_API_FEATURES,
+    DB_CONNECTION_NAME,
+    DB_ENCRYPTION_KEY,
+    DB_TYPE,
+    DID_API_BASE_PATH,
+    DID_API_FEATURES,
+    DID_API_RESOLVE_MODE,
+    DID_WEB_SERVICE_FEATURES,
+    MEMORY_DB,
+    OID4VCI_API_BASE_URL,
+    oid4vciInstanceOpts,
+    oid4vciMetadataOpts,
+    REMOTE_SERVER_API_FEATURES,
+    STATUS_LIST_API_BASE_PATH,
+    STATUS_LIST_API_FEATURES,
+    STATUS_LIST_CORRELATION_ID,
+    STATUS_LIST_ISSUER,
+    VC_API_BASE_PATH,
+    VC_API_DEFAULT_PROOF_FORMAT,
+    VC_API_FEATURES,
 } from './environment'
 import {VcApiServer} from '@sphereon/ssi-sdk.w3c-vc-api'
 import {UniResolverApiServer} from '@sphereon/ssi-sdk.uni-resolver-registrar-api'
@@ -66,7 +68,7 @@ import {StatuslistManagementApiServer} from '@sphereon/ssi-sdk.vc-status-list-is
 import {getOrCreateConfiguredStatusList} from './utils/statuslist'
 import {ContactManagerApiServer} from '@sphereon/ssi-sdk.contact-manager-rest-api'
 import {ContactManager} from '@sphereon/ssi-sdk.contact-manager'
-import {ContactStore} from '@sphereon/ssi-sdk.data-store'
+import {ContactStore, EventLoggerStore} from '@sphereon/ssi-sdk.data-store'
 import {addContacts} from "./database/contact-fixtures";
 import {IIssuerInstanceArgs, OID4VCIIssuer} from '@sphereon/ssi-sdk.oid4vci-issuer'
 import {OID4VCIStore} from '@sphereon/ssi-sdk.oid4vci-issuer-store'
@@ -76,9 +78,11 @@ import {
     CredentialDataSupplierResult,
     CredentialSignerCallback
 } from '@sphereon/oid4vci-issuer'
-import {getCredentialByIdOrHash} from "@sphereon/ssi-sdk.core";
+import {getCredentialByIdOrHash, LoggingEventType} from "@sphereon/ssi-sdk.core";
 import {IOID4VCIRestAPIOpts} from "@sphereon/ssi-sdk.oid4vci-issuer-rest-api/src/OID4VCIRestAPI"
 import {CredentialMapper, OriginalVerifiableCredential} from "@sphereon/ssi-types";
+import {EventLogger} from "@sphereon/ssi-sdk.event-logger";
+import {RemoteServerApiServer} from "@sphereon/ssi-sdk.remote-server-rest-api";
 
 /**
  * Are we using a in mory database or not
@@ -118,7 +122,6 @@ const plugins: IAgentPlugin[] = [
     new DIDResolverPlugin({
         resolver,
     }),
-
     new CredentialPlugin(),
     new CredentialHandlerLDLocal({
         //todo: We could add the SPHEREON contexts locally as well
@@ -139,7 +142,11 @@ const plugins: IAgentPlugin[] = [
         resolveOpts: {
             resolver
         }
-    })
+    }),
+    new EventLogger({
+        eventTypes: [LoggingEventType.AUDIT],
+        store: new EventLoggerStore(dbConnection),
+    }),
 ]
 
 /**
@@ -167,16 +174,13 @@ if (!defaultDID || !defaultKid) {
     console.log('[DID] Agent has no default DID and Key Identifier!')
 }
 
-
 await addContacts().catch((e) => console.log(`Error: ${e}`)).then(res => {
-
         getOrCreateConfiguredStatusList({
             issuer: STATUS_LIST_ISSUER ?? defaultDID,
             // keyRef: defaultKid,
         }).catch((e) => console.log(`ERROR statuslist ${e}`))
     }
 )
-
 
 /**
  * Build a common express REST API configuration first, used by the exposed Routers/Services below
@@ -309,6 +313,26 @@ if (CONTACT_MANAGER_API_FEATURES.length > 0) {
     })
 }
 
+/**
+ * Enable the Veramo remote server API
+ */
+if (REMOTE_SERVER_API_FEATURES.length > 0) {
+    new RemoteServerApiServer({
+        agent,
+        expressSupport,
+        opts: {
+            exposedMethods: REMOTE_SERVER_API_FEATURES,
+            endpointOpts: {
+                globalAuth: {
+                    authentication: {
+                        enabled: false,
+                    },
+                },
+            }
+        }
+    })
+}
+
 OID4VCIRestAPI.init({
     opts: {
         baseUrl: OID4VCI_API_BASE_URL,
@@ -334,6 +358,5 @@ OID4VCIRestAPI.init({
     },
     expressSupport
 })
-
 
 expressSupport.start()
