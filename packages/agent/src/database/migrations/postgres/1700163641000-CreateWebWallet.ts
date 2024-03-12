@@ -281,6 +281,13 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+      await queryRunner.query(`
+          DROP TABLE IF EXISTS "form_step_to_schema_definition"
+      `);
+
+      await queryRunner.query(`
+          DROP TABLE IF EXISTS "form_def_to_form_step"
+      `);
 
       await queryRunner.query(`
           DROP INDEX IF EXISTS "machine_unique_tenant"
@@ -290,14 +297,6 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
       `);
       await queryRunner.query(`
           DROP TABLE IF EXISTS "machine"
-      `);
-
-      await queryRunner.query(`
-          DROP TABLE IF EXISTS "form_step_to_schema_definition"
-      `);
-
-      await queryRunner.query(`
-          DROP TABLE IF EXISTS "form_def_to_form_step"
       `);
 
       await queryRunner.query(`
