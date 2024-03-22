@@ -16,5 +16,8 @@ console.log(`Using DB configuration for a ${config} database`)
  * @param connectionName The database name
  */
 export const getDbConnection = async (connectionName: string): Promise<DataSource> => {
+  if ('url' in config && ('username' in config && config.username || 'password' in config && config.password)) {
+    throw Error('Username / password credentials will not be used when a connection string URL is configured. You can embed the password in the connection string URL')
+  }
   return DataSources.singleInstance().addConfig(connectionName, config).getDbConnection(connectionName)
 }

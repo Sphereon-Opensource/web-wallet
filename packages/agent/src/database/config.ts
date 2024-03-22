@@ -5,7 +5,7 @@ import {
   DB_DATABASE_NAME,
   DB_HOST,
   DB_PASSWORD,
-  DB_PORT,
+  DB_PORT, DB_SCHEMA,
   DB_SSL_ALLOW_SELF_SIGNED,
   DB_SSL_CA,
   DB_URL,
@@ -56,7 +56,8 @@ const postgresConfig: PostgresConnectionOptions = {
   ...(DB_HOST && { host: DB_HOST }),
   ...(DB_PORT && { port: Number.parseInt(DB_PORT) }),
   ...(DB_USERNAME && { username: DB_USERNAME }),
-  ...(DB_PASSWORD && { username: DB_PASSWORD }),
+  ...(DB_PASSWORD && { password: DB_PASSWORD }),
+  ...(DB_SCHEMA && { schema: DB_SCHEMA }),
   ssl,
   database: DB_DATABASE_NAME,
   cache: DB_CACHE_ENABLED !== 'false',
@@ -85,7 +86,7 @@ const postgresConfig: PostgresConnectionOptions = {
  */
 const sqliteConfig: SqliteConnectionOptions = {
   type: 'sqlite',
-  database: DB_URL,
+  database: DB_URL!!,
   entities: [
     ...VeramoDataStoreEntities,
     ...DataStoreStatusListEntities,

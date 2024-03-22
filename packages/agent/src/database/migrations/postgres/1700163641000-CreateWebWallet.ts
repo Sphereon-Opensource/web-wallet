@@ -87,8 +87,8 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
               "id"          uuid NOT NULL DEFAULT gen_random_uuid(),
               "name"        text NOT NULL,
               "tenant_id"   uuid,
-              "description" text,
-              CONSTRAINT " machine_pkey " PRIMARY KEY (" id ")
+              "persistence" boolean,
+              CONSTRAINT "machine_pkey" PRIMARY KEY ("id")
           )
       `);
       await queryRunner.query(`
@@ -110,7 +110,7 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
               "name"        text,
               "description" text,
               "machine_id" uuid,
-              CONSTRAINT " formdef_pkey " PRIMARY KEY (" id "),
+              CONSTRAINT "formdef_pkey" PRIMARY KEY ("id"),
               CONSTRAINT "fk_machine_name"
                   FOREIGN KEY ("machine_id")
                       REFERENCES "machine"("id")
@@ -130,17 +130,17 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
       await queryRunner.query(`
           CREATE TABLE "form_step"
           (
-              "id"           uuid NOT NULL DEFAULT gen_random_uuid(),
-              "tenant_id"    uuid,
-              "definitionId" uuid,
-              "formId"       text,
-              "stepNr"       numeric,
-              "order"        numeric,
-              CONSTRAINT " formstep_pkey " PRIMARY KEY (" id ")
+              "id"            uuid NOT NULL DEFAULT gen_random_uuid(),
+              "tenant_id"     uuid,
+              "definition_id" uuid,
+              "form_id"       text,
+              "step_nr"       numeric,
+              "order"         numeric,
+              CONSTRAINT "formstep_pkey" PRIMARY KEY ("id")
           )
       `);
       await queryRunner.query(`
-          CREATE UNIQUE INDEX "formstep_unique_step" ON "form_step" ("definitionId", "formId", "stepNr", "order") 
+          CREATE UNIQUE INDEX "formstep_unique_step" ON "form_step" ("definition_id", "step_nr", "form_id", "order") 
       `); // (tenant_id is of no concern because definitionId is unique)
 
 
@@ -149,10 +149,10 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
           (
               "id"         uuid NOT NULL DEFAULT gen_random_uuid(),
               "tenant_id"  uuid,
-              "schemaType" text,
-              "entityType" text,
+              "schema_type" int,
+              "entity_type" text,
               "schema"     text,
-              CONSTRAINT " schemadef_pkey " PRIMARY KEY (" id ")
+              CONSTRAINT "schemadef_pkey" PRIMARY KEY ("id")
           )
       `);
 
@@ -248,11 +248,13 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
                 FOREIGN KEY ("asset_id") REFERENCES "asset" ("id") ON DELETE SET NULL
     `);
 
+/*
     await queryRunner.query(`
         ALTER TABLE "workflow_document"
             ADD CONSTRAINT "FK_workflow_document_storage_object_id"
                 FOREIGN KEY ("storage_object_id") REFERENCES "storage"."objects" ("id")
     `);
+*/
 
     await queryRunner.query(`
         ALTER TABLE "workflow_document"
