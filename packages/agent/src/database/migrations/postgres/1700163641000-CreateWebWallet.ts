@@ -248,13 +248,11 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
                 FOREIGN KEY ("asset_id") REFERENCES "asset" ("id") ON DELETE SET NULL
     `);
 
-/*
     await queryRunner.query(`
         ALTER TABLE "workflow_document"
             ADD CONSTRAINT "FK_workflow_document_storage_object_id"
                 FOREIGN KEY ("storage_object_id") REFERENCES "storage"."objects" ("id")
     `);
-*/
 
     await queryRunner.query(`
         ALTER TABLE "workflow_document"
