@@ -182,6 +182,7 @@ await addContacts().catch((e) => console.log(`Error: ${e}`)).then(res => {
     }
 )
 
+
 /**
  * Build a common express REST API configuration first, used by the exposed Routers/Services below
  */
@@ -215,7 +216,7 @@ if (VC_API_FEATURES.length > 0) {
             },
             issueCredentialOpts: {
                 enableFeatures: VC_API_FEATURES,
-                proofFormat: VC_API_DEFAULT_PROOF_FORMAT as ProofFormat,
+                proofFormat: 'jwt',//VC_API_DEFAULT_PROOF_FORMAT as ProofFormat,
                 persistIssuedCredentials: VC_API_FEATURES.includes('vc-persist'),
             },
         },
@@ -333,6 +334,7 @@ if (REMOTE_SERVER_API_FEATURES.length > 0) {
     })
 }
 
+
 OID4VCIRestAPI.init({
     opts: {
         baseUrl: OID4VCI_API_BASE_URL,
@@ -358,5 +360,6 @@ OID4VCIRestAPI.init({
     },
     expressSupport
 })
+
 
 expressSupport.start()
