@@ -1,11 +1,11 @@
-import { MigrationInterface, QueryRunner } from 'typeorm'
-import { enablePostgresUuidExtension } from '@sphereon/ssi-sdk.core'
+import { MigrationInterface, QueryRunner } from "typeorm";
+import { enablePostgresUuidExtension } from "@sphereon/ssi-sdk.core";
 
 export class CreateWebWallet1700163641000 implements MigrationInterface {
-  name = 'CreateWebWallet1700163641000'
+  name = "CreateWebWallet1700163641000";
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await enablePostgresUuidExtension(queryRunner)
+    await enablePostgresUuidExtension(queryRunner);
 
     await queryRunner.query(`
          CREATE TYPE "workflow_status" AS ENUM ('New', 'Approved', 'Pending', 'Declined', 'Done', 'Archived')
@@ -170,7 +170,6 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
             ADD CONSTRAINT "FK_workflow_step_recipient_id"
                 FOREIGN KEY ("recipient_id") REFERENCES "CorrelationIdentifier" ("correlation_id")
     `);
-
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
