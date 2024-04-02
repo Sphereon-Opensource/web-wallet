@@ -52,7 +52,7 @@ if (enableSSL && Object.keys(ssl).length === 0) {
 /**
  * Postgresql DB configuration
  */
-const postgresConfig: PostgresConnectionOptions = validatePostgresConfig({
+const postgresConfig: PostgresConnectionOptions = validatePostgresOptions({
   type: 'postgres',
   ...(DB_URL && { url: DB_URL }),
   ...(DB_HOST && { host: DB_HOST }),
@@ -83,7 +83,7 @@ const postgresConfig: PostgresConnectionOptions = validatePostgresConfig({
   logger: 'advanced-console',
 })
 
-function validatePostgresConfig(options: PostgresConnectionOptions) {
+function validatePostgresOptions(options: PostgresConnectionOptions) {
   if ('url' in options && ('username' in options && options.username || 'password' in options && options.password)) {
     throw Error('Username / password credentials will not be used when a connection string URL is configured. You can embed the password in the connection string URL')
   }
