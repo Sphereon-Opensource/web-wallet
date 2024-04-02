@@ -48,10 +48,11 @@ if (enableSSL && Object.keys(ssl).length === 0) {
   ssl = true
 }
 
+
 /**
  * Postgresql DB configuration
  */
-const postgresConfig: PostgresConnectionOptions = {
+const postgresConfig: PostgresConnectionOptions = validatePostgresConfig({
   type: 'postgres',
   ...(DB_URL && { url: DB_URL }),
   ...(DB_HOST && { host: DB_HOST }),
@@ -80,7 +81,15 @@ const postgresConfig: PostgresConnectionOptions = {
   migrationsTransactionMode: 'each', // protect every migration with a separate transaction
   logging: ['info', 'error'], // 'all' means to enable all logging
   logger: 'advanced-console',
+} as PostgresConnectionOptions)
+
+function validatePostgresConfig(options: PostgresConnectionOptions) {
+  if ('url' in options && ('username' in options && options.username || 'password' in options && options.password)) {
+    throw Error('Username / password credentials will not be used when a connection string URL is configured. You can embed the password in the connection string URL')
+  }
+  return options;
 }
+
 
 /**
  * SQLite3 DB configuration
