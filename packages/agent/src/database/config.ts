@@ -81,7 +81,7 @@ const postgresConfig: PostgresConnectionOptions = validatePostgresConfig({
   migrationsTransactionMode: 'each', // protect every migration with a separate transaction
   logging: ['info', 'error'], // 'all' means to enable all logging
   logger: 'advanced-console',
-} as PostgresConnectionOptions)
+})
 
 function validatePostgresConfig(options: PostgresConnectionOptions) {
   if ('url' in options && ('username' in options && options.username || 'password' in options && options.password)) {
