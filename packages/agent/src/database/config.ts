@@ -1,5 +1,4 @@
 import { Entities as VeramoDataStoreEntities, migrations as VeramoDataStoreMigrations } from '@veramo/data-store'
-import { SqliteConnectionOptions } from 'typeorm/driver/sqlite/SqliteConnectionOptions'
 import {
   DB_CACHE_ENABLED,
   DB_DATABASE_NAME,
@@ -80,29 +79,4 @@ const postgresConfig: PostgresConnectionOptions = {
   logger: 'advanced-console',
 }
 
-/**
- * SQLite3 DB configuration
- */
-const sqliteConfig: SqliteConnectionOptions = {
-  type: 'sqlite',
-  database: DB_URL,
-  entities: [
-    ...VeramoDataStoreEntities,
-    ...DataStoreStatusListEntities,
-    ...DataStoreContactEntities,
-    ...DataStoreEventLoggerEntities
-  ],
-  migrations: [
-    ...VeramoDataStoreMigrations,
-    ...DataStoreStatusListMigrations,
-    ...DataStoreContactMigrations,
-    ...DataStoreEventLoggerMigrations
-  ],
-  migrationsRun: false, // We run migrations from code to ensure proper ordering with Redux
-  synchronize: false, // We do not enable synchronize, as we use migrations from code
-  migrationsTransactionMode: 'each', // protect every migration with a separate transaction
-  logging: ['info', 'error'], // 'all' means to enable all logging
-  logger: 'advanced-console',
-}
-
-export { sqliteConfig, postgresConfig }
+export { postgresConfig }
