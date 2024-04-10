@@ -9,6 +9,7 @@ import {
   DB_HOST,
   DB_PASSWORD,
   DB_PORT,
+  DB_SCHEMA,
   DB_SSL_ALLOW_SELF_SIGNED,
   DB_SSL_CA,
   DB_URL,
@@ -50,16 +51,18 @@ if (enableSSL && Object.keys(ssl).length === 0) {
   ssl = true;
 }
 
+
 /**
  * Postgresql DB configuration
  */
-const postgresConfig: PostgresConnectionOptions = {
+const postgresConfig: PostgresConnectionOptions = validatePostgresOptions({
   type: "postgres",
   ...(DB_URL && { url: DB_URL }),
   ...(DB_HOST && { host: DB_HOST }),
   ...(DB_PORT && { port: Number.parseInt(DB_PORT) }),
   ...(DB_USERNAME && { username: DB_USERNAME }),
-  ...(DB_PASSWORD && { username: DB_PASSWORD }),
+  ...(DB_PASSWORD && { password: DB_PASSWORD }),
+  ...(DB_SCHEMA && { schema: DB_SCHEMA }),
   ssl,
   database: DB_DATABASE_NAME,
   cache: DB_CACHE_ENABLED !== "false",
@@ -78,17 +81,25 @@ const postgresConfig: PostgresConnectionOptions = {
   ],
   migrationsRun: false, // We run migrations from code to ensure proper ordering with Redux
   synchronize: false, // We do not enable synchronize, as we use migrations from code
-  migrationsTransactionMode: "each", // protect every migration with a separate transaction
-  logging: ["info", "error"], // 'all' means to enable all logging
-  logger: "advanced-console",
-};
+  migrationsTransactionMode: 'each', // protect every migration with a separate transaction
+  logging: ['info', 'error'], // 'all' means to enable all logging
+  logger: 'advanced-console',
+})
+
+function validatePostgresOptions(options: PostgresConnectionOptions) {
+  if ('url' in options && ('username' in options && options.username || 'password' in options && options.password)) {
+    throw Error('Username / password credentials will not be used when a connection string URL is configured. You can embed the password in the connection string URL')
+  }
+  return options;
+}
+
 
 /**
  * SQLite3 DB configuration
  */
 const sqliteConfig: SqliteConnectionOptions = {
   type: "sqlite",
-  database: DB_URL,
+  database: DB_URL!!,
   entities: [
     ...VeramoDataStoreEntities,
     ...DataStoreStatusListEntities,

@@ -34,7 +34,7 @@ export const DB_URL =
   (MEMORY_DB ? ":memory:" : "database/agent_default.sqlite");
 
 if (MEMORY_DB) {
-  if (!DB_URL.includes(":memory:")) {
+  if (DB_URL && !DB_URL.includes(":memory:")) {
     throw Error(
       `DB_TYPE is set to ${DB_TYPE}, but the DB_URL (${DB_URL}) does not contain ':memory:"`,
     );
@@ -47,6 +47,7 @@ export const DB_HOST = env("DB_HOST", ENV_VAR_PREFIX);
 export const DB_PORT = env("DB_PORT", ENV_VAR_PREFIX);
 export const DB_USERNAME = env("DB_USERNAME", ENV_VAR_PREFIX);
 export const DB_PASSWORD = env("DB_PASSWORD", ENV_VAR_PREFIX);
+export const DB_SCHEMA = env('DB_SCHEMA', ENV_VAR_PREFIX)
 export const DB_USE_SSL = env("DB_USE_SSL", ENV_VAR_PREFIX);
 export const DB_SSL_CA = env("DB_SSL_CA", ENV_VAR_PREFIX);
 export const DB_SSL_ALLOW_SELF_SIGNED =

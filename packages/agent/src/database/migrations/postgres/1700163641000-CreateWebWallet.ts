@@ -70,7 +70,7 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
             "id"                      uuid                     NOT NULL DEFAULT gen_random_uuid(),
             "created_at"              timestamp with time zone NOT NULL DEFAULT now(),
             "message"                 text,
-            "status" public.workflow_status,
+            "status"                  public.workflow_status,
             "workflow_id"             uuid,
             "sender_id"               text,
             "action"                  text,
@@ -81,6 +81,112 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
         )
     `);
 
+      await queryRunner.query(`
+          CREATE TABLE "machine"
+          (
+              "id"          uuid NOT NULL DEFAULT gen_random_uuid(),
+              "name"        text NOT NULL,
+              "tenant_id"   uuid,
+              "persistence" boolean,
+              CONSTRAINT "machine_pkey" PRIMARY KEY ("id")
+          )
+      `);
+      await queryRunner.query(`
+          CREATE UNIQUE INDEX "machine_unique_no_tenant" ON "machine" ("name")
+              WHERE "tenant_id" IS NULL
+      `);
+
+      await queryRunner.query(`
+          CREATE UNIQUE INDEX "machine_unique_tenant" ON "machine" ("name", "tenant_id")
+              WHERE "tenant_id" IS NOT NULL
+      `);
+
+
+      await queryRunner.query(`
+          CREATE TABLE "form_definition"
+          (
+              "id"          uuid NOT NULL DEFAULT gen_random_uuid(),
+              "tenant_id"   uuid,
+              "name"        text,
+              "description" text,
+              "machine_id" uuid references "machine",
+              CONSTRAINT "formdef_pkey" PRIMARY KEY ("id"),
+              CONSTRAINT "fk_machine"
+                  FOREIGN KEY ("machine_id")
+                      REFERENCES "machine"("id")
+          )
+      `);
+      await queryRunner.query(`
+          CREATE UNIQUE INDEX "formdef_unique_no_tenant" ON "form_definition" ("name")
+              WHERE "tenant_id" IS NULL
+      `);
+
+      await queryRunner.query(`
+          CREATE UNIQUE INDEX "formdef_unique_tenant" ON "form_definition" ("name", "tenant_id")
+              WHERE "tenant_id" IS NOT NULL
+      `);
+
+
+      await queryRunner.query(`
+          CREATE TABLE "form_step"
+          (
+              "id"            uuid NOT NULL DEFAULT gen_random_uuid(),
+              "tenant_id"     uuid,
+              "form_id"       text,
+              "step_nr"       numeric,
+              "order"         numeric,
+              CONSTRAINT "formstep_pkey" PRIMARY KEY ("id")
+          )
+      `);
+      await queryRunner.query(`
+          CREATE UNIQUE INDEX "formstep_unique_step" ON "form_step" ("step_nr", "form_id", "order") 
+      `);
+
+
+      await queryRunner.query(`
+          CREATE TABLE "schema_definition"
+          (
+              "id"         uuid NOT NULL DEFAULT gen_random_uuid(),
+              "tenant_id"  uuid,
+              "schema_type" text,
+              "entity_type" text,
+              "schema"     text,
+              CONSTRAINT "schemadef_pkey" PRIMARY KEY ("id")
+          )
+      `);
+
+      // Junction tables for many-to-many relations
+      await queryRunner.query(`
+          CREATE TABLE "form_def_to_form_step"
+          (
+              "form_definition_id" uuid NOT NULL references form_definition,
+              "form_step_id"       uuid NOT NULL references form_step,
+              CONSTRAINT "pk_form_definition_step" PRIMARY KEY ("form_definition_id", "form_step_id"),
+              CONSTRAINT "fk_form_definition"
+                  FOREIGN KEY ("form_definition_id")
+                      REFERENCES "form_definition" ("id"),
+              CONSTRAINT "fk_form_step"
+                  FOREIGN KEY ("form_step_id")
+                      REFERENCES "form_step" ("id")
+          )
+      `);
+
+      await queryRunner.query(`
+          CREATE TABLE "form_step_to_schema_definition"
+          (
+              "form_step_id"         uuid NOT NULL references form_step,
+              "schema_definition_id" uuid NOT NULL references schema_definition,
+              CONSTRAINT "pk_form_step_to_schema_definition" PRIMARY KEY ("form_step_id", "schema_definition_id"),
+              CONSTRAINT "fk_form_step"
+                  FOREIGN KEY ("form_step_id")
+                      REFERENCES "form_step" ("id"),
+              CONSTRAINT "fk_schema_definition"
+                  FOREIGN KEY ("schema_definition_id")
+                      REFERENCES "schema_definition" ("id")
+          )
+      `);
+
+    // Views
     await queryRunner.query(`
         CREATE VIEW "view_all_workflow_step" AS
         SELECT
@@ -173,6 +279,45 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+      await queryRunner.query(`
+          DROP TABLE IF EXISTS "form_step_to_schema_definition"
+      `);
+
+      await queryRunner.query(`
+          DROP TABLE IF EXISTS "form_def_to_form_step"
+      `);
+
+      await queryRunner.query(`
+          DROP INDEX IF EXISTS "machine_unique_tenant"
+      `);
+      await queryRunner.query(`
+          DROP INDEX IF EXISTS "machine_unique_no_tenant"
+      `);
+      await queryRunner.query(`
+          DROP TABLE IF EXISTS "machine"
+      `);
+
+      await queryRunner.query(`
+          DROP TABLE IF EXISTS "schema_definition"
+      `);
+
+      await queryRunner.query(`
+          DROP INDEX IF EXISTS "formstep_unique_step"
+      `);
+      await queryRunner.query(`
+          DROP TABLE IF EXISTS "form_step"
+      `);
+
+      await queryRunner.query(`
+          DROP INDEX IF EXISTS "formdef_unique_tenant"
+      `);
+      await queryRunner.query(`
+          DROP INDEX IF EXISTS "formdef_unique_no_tenant"
+      `);
+      await queryRunner.query(`
+          DROP TABLE IF EXISTS "form_definition"
+      `);
+
     await queryRunner.query(`
         ALTER TABLE "credential_reference" DROP CONSTRAINT "FK_credential_reference_asset_id"
     `);
