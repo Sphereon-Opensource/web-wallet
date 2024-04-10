@@ -24,29 +24,13 @@ await dotenvConfig();
  * This file takes all environment variables and assigns them to constants, with default values,
  * so the rest of the code doesn't have to know the exact environment values
  */
-export const ENV_VAR_PREFIX = process.env.ENV_VAR_PREFIX ?? "";
-
-export const DB_TYPE = env("DB_TYPE", ENV_VAR_PREFIX) ?? "sqlite";
-
-export const MEMORY_DB = DB_TYPE.toLowerCase().includes("mem");
-export const DB_URL =
-  env("DB_URL", ENV_VAR_PREFIX) ??
-  (MEMORY_DB ? ":memory:" : "database/agent_default.sqlite");
-
-if (MEMORY_DB) {
-  if (DB_URL && !DB_URL.includes(":memory:")) {
-    throw Error(
-      `DB_TYPE is set to ${DB_TYPE}, but the DB_URL (${DB_URL}) does not contain ':memory:"`,
-    );
-  }
-  console.log(
-    "An in Memory Database is being used. All created DIDs and keys will be discarded on restart",
-  );
-}
-export const DB_HOST = env("DB_HOST", ENV_VAR_PREFIX);
-export const DB_PORT = env("DB_PORT", ENV_VAR_PREFIX);
-export const DB_USERNAME = env("DB_USERNAME", ENV_VAR_PREFIX);
-export const DB_PASSWORD = env("DB_PASSWORD", ENV_VAR_PREFIX);
+export const ENV_VAR_PREFIX = process.env.ENV_VAR_PREFIX ?? ''
+export const DB_TYPE = env('DB_TYPE', ENV_VAR_PREFIX)
+export const DB_URL = env('DB_URL', ENV_VAR_PREFIX)
+export const DB_HOST = env('DB_HOST', ENV_VAR_PREFIX)
+export const DB_PORT = env('DB_PORT', ENV_VAR_PREFIX)
+export const DB_USERNAME = env('DB_USERNAME', ENV_VAR_PREFIX)
+export const DB_PASSWORD = env('DB_PASSWORD', ENV_VAR_PREFIX)
 export const DB_SCHEMA = env('DB_SCHEMA', ENV_VAR_PREFIX)
 export const DB_USE_SSL = env("DB_USE_SSL", ENV_VAR_PREFIX);
 export const DB_SSL_CA = env("DB_SSL_CA", ENV_VAR_PREFIX);
