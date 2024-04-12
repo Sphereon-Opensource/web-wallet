@@ -46,7 +46,6 @@ import {
     DID_API_FEATURES,
     DID_API_RESOLVE_MODE,
     DID_WEB_SERVICE_FEATURES,
-    MEMORY_DB,
     OID4VCI_API_BASE_URL,
     oid4vciInstanceOpts,
     oid4vciMetadataOpts,
@@ -85,11 +84,6 @@ import {EventLogger} from "@sphereon/ssi-sdk.event-logger";
 import {RemoteServerApiServer} from "@sphereon/ssi-sdk.remote-server-rest-api";
 
 /**
- * Are we using a in mory database or not
- */
-const mem = DB_TYPE.toLowerCase().startsWith('mem')
-
-/**
  * Lets setup supported DID resolvers first
  */
 const resolver = createDidResolver()
@@ -98,8 +92,7 @@ const dbConnection = getDbConnection(DB_CONNECTION_NAME)
 /**
  * Private key store, responsible for storing private keys in the database using encryption
  */
-const privateKeyStore: PrivateKeyStore | MemoryPrivateKeyStore = MEMORY_DB
-    ? new MemoryPrivateKeyStore() : new PrivateKeyStore(dbConnection, new SecretBox(DB_ENCRYPTION_KEY))
+const privateKeyStore: PrivateKeyStore = new PrivateKeyStore(dbConnection, new SecretBox(DB_ENCRYPTION_KEY))
 
 /**
  * Define Agent plugins being used. The plugins come from Sphereon's SSI-SDK and Veramo.
@@ -173,15 +166,6 @@ console.log(`[DID] default key identifier: ${defaultKid}`)
 if (!defaultDID || !defaultKid) {
     console.log('[DID] Agent has no default DID and Key Identifier!')
 }
-
-await addContacts().catch((e) => console.log(`Error: ${e}`)).then(res => {
-        getOrCreateConfiguredStatusList({
-            issuer: STATUS_LIST_ISSUER ?? defaultDID,
-            // keyRef: defaultKid,
-        }).catch((e) => console.log(`ERROR statuslist ${e}`))
-    }
-)
-
 
 /**
  * Build a common express REST API configuration first, used by the exposed Routers/Services below

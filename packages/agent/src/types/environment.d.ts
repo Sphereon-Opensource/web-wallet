@@ -8,7 +8,6 @@ declare global {
       DEFAULT_DID?: string
       DEFAULT_KID?: string
       DB_CONNECTION_NAME?: string
-      DB_SQLITE_FILE?: string
       DB_ENCRYPTION_KEY?: string
       CONF_PATH?: string
       UNIVERSAL_RESOLVER_RESOLVE_URL?: string
