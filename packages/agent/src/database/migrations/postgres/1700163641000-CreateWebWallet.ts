@@ -87,7 +87,7 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
               "id"          uuid NOT NULL DEFAULT gen_random_uuid(),
               "name"        text NOT NULL,
               "tenant_id"   uuid,
-              "persistence" boolean,
+              "persistence" boolean NOT NULL false,
               CONSTRAINT "machine_pkey" PRIMARY KEY ("id")
           )
       `);
