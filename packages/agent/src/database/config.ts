@@ -1,4 +1,7 @@
-import { Entities as VeramoDataStoreEntities, migrations as VeramoDataStoreMigrations } from '@veramo/data-store'
+import {
+  Entities as VeramoDataStoreEntities,
+  migrations as VeramoDataStoreMigrations,
+} from "@veramo/data-store";
 import {
   DB_CACHE_ENABLED,
   DB_DATABASE_NAME,
@@ -47,7 +50,6 @@ if (enableSSL && Object.keys(ssl).length === 0) {
   ssl = true;
 }
 
-
 /**
  * Postgresql DB configuration
  */
@@ -77,16 +79,22 @@ const postgresConfig: PostgresConnectionOptions = validatePostgresOptions({
   ],
   migrationsRun: false, // We run migrations from code to ensure proper ordering with Redux
   synchronize: false, // We do not enable synchronize, as we use migrations from code
-  migrationsTransactionMode: 'each', // protect every migration with a separate transaction
-  logging: ['info', 'error'], // 'all' means to enable all logging
-  logger: 'advanced-console',
-})
+  migrationsTransactionMode: "each", // protect every migration with a separate transaction
+  logging: ["info", "error"], // 'all' means to enable all logging
+  logger: "advanced-console",
+});
 
 function validatePostgresOptions(options: PostgresConnectionOptions) {
-  if ('url' in options && ('username' in options && options.username || 'password' in options && options.password)) {
-    throw Error('Username / password credentials will not be used when a connection string URL is configured. You can embed the password in the connection string URL')
+  if (
+    "url" in options &&
+    (("username" in options && options.username) ||
+      ("password" in options && options.password))
+  ) {
+    throw Error(
+      "Username / password credentials will not be used when a connection string URL is configured. You can embed the password in the connection string URL",
+    );
   }
   return options;
 }
 
-export { postgresConfig }
+export { postgresConfig };

@@ -1,8 +1,8 @@
-import { DataSource } from 'typeorm'
-import { postgresConfig } from './config'
-import { DataSources } from '@sphereon/ssi-sdk.agent-config'
+import { DataSource } from "typeorm";
+import { postgresConfig } from "./config";
+import { DataSources } from "@sphereon/ssi-sdk.agent-config";
 
-console.log(`Using DB configuration for a ${postgresConfig.type} database`)
+console.log(`Using DB configuration for a ${postgresConfig.type} database`);
 
 /**
  * Gets the database connection.

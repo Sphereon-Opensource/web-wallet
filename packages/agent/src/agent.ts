@@ -111,7 +111,10 @@ const dbConnection = getDbConnection(DB_CONNECTION_NAME);
 /**
  * Private key store, responsible for storing private keys in the database using encryption
  */
-const privateKeyStore: PrivateKeyStore = new PrivateKeyStore(dbConnection, new SecretBox(DB_ENCRYPTION_KEY));
+const privateKeyStore: PrivateKeyStore = new PrivateKeyStore(
+  dbConnection,
+  new SecretBox(DB_ENCRYPTION_KEY),
+);
 
 /**
  * Define Agent plugins being used. The plugins come from Sphereon's SSI-SDK and Veramo.

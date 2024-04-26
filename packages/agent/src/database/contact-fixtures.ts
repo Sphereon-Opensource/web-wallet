@@ -2,6 +2,7 @@ import {
   CorrelationIdentifierEnum,
   IdentityRoleEnum,
   NonPersistedIdentity,
+  PartyOrigin,
   PartyTypeEnum,
 } from "@sphereon/ssi-sdk.data-store";
 import { IIdentifier } from "@veramo/core";
@@ -56,12 +57,14 @@ export async function addContacts() {
       name: "people",
       type: PartyTypeEnum.NATURAL_PERSON,
       tenantId: v4(),
+      origin: PartyOrigin.internal,
     });
 
     const organizationalContactType = await agent.cmAddContactType({
       name: "organizations",
       type: PartyTypeEnum.ORGANIZATION,
       tenantId: v4(),
+      origin: PartyOrigin.internal,
     });
 
     const persona1 = {
@@ -129,11 +132,16 @@ export async function addContacts() {
     } as AddContactArgs;
 
     identifier = await agent.didManagerCreate(
-      existingDidConfig(DIDMethods.DID_JWK, "sphereon-auth", PRIVATE_DID4_KEY_HEX, {
-        traceability: false,
-        alias: "sphereon-auth",
-        type: "Secp256r1",
-      }),
+      existingDidConfig(
+        DIDMethods.DID_JWK,
+        "sphereon-auth",
+        PRIVATE_DID4_KEY_HEX,
+        {
+          traceability: false,
+          alias: "sphereon-auth",
+          type: "Secp256r1",
+        },
+      ),
     );
     console.log(JSON.stringify(identifier, null, 2));
     organization1.identities = [
@@ -254,15 +262,15 @@ function existingDidConfig(
       services,
     };
   } else if (method === DIDMethods.DID_JWK) {
-      options = {
-          kid,
-          key: {
-              privateKeyHex: privateDIDKeyHex,
-              kid,
-              type: opts?.type ?? "Secp256r1",
-              keyType: opts?.type ?? "Secp256r1",
-          }
-      }
+    options = {
+      kid,
+      key: {
+        privateKeyHex: privateDIDKeyHex,
+        kid,
+        type: opts?.type ?? "Secp256r1",
+        keyType: opts?.type ?? "Secp256r1",
+      },
+    };
   } else {
     options = { services };
   }

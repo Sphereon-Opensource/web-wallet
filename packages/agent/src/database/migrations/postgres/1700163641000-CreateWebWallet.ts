@@ -81,7 +81,7 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
         )
     `);
 
-      await queryRunner.query(`
+    await queryRunner.query(`
           CREATE TABLE "machine"
           (
               "id"          uuid NOT NULL DEFAULT gen_random_uuid(),
@@ -91,18 +91,17 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
               CONSTRAINT "machine_pkey" PRIMARY KEY ("id")
           )
       `);
-      await queryRunner.query(`
+    await queryRunner.query(`
           CREATE UNIQUE INDEX "machine_unique_no_tenant" ON "machine" ("name")
               WHERE "tenant_id" IS NULL
       `);
 
-      await queryRunner.query(`
+    await queryRunner.query(`
           CREATE UNIQUE INDEX "machine_unique_tenant" ON "machine" ("name", "tenant_id")
               WHERE "tenant_id" IS NOT NULL
       `);
 
-
-      await queryRunner.query(`
+    await queryRunner.query(`
           CREATE TABLE "form_definition"
           (
               "id"          uuid NOT NULL DEFAULT gen_random_uuid(),
@@ -116,18 +115,17 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
                       REFERENCES "machine"("id")
           )
       `);
-      await queryRunner.query(`
+    await queryRunner.query(`
           CREATE UNIQUE INDEX "formdef_unique_no_tenant" ON "form_definition" ("name")
               WHERE "tenant_id" IS NULL
       `);
 
-      await queryRunner.query(`
+    await queryRunner.query(`
           CREATE UNIQUE INDEX "formdef_unique_tenant" ON "form_definition" ("name", "tenant_id")
               WHERE "tenant_id" IS NOT NULL
       `);
 
-
-      await queryRunner.query(`
+    await queryRunner.query(`
           CREATE TABLE "form_step"
           (
               "id"            uuid NOT NULL DEFAULT gen_random_uuid(),
@@ -138,12 +136,11 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
               CONSTRAINT "formstep_pkey" PRIMARY KEY ("id")
           )
       `);
-      await queryRunner.query(`
+    await queryRunner.query(`
           CREATE UNIQUE INDEX "formstep_unique_step" ON "form_step" ("step_nr", "form_id", "order") 
       `);
 
-
-      await queryRunner.query(`
+    await queryRunner.query(`
           CREATE TABLE "schema_definition"
           (
               "id"         uuid NOT NULL DEFAULT gen_random_uuid(),
@@ -155,8 +152,8 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
           )
       `);
 
-      // Junction tables for many-to-many relations
-      await queryRunner.query(`
+    // Junction tables for many-to-many relations
+    await queryRunner.query(`
           CREATE TABLE "form_def_to_form_step"
           (
               "form_definition_id" uuid NOT NULL references form_definition,
@@ -171,7 +168,7 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
           )
       `);
 
-      await queryRunner.query(`
+    await queryRunner.query(`
           CREATE TABLE "form_step_to_schema_definition"
           (
               "form_step_id"         uuid NOT NULL references form_step,
@@ -279,42 +276,42 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-      await queryRunner.query(`
+    await queryRunner.query(`
           DROP TABLE IF EXISTS "form_step_to_schema_definition"
       `);
 
-      await queryRunner.query(`
+    await queryRunner.query(`
           DROP TABLE IF EXISTS "form_def_to_form_step"
       `);
 
-      await queryRunner.query(`
+    await queryRunner.query(`
           DROP INDEX IF EXISTS "machine_unique_tenant"
       `);
-      await queryRunner.query(`
+    await queryRunner.query(`
           DROP INDEX IF EXISTS "machine_unique_no_tenant"
       `);
-      await queryRunner.query(`
+    await queryRunner.query(`
           DROP TABLE IF EXISTS "machine"
       `);
 
-      await queryRunner.query(`
+    await queryRunner.query(`
           DROP TABLE IF EXISTS "schema_definition"
       `);
 
-      await queryRunner.query(`
+    await queryRunner.query(`
           DROP INDEX IF EXISTS "formstep_unique_step"
       `);
-      await queryRunner.query(`
+    await queryRunner.query(`
           DROP TABLE IF EXISTS "form_step"
       `);
 
-      await queryRunner.query(`
+    await queryRunner.query(`
           DROP INDEX IF EXISTS "formdef_unique_tenant"
       `);
-      await queryRunner.query(`
+    await queryRunner.query(`
           DROP INDEX IF EXISTS "formdef_unique_no_tenant"
       `);
-      await queryRunner.query(`
+    await queryRunner.query(`
           DROP TABLE IF EXISTS "form_definition"
       `);
 
