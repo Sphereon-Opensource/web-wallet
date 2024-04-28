@@ -8,12 +8,12 @@ import {
   IIdentifier,
   IKeyManager,
   IResolver,
-} from "@veramo/core";
-import { IContactManager } from "@sphereon/ssi-sdk.contact-manager";
-import { IOID4VCIStore } from "@sphereon/ssi-sdk.oid4vci-issuer-store";
-import { IOID4VCIIssuer } from "@sphereon/ssi-sdk.oid4vci-issuer";
+} from '@veramo/core'
+import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
+import { IOID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
+import { IOID4VCIIssuer } from '@sphereon/ssi-sdk.oid4vci-issuer'
 
-export const DID_PREFIX = "did";
+export const DID_PREFIX = 'did'
 
 /**
  * SSI SDK modules supported by this agent. This type is used to expose available agent methods in the IDE
@@ -27,39 +27,39 @@ export type TAgentTypes = IDIDManager &
   ICredentialIssuer &
   IContactManager &
   IOID4VCIStore &
-  IOID4VCIIssuer;
+  IOID4VCIIssuer
 
 /**
  * The Key Management System (name) to use. Currently, there is only one KMS
  */
 export enum KMS {
-  LOCAL = "local",
+  LOCAL = 'local',
 }
 
 /**
  * Predefined DID methods. In case more DID methods should be support, you will also have to import SSI-SDK modules
  */
 export enum DIDMethods {
-  DID_ION = "ion",
-  DID_JWK = "jwk",
-  DID_WEB = "web",
+  DID_ION = 'ion',
+  DID_JWK = 'jwk',
+  DID_WEB = 'web',
 }
 
 /**
  * Options for creating DIDs from configuration files. These files are imported into the agent database during startup
  */
 export interface IDIDOpts {
-  did?: string; // The DID to import
-  createArgs?: IDIDManagerCreateArgs;
+  did?: string // The DID to import
+  createArgs?: IDIDManagerCreateArgs
   // importArgs?: IImportX509DIDArg
-  privateKeyHex?: string; // The private key. Can be removed once the DID is created in the agent DB
+  privateKeyHex?: string // The private key. Can be removed once the DID is created in the agent DB
 }
 
 /**
  * DID creation result, which contains an identifier
  */
 export interface IDIDResult extends IDIDOpts {
-  identifier?: IIdentifier; // The identifier that was created
+  identifier?: IIdentifier // The identifier that was created
 }
 
 /*
