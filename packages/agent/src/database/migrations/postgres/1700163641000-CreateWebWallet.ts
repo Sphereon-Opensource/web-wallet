@@ -35,20 +35,33 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
       `);
 
       await queryRunner.query(`
-          CREATE TABLE "meta_data_values"
+          CREATE TABLE "meta_data_keys"
           (
               id              uuid       NOT NULL DEFAULT gen_random_uuid(),
               set_id          uuid       NOT NULL,
               key             text       NOT NULL,
               value_type      value_type NOT NULL,
+              CONSTRAINT meta_data_keys_pkey PRIMARY KEY (id)
+                  CONSTRAINT "fk_meta_data_set"
+                  FOREIGN KEY ("set_id")
+                  REFERENCES "meta_data_set" ("id"),
+          )
+      `);
+
+      await queryRunner.query(`
+          CREATE TABLE "meta_data_values"
+          (
+              id              uuid       NOT NULL DEFAULT gen_random_uuid(),
+              key_id          uuid       NOT NULL,
+              index           numeric,
               text_value      text,
               number_value    numeric,
               boolean_value   boolean,
               timestamp_value timestamp without time zone,
               CONSTRAINT meta_data_values_pkey PRIMARY KEY (id)
-                  CONSTRAINT "fk_meta_data_set"
-                  FOREIGN KEY ("set_id")
-                  REFERENCES "meta_data_set" ("id"),
+                  CONSTRAINT "fk_meta_data_keys"
+                  FOREIGN KEY ("key_id")
+                  REFERENCES "meta_data_keys" ("id"),
           )
       `);
 
@@ -403,12 +416,17 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
     `);
 
     await queryRunner.query(`
-        DROP TABLE IF EXISTS "meta_data_set"
+        DROP TABLE IF EXISTS "meta_data_values"
     `);
 
     await queryRunner.query(`
-        DROP TABLE IF EXISTS "meta_data_values"
+        DROP TABLE IF EXISTS "meta_data_keys"
     `);
+
+    await queryRunner.query(`
+        DROP TABLE IF EXISTS "meta_data_set"
+    `);
+
 
     await queryRunner.query(`
         DROP VIEW IF EXISTS "view_all_workflow_step"
