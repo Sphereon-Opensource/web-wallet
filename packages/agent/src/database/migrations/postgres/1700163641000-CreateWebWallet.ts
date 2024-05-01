@@ -7,16 +7,16 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await enablePostgresUuidExtension(queryRunner)
 
-    await queryRunner.query(`
+      await queryRunner.query(`
          CREATE TYPE "value_type" AS ENUM ('Text', 'Number', 'Boolean', 'Date');
     `);
 
-    await queryRunner.query(`
+      await queryRunner.query(`
          CREATE TYPE "workflow_status" AS ENUM ('New', 'Approved', 'Pending', 'Declined', 'Done', 'Archived')
     `);
 
       await queryRunner.query(`
-          CREATE TABLE "meta_data_set"
+          CREATE TABLE meta_data_set
           (
               id        uuid NOT NULL DEFAULT gen_random_uuid(),
               tenant_id uuid,
@@ -24,60 +24,58 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
               CONSTRAINT meta_data_set_pkey PRIMARY KEY (id)
           )
       `);
+
       await queryRunner.query(`
-          CREATE UNIQUE INDEX "meta_data_set_unique_no_tenant" ON "meta_data_set" ("name") 
-              "tenant_id" IS NULL
+          CREATE UNIQUE INDEX meta_data_set_unique_no_tenant ON meta_data_set (name) WHERE tenant_id IS NULL
       `);
 
       await queryRunner.query(`
-          CREATE UNIQUE INDEX "meta_data_set_unique_tenant" ON "meta_data_set" ("name", "tenant_id") 
-              WHERE "tenant_id" IS NOT NULL
+          CREATE UNIQUE INDEX meta_data_set_unique_tenant ON meta_data_set (name, tenant_id) WHERE tenant_id IS NOT NULL
       `);
 
       await queryRunner.query(`
-          CREATE TABLE "meta_data_keys"
+          CREATE TABLE meta_data_keys
           (
-              id              uuid       NOT NULL DEFAULT gen_random_uuid(),
-              set_id          uuid       NOT NULL,
-              key             text       NOT NULL,
-              value_type      value_type NOT NULL,
-              CONSTRAINT meta_data_keys_pkey PRIMARY KEY (id)
-                  CONSTRAINT "fk_meta_data_set"
-                  FOREIGN KEY ("set_id")
-                  REFERENCES "meta_data_set" ("id"),
+              id         uuid       NOT NULL DEFAULT gen_random_uuid(),
+              set_id     uuid       NOT NULL,
+              key        text       NOT NULL,
+              value_type value_type NOT NULL,
+              CONSTRAINT meta_data_keys_pkey PRIMARY KEY (id),
+              CONSTRAINT fk_meta_data_set FOREIGN KEY (set_id)
+                  REFERENCES meta_data_set (id)
           )
       `);
 
       await queryRunner.query(`
-          CREATE TABLE "meta_data_values"
+          CREATE TABLE meta_data_values
           (
-              id              uuid       NOT NULL DEFAULT gen_random_uuid(),
-              key_id          uuid       NOT NULL,
+              id              uuid NOT NULL DEFAULT gen_random_uuid(),
+              key_id          uuid NOT NULL,
               index           numeric,
               text_value      text,
               number_value    numeric,
               boolean_value   boolean,
               timestamp_value timestamp without time zone,
-              CONSTRAINT meta_data_values_pkey PRIMARY KEY (id)
-                  CONSTRAINT "fk_meta_data_keys"
-                  FOREIGN KEY ("key_id")
-                  REFERENCES "meta_data_keys" ("id"),
+              CONSTRAINT meta_data_values_pkey PRIMARY KEY (id),
+              CONSTRAINT fk_meta_data_keys FOREIGN KEY (key_id)
+                  REFERENCES meta_data_keys (id)
           )
       `);
 
-    await queryRunner.query(`
-        CREATE TABLE "asset"
-        (
-            "id"          uuid                   NOT NULL DEFAULT uuid_generate_v4(),
-            "name"        text                   NOT NULL,
-            "did"         text                   NOT NULL UNIQUE,
-            "description" text,
-            "contact_id"  text,
-            "owner_id"    text,
-            "owner_alias" text,
-            CONSTRAINT "asset_pkey" PRIMARY KEY ("id")
-        )
-    `);
+
+      await queryRunner.query(`
+          CREATE TABLE "asset"
+          (
+              "id"          uuid NOT NULL DEFAULT uuid_generate_v4(),
+              "name"        text NOT NULL,
+              "did"         text NOT NULL UNIQUE,
+              "description" text,
+              "contact_id"  text,
+              "owner_id"    text,
+              "owner_alias" text,
+              CONSTRAINT "asset_pkey" PRIMARY KEY ("id")
+          )
+      `);
 
     await queryRunner.query(`
         CREATE TABLE "credential_reference"
