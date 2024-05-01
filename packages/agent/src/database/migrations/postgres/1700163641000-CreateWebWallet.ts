@@ -407,6 +407,10 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
     `);
 
     await queryRunner.query(`
+        DROP TABLE IF EXISTS "meta_data_values"
+    `);
+
+    await queryRunner.query(`
         DROP VIEW IF EXISTS "view_all_workflow_step"
     `);
 
