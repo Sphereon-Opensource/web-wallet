@@ -203,9 +203,12 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
               "extends_id"       uuid,
               "schema_type"      text,
               "entity_type"      text,
-              "schema"           text,
+              "schema"           text NOT NULL,
               "meta_data_set_id" uuid,
-              CONSTRAINT "schemadef_pkey" PRIMARY KEY ("id")
+                CONSTRAINT "schemadef_pkey" PRIMARY KEY ("id"),
+                CONSTRAINT "fk_schemadef_metadata"
+                    FOREIGN KEY ("meta_data_set_id")
+                    REFERENCES "meta_data_set"("id")
           )
       `);
 
