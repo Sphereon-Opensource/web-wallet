@@ -195,22 +195,23 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
       `);
 
 
-      await queryRunner.query(`
-          CREATE TABLE "schema_definition"
-          (
-              "id"               uuid NOT NULL DEFAULT gen_random_uuid(),
-              "tenant_id"        uuid,
-              "extends_id"       uuid,
-              "schema_type"      text,
-              "entity_type"      text,
-              "schema"           text NOT NULL,
-              "meta_data_set_id" uuid,
-                CONSTRAINT "schemadef_pkey" PRIMARY KEY ("id"),
-                CONSTRAINT "fk_schemadef_metadata"
-                    FOREIGN KEY ("meta_data_set_id")
-                    REFERENCES "meta_data_set"("id")
-          )
-      `);
+    await queryRunner.query(`
+      CREATE TABLE "schema_definition"
+      (
+        "id"                uuid NOT NULL DEFAULT gen_random_uuid(),
+        "tenant_id"         uuid,
+        "extends_id"        uuid,
+        "correlation_label" text,
+        "schema_type"       text,
+        "entity_type"       text,
+        "schema"            text NOT NULL,
+        "meta_data_set_id"  uuid,
+        CONSTRAINT "schemadef_pkey" PRIMARY KEY ("id"),
+        CONSTRAINT "fk_schemadef_metadata"
+          FOREIGN KEY ("meta_data_set_id")
+            REFERENCES "meta_data_set" ("id")
+      )
+    `);
 
       // Junction tables for many-to-many relations
       await queryRunner.query(`

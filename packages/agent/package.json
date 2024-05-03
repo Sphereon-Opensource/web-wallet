@@ -18,7 +18,8 @@
     "start:dev": "node --experimental-specifier-resolution=node --loader ts-node/esm src/agent.ts",
     "start:debug": "pnpm -r --stream start:dev --trace-warnings",
     "demo:init": "node --experimental-specifier-resolution=node --loader ts-node/esm src/database/demo-init.ts",
-    "migrate:down": "node --experimental-specifier-resolution=node --loader ts-node/esm src/database/revert-migration.ts"
+    "db:migrate:down": "node --experimental-specifier-resolution=node --loader ts-node/esm src/database/db-command.ts revert-migration",
+    "db:drop": "node --experimental-specifier-resolution=node --loader ts-node/esm src/database/db-command.ts drop-db"
   },
   "files": [
     "dist/**/*",

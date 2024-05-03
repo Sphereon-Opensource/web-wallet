@@ -3,7 +3,6 @@ import {
     DIDDocument,
     IAgentContext,
     IAgentPlugin,
-    ProofFormat,
     TAgent,
 } from '@veramo/core'
 import {
@@ -62,13 +61,10 @@ import {VcApiServer} from '@sphereon/ssi-sdk.w3c-vc-api'
 import {UniResolverApiServer} from '@sphereon/ssi-sdk.uni-resolver-registrar-api'
 import {DID_PREFIX, DIDMethods, TAgentTypes} from './types'
 import {DidWebServer} from '@sphereon/ssi-sdk.uni-resolver-registrar-api/dist/did-web-server'
-import {MemoryPrivateKeyStore} from '@veramo/key-manager'
 import {StatuslistManagementApiServer} from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
-import {getOrCreateConfiguredStatusList} from './utils/statuslist'
 import {ContactManagerApiServer} from '@sphereon/ssi-sdk.contact-manager-rest-api'
 import {ContactManager} from '@sphereon/ssi-sdk.contact-manager'
 import {ContactStore, EventLoggerStore} from '@sphereon/ssi-sdk.data-store'
-import {addContacts} from "./database/contact-fixtures";
 import {IIssuerInstanceArgs, OID4VCIIssuer} from '@sphereon/ssi-sdk.oid4vci-issuer'
 import {OID4VCIStore} from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import {IRequiredContext, OID4VCIRestAPI} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
@@ -87,7 +83,7 @@ import {RemoteServerApiServer} from "@sphereon/ssi-sdk.remote-server-rest-api";
  * Lets setup supported DID resolvers first
  */
 const resolver = createDidResolver()
-const dbConnection = getDbConnection(DB_CONNECTION_NAME)
+export const dbConnection = getDbConnection(DB_CONNECTION_NAME)
 
 /**
  * Private key store, responsible for storing private keys in the database using encryption
