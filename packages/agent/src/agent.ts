@@ -1,9 +1,4 @@
-import {
-    createAgent,
-    DIDDocument,
-    IAgentContext,
-    IAgentPlugin,
-    TAgent} from '@veramo/core'
+import {createAgent, IAgentContext, IAgentPlugin, TAgent} from '@veramo/core'
 import {
   CredentialHandlerLDLocal,
   LdDefaultContexts,
@@ -13,14 +8,14 @@ import {
   SphereonEd25519Signature2020,
   SphereonJsonWebSignature2020,
 } from '@sphereon/ssi-sdk.vc-handler-ld-local'
-import { CredentialPlugin } from '@veramo/credential-w3c'
-import { DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore } from '@veramo/data-store'
-import { DIDManager } from '@veramo/did-manager'
-import { DIDResolverPlugin } from '@veramo/did-resolver'
-import { SphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
-import { SecretBox } from '@veramo/kms-local'
-import { SphereonKeyManagementSystem } from '@sphereon/ssi-sdk-ext.kms-local'
-import { getDbConnection } from './database'
+import {CredentialPlugin} from '@veramo/credential-w3c'
+import {DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore} from '@veramo/data-store'
+import {DIDManager} from '@veramo/did-manager'
+import {DIDResolverPlugin} from '@veramo/did-resolver'
+import {SphereonKeyManager} from '@sphereon/ssi-sdk-ext.key-manager'
+import {SecretBox} from '@veramo/kms-local'
+import {SphereonKeyManagementSystem} from '@sphereon/ssi-sdk-ext.kms-local'
+import {getDbConnection} from './database'
 import {
   createDidProviders,
   createDidResolver,
@@ -39,7 +34,6 @@ import {
   CONTACT_MANAGER_API_FEATURES,
   DB_CONNECTION_NAME,
   DB_ENCRYPTION_KEY,
-  DB_TYPE,
   DID_API_BASE_PATH,
   DID_API_FEATURES,
   DID_API_RESOLVE_MODE,
@@ -51,32 +45,25 @@ import {
   STATUS_LIST_API_BASE_PATH,
   STATUS_LIST_API_FEATURES,
   STATUS_LIST_CORRELATION_ID,
-  STATUS_LIST_ISSUER,
   VC_API_BASE_PATH,
-  VC_API_DEFAULT_PROOF_FORMAT,
   VC_API_FEATURES,
 } from './environment'
-import { VcApiServer } from '@sphereon/ssi-sdk.w3c-vc-api'
-import { UniResolverApiServer } from '@sphereon/ssi-sdk.uni-resolver-registrar-api'
-import { DID_PREFIX, DIDMethods, TAgentTypes } from './types'
-import { DidWebServer } from '@sphereon/ssi-sdk.uni-resolver-registrar-api/dist/did-web-server'
-import { MemoryPrivateKeyStore } from '@veramo/key-manager'
-import { StatuslistManagementApiServer } from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
-import { getOrCreateConfiguredStatusList } from './utils/statuslist'
-import { ContactManagerApiServer } from '@sphereon/ssi-sdk.contact-manager-rest-api'
-import { ContactManager } from '@sphereon/ssi-sdk.contact-manager'
-import { ContactStore, EventLoggerStore } from '@sphereon/ssi-sdk.data-store'
-import { addContacts } from './database/contact-fixtures'
-import { IIssuerInstanceArgs, OID4VCIIssuer } from '@sphereon/ssi-sdk.oid4vci-issuer'
-import { OID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
-import { IRequiredContext, OID4VCIRestAPI } from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
-import { CredentialDataSupplierArgs, CredentialDataSupplierResult, CredentialSignerCallback } from '@sphereon/oid4vci-issuer'
-import { getCredentialByIdOrHash, LoggingEventType } from '@sphereon/ssi-sdk.core'
-import { IOID4VCIRestAPIOpts } from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api/src/OID4VCIRestAPI'
-import { CredentialMapper, OriginalVerifiableCredential } from '@sphereon/ssi-types'
-import { EventLogger } from '@sphereon/ssi-sdk.event-logger'
-import { RemoteServerApiServer } from '@sphereon/ssi-sdk.remote-server-rest-api'
-import { defaultCredentialDataSupplier } from './credentials/dataSuppliers'
+import {VcApiServer} from '@sphereon/ssi-sdk.w3c-vc-api'
+import {UniResolverApiServer} from '@sphereon/ssi-sdk.uni-resolver-registrar-api'
+import {DID_PREFIX, DIDMethods, TAgentTypes} from './types'
+import {DidWebServer} from '@sphereon/ssi-sdk.uni-resolver-registrar-api/dist/did-web-server'
+import {StatuslistManagementApiServer} from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
+import {ContactManagerApiServer} from '@sphereon/ssi-sdk.contact-manager-rest-api'
+import {ContactManager} from '@sphereon/ssi-sdk.contact-manager'
+import {ContactStore, EventLoggerStore} from '@sphereon/ssi-sdk.data-store'
+import {IIssuerInstanceArgs, OID4VCIIssuer} from '@sphereon/ssi-sdk.oid4vci-issuer'
+import {OID4VCIStore} from '@sphereon/ssi-sdk.oid4vci-issuer-store'
+import {IRequiredContext, OID4VCIRestAPI} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
+import {LoggingEventType} from '@sphereon/ssi-sdk.core'
+import {IOID4VCIRestAPIOpts} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api/src/OID4VCIRestAPI'
+import {EventLogger} from '@sphereon/ssi-sdk.event-logger'
+import {RemoteServerApiServer} from '@sphereon/ssi-sdk.remote-server-rest-api'
+import {defaultCredentialDataSupplier} from './credentials/dataSuppliers'
 
 /**
  * Lets setup supported DID resolvers first
