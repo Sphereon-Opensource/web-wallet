@@ -19,7 +19,7 @@ import {
   DID_WEB_PRIVATE_KEY_PEM,
   didOptConfigs,
 } from '../environment'
-import {IonDIDProvider} from "@veramo/did-provider-ion";
+import { IonDIDProvider } from '@veramo/did-provider-ion'
 
 export function createDidResolver() {
   return new Resolver({
@@ -160,8 +160,15 @@ export async function getOrCreateDIDsFromFS(): Promise<IDIDResult[]> {
       }
 
       if (!privateKeyHex && !did?.startsWith('did:web')) {
-        // @ts-ignore
-        privateKeyHex = generatePrivateKeyHex((args.options?.type ?? args.options.keyType ?? 'Secp256k1') as TKeyType)
+        let type: TKeyType = 'Secp256r1'
+        if (args.options) {
+          if ('type' in args.options && args.options.type) {
+            type = args.options.type as TKeyType
+          } else if ('keyType' in args.options && args.options.keyType) {
+            type = args.options.keyType as TKeyType
+          }
+        }
+        privateKeyHex = await generatePrivateKeyHex(type)
       }
 
       if (privateKeyHex) {
