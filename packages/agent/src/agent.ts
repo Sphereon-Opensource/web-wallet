@@ -319,7 +319,7 @@ if (REMOTE_SERVER_API_FEATURES.length > 0) {
 }
 
 
-OID4VCIRestAPI.init({
+void OID4VCIRestAPI.init({
     opts: {
         baseUrl: OID4VCI_API_BASE_URL,
         endpointOpts: {},
