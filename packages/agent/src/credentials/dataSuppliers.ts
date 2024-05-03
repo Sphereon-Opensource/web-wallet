@@ -13,7 +13,7 @@ export async function defaultCredentialDataSupplier(args: CredentialDataSupplier
   }
   const types: string[] = getTypesFromRequest(credentialRequest)
 
-  if ('hashOrId' in credentialDataSupplierInput && !!credentialDataSupplierInput?.hashOrId) {
+  if ('hashOrId' in credentialDataSupplierInput && !!credentialDataSupplierInput.hashOrId) {
     const hashOrId = credentialDataSupplierInput?.hashOrId as string
     // todo: move to new credential storage implementation
     const credentialResult = await getCredentialByIdOrHash(context, hashOrId)
