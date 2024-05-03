@@ -90,6 +90,9 @@ export const dbConnection = getDbConnection(DB_CONNECTION_NAME)
  */
 const privateKeyStore: PrivateKeyStore = new PrivateKeyStore(dbConnection, new SecretBox(DB_ENCRYPTION_KEY))
 
+
+const maintenanceMode:boolean = process.env.RUN_MODE === 'maintenance'
+
 /**
  * Define Agent plugins being used. The plugins come from Sphereon's SSI-SDK and Veramo.
  */
@@ -341,5 +344,6 @@ OID4VCIRestAPI.init({
     expressSupport
 })
 
-
-expressSupport.start()
+if(!maintenanceMode) {
+    expressSupport.start()
+}

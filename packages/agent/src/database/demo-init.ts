@@ -1,9 +1,8 @@
 import {getDefaultDID} from '../utils';
-import {STATUS_LIST_ISSUER} from '../environment';
-import {getOrCreateConfiguredStatusList} from '../utils/statuslist';
 import {addContactsRWS} from "./demo-data/rws/contact-fixtures";
 import {addContactsKonkuk} from "./demo-data/konkuk/contact-fixtures";
 import {addFormDefsKonkuk} from "./demo-data/konkuk/formdef-fixtures";
+import {addFormDefsBelastingdienst} from "./demo-data/belastingdienst/formdef-fixtures";
 
 enum FixtureType {
     Contacts = 'contacts',
@@ -12,7 +11,8 @@ enum FixtureType {
 
 enum Demo {
     RWS = 'rws',
-    Konkuk = 'konkuk'
+    Konkuk = 'konkuk',
+    Belastingdienst = 'belastingdienst'
 }
 
 async function handleDemo(fixture: FixtureType, demo: Demo) {
@@ -33,19 +33,22 @@ async function handleDemo(fixture: FixtureType, demo: Demo) {
                 }
                 break;
             case FixtureType.FormDef:
-                if (demo === Demo.Konkuk) {
-                    await addFormDefsKonkuk();
-                } else {
-                    throw new Error(`Unsupported demo type for form definitions: ${demo}`);
+                switch (demo) {
+                    case Demo.RWS:
+                        break;
+                    case Demo.Konkuk:
+                        await addFormDefsKonkuk();
+                        break;
+                    case Demo.Belastingdienst:
+                        await addFormDefsBelastingdienst();
+                        break;
+                    default:
+                        throw new Error(`Unsupported demo type for form definitions: ${demo}`);
                 }
                 break;
             default:
                 throw new Error(`Unsupported type: ${fixture}`);
         }
-
-        await getOrCreateConfiguredStatusList({
-            issuer: STATUS_LIST_ISSUER ?? defaultDID,
-        });
 
         console.log('Demo data initialized');
     } catch (error) {

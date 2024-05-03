@@ -201,7 +201,7 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
         "id"                uuid NOT NULL DEFAULT gen_random_uuid(),
         "tenant_id"         uuid,
         "extends_id"        uuid,
-        "correlation_label" text,
+        "correlation_id"    text,
         "schema_type"       text,
         "entity_type"       text,
         "schema"            text NOT NULL,

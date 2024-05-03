@@ -1,0 +1,35 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Label",
+      "text": "Swimmingpool tickets"
+    },
+    {
+      "type": "Group",
+      "label": "Details",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "Date",
+          "scope": "#/properties/date"
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "Adults",
+              "scope": "#/properties/tickets/properties/adults"
+            },
+            {
+              "type": "Control",
+              "label": "Children",
+              "scope": "#/properties/tickets/properties/children"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,6 @@
 import { DataSource } from 'typeorm'
 import { postgresConfig } from './config'
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
-import {config as dotenvConfig} from "dotenv-flow";
 
 console.log(`Using DB configuration for a ${postgresConfig.type} database`)
 
