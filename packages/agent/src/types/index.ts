@@ -12,6 +12,7 @@ import {
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { IOID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import { IOID4VCIIssuer } from '@sphereon/ssi-sdk.oid4vci-issuer'
+import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
 
 export const DID_PREFIX = 'did'
 
@@ -27,7 +28,8 @@ export type TAgentTypes = IDIDManager &
   ICredentialIssuer &
   IContactManager &
   IOID4VCIStore &
-  IOID4VCIIssuer
+  IOID4VCIIssuer &
+  IIssuanceBranding
 
 /**
  * The Key Management System (name) to use. Currently, there is only one KMS
