@@ -19,6 +19,8 @@ import {
   DataStoreContactMigrations,
   DataStoreEventLoggerEntities,
   DataStoreEventLoggerMigrations,
+  DataStoreIssuanceBrandingEntities,
+  DataStoreIssuanceBrandingMigrations,
   DataStoreStatusListEntities,
   DataStoreStatusListMigrations,
 } from '@sphereon/ssi-sdk.data-store'
@@ -61,13 +63,20 @@ const postgresConfig: PostgresConnectionOptions = validatePostgresOptions({
   ssl,
   database: DB_DATABASE_NAME,
   cache: DB_CACHE_ENABLED !== 'false',
-  entities: [...VeramoDataStoreEntities, ...DataStoreStatusListEntities, ...DataStoreContactEntities, ...DataStoreEventLoggerEntities],
+  entities: [
+    ...VeramoDataStoreEntities,
+    ...DataStoreStatusListEntities,
+    ...DataStoreContactEntities,
+    ...DataStoreEventLoggerEntities,
+    ...DataStoreIssuanceBrandingEntities
+  ],
   migrations: [
     ...VeramoDataStoreMigrations,
     ...DataStoreStatusListMigrations,
     ...DataStoreContactMigrations,
     ...WebWalletMigrations,
     ...DataStoreEventLoggerMigrations,
+    ...DataStoreIssuanceBrandingMigrations
   ],
   migrationsRun: false, // We run migrations from code to ensure proper ordering with Redux
   synchronize: false, // We do not enable synchronize, as we use migrations from code
