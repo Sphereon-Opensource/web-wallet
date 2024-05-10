@@ -32,14 +32,14 @@ const toContactIdentityDTO = (contact: Record<string, any>, identifier: IIdentif
 export async function addContacts() {
     try {
         const personContactType = await agent.cmAddContactType({
-            name: "people",
+            name: 'people',
             origin: PartyOrigin.INTERNAL,
             type: PartyTypeType.NATURAL_PERSON,
             tenantId: v4()
         });
 
         const organizationalContactType = await agent.cmAddContactType({
-            name: "organizations",
+            name: 'organizations',
             origin: PartyOrigin.INTERNAL,
             type: PartyTypeType.ORGANIZATION,
             tenantId: v4()
