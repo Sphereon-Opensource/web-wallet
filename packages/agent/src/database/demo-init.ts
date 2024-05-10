@@ -3,81 +3,90 @@ import {addContactsRWS} from "./demo-data/rws/contact-fixtures";
 import {addContactsKonkuk} from "./demo-data/konkuk/contact-fixtures";
 import {addFormDefsKonkuk} from "./demo-data/konkuk/formdef-fixtures";
 import {addFormDefsBelastingdienst} from "./demo-data/belastingdienst/formdef-fixtures";
+import * as process from "node:process";
 
-enum FixtureType {
-    Contacts = 'contacts',
-    FormDef = 'formdef'
-}
+const allowedFixtureVals = ['contacts', 'formdefs'] as const
+const allowedDemoVals = ['rws', 'konkuk', 'belastingdienst'] as const
+type FixtureType = (typeof allowedFixtureVals)[number]
+type Demo = (typeof allowedDemoVals)[number]
 
-enum Demo {
-    RWS = 'rws',
-    Konkuk = 'konkuk',
-    Belastingdienst = 'belastingdienst'
-}
 
-async function handleDemo(fixture: FixtureType, demo: Demo) {
+async function handleDemo(fixtureType: FixtureType, demo: Demo) {
     try {
         const defaultDID = await getDefaultDID();
 
-        switch (fixture) {
-            case FixtureType.Contacts:
+        switch (fixtureType) {
+            case 'contacts':
                 switch (demo) {
-                    case Demo.RWS:
+                    case 'rws':
                         await addContactsRWS();
                         break;
-                    case Demo.Konkuk:
+                    case 'konkuk':
                         await addContactsKonkuk();
                         break;
                     default:
-                        throw new Error(`Unsupported demo type for contacts: ${demo}`);
+                        throw new Error(`Unsupported demo type for contacts: ${demo}, allowed: ${allowedDemoVals}`);
                 }
                 break;
-            case FixtureType.FormDef:
+            case 'formdefs':
                 switch (demo) {
-                    case Demo.RWS:
+                    case 'rws':
                         break;
-                    case Demo.Konkuk:
+                    case 'konkuk':
                         await addFormDefsKonkuk();
                         break;
-                    case Demo.Belastingdienst:
+                    case 'belastingdienst':
                         await addFormDefsBelastingdienst();
                         break;
                     default:
-                        throw new Error(`Unsupported demo type for form definitions: ${demo}`);
+                        throw new Error(`Unsupported demo type for form definitions: ${demo}, allowed: ${allowedDemoVals}`);
                 }
                 break;
             default:
-                throw new Error(`Unsupported type: ${fixture}`);
+                throw new Error(`Unsupported type: ${fixtureType}. Allowed: ${allowedFixtureVals}`);
         }
 
-        console.log('Demo data initialized');
+        console.log(`##### Demo data start ##########################################`);
+        console.log(`Demo data initialized for type "${fixtureType}" and demo "${demo}"`);
+        console.log(`##### Demo data end ##########################################`);
     } catch (error) {
-        console.error(`Initialization failed: ${error}`);
+        console.log(`##### Demo error ##########################################`);
+        console.log(`Initialization failed: ${error}`);
+        console.log(`##### Demo error ##########################################`);
         process.exit(1);
     }
 }
 
 function parseArgs(args: string[]): { fixture: FixtureType; demo: Demo } {
+
+    // todo: We really should use a lib for commands/args
     if (args.length !== 2) {
-        console.error('Expected exactly two arguments: fixture and demo');
+        console.log(`Expected exactly two arguments: fixture and demo. Fixture values one of: "${allowedFixtureVals}", demo values one of "${allowedFixtureVals}". Args length: ${args.length}, args: ${args}`);
         console.log('example:');
-        console.log('  pnpm demo:init -- contacts rws');
+        console.log('  pnpm demo:init contacts konkuk');
+        console.log('  pnpm demo:init formdefs konkuk');
         process.exit(1);
     }
 
-    const fixture = args[0] as FixtureType;
-    const demo = args[1] as Demo;
+    const fixture = args[0].toLowerCase();
+    const demo = args[1].toLowerCase();
 
-    if (!Object.values(FixtureType).includes(fixture) || !Object.values(Demo).includes(demo)) {
-        console.error(`Invalid arguments. Known types: ${Object.values(FixtureType).join(', ')}, demos: ${Object.values(Demo).join(', ')}`);
+    // @ts-ignore
+    if (!allowedFixtureVals.includes(fixture) || !allowedDemoVals.includes(demo)) {
+        console.log(`Invalid arguments. Known types is one of  "${allowedFixtureVals}", demos is one of : "${allowedDemoVals}"`);
+        console.log('example:');
+        console.log('  pnpm demo:init contacts konkuk');
+        console.log('  pnpm demo:init formdefs konkuk');
         process.exit(1);
     }
 
-    return {fixture: fixture, demo};
+    return {fixture: fixture as FixtureType, demo: demo as Demo};
 }
 
 async function main() {
-    const {fixture, demo} = parseArgs(process.argv.slice(2));
+    const args = process.argv
+    // We remove -- from args, as that gets included as arg on some platforms it seems
+    const {fixture, demo} = parseArgs(args.filter( val => val !== '--').slice(2));
     await handleDemo(fixture, demo);
 }
 
