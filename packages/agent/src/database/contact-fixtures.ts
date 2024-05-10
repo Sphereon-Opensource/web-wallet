@@ -1,4 +1,4 @@
-import { CorrelationIdentifierEnum, IdentityRoleEnum, NonPersistedIdentity, PartyOrigin, PartyTypeEnum } from '@sphereon/ssi-sdk.data-store'
+import { CorrelationIdentifierType, IdentityRole, NonPersistedIdentity, PartyOrigin, PartyTypeType } from '@sphereon/ssi-sdk.data-store'
 import { IIdentifier } from '@veramo/core'
 import agent from '../agent'
 import { v4 } from 'uuid'
@@ -21,29 +21,29 @@ const toContactIdentityDTO = (contact: Record<string, any>, identifier: IIdentif
   console.log(`Contact received did ${identifier.did}, contact: ${JSON.stringify(contact)}`, identifier.did)
   return {
     alias: identifier.alias ?? contact.displayName,
-    roles: [IdentityRoleEnum.ISSUER],
+    roles: [IdentityRole.ISSUER],
     identifier: {
-      type: CorrelationIdentifierEnum.DID,
+      type: CorrelationIdentifierType.DID,
       correlationId: identifier.did,
     },
   } as NonPersistedIdentity
 }
 
 export async function addContacts() {
-  try {
-    const personContactType = await agent.cmAddContactType({
-      name: 'people',
-      type: PartyTypeEnum.NATURAL_PERSON,
-      tenantId: v4(),
-      origin: PartyOrigin.internal,
-    })
+    try {
+        const personContactType = await agent.cmAddContactType({
+            name: 'people',
+            origin: PartyOrigin.INTERNAL,
+            type: PartyTypeType.NATURAL_PERSON,
+            tenantId: v4()
+        });
 
-    const organizationalContactType = await agent.cmAddContactType({
-      name: 'organizations',
-      type: PartyTypeEnum.ORGANIZATION,
-      tenantId: v4(),
-      origin: PartyOrigin.internal,
-    })
+        const organizationalContactType = await agent.cmAddContactType({
+            name: 'organizations',
+            origin: PartyOrigin.INTERNAL,
+            type: PartyTypeType.ORGANIZATION,
+            tenantId: v4()
+        });
 
     const persona1 = {
       firstName: 'Wendy',

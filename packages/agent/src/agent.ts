@@ -55,7 +55,7 @@ import { DidWebServer } from '@sphereon/ssi-sdk.uni-resolver-registrar-api/dist/
 import { StatuslistManagementApiServer } from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
 import { ContactManagerApiServer } from '@sphereon/ssi-sdk.contact-manager-rest-api'
 import { ContactManager } from '@sphereon/ssi-sdk.contact-manager'
-import {ContactStore, EventLoggerStore, IssuanceBrandingStore} from '@sphereon/ssi-sdk.data-store'
+import { ContactStore, EventLoggerStore, IssuanceBrandingStore } from '@sphereon/ssi-sdk.data-store'
 import { IIssuerInstanceArgs, OID4VCIIssuer } from '@sphereon/ssi-sdk.oid4vci-issuer'
 import { OID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import { IRequiredContext, OID4VCIRestAPI } from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
@@ -307,7 +307,7 @@ if (REMOTE_SERVER_API_FEATURES.length > 0) {
   })
 }
 
-OID4VCIRestAPI.init({
+void OID4VCIRestAPI.init({
   opts: {
     baseUrl: OID4VCI_API_BASE_URL,
     endpointOpts: {},
