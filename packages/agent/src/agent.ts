@@ -55,7 +55,7 @@ import {DidWebServer} from '@sphereon/ssi-sdk.uni-resolver-registrar-api/dist/di
 import {StatuslistManagementApiServer} from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
 import {ContactManagerApiServer} from '@sphereon/ssi-sdk.contact-manager-rest-api'
 import {ContactManager} from '@sphereon/ssi-sdk.contact-manager'
-import {ContactStore, EventLoggerStore} from '@sphereon/ssi-sdk.data-store'
+import {ContactStore, EventLoggerStore, IssuanceBrandingStore} from '@sphereon/ssi-sdk.data-store'
 import {IIssuerInstanceArgs, OID4VCIIssuer} from '@sphereon/ssi-sdk.oid4vci-issuer'
 import {OID4VCIStore} from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import {IRequiredContext, OID4VCIRestAPI} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
@@ -64,6 +64,7 @@ import {IOID4VCIRestAPIOpts} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api/src
 import {EventLogger} from '@sphereon/ssi-sdk.event-logger'
 import {RemoteServerApiServer} from '@sphereon/ssi-sdk.remote-server-rest-api'
 import {defaultCredentialDataSupplier} from './credentials/dataSuppliers'
+import { IssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding';
 
 /**
  * Lets setup supported DID resolvers first
@@ -117,6 +118,7 @@ const plugins: IAgentPlugin[] = [
     keyStore: privateKeyStore,
   }),
   new ContactManager({ store: new ContactStore(dbConnection) }),
+  new IssuanceBranding({store: new IssuanceBrandingStore(dbConnection)}),
   new OID4VCIStore({
     importIssuerOpts: oid4vciInstanceOpts.asArray,
     importMetadatas: oid4vciMetadataOpts.asArray,
