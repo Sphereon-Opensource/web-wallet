@@ -2,7 +2,6 @@ import { createNewStatusList } from '@sphereon/ssi-sdk.vc-status-list'
 import { getDriver } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
 import {
   DB_CONNECTION_NAME,
-  DB_DATABASE_NAME,
   DEFAULT_DID,
   STATUS_LIST_API_FEATURES,
   STATUS_LIST_CORRELATION_ID,

@@ -8,14 +8,14 @@ import {
   SphereonEd25519Signature2020,
   SphereonJsonWebSignature2020,
 } from '@sphereon/ssi-sdk.vc-handler-ld-local'
-import {CredentialPlugin} from '@veramo/credential-w3c'
-import {DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore} from '@veramo/data-store'
-import {DIDManager} from '@veramo/did-manager'
-import {DIDResolverPlugin} from '@veramo/did-resolver'
-import {SphereonKeyManager} from '@sphereon/ssi-sdk-ext.key-manager'
-import {SecretBox} from '@veramo/kms-local'
-import {SphereonKeyManagementSystem} from '@sphereon/ssi-sdk-ext.kms-local'
-import {getDbConnection} from './database'
+import { CredentialPlugin } from '@veramo/credential-w3c'
+import { DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore } from '@veramo/data-store'
+import { DIDManager } from '@veramo/did-manager'
+import { DIDResolverPlugin } from '@veramo/did-resolver'
+import { SphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
+import { SecretBox } from '@veramo/kms-local'
+import { SphereonKeyManagementSystem } from '@sphereon/ssi-sdk-ext.kms-local'
+import { getDbConnection } from './database'
 import {
   createDidProviders,
   createDidResolver,
@@ -55,7 +55,7 @@ import {DidWebServer} from '@sphereon/ssi-sdk.uni-resolver-registrar-api/dist/di
 import {StatuslistManagementApiServer} from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
 import {ContactManagerApiServer} from '@sphereon/ssi-sdk.contact-manager-rest-api'
 import {ContactManager} from '@sphereon/ssi-sdk.contact-manager'
-import {ContactStore, EventLoggerStore, IssuanceBrandingStore} from '@sphereon/ssi-sdk.data-store'
+import { ContactStore, EventLoggerStore, IssuanceBrandingStore } from '@sphereon/ssi-sdk.data-store'
 import {IIssuerInstanceArgs, OID4VCIIssuer} from '@sphereon/ssi-sdk.oid4vci-issuer'
 import {OID4VCIStore} from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import {IRequiredContext, OID4VCIRestAPI} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
@@ -310,7 +310,7 @@ if (REMOTE_SERVER_API_FEATURES.length > 0) {
   })
 }
 
-OID4VCIRestAPI.init({
+void OID4VCIRestAPI.init({
   opts: {
     baseUrl: OID4VCI_API_BASE_URL,
     endpointOpts: {},
