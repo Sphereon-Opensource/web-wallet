@@ -1,10 +1,11 @@
 import {
-    createAgent,
-    DIDDocument,
-    IAgentContext,
-    IAgentPlugin,
-    ProofFormat,
-    TAgent,
+  createAgent,
+  DIDDocument,
+  IAgentContext,
+  IAgentPlugin,
+  ManagedKeyInfo,
+  ProofFormat,
+  TAgent,
 } from '@veramo/core'
 import {
     CredentialHandlerLDLocal,
@@ -317,8 +318,9 @@ if (REMOTE_SERVER_API_FEATURES.length > 0) {
         }
     })
 }
-
-
+//fixme: ksadjad remove this
+const keys:ManagedKeyInfo[] = await agent.keyManagerListKeys()
+console.log(`Here are my keys: ${JSON.stringify(keys)}`)
 OID4VCIRestAPI.init({
     opts: {
         baseUrl: OID4VCI_API_BASE_URL,
