@@ -4,6 +4,8 @@ import * as microDegreeUISchema from './microDegreeUISchema.json' assert {type: 
 import * as microDegreeDataSchema from './microDegreeSchema.json' assert {type: "json"}
 import * as studentUISchema from './studentUISchema.json' assert {type: "json"}
 import * as studentDataSchema from './studentSchema.json' assert {type: "json"}
+import * as employeeUISchema from './employeeUISchema.json' assert {type: "json"}
+import * as employeeDataSchema from './employeeSchema.json' assert {type: "json"}
 import {getDbConnection} from "../../databaseService"
 import {DB_CONNECTION_NAME} from "../../../environment"
 
@@ -85,6 +87,21 @@ export async function addFormDefsKonkuk() {
     await ds.query(`INSERT INTO form_step_to_schema_definition(form_step_id, schema_definition_id)
                     VALUES ('${formStepId}', '${response[0].id}')`)
 
+    response = await ds.query(`INSERT INTO schema_definition (tenant_id, extends_id, schema_type, entity_type, schema,
+                                                              meta_data_set_id)
+                               VALUES (NULL, NULL, 'UI_Form', 'VC', '${JSON.stringify(employeeUISchema)}',
+                                       '${setId}')
+                               RETURNING id`)
+    await ds.query(`INSERT INTO form_step_to_schema_definition(form_step_id, schema_definition_id)
+                    VALUES ('${formStepId}', '${response[0].id}')`)
+
+    response = await ds.query(`INSERT INTO schema_definition (tenant_id, extends_id, schema_type, entity_type, schema,
+                                                              meta_data_set_id)
+                               VALUES (NULL, NULL, 'Data', 'VC', '${JSON.stringify(employeeDataSchema)}',
+                                       '${setId}')
+                               RETURNING id`)
+    await ds.query(`INSERT INTO form_step_to_schema_definition(form_step_id, schema_definition_id)
+                    VALUES ('${formStepId}', '${response[0].id}')`)
 
     // Form definition
     response = await ds.query(`INSERT INTO form_definition(tenant_id, name, description, machine_id)
