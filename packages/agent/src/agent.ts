@@ -55,7 +55,7 @@ import { DidWebServer } from '@sphereon/ssi-sdk.uni-resolver-registrar-api/dist/
 import { StatuslistManagementApiServer } from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
 import { ContactManagerApiServer } from '@sphereon/ssi-sdk.contact-manager-rest-api'
 import { ContactManager } from '@sphereon/ssi-sdk.contact-manager'
-import { ContactStore, EventLoggerStore, IssuanceBrandingStore } from '@sphereon/ssi-sdk.data-store'
+import { ContactStore, EventLoggerStore, IssuanceBrandingStore, PDStore } from '@sphereon/ssi-sdk.data-store'
 import { IIssuerInstanceArgs, OID4VCIIssuer } from '@sphereon/ssi-sdk.oid4vci-issuer'
 import { OID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import { IRequiredContext, OID4VCIRestAPI } from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
@@ -65,6 +65,9 @@ import { EventLogger } from '@sphereon/ssi-sdk.event-logger'
 import { RemoteServerApiServer } from '@sphereon/ssi-sdk.remote-server-rest-api'
 import { defaultCredentialDataSupplier } from './credentials/dataSuppliers'
 import { IssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding';
+import { PDManager } from '@sphereon/ssi-sdk.pd-manager'
+import { IRPDefaultOpts, SIOPv2RP } from "@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth";
+import {toPexInstanceOptions} from "./utils/oid4vp";
 
 /**
  * Lets setup supported DID resolvers first
@@ -129,6 +132,10 @@ const plugins: IAgentPlugin[] = [
     eventTypes: [LoggingEventType.AUDIT],
     store: new EventLoggerStore(dbConnection),
   }),
+  new PDManager({ store: new PDStore(dbConnection) }),
+  new SIOPv2RP({
+    instanceOpts: toPexInstanceOptions([], [],{ resolver }) // TODO should come from the pd-manager
+  })
 ]
 
 /**

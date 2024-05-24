@@ -13,6 +13,8 @@ import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { IOID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import { IOID4VCIIssuer } from '@sphereon/ssi-sdk.oid4vci-issuer'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
+import { IPDManager } from '@sphereon/ssi-sdk.pd-manager'
+import {IPEXInstanceOptions} from "@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth";
 
 export const DID_PREFIX = 'did'
 
@@ -29,7 +31,8 @@ export type TAgentTypes = IDIDManager &
   IContactManager &
   IOID4VCIStore &
   IOID4VCIIssuer &
-  IIssuanceBranding
+  IIssuanceBranding &
+  IPDManager
 
 /**
  * The Key Management System (name) to use. Currently, there is only one KMS
@@ -78,3 +81,5 @@ export interface IImportX509DIDArg {
     kid?: string // The requested KID. A default will be generated when not supplied
 }
 */
+
+export type OID4VPInstanceOpts = Omit<IPEXInstanceOptions, 'definition'>
