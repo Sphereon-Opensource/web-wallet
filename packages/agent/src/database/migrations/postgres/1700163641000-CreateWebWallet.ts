@@ -7,23 +7,75 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await enablePostgresUuidExtension(queryRunner)
 
-    await queryRunner.query(`
+      await queryRunner.query(`
+         CREATE TYPE "value_type" AS ENUM ('Text', 'Number', 'Boolean', 'Date');
+    `);
+
+      await queryRunner.query(`
          CREATE TYPE "workflow_status" AS ENUM ('New', 'Approved', 'Pending', 'Declined', 'Done', 'Archived')
     `)
 
-    await queryRunner.query(`
-        CREATE TABLE "asset"
-        (
-            "id"          uuid                   NOT NULL DEFAULT uuid_generate_v4(),
-            "name"        text                   NOT NULL,
-            "did"         text                   NOT NULL UNIQUE,
-            "description" text,
-            "contact_id"  text,
-            "owner_id"    text,
-            "owner_alias" text,
-            CONSTRAINT "asset_pkey" PRIMARY KEY ("id")
-        )
-    `)
+      await queryRunner.query(`
+          CREATE TABLE meta_data_set
+          (
+              id        uuid NOT NULL DEFAULT gen_random_uuid(),
+              tenant_id uuid,
+              name      text NOT NULL,
+              CONSTRAINT meta_data_set_pkey PRIMARY KEY (id)
+          )
+      `);
+
+      await queryRunner.query(`
+          CREATE UNIQUE INDEX meta_data_set_unique_no_tenant ON meta_data_set (name) WHERE tenant_id IS NULL
+      `);
+
+      await queryRunner.query(`
+          CREATE UNIQUE INDEX meta_data_set_unique_tenant ON meta_data_set (name, tenant_id) WHERE tenant_id IS NOT NULL
+      `);
+
+      await queryRunner.query(`
+          CREATE TABLE meta_data_keys
+          (
+              id         uuid       NOT NULL DEFAULT gen_random_uuid(),
+              set_id     uuid       NOT NULL,
+              key        text       NOT NULL,
+              value_type value_type NOT NULL,
+              CONSTRAINT meta_data_keys_pkey PRIMARY KEY (id),
+              CONSTRAINT fk_meta_data_set FOREIGN KEY (set_id)
+                  REFERENCES meta_data_set (id)
+          )
+      `);
+
+      await queryRunner.query(`
+          CREATE TABLE meta_data_values
+          (
+              id              uuid NOT NULL DEFAULT gen_random_uuid(),
+              key_id          uuid NOT NULL,
+              index           numeric,
+              text_value      text,
+              number_value    numeric,
+              boolean_value   boolean,
+              timestamp_value timestamp without time zone,
+              CONSTRAINT meta_data_values_pkey PRIMARY KEY (id),
+              CONSTRAINT fk_meta_data_keys FOREIGN KEY (key_id)
+                  REFERENCES meta_data_keys (id)
+          )
+      `);
+
+
+      await queryRunner.query(`
+          CREATE TABLE "asset"
+          (
+              "id"          uuid NOT NULL DEFAULT uuid_generate_v4(),
+              "name"        text NOT NULL,
+              "did"         text NOT NULL UNIQUE,
+              "description" text,
+              "contact_id"  text,
+              "owner_id"    text,
+              "owner_alias" text,
+              CONSTRAINT "asset_pkey" PRIMARY KEY ("id")
+          )
+      `)
 
     await queryRunner.query(`
         CREATE TABLE "credential_reference"
@@ -141,16 +193,22 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
       `)
 
     await queryRunner.query(`
-          CREATE TABLE "schema_definition"
-          (
-              "id"         uuid NOT NULL DEFAULT gen_random_uuid(),
-              "tenant_id"  uuid,
-              "schema_type" text,
-              "entity_type" text,
-              "schema"     text,
-              CONSTRAINT "schemadef_pkey" PRIMARY KEY ("id")
-          )
-      `)
+      CREATE TABLE "schema_definition"
+      (
+        "id"                uuid NOT NULL DEFAULT gen_random_uuid(),
+        "tenant_id"         uuid,
+        "extends_id"        uuid,
+        "correlation_id"    text,
+        "schema_type"       text,
+        "entity_type"       text,
+        "schema"            text NOT NULL,
+        "meta_data_set_id"  uuid,
+        CONSTRAINT "schemadef_pkey" PRIMARY KEY ("id"),
+        CONSTRAINT "fk_schemadef_metadata"
+          FOREIGN KEY ("meta_data_set_id")
+            REFERENCES "meta_data_set" ("id")
+      )
+    `)
 
     // Junction tables for many-to-many relations
     await queryRunner.query(`
@@ -273,6 +331,16 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
             ADD CONSTRAINT "FK_workflow_step_recipient_id"
                 FOREIGN KEY ("recipient_id") REFERENCES "CorrelationIdentifier" ("correlation_id")
     `)
+
+      // TODO evaluate if not too much. (without these grants local Supabase instance won't have access to the tables)
+      await queryRunner.query(`
+        GRANT USAGE,CREATE ON SCHEMA PUBLIC TO POSTGRES, ANON, AUTHENTICATED, SERVICE_ROLE;
+        GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA "public" TO service_role;
+        GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA "public" TO authenticated;
+        GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA "public" TO anon;
+`)
+
+
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
@@ -356,6 +424,19 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
     `)
 
     await queryRunner.query(`
+        DROP TABLE IF EXISTS "meta_data_values"
+    `);
+
+    await queryRunner.query(`
+        DROP TABLE IF EXISTS "meta_data_keys"
+    `);
+
+    await queryRunner.query(`
+        DROP TABLE IF EXISTS "meta_data_set"
+    `);
+
+
+    await queryRunner.query(`
         DROP VIEW IF EXISTS "view_all_workflow_step"
     `)
 
@@ -365,6 +446,10 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
 
     await queryRunner.query(`
         DROP TYPE IF EXISTS "workflow_status"
+    `)
+
+    await queryRunner.query(`
+        DROP TYPE IF EXISTS "value_type"
     `)
   }
 }

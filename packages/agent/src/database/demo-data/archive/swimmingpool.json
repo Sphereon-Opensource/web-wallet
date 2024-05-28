@@ -1,0 +1,33 @@
+{
+  "type": "object",
+  "properties": {
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "tickets": {
+      "type": "object",
+      "properties": {
+        "adults": {
+          "type": "integer",
+          "default": 1,
+          "minimum": 1,
+          "maximum": 10
+        },
+        "children": {
+          "type": "integer",
+          "default": 0,
+          "minimum": 0,
+          "maximum": 10
+        }
+      },
+      "required": [
+        "adults"
+      ]
+    }
+  },
+  "required": [
+    "date",
+    "tickets"
+  ]
+}

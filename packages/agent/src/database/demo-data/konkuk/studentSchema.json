@@ -1,0 +1,42 @@
+{
+  "type": "object",
+  "properties": {
+    "firstName": {
+      "type": "string"
+    },
+    "lastName": {
+      "type": "string"
+    },
+    "dateOfBirth": {
+      "type": "string",
+      "format": "date"
+    },
+    "studentNumber": {
+      "type": "string"
+    },
+    "registeredAs": {
+      "type": "string"
+    },
+    "studyProgramme": {
+      "type": "string"
+    },
+    "studentImage": {
+      "type": "object",
+      "properties": {
+        "fileName": {
+          "type": "string"
+        },
+        "mimeType": {
+          "type": "string"
+        },
+        "base64Uri": {
+          "type": "string"
+        }
+      },
+      "required": ["fileName", "mimeType", "base64Uri"]
+    }
+  },
+  "required": [
+    "firstName"
+  ]
+}
