@@ -9,24 +9,46 @@ import * as woonplaatsVerklaringDataSchema from "./woonplaatsVerklaringSchema.js
 export async function addFormDefsBelastingdienst() {
     const ds = await getDbConnection(DB_CONNECTION_NAME)
 
-    // Metadata
+    // Metadata Omzetbelasting
     let response = await ds.query(`INSERT INTO meta_data_set(tenant_id, name)
-                                   VALUES (NULL, 'Credential Issuance Wizard')
+                                   VALUES (NULL, 'Omzetbelasting')
                                    RETURNING id`)
-    const setId = response[0].id;
+    const setIdOmzetbelasting = response[0].id;
 
     response = await ds.query(`INSERT INTO meta_data_keys(set_id, key, value_type)
-                               VALUES ('${setId}', 'credentialType', 'Text')
+                               VALUES ('${setIdOmzetbelasting}', 'credentialType', 'Text')
                                RETURNING id`)
-    const keyId = response[0].id;
+    const keyIdOmzetbelasting = response[0].id;
 
     response = await ds.query(`INSERT INTO meta_data_values(key_id, index, text_value, number_value, boolean_value,
                                                             timestamp_value)
-                               VALUES ('${keyId}', 0, 'VerifiableCredential', NULL, NULL, NULL)`)
+                               VALUES ('${keyIdOmzetbelasting}', 0, 'VerifiableCredential', NULL, NULL, NULL)`)
 
     response = await ds.query(`INSERT INTO meta_data_values(key_id, index, text_value, number_value, boolean_value,
                                                             timestamp_value)
-                               VALUES ('${keyId}', 1, 'Omzetbelasting', NULL, NULL, NULL)`)
+                               VALUES ('${keyIdOmzetbelasting}', 1, 'Omzetbelasting', NULL, NULL, NULL)`)
+
+
+    // Metadata Woonplaatsverklaring
+    response = await ds.query(`INSERT INTO meta_data_set(tenant_id, name)
+                                   VALUES (NULL, 'Woonplaatsverklaring')
+                                   RETURNING id`)
+    const setIdWoonplaatsverklaring = response[0].id;
+
+    response = await ds.query(`INSERT INTO meta_data_keys(set_id, key, value_type)
+                               VALUES ('${setIdWoonplaatsverklaring}', 'credentialType', 'Text')
+                               RETURNING id`)
+
+    const keyIdWoonplaatsverklaring = response[0].id;
+
+    response = await ds.query(`INSERT INTO meta_data_values(key_id, index, text_value, number_value, boolean_value,
+                                                            timestamp_value)
+                               VALUES ('${keyIdWoonplaatsverklaring}', 0, 'VerifiableCredential', NULL, NULL, NULL)`)
+
+    response = await ds.query(`INSERT INTO meta_data_values(key_id, index, text_value, number_value, boolean_value,
+                                                            timestamp_value)
+                               VALUES ('${keyIdWoonplaatsverklaring}', 1, 'Woonplaatsverklaring', NULL, NULL, NULL)`)
+
 
     // Form step
     response = await ds.query(`INSERT INTO form_step(tenant_id, form_id, step_nr, "order")
@@ -36,34 +58,34 @@ export async function addFormDefsBelastingdienst() {
 
 
     // Schema defs
-    response = await ds.query(`INSERT INTO schema_definition (tenant_id, extends_id, schema_type, entity_type, schema,
+    response = await ds.query(`INSERT INTO schema_definition (tenant_id, extends_id, correlation_id, schema_type, entity_type, schema,
                                                               meta_data_set_id)
-                               VALUES (NULL, NULL, 'UI_Form', 'VC', '${JSON.stringify(omzetbelastingUISchema)}',
-                                       '${setId}')
+                               VALUES (NULL, NULL, 'Omzetbelasting', 'UI_Form', 'VC', '${JSON.stringify(omzetbelastingUISchema)}',
+                                       '${setIdOmzetbelasting}')
                                RETURNING id`)
     await ds.query(`INSERT INTO form_step_to_schema_definition(form_step_id, schema_definition_id)
                     VALUES ('${formStepId}', '${response[0].id}')`)
 
-    response = await ds.query(`INSERT INTO schema_definition (tenant_id, extends_id, schema_type, entity_type, schema,
+    response = await ds.query(`INSERT INTO schema_definition (tenant_id, extends_id, correlation_id, schema_type, entity_type, schema,
                                                               meta_data_set_id)
-                               VALUES (NULL, NULL, 'Data', 'VC', '${JSON.stringify(omzetbelastingDataSchema)}',
-                                       '${setId}')
+                               VALUES (NULL, NULL, 'Omzetbelasting', 'Data', 'VC', '${JSON.stringify(omzetbelastingDataSchema)}',
+                                       '${setIdOmzetbelasting}')
                                RETURNING id`)
     await ds.query(`INSERT INTO form_step_to_schema_definition(form_step_id, schema_definition_id)
                     VALUES ('${formStepId}', '${response[0].id}')`)
 
-    response = await ds.query(`INSERT INTO schema_definition (tenant_id, extends_id, schema_type, entity_type, schema,
+    response = await ds.query(`INSERT INTO schema_definition (tenant_id, extends_id, correlation_id, schema_type, entity_type, schema,
                                                               meta_data_set_id)
-                               VALUES (NULL, NULL, 'UI_Form', 'VC', '${JSON.stringify(woonplaatsVerklaringUISchema)}',
-                                       '${setId}')
+                               VALUES (NULL, NULL, 'Woonplaatsverklaring', 'UI_Form', 'VC', '${JSON.stringify(woonplaatsVerklaringUISchema)}',
+                                       '${setIdWoonplaatsverklaring}')
                                RETURNING id`)
     await ds.query(`INSERT INTO form_step_to_schema_definition(form_step_id, schema_definition_id)
                     VALUES ('${formStepId}', '${response[0].id}')`)
 
-    response = await ds.query(`INSERT INTO schema_definition (tenant_id, extends_id, schema_type, entity_type, schema,
+    response = await ds.query(`INSERT INTO schema_definition (tenant_id, extends_id, correlation_id, schema_type, entity_type, schema,
                                                               meta_data_set_id)
-                               VALUES (NULL, NULL, 'Data', 'VC', '${JSON.stringify(woonplaatsVerklaringDataSchema)}',
-                                       '${setId}')
+                               VALUES (NULL, NULL, 'Woonplaatsverklaring', 'Data', 'VC', '${JSON.stringify(woonplaatsVerklaringDataSchema)}',
+                                       '${setIdWoonplaatsverklaring}')
                                RETURNING id`)
     await ds.query(`INSERT INTO form_step_to_schema_definition(form_step_id, schema_definition_id)
                     VALUES ('${formStepId}', '${response[0].id}')`)

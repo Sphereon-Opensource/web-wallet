@@ -20,7 +20,7 @@ export async function addFormDefsKonkuk() {
                                VALUES ('${setId}', 'credentialType', 'Text')
                                RETURNING id`)
     const keyId = response[0].id;
-
+    // FIXME!!! add konkuk VC values
     response = await ds.query(`INSERT INTO meta_data_values(key_id, index, text_value, number_value, boolean_value,
                                                             timestamp_value)
                                VALUES ('${keyId}', 0, 'VerifiableCredential', NULL, NULL, NULL)`)
@@ -37,7 +37,7 @@ export async function addFormDefsKonkuk() {
 
 
     // Schema defs
-    response = await ds.query(`INSERT INTO schema_definition (tenant_id, extends_id, schema_type, entity_type, schema,
+    response = await ds.query(`INSERT INTO schema_definition (name, tenant_id, extends_id, schema_type, entity_type, schema,
                                                               meta_data_set_id)
                                VALUES (NULL, NULL, 'UI_Form', 'VC', '${JSON.stringify(classAchievementUISchema)}',
                                        '${setId}')
@@ -45,9 +45,25 @@ export async function addFormDefsKonkuk() {
     await ds.query(`INSERT INTO form_step_to_schema_definition(form_step_id, schema_definition_id)
                     VALUES ('${formStepId}', '${response[0].id}')`)
 
-    response = await ds.query(`INSERT INTO schema_definition (tenant_id, extends_id, schema_type, entity_type, schema,
+    response = await ds.query(`INSERT INTO schema_definition (name, tenant_id, extends_id, schema_type, entity_type, schema,
                                                               meta_data_set_id)
-                               VALUES (NULL, NULL, 'Data', 'VC', '${JSON.stringify(classAchievementDataSchema)}',
+                               VALUES ('FIXME', NULL, NULL, 'Data', 'VC', '${JSON.stringify(classAchievementDataSchema)}',
+                                       '${setId}')
+                               RETURNING id`)
+    await ds.query(`INSERT INTO form_step_to_schema_definition(form_step_id, schema_definition_id)
+                    VALUES ('${formStepId}', '${response[0].id}')`)
+
+    response = await ds.query(`INSERT INTO schema_definition (name, tenant_id, extends_id, schema_type, entity_type, schema,
+                                                              meta_data_set_id)
+                               VALUES ('FIXME', NULL, NULL, 'UI_Form', 'VC', '${JSON.stringify(microDegreeUISchema)}',
+                                       '${setId}')
+                               RETURNING id`)
+    await ds.query(`INSERT INTO form_step_to_schema_definition(form_step_id, schema_definition_id)
+                    VALUES ('${formStepId}', '${response[0].id}')`)
+
+    response = await ds.query(`INSERT INTO schema_definition (name, tenant_id, extends_id, schema_type, entity_type, schema,
+                                                              meta_data_set_id)
+                               VALUES ('FIXME', NULL, NULL, 'Data', 'VC', '${JSON.stringify(microDegreeDataSchema)}',
                                        '${setId}')
                                RETURNING id`)
     await ds.query(`INSERT INTO form_step_to_schema_definition(form_step_id, schema_definition_id)
@@ -55,23 +71,7 @@ export async function addFormDefsKonkuk() {
 
     response = await ds.query(`INSERT INTO schema_definition (tenant_id, extends_id, schema_type, entity_type, schema,
                                                               meta_data_set_id)
-                               VALUES (NULL, NULL, 'UI_Form', 'VC', '${JSON.stringify(microDegreeUISchema)}',
-                                       '${setId}')
-                               RETURNING id`)
-    await ds.query(`INSERT INTO form_step_to_schema_definition(form_step_id, schema_definition_id)
-                    VALUES ('${formStepId}', '${response[0].id}')`)
-
-    response = await ds.query(`INSERT INTO schema_definition (tenant_id, extends_id, schema_type, entity_type, schema,
-                                                              meta_data_set_id)
-                               VALUES (NULL, NULL, 'Data', 'VC', '${JSON.stringify(microDegreeDataSchema)}',
-                                       '${setId}')
-                               RETURNING id`)
-    await ds.query(`INSERT INTO form_step_to_schema_definition(form_step_id, schema_definition_id)
-                    VALUES ('${formStepId}', '${response[0].id}')`)
-
-    response = await ds.query(`INSERT INTO schema_definition (tenant_id, extends_id, schema_type, entity_type, schema,
-                                                              meta_data_set_id)
-                               VALUES (NULL, NULL, 'UI_Form', 'VC', '${JSON.stringify(studentUISchema)}',
+                               VALUES ('FIXME', NULL, NULL, 'UI_Form', 'VC', '${JSON.stringify(studentUISchema)}',
                                        '${setId}')
                                RETURNING id`)
     await ds.query(`INSERT INTO form_step_to_schema_definition(form_step_id, schema_definition_id)
