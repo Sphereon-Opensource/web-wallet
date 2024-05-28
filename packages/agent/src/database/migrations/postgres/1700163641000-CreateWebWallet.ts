@@ -331,6 +331,16 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
             ADD CONSTRAINT "FK_workflow_step_recipient_id"
                 FOREIGN KEY ("recipient_id") REFERENCES "CorrelationIdentifier" ("correlation_id")
     `)
+
+      // TODO evaluate if not too much. (without these grants local Supabase instance won't have access to the tables)
+      await queryRunner.query(`
+        GRANT USAGE,CREATE ON SCHEMA PUBLIC TO POSTGRES, ANON, AUTHENTICATED, SERVICE_ROLE;
+        GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA "public" TO service_role;
+        GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA "public" TO authenticated;
+        GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA "public" TO anon;
+`)
+
+
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
