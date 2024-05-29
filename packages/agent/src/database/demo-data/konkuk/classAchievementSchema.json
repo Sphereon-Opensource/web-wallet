@@ -1,0 +1,49 @@
+{
+  "type": "object",
+  "properties": {
+    "completionDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "student": {
+      "properties": {
+        "studentNumber": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "studentNumber"
+      ]
+    },
+    "class": {
+      "type": "object",
+      "properties": {
+        "className": {
+          "type": "string",
+          "enum": [
+            "Software Engineering",
+            "UX Design"
+          ]
+        },
+        "category": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "className",
+        "category"
+      ]
+    }
+  },
+  "required": [
+    "completionDate",
+    "student",
+    "class"
+  ]
+}

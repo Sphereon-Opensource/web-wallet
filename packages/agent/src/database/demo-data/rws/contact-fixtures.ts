@@ -1,11 +1,11 @@
 import { CorrelationIdentifierType, IdentityRole, NonPersistedIdentity, PartyOrigin, PartyTypeType } from '@sphereon/ssi-sdk.data-store'
 import { IIdentifier } from '@veramo/core'
-import agent from '../agent'
+import agent from '../../../agent'
 import { v4 } from 'uuid'
 import { AddContactArgs } from '@sphereon/ssi-sdk.contact-manager'
 import { IonPublicKeyPurpose } from '@decentralized-identity/ion-sdk'
-import { VC_API_BASE_PATH } from '../environment'
-import { DIDMethods } from '../types'
+import { VC_API_BASE_PATH } from '../../../environment'
+import { DIDMethods } from '../../../types'
 import { IKeyOpts } from '@sphereon/ssi-sdk-ext.did-provider-web'
 import { TKeyType } from '@sphereon/ssi-sdk-ext.key-utils'
 
@@ -29,7 +29,7 @@ const toContactIdentityDTO = (contact: Record<string, any>, identifier: IIdentif
   } as NonPersistedIdentity
 }
 
-export async function addContacts() {
+export async function addContactsRWS() {
     try {
         const personContactType = await agent.cmAddContactType({
             name: 'people',

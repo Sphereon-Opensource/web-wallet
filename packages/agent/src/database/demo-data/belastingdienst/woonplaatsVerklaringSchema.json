@@ -1,0 +1,48 @@
+{
+  "description": "verklaring waarin staat dat een belastingplichtige gevestigd is in Nederland",
+  "type": "object",
+  "properties": {
+    "naam": {
+      "description": "Naam van de onderneming",
+      "type": "string"
+    },
+    "rsin": {
+      "description": "Het Rechtspersonen en Samenwerkingsverbanden Informatienummer, uitgegeven door de Kamer van Koophandel",
+      "type": "string"
+    },
+    "adres": {
+      "description": "Woonplaats of verstigings adres",
+      "type": "object",
+      "properties": {
+        "straatnaam": {
+          "description": "Straatnaam",
+          "type": "string"
+        },
+        "huisnummer": {
+          "description": "Huisnummer",
+          "type": "string"
+        },
+        "postcode": {
+          "description": "Postcode",
+          "type": "string"
+        },
+        "plaats": {
+          "description": "Plaats",
+          "type": "string"
+        }
+      },
+      "required": [
+        "straatnaam",
+        "huisnummer",
+        "postcode",
+        "plaats"
+      ]
+    }
+  },
+  "required": [
+    "naam",
+    "rsin",
+    "adres"
+  ]
+}
+
