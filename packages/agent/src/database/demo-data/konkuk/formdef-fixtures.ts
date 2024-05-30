@@ -1,11 +1,11 @@
-import * as classAchievementUISchema from './classAchievementUISchema.json' assert {type: "json"}
-import * as classAchievementDataSchema from './classAchievementSchema.json' assert {type: "json"}
-import * as microDegreeUISchema from './microDegreeUISchema.json' assert {type: "json"}
-import * as microDegreeDataSchema from './microDegreeSchema.json' assert {type: "json"}
-import * as studentUISchema from './studentUISchema.json' assert {type: "json"}
-import * as studentDataSchema from './studentSchema.json' assert {type: "json"}
-import * as employeeUISchema from './employeeUISchema.json' assert {type: "json"}
-import * as employeeDataSchema from './employeeSchema.json' assert {type: "json"}
+import classAchievementUISchema from './classAchievementUISchema.json' assert {type: "json"}
+import classAchievementDataSchema from './classAchievementSchema.json' assert {type: "json"}
+import microDegreeUISchema from './microDegreeUISchema.json' assert {type: "json"}
+import microDegreeDataSchema from './microDegreeSchema.json' assert {type: "json"}
+import studentUISchema from './studentUISchema.json' assert {type: "json"}
+import studentDataSchema from './studentSchema.json' assert {type: "json"}
+import employeeUISchema from './employeeUISchema.json' assert {type: "json"}
+import employeeDataSchema from './employeeSchema.json' assert {type: "json"}
 import {getDbConnection} from "../../databaseService"
 import {DB_CONNECTION_NAME} from "../../../environment"
 
