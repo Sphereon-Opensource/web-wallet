@@ -1,0 +1,42 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Label",
+      "text": "Omzetbelasting"
+    },
+    {
+      "type": "Group",
+      "label": "BTW id en Omzetbelastingnummer",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "Naam onderneming",
+          "scope": "#/properties/naam"
+        },
+        {
+          "type": "Control",
+          "label": "RSIN",
+          "scope": "#/properties/rsin"
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "BTW Identificatienummer",
+              "scope": "#/properties/btw-id"
+            },
+            {
+              "type": "Control",
+              "label": "Omzetbelastingnummer",
+              "scope": "#/properties/ob-nummer"
+            }
+
+          ]
+        }
+
+      ]
+    }
+  ]
+}

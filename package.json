@@ -21,6 +21,8 @@
     "publish:next": "lerna publish --conventional-prerelease --force-publish --canary --no-git-tag-version --include-merged-tags --preid next --pre-dist-tag next --yes --registry https://registry.npmjs.org",
     "publish:unstable": "lerna publish --conventional-prerelease --force-publish --canary --no-git-tag-version --include-merged-tags --preid unstable --pre-dist-tag unstable --yes --registry https://registry.npmjs.org",
     "demo:init": "pnpm -r --stream demo:init",
+    "db:migrate:down": "pnpm -r --stream db:migrate:down",
+    "db:drop": "pnpm -r --stream db:drop",
     "prepare": "husky"
   },
   "publishConfig": {

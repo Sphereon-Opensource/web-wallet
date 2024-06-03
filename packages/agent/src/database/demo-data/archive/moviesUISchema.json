@@ -1,0 +1,48 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Label",
+      "text": "Movie reservation"
+    },
+    {
+      "type": "Group",
+      "label": "Movie details",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "Movie name",
+          "scope": "#/properties/movieName"
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "Date",
+              "scope": "#/properties/date"
+            },
+            {
+              "type": "Control",
+              "label": "Time",
+              "scope": "#/properties/startTime",
+              "format": "time",
+              "timeFormat": "HH:mm",
+              "timeSaveFormat": "HH:mm"
+            }
+          ]
+        },
+        {
+          "type": "Control",
+          "label": "Amount of seats",
+          "scope": "#/properties/seats"
+        },
+        {
+          "type": "Control",
+          "label": "VIP tickets",
+          "scope": "#/properties/VIP"
+        }
+      ]
+    }
+  ]
+}
