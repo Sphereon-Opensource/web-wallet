@@ -119,20 +119,25 @@ const plugins: IAgentPlugin[] = [
     }),
     new ContactManager({store: new ContactStore(dbConnection)}),
     new IssuanceBranding({store: new IssuanceBrandingStore(dbConnection)}),
-    new OID4VCIStore({
-        importIssuerOpts: oid4vciInstanceOpts.asArray,
-        importMetadatas: oid4vciMetadataOpts.asArray,
-    }),
-    new OID4VCIIssuer({
-        resolveOpts: {
-            resolver,
-        },
-    }),
     new EventLogger({
         eventTypes: [LoggingEventType.AUDIT],
         store: new EventLoggerStore(dbConnection),
     }),
 ]
+
+if (IS_OID4VCI_ENABLED) {
+    plugins.push(
+        new OID4VCIStore({
+            importIssuerOpts: oid4vciInstanceOpts.asArray,
+            importMetadatas: oid4vciMetadataOpts.asArray,
+        }))
+    plugins.push(
+        new OID4VCIIssuer({
+            resolveOpts: {
+                resolver,
+            },
+        }))
+}
 
 /**
  * Create the agent with a context and export it, so it is available for the rest of the code, or code using this module
