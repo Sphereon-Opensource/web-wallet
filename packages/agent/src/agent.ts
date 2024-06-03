@@ -311,20 +311,22 @@ if (!cliMode) {
         })
     }
 
-    void OID4VCIRestAPI.init({
-        opts: {
-            baseUrl: OID4VCI_API_BASE_URL,
-            endpointOpts: {},
-        } as IOID4VCIRestAPIOpts,
-        context: context as unknown as IRequiredContext,
-        issuerInstanceArgs: {
-            credentialIssuer: OID4VCI_API_BASE_URL,
-            storeId: '_default', // TODO configurable?
-            namespace: 'oid4vci', // TODO configurable?
-        } as IIssuerInstanceArgs,
-        credentialDataSupplier: defaultCredentialDataSupplier,
-        expressSupport,
-    })
+    if (VC_API_FEATURES.length > 0) {
+        void OID4VCIRestAPI.init({
+            opts: {
+                baseUrl: OID4VCI_API_BASE_URL,
+                endpointOpts: {},
+            } as IOID4VCIRestAPIOpts,
+            context: context as unknown as IRequiredContext,
+            issuerInstanceArgs: {
+                credentialIssuer: OID4VCI_API_BASE_URL,
+                storeId: '_default', // TODO configurable?
+                namespace: 'oid4vci', // TODO configurable?
+            } as IIssuerInstanceArgs,
+            credentialDataSupplier: defaultCredentialDataSupplier,
+            expressSupport,
+        })
+    }
 
     expressSupport.start()
 }
