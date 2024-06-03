@@ -37,7 +37,7 @@ import {
     DID_API_BASE_PATH,
     DID_API_FEATURES,
     DID_API_RESOLVE_MODE,
-    DID_WEB_SERVICE_FEATURES,
+    DID_WEB_SERVICE_FEATURES, IS_OID4VCI_ENABLED,
     OID4VCI_API_BASE_URL,
     oid4vciInstanceOpts,
     oid4vciMetadataOpts,
@@ -182,7 +182,7 @@ if (!cliMode) {
     /**
      * Enable the Verifiable Credentials API
      */
-    if (VC_API_FEATURES.length > 0) {
+    if (IS_OID4VCI_ENABLED && VC_API_FEATURES.length > 0) {
         new VcApiServer({
             agent,
             expressSupport,
@@ -311,7 +311,7 @@ if (!cliMode) {
         })
     }
 
-    if (VC_API_FEATURES.length > 0) {
+    if (IS_OID4VCI_ENABLED) {
         void OID4VCIRestAPI.init({
             opts: {
                 baseUrl: OID4VCI_API_BASE_URL,
