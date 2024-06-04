@@ -33,7 +33,7 @@ export async function defaultCredentialDataSupplier(args: CredentialDataSupplier
     const credentialPayload = credentialDataSupplierInput.credentialPayload as CredentialPayload
     if (types.includes('VerifiableCredential') && !credentialPayload.type?.includes('VerifiableCredential')) {
       credentialPayload.type = [...types]
-    } else if (!Array.isArray(credentialPayload.type)) {
+    } else if (!Array.isArray(credentialPayload.type)) { // TODO do we need this? credentialPayload.type is optional and credentialRequest.credential_identifier supplies the type
       throw Error(`Could not infer credential types from offer, or supplied credential payload`)
     } else if (!credentialRequest.proof || !credentialRequest.proof.jwt) {
       throw Error(`Credential request proof was missing`)
