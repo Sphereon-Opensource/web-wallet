@@ -37,7 +37,7 @@ import {
     DID_API_BASE_PATH,
     DID_API_FEATURES,
     DID_API_RESOLVE_MODE,
-    DID_WEB_SERVICE_FEATURES,
+    DID_WEB_SERVICE_FEATURES, IS_OID4VCI_ENABLED,
     OID4VCI_API_BASE_URL,
     oid4vciInstanceOpts,
     oid4vciMetadataOpts,
@@ -119,20 +119,25 @@ const plugins: IAgentPlugin[] = [
     }),
     new ContactManager({store: new ContactStore(dbConnection)}),
     new IssuanceBranding({store: new IssuanceBrandingStore(dbConnection)}),
-    new OID4VCIStore({
-        importIssuerOpts: oid4vciInstanceOpts.asArray,
-        importMetadatas: oid4vciMetadataOpts.asArray,
-    }),
-    new OID4VCIIssuer({
-        resolveOpts: {
-            resolver,
-        },
-    }),
     new EventLogger({
         eventTypes: [LoggingEventType.AUDIT],
         store: new EventLoggerStore(dbConnection),
     }),
 ]
+
+if (IS_OID4VCI_ENABLED) {
+    plugins.push(
+        new OID4VCIStore({
+            importIssuerOpts: oid4vciInstanceOpts.asArray,
+            importMetadatas: oid4vciMetadataOpts.asArray,
+        }))
+    plugins.push(
+        new OID4VCIIssuer({
+            resolveOpts: {
+                resolver,
+            },
+        }))
+}
 
 /**
  * Create the agent with a context and export it, so it is available for the rest of the code, or code using this module
@@ -182,7 +187,7 @@ if (!cliMode) {
     /**
      * Enable the Verifiable Credentials API
      */
-    if (VC_API_FEATURES.length > 0) {
+    if (IS_OID4VCI_ENABLED && VC_API_FEATURES.length > 0) {
         new VcApiServer({
             agent,
             expressSupport,
@@ -311,20 +316,22 @@ if (!cliMode) {
         })
     }
 
-    void OID4VCIRestAPI.init({
-        opts: {
-            baseUrl: OID4VCI_API_BASE_URL,
-            endpointOpts: {},
-        } as IOID4VCIRestAPIOpts,
-        context: context as unknown as IRequiredContext,
-        issuerInstanceArgs: {
-            credentialIssuer: OID4VCI_API_BASE_URL,
-            storeId: '_default', // TODO configurable?
-            namespace: 'oid4vci', // TODO configurable?
-        } as IIssuerInstanceArgs,
-        credentialDataSupplier: defaultCredentialDataSupplier,
-        expressSupport,
-    })
+    if (IS_OID4VCI_ENABLED) {
+        void OID4VCIRestAPI.init({
+            opts: {
+                baseUrl: OID4VCI_API_BASE_URL,
+                endpointOpts: {},
+            } as IOID4VCIRestAPIOpts,
+            context: context as unknown as IRequiredContext,
+            issuerInstanceArgs: {
+                credentialIssuer: OID4VCI_API_BASE_URL,
+                storeId: '_default', // TODO configurable?
+                namespace: 'oid4vci', // TODO configurable?
+            } as IIssuerInstanceArgs,
+            credentialDataSupplier: defaultCredentialDataSupplier,
+            expressSupport,
+        })
+    }
 
     expressSupport.start()
 }
