@@ -13,7 +13,7 @@ import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { IOID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import { IOID4VCIIssuer } from '@sphereon/ssi-sdk.oid4vci-issuer'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
-import {ISphereonKeyManager} from "@sphereon/ssi-sdk-ext.key-manager";
+import { ISphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
 
 export const DID_PREFIX = 'did'
 
