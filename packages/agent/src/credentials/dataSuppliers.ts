@@ -12,6 +12,7 @@ export async function defaultCredentialDataSupplier(args: CredentialDataSupplier
     throw Error(`Agent needs a credential data supplier input upfront`)
   }
   const types: string[] = getTypesFromRequest(credentialRequest, {filterVerifiableCredential: true})
+console.log('+++++++++++++> types', types)
 
   if ('hashOrId' in credentialDataSupplierInput && !!credentialDataSupplierInput.hashOrId) {
     const hashOrId = credentialDataSupplierInput?.hashOrId as string
@@ -31,6 +32,7 @@ export async function defaultCredentialDataSupplier(args: CredentialDataSupplier
     }
   } else if ('credentialPayload' in credentialDataSupplierInput && credentialDataSupplierInput.credentialPayload) {
     const credentialPayload = credentialDataSupplierInput.credentialPayload as CredentialPayload
+console.log('-------------> credentialPayload', credentialPayload)
     if (types.includes('VerifiableCredential') && !credentialPayload.type?.includes('VerifiableCredential')) {
       credentialPayload.type = [...types]
     } else if (!Array.isArray(credentialPayload.type)) {
