@@ -12,6 +12,7 @@ overrides:
   '@sphereon/ssi-sdk.core': 0.23.5-next.22
   '@sphereon/ssi-sdk.data-store': 0.23.5-next.22
   '@sphereon/ssi-sdk.oid4vci-issuer-rest-api': 0.23.5-next.22
+  '@sphereon/ssi-express-support': 0.23.5-next.22
   '@sphereon/ssi-sdk-ext.key-manager': 0.19.1-next.48
   '@sphereon/ssi-sdk-ext.key-utils': 0.19.1-next.48
   '@sphereon/ssi-sdk-ext.did-utils': 0.19.1-next.48
@@ -3648,7 +3649,7 @@ packages:
     dependencies:
       '@sphereon/oid4vci-common': 0.10.3(msrcrypto@1.5.8)
       '@sphereon/oid4vci-issuer': 0.10.3(msrcrypto@1.5.8)
-      '@sphereon/ssi-express-support': 0.23.4(passport-azure-ad@4.3.5)
+      '@sphereon/ssi-express-support': 0.23.5-next.22(@noble/hashes@1.4.0)(passport-azure-ad@4.3.5)
       '@sphereon/ssi-types': 0.23.5-next.22
       body-parser: 1.20.2
       cookie-parser: 1.4.6
@@ -3714,38 +3715,6 @@ packages:
       react-native: '>=0.67.0'
     dependencies:
       react-native: 0.73.6(@babel/core@7.24.4)(@babel/preset-env@7.24.4)(react@18.2.0)
-    dev: false
-
-  /@sphereon/ssi-express-support@0.23.4(passport-azure-ad@4.3.5):
-    resolution: {integrity: sha512-IFPrShzWZ/hlKB604iSGylLOBiN7nRwiogBAmNEJ7zOyAKPEb4lMGBRfOqKINlXsGFbZ3CTNWFPJtyPZiVGgQA==}
-    peerDependencies:
-      '@noble/hashes': 1.2.0
-      passport-azure-ad: ^4.3.5
-      passport-http-bearer: ^1.0.1
-    peerDependenciesMeta:
-      '@noble/hashes':
-        optional: true
-      passport-azure-ad:
-        optional: true
-      passport-http-bearer:
-        optional: true
-    dependencies:
-      body-parser: 1.20.2
-      casbin: 5.29.0
-      cookie-session: 2.1.0
-      cors: 2.8.5
-      dotenv-flow: 3.3.0
-      express: 4.19.2
-      express-session: 1.18.0
-      http-terminator: 3.2.0
-      morgan: 1.10.0
-      openid-client: 5.6.5
-      passport: 0.6.0
-      passport-azure-ad: 4.3.5
-      qs: 6.12.0
-      uint8arrays: 3.1.1
-    transitivePeerDependencies:
-      - supports-color
     dev: false
 
   /@sphereon/ssi-express-support@0.23.5-next.22(@noble/hashes@1.4.0)(passport-azure-ad@4.3.5):
