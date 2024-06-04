@@ -64,7 +64,7 @@ import {IOID4VCIRestAPIOpts} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api/src
 import {EventLogger} from '@sphereon/ssi-sdk.event-logger'
 import {RemoteServerApiServer} from '@sphereon/ssi-sdk.remote-server-rest-api'
 import {defaultCredentialDataSupplier} from './credentials/dataSuppliers'
-import {IssuanceBranding} from '@sphereon/ssi-sdk.issuance-branding';
+import {IssuanceBranding, issuanceBrandingContextMethods} from '@sphereon/ssi-sdk.issuance-branding';
 
 /**
  * Lets setup supported DID resolvers first
@@ -316,22 +316,37 @@ if (!cliMode) {
         })
     }
 
-    if (IS_OID4VCI_ENABLED) {
-        void OID4VCIRestAPI.init({
-            opts: {
-                baseUrl: OID4VCI_API_BASE_URL,
-                endpointOpts: {},
-            } as IOID4VCIRestAPIOpts,
-            context: context as unknown as IRequiredContext,
-            issuerInstanceArgs: {
-                credentialIssuer: OID4VCI_API_BASE_URL,
-                storeId: '_default', // TODO configurable?
-                namespace: 'oid4vci', // TODO configurable?
-            } as IIssuerInstanceArgs,
-            credentialDataSupplier: defaultCredentialDataSupplier,
+    if (expressSupport) {
+        new RemoteServerApiServer({
+            agent,
             expressSupport,
+            opts: {
+                exposedMethods: [...issuanceBrandingContextMethods],
+                endpointOpts: {
+                    globalAuth: {
+                        authentication: {
+                            enabled: false,
+                        },
+                    },
+                },
+            },
         })
     }
+
+    void OID4VCIRestAPI.init({
+        opts: {
+            baseUrl: OID4VCI_API_BASE_URL,
+            endpointOpts: {},
+        } as IOID4VCIRestAPIOpts,
+        context: context as unknown as IRequiredContext,
+        issuerInstanceArgs: {
+            credentialIssuer: OID4VCI_API_BASE_URL,
+            storeId: '_default', // TODO configurable?
+            namespace: 'oid4vci', // TODO configurable?
+        } as IIssuerInstanceArgs,
+        credentialDataSupplier: defaultCredentialDataSupplier,
+        expressSupport,
+    })
 
     expressSupport.start()
 }
