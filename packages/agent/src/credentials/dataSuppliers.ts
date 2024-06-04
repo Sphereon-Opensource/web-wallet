@@ -12,7 +12,6 @@ export async function defaultCredentialDataSupplier(args: CredentialDataSupplier
     throw Error(`Agent needs a credential data supplier input upfront`)
   }
   const types: string[] = getTypesFromRequest(credentialRequest, {filterVerifiableCredential: true})
-console.log('+++++++++++++> types', types)
 
   if ('hashOrId' in credentialDataSupplierInput && !!credentialDataSupplierInput.hashOrId) {
     const hashOrId = credentialDataSupplierInput?.hashOrId as string
