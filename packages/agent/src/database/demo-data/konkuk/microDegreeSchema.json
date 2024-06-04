@@ -1,0 +1,57 @@
+{
+  "type": "object",
+  "properties": {
+    "student": {
+      "properties": {
+        "studentNumber": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "studentNumber"
+      ]
+    },
+    "certificate": {
+      "type": "object",
+      "properties": {
+        "completionDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "VR Micro-Degree",
+            "Another example"
+          ]
+        },
+        "classNames": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "Virtual Reality",
+              "Introduction to Metaverse",
+              "Interaction"
+            ]
+          }
+        }
+      },
+      "required": [
+        "completionDate",
+        "type"
+      ]
+    }
+  },
+  "required": [
+    "student",
+    "certificate"
+  ]
+}

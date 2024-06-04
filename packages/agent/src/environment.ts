@@ -1,15 +1,17 @@
 import { config as dotenvConfig } from 'dotenv-flow'
 import { resolve } from 'path'
-import { loadJsonFiles } from './utils'
-import { IDIDOpts } from './types'
 import { vcApiFeatures } from '@sphereon/ssi-sdk.w3c-vc-api'
 import { DidApiFeatures, DidWebServiceFeatures } from '@sphereon/ssi-sdk.uni-resolver-registrar-api'
 import { env } from '@sphereon/ssi-express-support/dist/functions'
 import { statusListFeatures } from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
 import { ContactManagerMRestApiFeatures } from '@sphereon/ssi-sdk.contact-manager-rest-api'
-import {IIssuerOptsImportArgs, IMetadataImportArgs} from "@sphereon/ssi-sdk.oid4vci-issuer-store"
-import {eventLoggerAuditMethods} from "@sphereon/ssi-sdk.event-logger";
-import {sphereonKeyManagerMethods} from "@sphereon/ssi-sdk-ext.key-manager";
+import { IIssuerOptsImportArgs, IMetadataImportArgs } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
+import { eventLoggerAuditMethods } from '@sphereon/ssi-sdk.event-logger'
+import { oid4vciHolderContextMethods } from '@sphereon/ssi-sdk.oid4vci-holder'
+import { contactManagerMethods } from '@sphereon/ssi-sdk.contact-manager'
+import { sphereonKeyManagerMethods } from '@sphereon/ssi-sdk-ext.key-manager'
+import { loadJsonFiles } from './utils'
+import { IDIDOpts } from './types'
 
 await dotenvConfig()
 
@@ -55,8 +57,8 @@ export const STATUS_LIST_API_FEATURES: statusListFeatures[] = env('STATUS_LIST_A
   ? (env('STATUS_LIST_API_FEATURES', ENV_VAR_PREFIX)?.split(',') as statusListFeatures[])
   : ['status-list-hosting', 'w3c-vc-api-credential-status']
 export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATURES', ENV_VAR_PREFIX)
-    ? (env('REMOTE_SERVER_API_FEATURES', ENV_VAR_PREFIX)?.split(',') as string[])
-    : [...eventLoggerAuditMethods, ...sphereonKeyManagerMethods]
+  ? (env('REMOTE_SERVER_API_FEATURES', ENV_VAR_PREFIX)?.split(',') as string[])
+  : [...eventLoggerAuditMethods, ...oid4vciHolderContextMethods, ...contactManagerMethods, ...sphereonKeyManagerMethods]
 
 export const STATUS_LIST_API_BASE_PATH = env('STATUS_LIST_API_BASE_PATH', ENV_VAR_PREFIX) ?? VC_API_BASE_PATH
 export const STATUS_LIST_ISSUER = env('STATUS_LIST_ISSUER', ENV_VAR_PREFIX) ?? DEFAULT_DID
@@ -92,5 +94,9 @@ export const didOptConfigs = loadJsonFiles<IDIDOpts>({
   path: DID_OPTIONS_PATH,
 })
 
-export const oid4vciInstanceOpts = loadJsonFiles<IIssuerOptsImportArgs>({path: OID4VCI_ISSUER_OPTIONS_PATH})
-export const oid4vciMetadataOpts = loadJsonFiles<IMetadataImportArgs>({path: OID4VCI_ISSUER_METADATA_PATH})
+export const oid4vciInstanceOpts = loadJsonFiles<IIssuerOptsImportArgs>({
+  path: OID4VCI_ISSUER_OPTIONS_PATH,
+})
+export const oid4vciMetadataOpts = loadJsonFiles<IMetadataImportArgs>({
+  path: OID4VCI_ISSUER_METADATA_PATH,
+})

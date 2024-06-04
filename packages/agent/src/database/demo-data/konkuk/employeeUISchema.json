@@ -1,0 +1,49 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Label",
+      "text": "Employee credential"
+    },
+    {
+      "type": "HorizontalLayout",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "First name",
+          "scope": "#/properties/firstName"
+        },
+        {
+          "type": "Control",
+          "label": "Middle name",
+          "scope": "#/properties/middleName"
+        }
+      ]
+    },
+    {
+      "type": "HorizontalLayout",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "Last name",
+          "scope": "#/properties/lastName"
+        },
+        {
+          "type": "Control",
+          "label": "Email address",
+          "scope": "#/properties/emailAddress"
+        }
+      ]
+    },
+    {
+      "type": "HorizontalLayout",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "Employee number",
+          "scope": "#/properties/employeeNumber"
+        }
+      ]
+    }
+  ]
+}

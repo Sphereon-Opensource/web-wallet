@@ -1,0 +1,32 @@
+{
+  "description": "btw-identificatienummer (btw-id) en omzetbelastingnummer (ob-nummer)",
+  "type": "object",
+  "properties": {
+    "naam": {
+      "description": "Naam van de onderneming",
+      "type": "string"
+    },
+    "rsin": {
+      "description": "Het Rechtspersonen en Samenwerkingsverbanden Informatienummer, uitgegeven door de Kamer van Koophandel",
+      "type": "string"
+    },
+    "btw-id": {
+      "description": "BTW Identificatienummer",
+      "type": "string",
+      "pattern": "^NL[0-9]{9}B[0-9]{2}$"
+    },
+    "ob-nummer": {
+      "description": "Omzetbelastingnummer",
+      "type": "string",
+      "pattern": "^[0-9]{9}B[0-9]{2}$"
+    }
+  },
+  "required": [
+    "naam",
+    "btw-id",
+    "ob-nummer"
+  ]
+}
+
+
+

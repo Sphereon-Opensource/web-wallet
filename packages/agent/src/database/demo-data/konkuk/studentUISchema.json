@@ -1,0 +1,63 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Label",
+      "text": "Student credential"
+    },
+    {
+      "type": "Group",
+      "label": "Claims",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "First name",
+              "scope": "#/properties/firstName"
+            },
+            {
+              "type": "Control",
+              "label": "Last name",
+              "scope": "#/properties/lastName"
+            }
+          ]
+        },
+        {
+          "type": "Control",
+          "label": "Date of birth",
+          "scope": "#/properties/dateOfBirth"
+        },
+        {
+          "type": "Control",
+          "label": "Student ID number",
+          "scope": "#/properties/studentNumber"
+        },
+        {
+          "type": "Control",
+          "label": "Registered as",
+          "scope": "#/properties/registeredAs"
+        },
+        {
+          "type": "Control",
+          "label": "Study programme",
+          "scope": "#/properties/studyProgramme"
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Student photograph",
+      "elements": [
+        {
+          "type": "Control",
+          "scope": "#/properties/studentImage",
+          "options": {
+            "type": "passportPhoto"
+          }
+        }
+      ]
+    }
+  ]
+}

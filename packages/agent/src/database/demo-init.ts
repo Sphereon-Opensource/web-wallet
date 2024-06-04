@@ -1,35 +1,93 @@
-import {
-    createAgent,
-    DIDDocument,
-    IAgentContext,
-    IAgentPlugin,
-    ProofFormat,
-    TAgent,
-} from '@veramo/core'
-import {
-    CredentialHandlerLDLocal,
-    LdDefaultContexts,
-    MethodNames,
-    SphereonEcdsaSecp256k1RecoverySignature2020,
-    SphereonEd25519Signature2018,
-    SphereonEd25519Signature2020,
-    SphereonJsonWebSignature2020
-} from '@sphereon/ssi-sdk.vc-handler-ld-local'
-import {CredentialPlugin} from '@veramo/credential-w3c'
-import {getDefaultDID} from '../utils'
-import {STATUS_LIST_ISSUER} from '../environment'
-import {getOrCreateConfiguredStatusList} from '../utils/statuslist'
-import {addContacts} from "../database/contact-fixtures";
+import {getDefaultDID} from '../utils';
+import {addContactsRWS} from "./demo-data/rws/contact-fixtures";
+import {addContactsKonkuk} from "./demo-data/konkuk/contact-fixtures";
+import {addFormDefsKonkuk} from "./demo-data/konkuk/formdef-fixtures";
+import {addFormDefsBelastingdienst} from "./demo-data/belastingdienst/formdef-fixtures";
+import * as process from "node:process";
 
-const defaultDID = await getDefaultDID()
+const allowedFixtureVals = ['contacts', 'formdefs'] as const
+const allowedDemoVals = ['rws', 'konkuk', 'belastingdienst'] as const
+type FixtureType = (typeof allowedFixtureVals)[number]
+type Demo = (typeof allowedDemoVals)[number]
 
-await addContacts().catch((e) => console.log(`Error: ${e}`)).then(() => {
-        getOrCreateConfiguredStatusList({
-            issuer: STATUS_LIST_ISSUER ?? defaultDID,
-        }).catch((e) => console.log(`ERROR statuslist ${e}`))
+
+async function handleDemo(fixtureType: FixtureType, demo: Demo) {
+    try {
+        const defaultDID = await getDefaultDID();
+
+        switch (fixtureType) {
+            case 'contacts':
+                switch (demo) {
+                    case 'rws':
+                        await addContactsRWS();
+                        break;
+                    case 'konkuk':
+                        await addContactsKonkuk();
+                        break;
+                    default:
+                        throw new Error(`Unsupported demo type for contacts: ${demo}, allowed: ${allowedDemoVals}`);
+                }
+                break;
+            case 'formdefs':
+                switch (demo) {
+                    case 'rws':
+                        break;
+                    case 'konkuk':
+                        await addFormDefsKonkuk();
+                        break;
+                    case 'belastingdienst':
+                        await addFormDefsBelastingdienst();
+                        break;
+                    default:
+                        throw new Error(`Unsupported demo type for form definitions: ${demo}, allowed: ${allowedDemoVals}`);
+                }
+                break;
+            default:
+                throw new Error(`Unsupported type: ${fixtureType}. Allowed: ${allowedFixtureVals}`);
+        }
+
+        console.log(`##### Demo data start ##########################################`);
+        console.log(`Demo data initialized for type "${fixtureType}" and demo "${demo}"`);
+        console.log(`##### Demo data end ##########################################`);
+    } catch (error) {
+        console.log(`##### Demo error ##########################################`);
+        console.log(`Initialization failed: ${error}`);
+        console.log(`##### Demo error ##########################################`);
+        process.exit(1);
     }
-)
+}
 
-console.log('Demo data initialized');
+function parseArgs(args: string[]): { fixture: FixtureType; demo: Demo } {
 
-process.exit(0);
+    // todo: We really should use a lib for commands/args
+    if (args.length !== 2) {
+        console.log(`Expected exactly two arguments: fixture and demo. Fixture values one of: "${allowedFixtureVals}", demo values one of "${allowedFixtureVals}". Args length: ${args.length}, args: ${args}`);
+        console.log('example:');
+        console.log('  pnpm demo:init contacts konkuk');
+        console.log('  pnpm demo:init formdefs konkuk');
+        process.exit(1);
+    }
+
+    const fixture = args[0].toLowerCase();
+    const demo = args[1].toLowerCase();
+
+    // @ts-ignore
+    if (!allowedFixtureVals.includes(fixture) || !allowedDemoVals.includes(demo)) {
+        console.log(`Invalid arguments. Known types is one of  "${allowedFixtureVals}", demos is one of : "${allowedDemoVals}"`);
+        console.log('example:');
+        console.log('  pnpm demo:init contacts konkuk');
+        console.log('  pnpm demo:init formdefs konkuk');
+        process.exit(1);
+    }
+
+    return {fixture: fixture as FixtureType, demo: demo as Demo};
+}
+
+async function main() {
+    const args = process.argv
+    // We remove -- from args, as that gets included as arg on some platforms it seems
+    const {fixture, demo} = parseArgs(args.filter( val => val !== '--').slice(2));
+    await handleDemo(fixture, demo);
+}
+
+main();
