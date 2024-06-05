@@ -58,7 +58,7 @@ export const STATUS_LIST_API_FEATURES: statusListFeatures[] = env('STATUS_LIST_A
   : ['status-list-hosting', 'w3c-vc-api-credential-status']
 export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATURES', ENV_VAR_PREFIX)
   ? (env('REMOTE_SERVER_API_FEATURES', ENV_VAR_PREFIX)?.split(',') as string[])
-  : [...eventLoggerAuditMethods, ...oid4vciHolderContextMethods, ...contactManagerMethods, ...sphereonKeyManagerMethods]
+  : [...eventLoggerAuditMethods, ...oid4vciHolderContextMethods, ...contactManagerMethods, ...sphereonKeyManagerMethods, 'didManagerCreate']
 
 export const STATUS_LIST_API_BASE_PATH = env('STATUS_LIST_API_BASE_PATH', ENV_VAR_PREFIX) ?? VC_API_BASE_PATH
 export const STATUS_LIST_ISSUER = env('STATUS_LIST_ISSUER', ENV_VAR_PREFIX) ?? DEFAULT_DID
