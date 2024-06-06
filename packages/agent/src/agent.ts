@@ -64,7 +64,7 @@ import {IOID4VCIRestAPIOpts} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api/src
 import {EventLogger} from '@sphereon/ssi-sdk.event-logger'
 import {RemoteServerApiServer} from '@sphereon/ssi-sdk.remote-server-rest-api'
 import {defaultCredentialDataSupplier} from './credentials/dataSuppliers'
-import { IssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
+import {IssuanceBranding, issuanceBrandingContextMethods} from '@sphereon/ssi-sdk.issuance-branding';
 
 /**
  * Lets setup supported DID resolvers first
