@@ -310,69 +310,7 @@
           "ES256K",
           "EdDSA"
         ]
-      },
-      {
-        "display": [
-          {
-            "name": "Certificate of Origin",
-            "description": "Certificate of Origin",
-            "background_color": "rgba(0, 0, 0, 0.2)",
-            "text_color": "#FBFBFB",
-            "logo": {
-              "url": "http://192.168.2.90:3001/images/card_logo.png",
-              "alt_text": "RWS Logo"
-            },
-            "background_image": {
-              "url": "http://192.168.2.90:3001/images/card_background.png",
-              "alt_text": "RWS background"
-            }
-          },
-          {
-            "locale": "en-US",
-            "name": "Certificate of Origin",
-            "description": "Certificate of Origin",
-            "background_color": "rgba(0, 0, 0, 0.2)",
-            "text_color": "#FBFBFB",
-            "logo": {
-              "url": "http://192.168.2.90:3001/images/card_logo.png",
-              "alt_text": "RWS Logo"
-            },
-            "background_image": {
-              "url": "http://192.168.2.90:3001/images/card_background.png",
-              "alt_text": "RWS background"
-            }
-          },
-          {
-            "locale": "nl-NL",
-            "name": "Certificaat van oorsprong",
-            "description": "Certificaat van oorsprong",
-            "background_color": "rgba(0, 0, 0, 0.2)",
-            "text_color": "#FBFBFB",
-            "logo": {
-              "url": "http://192.168.2.90:3001/images/card_logo.png",
-              "alt_text": "RWS Logo"
-            },
-            "background_image": {
-              "url": "http://192.168.2.90:3001/images/card_background.png",
-              "alt_text": "RWS background"
-            }
-          }
-        ],
-        "id": "coo",
-        "types": ["VerifiableCredential", "CertificationOfOrigin"],
-        "format": "jwt_vc_json",
-        "@context": [
-          "https://www.w3.org/2018/credentials/v1",
-          "https://w3id.org/traceability/v1"
-        ],
-        "cryptographic_binding_methods_supported": [
-          "did:web",
-          "did:jwk",
-          "did:ion"
-        ],
-        "cryptographic_suites_supported": ["ES256", "ES256K1"]
       }
-
     ]
   }
 }
