@@ -8,6 +8,7 @@ import { DIDDocumentSection, IIdentifier } from '@veramo/core'
 import { DID_PREFIX, DIDMethods, IDIDResult, KMS } from '../index'
 import { getAgentResolver, mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-ext.did-utils'
 import { generatePrivateKeyHex, TKeyType, toJwk } from '@sphereon/ssi-sdk-ext.key-utils'
+import { IonDIDProvider } from '@veramo/did-provider-ion'
 import {
   DEFAULT_DID,
   DEFAULT_KID,
@@ -19,7 +20,6 @@ import {
   DID_WEB_PRIVATE_KEY_PEM,
   didOptConfigs,
 } from '../environment'
-import { IonDIDProvider } from '@veramo/did-provider-ion'
 
 export function createDidResolver() {
   return new Resolver({
@@ -38,7 +38,7 @@ export function createDidProviders() {
     }),
     [`${DID_PREFIX}:${DIDMethods.DID_ION}`]: new IonDIDProvider({
       defaultKms: KMS.LOCAL,
-    }),
+    })
   }
 }
 

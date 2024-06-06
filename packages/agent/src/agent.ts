@@ -1,4 +1,4 @@
-import {createAgent, IAgentContext, IAgentPlugin, TAgent} from '@veramo/core'
+import { createAgent, IAgentContext, IAgentPlugin, TAgent } from '@veramo/core'
 import {
     CredentialHandlerLDLocal,
     LdDefaultContexts,
@@ -64,19 +64,19 @@ import {IOID4VCIRestAPIOpts} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api/src
 import {EventLogger} from '@sphereon/ssi-sdk.event-logger'
 import {RemoteServerApiServer} from '@sphereon/ssi-sdk.remote-server-rest-api'
 import {defaultCredentialDataSupplier} from './credentials/dataSuppliers'
-import {IssuanceBranding, issuanceBrandingContextMethods} from '@sphereon/ssi-sdk.issuance-branding';
+import { IssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
 
 /**
  * Lets setup supported DID resolvers first
  */
 const resolver = createDidResolver()
+
 export const dbConnection = getDbConnection(DB_CONNECTION_NAME)
 
 /**
  * Private key store, responsible for storing private keys in the database using encryption
  */
 const privateKeyStore: PrivateKeyStore = new PrivateKeyStore(dbConnection, new SecretBox(DB_ENCRYPTION_KEY))
-
 
 const cliMode: boolean = process.env.RUN_MODE === 'cli'
 
