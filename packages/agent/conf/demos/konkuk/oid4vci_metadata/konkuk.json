@@ -223,60 +223,93 @@
       {
         "display": [
           {
-            "name": "Employee",
-            "description": "Employee",
+            "name": "Employee credential",
+            "description": "Employee credential",
             "background_color": "rgba(0, 0, 0, 0.2)",
             "text_color": "#FBFBFB",
-            "background_image": {
-              "url": "https://i.ibb.co/kmfrH4F/tulips.png",
-              "alt_text": "Black and white photo of tulips with one red tulip"
-            },
             "logo": {
-              "url": "https://i.ibb.co/NWQQ9kt/sphereon-logo.png",
-              "alt_text": "Red square depicting Sphereon logo."
+              "url": "https://i.ibb.co/PwfCJFK/konkuk-logo.png",
+              "alt_text": "Konkuk University logo"
+            },
+            "background_image": {
+              "url": "https://i.ibb.co/6tKP1rs/konkuk-bg.png",
+              "alt_text": "A guy in front of the window"
             }
           },
           {
             "locale": "en-US",
-            "name": "Employee",
-            "description": "Employee",
+            "name": "Employee credential",
+            "description": "employee credential",
             "background_color": "rgba(0, 0, 0, 0.2)",
             "text_color": "#FBFBFB",
-            "background_image": {
-              "url": "https://i.ibb.co/kmfrH4F/tulips.png",
-              "alt_text": "Black and white photo of tulips with one red tulip"
-            },
             "logo": {
-              "url": "https://i.ibb.co/NWQQ9kt/sphereon-logo.png",
-              "alt_text": "Red square depicting Sphereon logo."
-            }
-          },
-          {
-            "locale": "nl-NL",
-            "name": "Medewerker",
-            "description": "Medewerker",
-            "background_color": "rgba(0, 0, 0, 0.2)",
-            "text_color": "#FBFBFB",
-            "background_image": {
-              "url": "https://i.ibb.co/kmfrH4F/tulips.png",
-              "alt_text": "Black and white photo of tulips with one red tulip"
+              "url": "https://i.ibb.co/PwfCJFK/konkuk-logo.png",
+              "alt_text": "Konkuk University logo"
             },
-            "logo": {
-              "url": "https://i.ibb.co/NWQQ9kt/sphereon-logo.png",
-              "alt_text": "Red square depicting Sphereon logo."
+            "background_image": {
+              "url": "https://i.ibb.co/6tKP1rs/konkuk-bg.png",
+              "alt_text": "A guy in front of the window"
             }
           }
         ],
+        "order": [
+          "firstName",
+          "lastName",
+          "dateOfBirth"
+        ],
+        "credentialSubject": {
+          "firstName": {
+            "value_type": "string",
+            "display": [
+              {
+                "name": "First Name"
+              },
+              {
+                "name": "First Name",
+                "locale": "en-US"
+              }
+            ]
+          },
+          "lastName": {
+            "value_type": "string",
+            "display": [
+              {
+                "name": "Last Name"
+              },
+              {
+                "name": "Last Name",
+                "locale": "en-US"
+              }
+            ]
+          },
+          "dateOfBirth": {
+            "value_type": "string",
+            "display": [
+              {
+                "name": "Date Of Birth"
+              },
+              {
+                "name": "Date Of Birth",
+                "locale": "en-US"
+              }
+            ]
+          }
+        },
         "id": "employee",
-        "types": ["VerifiableCredential", "Employee"],
+        "types": [
+          "VerifiableCredential",
+          "EmployeeCredential"
+        ],
         "format": "jwt_vc_json",
-        "@context": ["https://www.w3.org/2018/credentials/v1"],
         "cryptographic_binding_methods_supported": [
           "did:web",
-          "did:jwk",
-          "did:ion"
+          "did:jwk"
         ],
-        "cryptographic_suites_supported": ["ES256", "ES256K1"]
+        "cryptographic_suites_supported": [
+          "ES256",
+          "ES256K",
+          "EdDSA"
+        ]
       },
       {
         "display": [
