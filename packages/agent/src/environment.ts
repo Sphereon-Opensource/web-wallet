@@ -6,11 +6,14 @@ import { env } from '@sphereon/ssi-express-support/dist/functions'
 import { statusListFeatures } from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
 import { ContactManagerMRestApiFeatures } from '@sphereon/ssi-sdk.contact-manager-rest-api'
 import { IIssuerOptsImportArgs, IMetadataImportArgs } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
-import { eventLoggerAuditMethods } from '@sphereon/ssi-sdk.event-logger';
+import { eventLoggerAuditMethods } from '@sphereon/ssi-sdk.event-logger'
 import { oid4vciHolderContextMethods } from '@sphereon/ssi-sdk.oid4vci-holder'
-import { contactManagerMethods } from '@sphereon/ssi-sdk.contact-manager';
+import { contactManagerMethods } from '@sphereon/ssi-sdk.contact-manager'
+import { sphereonKeyManagerMethods } from '@sphereon/ssi-sdk-ext.key-manager'
+import { issuanceBrandingContextMethods } from '@sphereon/ssi-sdk.issuance-branding'
 import { loadJsonFiles } from './utils'
 import { IDIDOpts } from './types'
+
 await dotenvConfig()
 
 /**
@@ -57,7 +60,14 @@ export const STATUS_LIST_API_FEATURES: statusListFeatures[] = env('STATUS_LIST_A
   : ['status-list-hosting', 'w3c-vc-api-credential-status']
 export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATURES', ENV_VAR_PREFIX)
   ? (env('REMOTE_SERVER_API_FEATURES', ENV_VAR_PREFIX)?.split(',') as string[])
-  : [...eventLoggerAuditMethods, ...oid4vciHolderContextMethods, ...contactManagerMethods, 'didManagerCreate']
+  : [
+      ...eventLoggerAuditMethods,
+      ...oid4vciHolderContextMethods,
+      ...contactManagerMethods,
+      ...sphereonKeyManagerMethods,
+      'didManagerCreate',
+      ...issuanceBrandingContextMethods
+    ]
 
 export const STATUS_LIST_API_BASE_PATH = env('STATUS_LIST_API_BASE_PATH', ENV_VAR_PREFIX) ?? VC_API_BASE_PATH
 export const STATUS_LIST_ISSUER = env('STATUS_LIST_ISSUER', ENV_VAR_PREFIX) ?? DEFAULT_DID

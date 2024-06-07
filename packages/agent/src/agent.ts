@@ -1,4 +1,4 @@
-import {createAgent, IAgentContext, IAgentPlugin, TAgent} from '@veramo/core'
+import { createAgent, IAgentContext, IAgentPlugin, TAgent } from '@veramo/core'
 import {
     CredentialHandlerLDLocal,
     LdDefaultContexts,
@@ -70,13 +70,13 @@ import {IssuanceBranding, issuanceBrandingContextMethods} from '@sphereon/ssi-sd
  * Lets setup supported DID resolvers first
  */
 const resolver = createDidResolver()
+
 export const dbConnection = getDbConnection(DB_CONNECTION_NAME)
 
 /**
  * Private key store, responsible for storing private keys in the database using encryption
  */
 const privateKeyStore: PrivateKeyStore = new PrivateKeyStore(dbConnection, new SecretBox(DB_ENCRYPTION_KEY))
-
 
 const cliMode: boolean = process.env.RUN_MODE === 'cli'
 
