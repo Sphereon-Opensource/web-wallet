@@ -1,4 +1,4 @@
-import {createAgent, IAgentContext, IAgentPlugin, TAgent} from '@veramo/core'
+import { createAgent, IAgentContext, IAgentPlugin, TAgent } from '@veramo/core'
 import {
   CredentialHandlerLDLocal,
   LdDefaultContexts,
@@ -48,35 +48,35 @@ import {
   VC_API_BASE_PATH,
   VC_API_FEATURES,
 } from './environment'
-import {VcApiServer} from '@sphereon/ssi-sdk.w3c-vc-api'
-import {UniResolverApiServer} from '@sphereon/ssi-sdk.uni-resolver-registrar-api'
-import {DID_PREFIX, DIDMethods, TAgentTypes} from './types'
-import {DidWebServer} from '@sphereon/ssi-sdk.uni-resolver-registrar-api/dist/did-web-server'
-import {StatuslistManagementApiServer} from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
-import {ContactManagerApiServer} from '@sphereon/ssi-sdk.contact-manager-rest-api'
-import {ContactManager} from '@sphereon/ssi-sdk.contact-manager'
+import { VcApiServer } from '@sphereon/ssi-sdk.w3c-vc-api'
+import { UniResolverApiServer } from '@sphereon/ssi-sdk.uni-resolver-registrar-api'
+import { DID_PREFIX, DIDMethods, TAgentTypes } from './types'
+import { DidWebServer } from '@sphereon/ssi-sdk.uni-resolver-registrar-api/dist/did-web-server'
+import { StatuslistManagementApiServer } from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
+import { ContactManagerApiServer } from '@sphereon/ssi-sdk.contact-manager-rest-api'
+import { ContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { ContactStore, EventLoggerStore, IssuanceBrandingStore } from '@sphereon/ssi-sdk.data-store'
-import {IIssuerInstanceArgs, OID4VCIIssuer} from '@sphereon/ssi-sdk.oid4vci-issuer'
-import {OID4VCIStore} from '@sphereon/ssi-sdk.oid4vci-issuer-store'
-import {IRequiredContext, OID4VCIRestAPI} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
-import {LoggingEventType} from '@sphereon/ssi-sdk.core'
-import {IOID4VCIRestAPIOpts} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api/src/OID4VCIRestAPI'
-import {EventLogger} from '@sphereon/ssi-sdk.event-logger'
-import {RemoteServerApiServer} from '@sphereon/ssi-sdk.remote-server-rest-api'
-import {defaultCredentialDataSupplier} from './credentials/dataSuppliers'
-import { IssuanceBranding, issuanceBrandingContextMethods } from '@sphereon/ssi-sdk.issuance-branding';
+import { IIssuerInstanceArgs, OID4VCIIssuer } from '@sphereon/ssi-sdk.oid4vci-issuer'
+import { OID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
+import { IRequiredContext, OID4VCIRestAPI } from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
+import { LoggingEventType } from '@sphereon/ssi-sdk.core'
+import { IOID4VCIRestAPIOpts } from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api/src/OID4VCIRestAPI'
+import { EventLogger } from '@sphereon/ssi-sdk.event-logger'
+import { RemoteServerApiServer } from '@sphereon/ssi-sdk.remote-server-rest-api'
+import { defaultCredentialDataSupplier } from './credentials/dataSuppliers'
+import { IssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
 
 /**
  * Lets setup supported DID resolvers first
  */
 const resolver = createDidResolver()
+
 export const dbConnection = getDbConnection(DB_CONNECTION_NAME)
 
 /**
  * Private key store, responsible for storing private keys in the database using encryption
  */
 const privateKeyStore: PrivateKeyStore = new PrivateKeyStore(dbConnection, new SecretBox(DB_ENCRYPTION_KEY))
-
 
 const maintenanceMode:boolean = process.env.RUN_MODE === 'maintenance'
 
@@ -310,22 +310,6 @@ if (REMOTE_SERVER_API_FEATURES.length > 0) {
   })
 }
 
-if (expressSupport) {
-  new RemoteServerApiServer({
-    agent,
-    expressSupport,
-    opts: {
-      exposedMethods: [...issuanceBrandingContextMethods],
-      endpointOpts: {
-        globalAuth: {
-          authentication: {
-            enabled: false,
-          },
-        },
-      },
-    },
-  })
-}
 void OID4VCIRestAPI.init({
   opts: {
     baseUrl: OID4VCI_API_BASE_URL,

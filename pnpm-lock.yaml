@@ -8,17 +8,17 @@ overrides:
   did-jwt: 6.11.6
   did-jwt-vc: 3.1.3
   ethr-did: 2.3.9
-  '@sphereon/ssi-types': 0.23.5-unstable.74+9c3c2083
-  '@sphereon/ssi-sdk.core': 0.23.5-unstable.74+9c3c2083
-  '@sphereon/ssi-sdk.data-store': 0.23.5-unstable.74+9c3c2083
-  '@sphereon/ssi-sdk.oid4vci-issuer-rest-api': 0.23.5-unstable.74+9c3c2083
-  '@sphereon/ssi-express-support': 0.23.5-unstable.74+9c3c2083
-  '@sphereon/ssi-sdk-ext.key-utils': 0.19.0
-  '@sphereon/ssi-sdk-ext.did-utils': 0.19.0
-  '@sphereon/oid4vci-client': 0.10.4-unstable.63+1d87208
-  '@sphereon/oid4vci-common': 0.10.4-unstable.63+1d87208
-  '@sphereon/oid4vci-issuer': 0.10.4-unstable.63+1d87208
-  '@sphereon/oid4vci-issuer-server': 0.10.4-unstable.63+1d87208
+  '@sphereon/ssi-types': 0.23.5-next.24
+  '@sphereon/ssi-sdk.core': 0.23.5-next.24
+  '@sphereon/ssi-sdk.data-store': 0.23.5-next.24
+  '@sphereon/ssi-sdk.oid4vci-issuer-rest-api': 0.23.5-next.24
+  '@sphereon/ssi-express-support': 0.23.5-next.24
+  '@sphereon/ssi-sdk-ext.key-utils': 0.19.1-next.48
+  '@sphereon/ssi-sdk-ext.did-utils': 0.19.1-next.48
+  '@sphereon/oid4vci-client': 0.10.3
+  '@sphereon/oid4vci-common': 0.10.3
+  '@sphereon/oid4vci-issuer': 0.10.3
+  '@sphereon/oid4vci-issuer-server': 0.10.3
   typeorm: 0.3.20
   '@veramo/core': 4.2.0
   '@veramo/credential-w3c': 4.2.0
@@ -88,92 +88,92 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3
       '@sphereon/oid4vci-common':
-        specifier: 0.10.4-unstable.63+1d87208
-        version: 0.10.4-unstable.63(msrcrypto@1.5.8)
+        specifier: 0.10.3
+        version: 0.10.3(msrcrypto@1.5.8)
       '@sphereon/oid4vci-issuer':
-        specifier: 0.10.4-unstable.63+1d87208
-        version: 0.10.4-unstable.63(msrcrypto@1.5.8)
+        specifier: 0.10.3
+        version: 0.10.3(msrcrypto@1.5.8)
       '@sphereon/ssi-express-support':
-        specifier: 0.23.5-unstable.74+9c3c2083
-        version: 0.23.5-unstable.74(@noble/hashes@1.4.0)(passport-azure-ad@4.3.5)
+        specifier: 0.23.5-next.24
+        version: 0.23.5-next.24(@noble/hashes@1.4.0)(passport-azure-ad@4.3.5)
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.19.0
-        version: 0.19.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.19.1-next.48
+        version: 0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.did-provider-web':
-        specifier: 0.19.0
-        version: 0.19.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.19.1-next.48
+        version: 0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
         specifier: 0.19.1-next.48
         version: 0.19.1-next.48
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.19.0
-        version: 0.19.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.19.1-next.48
+        version: 0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.19.0
-        version: 0.19.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.19.1-next.48
+        version: 0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.19.0
-        version: 0.19.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.19.1-next.48
+        version: 0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.19.0
-        version: 0.19.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.19.1-next.48
+        version: 0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.agent-config':
-        specifier: 0.23.5-unstable.74+9c3c2083
-        version: 0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.23.5-next.24
+        version: 0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.contact-manager':
-        specifier: 0.23.5-unstable.74+9c3c2083
-        version: 0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.23.5-next.24
+        version: 0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.contact-manager-rest-api':
-        specifier: 0.23.5-unstable.74+9c3c2083
-        version: 0.23.5-unstable.74(expo@51.0.9)(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)(pg@8.11.5)(react-native-securerandom@1.0.1)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.23.5-next.24
+        version: 0.23.5-next.24(expo@51.0.9)(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)(pg@8.11.5)(react-native-securerandom@1.0.1)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.core':
-        specifier: 0.23.5-unstable.74+9c3c2083
-        version: 0.23.5-unstable.74
+        specifier: 0.23.5-next.24
+        version: 0.23.5-next.24
       '@sphereon/ssi-sdk.data-store':
-        specifier: 0.23.5-unstable.74+9c3c2083
-        version: 0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.23.5-next.24
+        version: 0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.event-logger':
-        specifier: 0.23.5-unstable.74+9c3c2083
-        version: 0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.23.5-next.24
+        version: 0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.issuance-branding':
-        specifier: 0.23.5-unstable.74+9c3c2083
-        version: 0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.23.5-next.24
+        version: 0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.oid4vci-holder':
-        specifier: 0.23.5-unstable.74+9c3c2083
-        version: 0.23.5-unstable.74(expo@51.0.9)(msrcrypto@1.5.8)(pg@8.11.5)(react-native-securerandom@1.0.1)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.23.5-next.24
+        version: 0.23.5-next.24(expo@51.0.9)(msrcrypto@1.5.8)(pg@8.11.5)(react-native-securerandom@1.0.1)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.oid4vci-issuer':
-        specifier: 0.23.5-unstable.74+9c3c2083
-        version: 0.23.5-unstable.74(expo@51.0.9)(msrcrypto@1.5.8)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.23.5-next.24
+        version: 0.23.5-next.24(expo@51.0.9)(msrcrypto@1.5.8)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.oid4vci-issuer-rest-api':
-        specifier: 0.23.5-unstable.74+9c3c2083
-        version: 0.23.5-unstable.74(expo@51.0.9)(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.23.5-next.24
+        version: 0.23.5-next.24(expo@51.0.9)(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.oid4vci-issuer-store':
-        specifier: 0.23.5-unstable.74+9c3c2083
-        version: 0.23.5-unstable.74(expo@51.0.9)(msrcrypto@1.5.8)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.23.5-next.24
+        version: 0.23.5-next.24(expo@51.0.9)(msrcrypto@1.5.8)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.remote-server-rest-api':
-        specifier: 0.23.5-unstable.74+9c3c2083
-        version: 0.23.5-unstable.74(passport-azure-ad@4.3.5)
+        specifier: 0.23.5-next.24
+        version: 0.23.5-next.24(passport-azure-ad@4.3.5)
       '@sphereon/ssi-sdk.uni-resolver-registrar-api':
-        specifier: 0.23.5-unstable.74+9c3c2083
-        version: 0.23.5-unstable.74(expo@51.0.9)(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)(react-native-securerandom@1.0.1)
+        specifier: 0.23.5-next.24
+        version: 0.23.5-next.24(expo@51.0.9)(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.vc-handler-ld-local':
-        specifier: 0.23.5-unstable.74+9c3c2083
-        version: 0.23.5-unstable.74(expo@51.0.9)(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.23.5-next.24
+        version: 0.23.5-next.24(expo@51.0.9)(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.vc-status-list':
-        specifier: 0.23.5-unstable.74+9c3c2083
-        version: 0.23.5-unstable.74(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)(react-native@0.74.1)
+        specifier: 0.23.5-next.24
+        version: 0.23.5-next.24(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)(react-native@0.74.1)
       '@sphereon/ssi-sdk.vc-status-list-issuer-drivers':
-        specifier: 0.23.5-unstable.74+9c3c2083
-        version: 0.23.5-unstable.74(@noble/hashes@1.4.0)(expo@51.0.9)(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.23.5-next.24
+        version: 0.23.5-next.24(@noble/hashes@1.4.0)(expo@51.0.9)(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api':
-        specifier: 0.23.5-unstable.74+9c3c2083
-        version: 0.23.5-unstable.74(expo@51.0.9)(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.23.5-next.24
+        version: 0.23.5-next.24(expo@51.0.9)(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.w3c-vc-api':
-        specifier: 0.23.5-unstable.74+9c3c2083
-        version: 0.23.5-unstable.74(expo@51.0.9)(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.23.5-next.24
+        version: 0.23.5-next.24(expo@51.0.9)(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-types':
-        specifier: 0.23.5-unstable.74+9c3c2083
-        version: 0.23.5-unstable.74
+        specifier: 0.23.5-next.24
+        version: 0.23.5-next.24
       '@transmute/lds-ecdsa-secp256k1-recovery2020':
         specifier: ^0.0.7
         version: 0.0.7
@@ -1958,6 +1958,7 @@ packages:
   /@digitalbazaar/http-client@1.2.0:
     resolution: {integrity: sha512-W9KQQ5pUJcaR0I4c2HPJC0a7kRbZApIorZgPnEDwMBgj16iQzutGLrCXYaZOmxqVLVNqqlQ4aUJh+HBQZy4W6Q==}
     engines: {node: '>=10.0.0'}
+    requiresBuild: true
     dependencies:
       esm: 3.2.25
       ky: 0.25.1
@@ -3532,7 +3533,7 @@ packages:
       '@sphereon/did-uni-client': 0.6.3
       '@sphereon/pex': 3.3.3
       '@sphereon/pex-models': 2.2.4
-      '@sphereon/ssi-types': 0.23.5-unstable.74
+      '@sphereon/ssi-types': 0.23.5-next.24
       '@sphereon/wellknown-dids-client': 0.1.3
       cross-fetch: 4.0.0
       did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
@@ -3621,12 +3622,12 @@ packages:
       webcrypto-shim: 0.1.7
     dev: false
 
-  /@sphereon/oid4vci-client@0.10.4-unstable.63(msrcrypto@1.5.8):
-    resolution: {integrity: sha512-zPY+B+N8V1HI+eTEt8MHXlY3jag2t6M/+7/E2iTORpLpoWbxcP3t1viLb2bfqe9E1nRhLCWRQSF7nKb3hy/juA==}
+  /@sphereon/oid4vci-client@0.10.3(msrcrypto@1.5.8):
+    resolution: {integrity: sha512-PkIZrwTMrHlgwcDNimWDQaAgi+9ptkV79g/sQJJAe4g8NCt3WyXtsV9l88CdzxDGVGDtzsnYqPXkimxP4eSScw==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/oid4vci-common': 0.10.4-unstable.63(msrcrypto@1.5.8)
-      '@sphereon/ssi-types': 0.23.5-unstable.74
+      '@sphereon/oid4vci-common': 0.10.3(msrcrypto@1.5.8)
+      '@sphereon/ssi-types': 0.23.5-next.24
       cross-fetch: 3.1.8
       debug: 4.3.5
     transitivePeerDependencies:
@@ -3635,8 +3636,8 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/oid4vci-common@0.10.4-unstable.63(msrcrypto@1.5.8):
-    resolution: {integrity: sha512-lcdDCdhgrk60KkBCSmBDSDbQn0/Ugej6aErmoBjCPGfkSn8ZpEjbV/CZ6eLt7bpMRUSP0Rg8qjmrKw+scoi+Sw==}
+  /@sphereon/oid4vci-common@0.10.3(msrcrypto@1.5.8):
+    resolution: {integrity: sha512-VsUnDKkKm2yQ3lzAt2CY6vL06mZDK9dhwFT6T92aq03ncbUcS6gelwccdsXEMEfi5r4baFemiFM1O5v+mPjuEA==}
     engines: {node: '>=18'}
     peerDependencies:
       msrcrypto: ^1.5.8
@@ -3644,7 +3645,7 @@ packages:
       msrcrypto:
         optional: true
     dependencies:
-      '@sphereon/ssi-types': 0.23.5-unstable.74
+      '@sphereon/ssi-types': 0.23.5-next.24
       cross-fetch: 3.1.8
       jwt-decode: 3.1.2
       msrcrypto: 1.5.8
@@ -3654,14 +3655,14 @@ packages:
       - encoding
     dev: false
 
-  /@sphereon/oid4vci-issuer-server@0.10.4-unstable.63(msrcrypto@1.5.8)(passport-azure-ad@4.3.5):
-    resolution: {integrity: sha512-Tm5DPott5bYyg1EyVl7FOVxzeNQthxSXqz89dT0m7sSZCQmSFpdsrksUM4b+d5r20qGPK17a6B3tEwq3kvtf/g==}
+  /@sphereon/oid4vci-issuer-server@0.10.3(msrcrypto@1.5.8)(passport-azure-ad@4.3.5):
+    resolution: {integrity: sha512-tNXUnoKcevdKPaoL4kVwuQhAjkIs/aSnyCgls0Fqkxb6MvUmN4903/KYMBHqH5csH2uaK24+Grnmng3SlRhJKw==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/oid4vci-common': 0.10.4-unstable.63(msrcrypto@1.5.8)
-      '@sphereon/oid4vci-issuer': 0.10.4-unstable.63(msrcrypto@1.5.8)
-      '@sphereon/ssi-express-support': 0.23.5-unstable.74(@noble/hashes@1.4.0)(passport-azure-ad@4.3.5)
-      '@sphereon/ssi-types': 0.23.5-unstable.74
+      '@sphereon/oid4vci-common': 0.10.3(msrcrypto@1.5.8)
+      '@sphereon/oid4vci-issuer': 0.10.3(msrcrypto@1.5.8)
+      '@sphereon/ssi-express-support': 0.23.5-next.24(@noble/hashes@1.4.0)(passport-azure-ad@4.3.5)
+      '@sphereon/ssi-types': 0.23.5-next.24
       body-parser: 1.20.2
       cookie-parser: 1.4.6
       cors: 2.8.5
@@ -3680,8 +3681,8 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/oid4vci-issuer@0.10.4-unstable.63(msrcrypto@1.5.8):
-    resolution: {integrity: sha512-UAKCCbp7RSmsFlqtFJcYaK18usEvkETBtaDllcqCkeIglRsfMJPWaffOEgjAJUnZa2mohBL3pgsIJB8Vm4S9BQ==}
+  /@sphereon/oid4vci-issuer@0.10.3(msrcrypto@1.5.8):
+    resolution: {integrity: sha512-qhm8ypkXuYsaG5XmXIFwL9DUJQ0TJScNjvg5w7beAm+zjz0sOkwIjXdS7S+29LfWj0BkYiRZp1d3mj8H/rmdUw==}
     engines: {node: '>=18'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -3689,8 +3690,8 @@ packages:
       awesome-qr:
         optional: true
     dependencies:
-      '@sphereon/oid4vci-common': 0.10.4-unstable.63(msrcrypto@1.5.8)
-      '@sphereon/ssi-types': 0.23.5-unstable.74
+      '@sphereon/oid4vci-common': 0.10.3(msrcrypto@1.5.8)
+      '@sphereon/ssi-types': 0.23.5-next.24
       uuid: 9.0.1
     transitivePeerDependencies:
       - encoding
@@ -3711,7 +3712,7 @@ packages:
       '@sd-jwt/present': 0.6.1
       '@sd-jwt/types': 0.6.1
       '@sphereon/pex-models': 2.2.4
-      '@sphereon/ssi-types': 0.23.5-unstable.74
+      '@sphereon/ssi-types': 0.23.5-next.24
       ajv: 8.14.0
       ajv-formats: 2.1.1(ajv@8.14.0)
       jwt-decode: 3.1.2
@@ -3728,8 +3729,8 @@ packages:
       react-native: 0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6)(react@18.2.0)
     dev: false
 
-  /@sphereon/ssi-express-support@0.23.5-unstable.74(@noble/hashes@1.4.0)(passport-azure-ad@4.3.5):
-    resolution: {integrity: sha512-wjzeQYVR3G2j2Ud9XZzLxIduhPmqExypYWdsVbxkBgG5wKRlm14xBCZPK3cAqGuRlSAQ1XXgNSCYHgdFmI/Mhg==}
+  /@sphereon/ssi-express-support@0.23.5-next.24(@noble/hashes@1.4.0)(passport-azure-ad@4.3.5):
+    resolution: {integrity: sha512-muloqxBOPQWSfcYUjs5N1EeiiU2MI2OmBhAjkK9lNMLC0nHz5qw3kbmDusr0Gii2i4ddC8pjGzHKOO3GE2q3UQ==}
     peerDependencies:
       '@noble/hashes': 1.2.0
       passport-azure-ad: ^4.3.5
@@ -3761,13 +3762,13 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/ssi-sdk-ext.did-provider-jwk@0.19.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
-    resolution: {integrity: sha512-dz0ug1rRhw/z/QvOi1S3VVu3GesI9EWeahLXlmtef8Z3iuyjJFPpsBCiA3fjuIYiLLcyZxaaMvsujrn+rFyeyg==}
+  /@sphereon/ssi-sdk-ext.did-provider-jwk@0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-mccVA2CoxUWqWgU774roXNvWCG2Zp5sAPO/pDJWZsZXxu3/rCMBCs2GMsHXOG/e9UtKAHtGNgWcD7GxzSGvvoQ==}
     dependencies:
       '@ethersproject/random': 5.7.0
-      '@sphereon/ssi-sdk-ext.did-utils': 0.19.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.19.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-types': 0.23.5-unstable.74
+      '@sphereon/ssi-sdk-ext.did-utils': 0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-types': 0.23.5-next.24
       '@stablelib/ed25519': 1.0.3
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/did-manager': 4.2.0
@@ -3785,11 +3786,11 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/ssi-sdk-ext.did-provider-web@0.19.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
-    resolution: {integrity: sha512-uRBSt4mUrbnw3U/BXwdS3c7nmuWRf3e4YtFYI7KDxLr0AUzoRnahFDeQqKIt1Svn5tEpvDp4hG9vsOhnkyx09A==}
+  /@sphereon/ssi-sdk-ext.did-provider-web@0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-7SIZLRPR6ovaagix8DZgPLel1GmYqR6OIebS0fKUWt/zZzR8ojs48WqwNhgJAksFsCSvDQ/L97S83zz2cTGQJA==}
     dependencies:
-      '@sphereon/ssi-sdk-ext.did-utils': 0.19.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.19.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/did-manager': 4.2.0
       debug: 4.3.5
@@ -3806,7 +3807,7 @@ packages:
   /@sphereon/ssi-sdk-ext.did-resolver-jwk@0.18.0:
     resolution: {integrity: sha512-xdlXoGn0L0fzxLqSopbCmY7gfLdpNWxCSb3TeWo4lt7EuCs20zGSOBA0B/W8PrQWIbnI6llCSfg4SjKuqaYnaw==}
     dependencies:
-      '@sphereon/ssi-types': 0.23.5-unstable.74
+      '@sphereon/ssi-types': 0.23.5-next.24
       base64url: 3.0.1
       debug: 4.3.5
       did-resolver: 4.1.0
@@ -3818,7 +3819,7 @@ packages:
   /@sphereon/ssi-sdk-ext.did-resolver-jwk@0.19.1-next.48:
     resolution: {integrity: sha512-FuLKSOzG/o4+EZM+FSOz7ZiJhDEwM2H9Bn/RyxDfn2iWl3Dit4xHsv+m3mtiMNWpeTUeWm55QfijsPS2aLjXqQ==}
     dependencies:
-      '@sphereon/ssi-types': 0.23.5-unstable.74
+      '@sphereon/ssi-types': 0.23.5-next.24
       base64url: 3.0.1
       debug: 4.3.5
       did-resolver: 4.1.0
@@ -3827,13 +3828,13 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/ssi-sdk-ext.did-utils@0.19.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
-    resolution: {integrity: sha512-RCKayfL/+CEF7/c5PgxwgizQrU5jmb+nS9Ok9ML6dFRdzWYkQjknh9844Kxi40+xXkEuyhwrlPdD5mLz2Gr6Kw==}
+  /@sphereon/ssi-sdk-ext.did-utils@0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-F/QJq+ET95ptlTqgrfsAeCSS9pSJlvzGm07YywcoKBz/3+BQTYGONcAblqGYERMmQmbAy9jNQKidlDor0d2Tig==}
     dependencies:
       '@ethersproject/transactions': 5.7.0
       '@sphereon/did-uni-client': 0.6.3
-      '@sphereon/ssi-sdk-ext.key-utils': 0.19.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk.core': 0.23.5-unstable.74
+      '@sphereon/ssi-sdk-ext.key-utils': 0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk.core': 0.23.5-next.24
       '@stablelib/ed25519': 1.0.3
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/utils': 4.2.0
@@ -3868,8 +3869,25 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/ssi-sdk-ext.key-utils@0.19.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
-    resolution: {integrity: sha512-CzOymQxFhqn6XuvpBRPvE4BeUZFYDWmVVMPK7UKf8Rqlgc5rLzChm+BKeGt5Qf3ModijY/p7o9Az13zzweGk+A==}
+  /@sphereon/ssi-sdk-ext.key-manager@0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-CLrNMpn6kOtPO3t4jx15AtbahKJ1b6/G6RSKZcyBAIv1wcBvYWNQ7jBL1RECRegk4xFeN+LSDFg7E+4kwIWF9Q==}
+    dependencies:
+      '@sphereon/ssi-sdk-ext.kms-local': 0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/key-manager': 4.2.0
+    transitivePeerDependencies:
+      - '@mattrglobal/bbs-signatures'
+      - encoding
+      - expo
+      - expo-crypto
+      - msrcrypt
+      - msrcrypto
+      - react-native-securerandom
+      - supports-color
+    dev: false
+
+  /@sphereon/ssi-sdk-ext.key-utils@0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-YSZoLOmKJ8WWImRDXqxP/Is1/KOT3vuSpuSFOb+4yoIP48FxUBxbn3GOdCTKQZObzfq4P/SRtXoSuBEhuVvbww==}
     dependencies:
       '@ethersproject/random': 5.7.0
       '@sphereon/isomorphic-webcrypto': 2.4.1-unstable.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -3904,8 +3922,8 @@ packages:
         optional: true
     dependencies:
       '@sphereon/isomorphic-webcrypto': 2.4.1-unstable.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk-ext.did-utils': 0.19.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.19.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@trust/keyto': 2.0.0-alpha1
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/key-manager': 4.2.0
@@ -3922,8 +3940,35 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/ssi-sdk.agent-config@0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-+yq/dIFASyV8mfjeME70G05J9XQVhPehjWEoXYQ+Q5XQzjDERg9hcDRQwO12JZNXy4v5pidqsnkC582cvpyNjQ==}
+  /@sphereon/ssi-sdk-ext.kms-local@0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-NNLX0ycG5/zoJ/lLegIav7o5lzCZaXi+0z+LNexMCCDdMp+EEazFcVXjgyNN/2iSR94OYbe1focAapPG+Akn0w==}
+    peerDependencies:
+      '@mattrglobal/bbs-signatures': ^1.3.1
+    peerDependenciesMeta:
+      '@mattrglobal/bbs-signatures':
+        optional: true
+    dependencies:
+      '@sphereon/isomorphic-webcrypto': 2.4.1-unstable.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@trust/keyto': 2.0.0-alpha1
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/key-manager': 4.2.0
+      '@veramo/kms-local': 4.2.0
+      elliptic: 6.5.5
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - encoding
+      - expo
+      - expo-crypto
+      - msrcrypt
+      - msrcrypto
+      - react-native-securerandom
+      - supports-color
+    dev: false
+
+  /@sphereon/ssi-sdk.agent-config@0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-A2QWEB0nqdkiDqAhJH1BHZMTqYGldMkhOLYPvVJRKN1FNWjgOGkaB57NqVBLPTcpn9JIGAUCEuV+fIiZkSTPdQ==}
     dependencies:
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       debug: 4.3.5
@@ -3952,18 +3997,18 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.contact-manager-rest-api@0.23.5-unstable.74(expo@51.0.9)(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)(pg@8.11.5)(react-native-securerandom@1.0.1)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-3EcrpG/6dmCxAk8Bck7CLQ/lPiuIIGeXP6daVyHMWveKnASRBJc9Jub1ZCnpPyVjgI5G6unive9dKAkpEx6Eug==}
+  /@sphereon/ssi-sdk.contact-manager-rest-api@0.23.5-next.24(expo@51.0.9)(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)(pg@8.11.5)(react-native-securerandom@1.0.1)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-/glxdwh49Ty01s6l5Vyhl2We6JmGRsOoC37I8l8bHVPPnoAw0yA+6L4Uw+GMRvR6ifr0K1RdPDS49fQn+y1kAg==}
     dependencies:
-      '@sphereon/ssi-express-support': 0.23.5-unstable.74(@noble/hashes@1.4.0)(passport-azure-ad@4.3.5)
+      '@sphereon/ssi-express-support': 0.23.5-next.24(@noble/hashes@1.4.0)(passport-azure-ad@4.3.5)
       '@sphereon/ssi-sdk-ext.key-manager': 0.19.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.19.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk.agent-config': 0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.contact-manager': 0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.core': 0.23.5-unstable.74
-      '@sphereon/ssi-sdk.data-store': 0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.kv-store-temp': 0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.23.5-unstable.74
+      '@sphereon/ssi-sdk-ext.key-utils': 0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk.agent-config': 0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.contact-manager': 0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.core': 0.23.5-next.24
+      '@sphereon/ssi-sdk.data-store': 0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.kv-store-temp': 0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.23.5-next.24
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       body-parser: 1.20.2
       casbin: 5.30.0
@@ -4006,10 +4051,10 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.contact-manager@0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-4RtEFFUZNQrkx6nXHlwmcF9LgrbXl8BE9MGCXRibD2agacGINh9h0BySDadEH0dUKjoK6JS+SGwlRsKUQ6z9rg==}
+  /@sphereon/ssi-sdk.contact-manager@0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-rlKQ22t+Yy8USm/yxiR+8PKihikD1HlTsl4fU3A3SyCgmpJqSPGZazepYpukiaAkxuQXdRIPnncryt/eBSXy2A==}
     dependencies:
-      '@sphereon/ssi-sdk.data-store': 0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.data-store': 0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
       cross-fetch: 3.1.8
       debug: 4.3.5
       typeorm: 0.3.20(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
@@ -4035,10 +4080,10 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.core@0.23.5-unstable.74:
-    resolution: {integrity: sha512-72cXck5q03N0skXMgJ1DBntwCxyvoUJ1NKo8CrMawL8HWqA8lwe82Akp/y3tnB8UU8rnK7x3xpOCWOfiUIkfIQ==}
+  /@sphereon/ssi-sdk.core@0.23.5-next.24:
+    resolution: {integrity: sha512-9HC/gljhqhXZAHNIqf5CQzpZwCIcTMUa5E+x6syfHHym0naDCJysXbwODbPAFAlqY0NzQKu3nCdyJksTsvP3Qw==}
     dependencies:
-      '@sphereon/ssi-types': 0.23.5-unstable.74
+      '@sphereon/ssi-types': 0.23.5-next.24
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       cross-fetch: 3.1.8
       debug: 4.3.5
@@ -4049,11 +4094,11 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/ssi-sdk.data-store@0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-n7gtXR4txvKXRylRPBQLB4R3O0rkyTnB6clvliXOQKtbp74jg5Hq7Bf1eheDWJRN21Egv0pjr9w8NSmQT0jXrg==}
+  /@sphereon/ssi-sdk.data-store@0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-QBDx8jdlR+PHeslRIsp4JoEndHXMRMrV0c7+HykuI0Zbhm3CwuWQtVVPejDMXZDLydYdNc6Osg3Jv55635K7zg==}
     dependencies:
-      '@sphereon/ssi-sdk.core': 0.23.5-unstable.74
-      '@sphereon/ssi-types': 0.23.5-unstable.74
+      '@sphereon/ssi-sdk.core': 0.23.5-next.24
+      '@sphereon/ssi-types': 0.23.5-next.24
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/utils': 4.2.0
       class-validator: 0.14.1
@@ -4081,10 +4126,10 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.event-logger@0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-1bxh+IQXAT9rWuuwp+5Jpi/SKdcHo1seivvOBF0sySQWBaF2vgd4ovyu7Lk/mDKTNrAIPbyuU6EwTMFOvNzfTg==}
+  /@sphereon/ssi-sdk.event-logger@0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-7/mjrxgt2O9gOrU0a1eEX5WgZl6scVrMmK1kHF3Juf85ep093wi3G9H45v+GX4EMqB28cG1mVGNi76EKXspTlQ==}
     dependencies:
-      '@sphereon/ssi-sdk.data-store': 0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.data-store': 0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
       uuid: 8.3.2
     transitivePeerDependencies:
       - '@google-cloud/spanner'
@@ -4108,11 +4153,11 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.issuance-branding@0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-HTel9spLUMLIKH0uS5U+pH1hwUNzTI26O3eLc5WQ0iE2CRUQcpnDccHItYMM693Ss2GrfN4PE+JcgoAu6koAwg==}
+  /@sphereon/ssi-sdk.issuance-branding@0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-8YbACVHrNzC4sst72pHSN8Wz8gvpjqoPAYwsAlzt0ruo+R1fuqpIuDU1yUKKvVgviN0D67BhiaTJYV6FbjyDug==}
     dependencies:
-      '@sphereon/ssi-sdk.core': 0.23.5-unstable.74
-      '@sphereon/ssi-sdk.data-store': 0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.core': 0.23.5-next.24
+      '@sphereon/ssi-sdk.data-store': 0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
       debug: 4.3.5
       typeorm: 0.3.20(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
     transitivePeerDependencies:
@@ -4137,8 +4182,8 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.kv-store-temp@0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-HQhpc6ib/Pp4wBibHWP0tAuYZldHDAcBU3YGrZWz4IEKJUnWIlXmM+3z+FTvjfxIiVsEWBDusjfg4pX60oS5ZQ==}
+  /@sphereon/ssi-sdk.kv-store-temp@0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-mVBdMig5RJxeiC5zc7PrA+/qEzOvhob6YGoTndYQkTmNciJ/GQoGxibbJ/oSCvRksBW9S6Q9mbnegMKaLIzSkA==}
     dependencies:
       '@veramo/utils': 4.2.0
       debug: 4.3.5
@@ -4168,19 +4213,19 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.oid4vci-holder@0.23.5-unstable.74(expo@51.0.9)(msrcrypto@1.5.8)(pg@8.11.5)(react-native-securerandom@1.0.1)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-t2dSxQNL2fG1EEqJV4jm0z5Zg61iWOWdPKPyLbo1qREMV1eJUCXIyU7ggUDs492I5ljVNk4dG2sYnuru31vZLA==}
+  /@sphereon/ssi-sdk.oid4vci-holder@0.23.5-next.24(expo@51.0.9)(msrcrypto@1.5.8)(pg@8.11.5)(react-native-securerandom@1.0.1)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-sDhB4oEclKkhnOu/J2JUas/sCD7jDS6fLOcG1crLenwDWLMk9az4+nokp+K+5COxUp1zu5IyqiYwqriPq7pHOw==}
     dependencies:
-      '@sphereon/oid4vci-client': 0.10.4-unstable.63(msrcrypto@1.5.8)
-      '@sphereon/oid4vci-common': 0.10.4-unstable.63(msrcrypto@1.5.8)
+      '@sphereon/oid4vci-client': 0.10.3(msrcrypto@1.5.8)
+      '@sphereon/oid4vci-common': 0.10.3(msrcrypto@1.5.8)
       '@sphereon/ssi-sdk-ext.did-resolver-jwk': 0.18.0
-      '@sphereon/ssi-sdk-ext.did-utils': 0.19.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk.contact-manager': 0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.core': 0.23.5-unstable.74
-      '@sphereon/ssi-sdk.data-store': 0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.issuance-branding': 0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.xstate-machine-persistence': 0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.23.5-unstable.74
+      '@sphereon/ssi-sdk-ext.did-utils': 0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk.contact-manager': 0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.core': 0.23.5-next.24
+      '@sphereon/ssi-sdk.data-store': 0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.issuance-branding': 0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.xstate-machine-persistence': 0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.23.5-next.24
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/data-store': 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@veramo/utils': 4.2.0
@@ -4215,17 +4260,17 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.oid4vci-issuer-rest-api@0.23.5-unstable.74(expo@51.0.9)(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-KT7Q+JOxDFEZG8SBeOn1WzA1Y6ECrru905RSr33Uq0mi70UbwzqXYT/Jt+DYR4AwCMPw53Dyb7tNGhsxjUXKTA==}
+  /@sphereon/ssi-sdk.oid4vci-issuer-rest-api@0.23.5-next.24(expo@51.0.9)(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-vmWyHbSD4hmhSnPXaFTwNVG610GINM9aMvtWA4mwXfmlhc10m1OtD0ZX8uKyCZdWOvTMJCT/bJ+vkZjX/XPfGw==}
     dependencies:
-      '@sphereon/oid4vci-common': 0.10.4-unstable.63(msrcrypto@1.5.8)
-      '@sphereon/oid4vci-issuer': 0.10.4-unstable.63(msrcrypto@1.5.8)
-      '@sphereon/oid4vci-issuer-server': 0.10.4-unstable.63(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)
-      '@sphereon/ssi-express-support': 0.23.5-unstable.74(@noble/hashes@1.4.0)(passport-azure-ad@4.3.5)
-      '@sphereon/ssi-sdk.kv-store-temp': 0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.oid4vci-issuer': 0.23.5-unstable.74(expo@51.0.9)(msrcrypto@1.5.8)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.oid4vci-issuer-store': 0.23.5-unstable.74(expo@51.0.9)(msrcrypto@1.5.8)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.23.5-unstable.74
+      '@sphereon/oid4vci-common': 0.10.3(msrcrypto@1.5.8)
+      '@sphereon/oid4vci-issuer': 0.10.3(msrcrypto@1.5.8)
+      '@sphereon/oid4vci-issuer-server': 0.10.3(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)
+      '@sphereon/ssi-express-support': 0.23.5-next.24(@noble/hashes@1.4.0)(passport-azure-ad@4.3.5)
+      '@sphereon/ssi-sdk.kv-store-temp': 0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.oid4vci-issuer': 0.23.5-next.24(expo@51.0.9)(msrcrypto@1.5.8)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.oid4vci-issuer-store': 0.23.5-next.24(expo@51.0.9)(msrcrypto@1.5.8)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.23.5-next.24
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/credential-w3c': 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)(expo@51.0.9)(react-native@0.74.1)
       body-parser: 1.20.2
@@ -4270,12 +4315,12 @@ packages:
       - web-streams-polyfill
     dev: false
 
-  /@sphereon/ssi-sdk.oid4vci-issuer-store@0.23.5-unstable.74(expo@51.0.9)(msrcrypto@1.5.8)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-+MZ66KPVCrw/qBtSIdfQTI22tNcMqqkVi9oQ+6Mk2M5NcPob42uq6WtQyhVf1n4ixqw3yUwlqCM+V5Efvu61nA==}
+  /@sphereon/ssi-sdk.oid4vci-issuer-store@0.23.5-next.24(expo@51.0.9)(msrcrypto@1.5.8)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-urxLv8w/jORVRO8XgagoHqOMMXotYgHdVauWkBp+/D+V4pIIwtwlXUqCD/rfm0bcthzak8ZqxsUon4PJgvU5fg==}
     dependencies:
-      '@sphereon/oid4vci-common': 0.10.4-unstable.63(msrcrypto@1.5.8)
-      '@sphereon/ssi-sdk-ext.did-utils': 0.19.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk.kv-store-temp': 0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/oid4vci-common': 0.10.3(msrcrypto@1.5.8)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk.kv-store-temp': 0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/credential-w3c': 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)(expo@51.0.9)(react-native@0.74.1)
       cross-fetch: 3.1.8
@@ -4310,16 +4355,16 @@ packages:
       - web-streams-polyfill
     dev: false
 
-  /@sphereon/ssi-sdk.oid4vci-issuer@0.23.5-unstable.74(expo@51.0.9)(msrcrypto@1.5.8)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-jrNwtJsRC181ptjRIugdoL5oJqUqrvE/ukK10Plg0VxttH9BA6lWli8e7jspRtHtaWM+muG8i3YERoUVH40ciQ==}
+  /@sphereon/ssi-sdk.oid4vci-issuer@0.23.5-next.24(expo@51.0.9)(msrcrypto@1.5.8)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-7Gf7rnDgbBrBWul895jPbaOwWllVl286lo4wXkTzJlLZ8uGhiVqRoDifUlYil4z8xanozlRlpqVGDLnaQAxAog==}
     dependencies:
-      '@sphereon/oid4vci-common': 0.10.4-unstable.63(msrcrypto@1.5.8)
-      '@sphereon/oid4vci-issuer': 0.10.4-unstable.63(msrcrypto@1.5.8)
-      '@sphereon/ssi-sdk-ext.did-utils': 0.19.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk.core': 0.23.5-unstable.74
-      '@sphereon/ssi-sdk.kv-store-temp': 0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.oid4vci-issuer-store': 0.23.5-unstable.74(expo@51.0.9)(msrcrypto@1.5.8)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.23.5-unstable.74
+      '@sphereon/oid4vci-common': 0.10.3(msrcrypto@1.5.8)
+      '@sphereon/oid4vci-issuer': 0.10.3(msrcrypto@1.5.8)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk.core': 0.23.5-next.24
+      '@sphereon/ssi-sdk.kv-store-temp': 0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.oid4vci-issuer-store': 0.23.5-next.24(expo@51.0.9)(msrcrypto@1.5.8)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.23.5-next.24
       '@types/uuid': 9.0.8
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/credential-w3c': 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)(expo@51.0.9)(react-native@0.74.1)
@@ -4356,14 +4401,14 @@ packages:
       - web-streams-polyfill
     dev: false
 
-  /@sphereon/ssi-sdk.presentation-exchange@0.23.5-unstable.74(expo@51.0.9)(msrcrypto@1.5.8)(pg@8.11.5)(react-native-securerandom@1.0.1)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-F9oUsh+XgW41y+lKapg3rBowagF/vdhMl9HdNTMe0vHoO5Wglc0PnCpxxuQY7AHsuTwJmQSGy+gMyUOj4a1ugw==}
+  /@sphereon/ssi-sdk.presentation-exchange@0.23.5-next.24(expo@51.0.9)(msrcrypto@1.5.8)(pg@8.11.5)(react-native-securerandom@1.0.1)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-1MJYIGxF6L2hQ3EOg2a+r6dbD/XyizEZotAX0JhW93N2Z6mGkfuoMnvb/+cJEc6XMqHWWYzcYl8h1Ds1bYvQvQ==}
     dependencies:
       '@sphereon/pex': 3.3.3
       '@sphereon/pex-models': 2.2.4
-      '@sphereon/ssi-sdk-ext.did-utils': 0.19.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk.kv-store-temp': 0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.23.5-unstable.74
+      '@sphereon/ssi-sdk-ext.did-utils': 0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk.kv-store-temp': 0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.23.5-next.24
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
     transitivePeerDependencies:
       - '@google-cloud/spanner'
@@ -4392,10 +4437,10 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.remote-server-rest-api@0.23.5-unstable.74(passport-azure-ad@4.3.5):
-    resolution: {integrity: sha512-O6jTtILysCgMPBJzK4GnpW5UoNVp6UtIVgn/uTqQdbvmS9hJ89cPmx5gvMMAVVphGQGTT79fFNXaT/jK/iuedA==}
+  /@sphereon/ssi-sdk.remote-server-rest-api@0.23.5-next.24(passport-azure-ad@4.3.5):
+    resolution: {integrity: sha512-HVP4FWSSq6C97lDaOfVcKF2uELZdPeZtHrqObvyvkhvJVMjnFDywoSguC3Fg0mB95wj3v6RrR9fTLbWEF4TAFg==}
     dependencies:
-      '@sphereon/ssi-express-support': 0.23.5-unstable.74(@noble/hashes@1.4.0)(passport-azure-ad@4.3.5)
+      '@sphereon/ssi-express-support': 0.23.5-next.24(@noble/hashes@1.4.0)(passport-azure-ad@4.3.5)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/remote-server': 4.2.0(express@4.19.2)
       express: 4.19.2
@@ -4407,15 +4452,15 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/ssi-sdk.uni-resolver-registrar-api@0.23.5-unstable.74(expo@51.0.9)(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)(react-native-securerandom@1.0.1):
-    resolution: {integrity: sha512-sCVX923GQ5YTIiburR2Xp5bEYdr0YTrLkKi84bVN3VnqLEvREmkVQwGZc1gfXGaDQUlfWelUxLj72iWL2+IJDA==}
+  /@sphereon/ssi-sdk.uni-resolver-registrar-api@0.23.5-next.24(expo@51.0.9)(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-ctqzevEWxw/4EysFW4ghh8c1nLsObxJ5fNZ+jDPTalKIZlgAiTCI0ZsNUChByRhKj9bKglL0qExJfPHZ8+u2cA==}
     dependencies:
-      '@sphereon/ssi-express-support': 0.23.5-unstable.74(@noble/hashes@1.4.0)(passport-azure-ad@4.3.5)
-      '@sphereon/ssi-sdk-ext.did-utils': 0.19.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-express-support': 0.23.5-next.24(@noble/hashes@1.4.0)(passport-azure-ad@4.3.5)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-manager': 0.19.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.19.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk.core': 0.23.5-unstable.74
-      '@sphereon/ssi-types': 0.23.5-unstable.74
+      '@sphereon/ssi-sdk-ext.key-utils': 0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk.core': 0.23.5-next.24
+      '@sphereon/ssi-types': 0.23.5-next.24
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       body-parser: 1.20.2
       casbin: 5.30.0
@@ -4441,8 +4486,8 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/ssi-sdk.vc-handler-ld-local@0.23.5-unstable.74(expo@51.0.9)(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-cJXmcDEB0r5qu4mIoLZwAyYAMSWyK6dKqtGliToRgyIS8jK61XRF3z8Kv9sFrJuQ4ORCaYeWvB95UPq7gwNIRg==}
+  /@sphereon/ssi-sdk.vc-handler-ld-local@0.23.5-next.24(expo@51.0.9)(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-k0HintFDDLT59qSyO3VytOBtlyFPAPVKsF+P/jJpBYrlZzcpp+W0dThm6DPmUPvK3V16ZiFADXFeX+O7r8P8WA==}
     peerDependencies:
       react-native-securerandom: ^1.0.1
     dependencies:
@@ -4455,14 +4500,14 @@ packages:
       '@digitalcredentials/x25519-key-agreement-2020-context': 1.0.0
       '@noble/hashes': 1.4.0
       '@sphereon/isomorphic-webcrypto': 2.4.1-unstable.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk-ext.did-utils': 0.19.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.19.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk.agent-config': 0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.core': 0.23.5-unstable.74
-      '@sphereon/ssi-sdk.data-store': 0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.vc-status-list': 0.23.5-unstable.74(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)(react-native@0.74.1)
-      '@sphereon/ssi-sdk.vc-status-list-issuer-drivers': 0.23.5-unstable.74(@noble/hashes@1.4.0)(expo@51.0.9)(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.23.5-unstable.74
+      '@sphereon/ssi-sdk-ext.did-utils': 0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk.agent-config': 0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.core': 0.23.5-next.24
+      '@sphereon/ssi-sdk.data-store': 0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.vc-status-list': 0.23.5-next.24(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)(react-native@0.74.1)
+      '@sphereon/ssi-sdk.vc-status-list-issuer-drivers': 0.23.5-next.24(@noble/hashes@1.4.0)(expo@51.0.9)(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.23.5-next.24
       '@transmute/credentials-context': 0.7.0-unstable.82
       '@transmute/ed25519-key-pair': 0.7.0-unstable.81
       '@transmute/ed25519-signature-2018': 0.7.0-unstable.82
@@ -4517,16 +4562,16 @@ packages:
       - web-streams-polyfill
     dev: false
 
-  /@sphereon/ssi-sdk.vc-status-list-issuer-drivers@0.23.5-unstable.74(@noble/hashes@1.4.0)(expo@51.0.9)(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-UjnEFB3hG1HbXgHwqc+AbPJzwPY2N5l4feiVfJiV3WlrGDMiS67E7/B5xNPA39eMkdwKo+N9Ccdp6Y6vCGtAMg==}
+  /@sphereon/ssi-sdk.vc-status-list-issuer-drivers@0.23.5-next.24(@noble/hashes@1.4.0)(expo@51.0.9)(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-gckKUX6wGR3dPln8YSkHuGRUWbnC1ZW++X1MPoBcLUxJTUpaKZD34PVgyTKfZHhnZlVMqej7HAnS0XGKxB0SiQ==}
     dependencies:
-      '@sphereon/ssi-express-support': 0.23.5-unstable.74(@noble/hashes@1.4.0)(passport-azure-ad@4.3.5)
-      '@sphereon/ssi-sdk-ext.did-utils': 0.19.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk.agent-config': 0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.core': 0.23.5-unstable.74
-      '@sphereon/ssi-sdk.data-store': 0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.vc-status-list': 0.23.5-unstable.74(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)(react-native@0.74.1)
-      '@sphereon/ssi-types': 0.23.5-unstable.74
+      '@sphereon/ssi-express-support': 0.23.5-next.24(@noble/hashes@1.4.0)(passport-azure-ad@4.3.5)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk.agent-config': 0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.core': 0.23.5-next.24
+      '@sphereon/ssi-sdk.data-store': 0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.vc-status-list': 0.23.5-next.24(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)(react-native@0.74.1)
+      '@sphereon/ssi-types': 0.23.5-next.24
       '@sphereon/vc-status-list': 7.0.0-next.0(expo@51.0.9)(react-native@0.74.1)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       debug: 4.3.5
@@ -4565,17 +4610,17 @@ packages:
       - web-streams-polyfill
     dev: false
 
-  /@sphereon/ssi-sdk.vc-status-list-issuer-rest-api@0.23.5-unstable.74(expo@51.0.9)(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-elscvN9g7srsTuB5To/tNdM7hvIbXB5QWtRlFHtvt8xJhTeos6uHvXaq8rdWCB7UUf1SnkeqO0XNkav5c0SLvw==}
+  /@sphereon/ssi-sdk.vc-status-list-issuer-rest-api@0.23.5-next.24(expo@51.0.9)(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-zZEDOcOhSZ+wS59STtJPMWN3RiXtoy0gzeuhn5Y729uYd/Gy5FhbSS1SgdhTyAR9BTlMQUv/SetRDP/8Ds7kjA==}
     dependencies:
-      '@sphereon/ssi-express-support': 0.23.5-unstable.74(@noble/hashes@1.4.0)(passport-azure-ad@4.3.5)
-      '@sphereon/ssi-sdk-ext.did-utils': 0.19.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk.agent-config': 0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.core': 0.23.5-unstable.74
-      '@sphereon/ssi-sdk.data-store': 0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.vc-status-list': 0.23.5-unstable.74(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)(react-native@0.74.1)
-      '@sphereon/ssi-sdk.vc-status-list-issuer-drivers': 0.23.5-unstable.74(@noble/hashes@1.4.0)(expo@51.0.9)(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.23.5-unstable.74
+      '@sphereon/ssi-express-support': 0.23.5-next.24(@noble/hashes@1.4.0)(passport-azure-ad@4.3.5)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk.agent-config': 0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.core': 0.23.5-next.24
+      '@sphereon/ssi-sdk.data-store': 0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.vc-status-list': 0.23.5-next.24(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)(react-native@0.74.1)
+      '@sphereon/ssi-sdk.vc-status-list-issuer-drivers': 0.23.5-next.24(@noble/hashes@1.4.0)(expo@51.0.9)(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.23.5-next.24
       '@sphereon/vc-status-list': 7.0.0-next.0(expo@51.0.9)(react-native@0.74.1)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       debug: 4.3.5
@@ -4617,11 +4662,11 @@ packages:
       - web-streams-polyfill
     dev: false
 
-  /@sphereon/ssi-sdk.vc-status-list@0.23.5-unstable.74(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)(react-native@0.74.1):
-    resolution: {integrity: sha512-LvnekYVIC/yEydz9/r/TTPw/U/jbPN7VkH+mKbOhIJIH3k8vsUdgZakUs/w4d8EmsVIsvyBuF6xTeLXdINr9gg==}
+  /@sphereon/ssi-sdk.vc-status-list@0.23.5-next.24(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)(react-native@0.74.1):
+    resolution: {integrity: sha512-a+LUYOGD20OPR2R/VmWEGhJQxkQS2NWtmNLE+uH7TjnnDBbENIFgguWR51nF+KaXXEMrqqMBLBek9WMomP/caA==}
     dependencies:
-      '@sphereon/ssi-sdk-ext.did-utils': 0.19.0(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-types': 0.23.5-unstable.74
+      '@sphereon/ssi-sdk-ext.did-utils': 0.19.1-next.48(expo@51.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-types': 0.23.5-next.24
       '@sphereon/vc-status-list': 7.0.0-next.0(expo@51.0.9)(react-native@0.74.1)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/credential-status': 4.2.0
@@ -4641,15 +4686,15 @@ packages:
       - web-streams-polyfill
     dev: false
 
-  /@sphereon/ssi-sdk.w3c-vc-api@0.23.5-unstable.74(expo@51.0.9)(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-/HPsIlvgh3Pon5dkFuKWBjp6TeHfX5LJpeaQBo0gnItrkkhQygvhi59EhGHR0DbUF7tGHWyjm2lE3BnzI9ymWA==}
+  /@sphereon/ssi-sdk.w3c-vc-api@0.23.5-next.24(expo@51.0.9)(msrcrypto@1.5.8)(passport-azure-ad@4.3.5)(pg@8.11.5)(react-native-securerandom@1.0.1)(react-native@0.74.1)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-N5cQUpE/Rr4NYJh0ks+ieLn9mYl469K9ZiGHaHpLvjITqva7u/sxcyRGx4nC8T2GjRD9zSeJHhiEitX1ywaojQ==}
     dependencies:
       '@sphereon/did-auth-siop': 0.6.4
-      '@sphereon/ssi-express-support': 0.23.5-unstable.74(@noble/hashes@1.4.0)(passport-azure-ad@4.3.5)
-      '@sphereon/ssi-sdk.core': 0.23.5-unstable.74
-      '@sphereon/ssi-sdk.kv-store-temp': 0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.presentation-exchange': 0.23.5-unstable.74(expo@51.0.9)(msrcrypto@1.5.8)(pg@8.11.5)(react-native-securerandom@1.0.1)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.23.5-unstable.74
+      '@sphereon/ssi-express-support': 0.23.5-next.24(@noble/hashes@1.4.0)(passport-azure-ad@4.3.5)
+      '@sphereon/ssi-sdk.core': 0.23.5-next.24
+      '@sphereon/ssi-sdk.kv-store-temp': 0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.presentation-exchange': 0.23.5-next.24(expo@51.0.9)(msrcrypto@1.5.8)(pg@8.11.5)(react-native-securerandom@1.0.1)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.23.5-next.24
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/credential-w3c': 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)(expo@51.0.9)(react-native@0.74.1)
       body-parser: 1.20.2
@@ -4695,10 +4740,10 @@ packages:
       - web-streams-polyfill
     dev: false
 
-  /@sphereon/ssi-sdk.xstate-machine-persistence@0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-NW1tLcK1aNHpZ05xsqbPDOQzUmZEg9eZpI88onluFEcWVZU5aK+DQOeOrBcBXmmttel14lp14WipvV9GRGxVCA==}
+  /@sphereon/ssi-sdk.xstate-machine-persistence@0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-kt1vm2nira827P0nqSCtgnSPCI0rtaXudf54BgHMb2Akhqkn5hSj73olw3dnyl+VDtmCHsassuSz0kZYYDo12w==}
     dependencies:
-      '@sphereon/ssi-sdk.data-store': 0.23.5-unstable.74(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.data-store': 0.23.5-next.24(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       uuid: 9.0.1
       xstate: 4.38.3
@@ -4724,8 +4769,8 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-types@0.23.5-unstable.74:
-    resolution: {integrity: sha512-72M8Fzqy2EGIfqz6iFzgN/nxCjDY/Ji9vYsN6feNZeHUaijkUH3O39ccy3hha6hllDNp7NnV2yJhP/jDZalllA==}
+  /@sphereon/ssi-types@0.23.5-next.24:
+    resolution: {integrity: sha512-jtGmic/7hXsUs+nqlJ4vnUseMXUUTc8u8FH23xzwVnu+6upT2YWYfyykY12Zuv02np49mNF9vOX7flSientiuQ==}
     dependencies:
       '@sd-jwt/decode': 0.6.1
       jwt-decode: 3.1.2
@@ -4749,7 +4794,7 @@ packages:
   /@sphereon/wellknown-dids-client@0.1.3:
     resolution: {integrity: sha512-TAT24L3RoXD8ocrkTcsz7HuJmgjNjdoV6IXP1p3DdaI/GqkynytXE3J1+F7vUFMRYwY5nW2RaXSgDQhrFJemaA==}
     dependencies:
-      '@sphereon/ssi-types': 0.23.5-unstable.74
+      '@sphereon/ssi-types': 0.23.5-next.24
       cross-fetch: 3.1.8
       jwt-decode: 3.1.2
     transitivePeerDependencies:
@@ -5107,12 +5152,12 @@ packages:
     resolution: {integrity: sha512-RFC34CnF571dK/K8uRr8dLLZySgrAr5vhhMB2YgGEy51cWzgYeLuhJw6Pzmm67E/r4CAa+r7/+hqVUfgihkNXw==}
     engines: {node: '>=16'}
     dependencies:
-      '@transmute/ed25519-key-pair': 0.7.0-unstable.81
-      '@transmute/jose-ld': 0.7.0-unstable.81
+      '@transmute/ed25519-key-pair': 0.7.0-unstable.82
+      '@transmute/jose-ld': 0.7.0-unstable.82
       '@transmute/jsonld': 0.0.4
-      '@transmute/secp256k1-key-pair': 0.7.0-unstable.81
-      '@transmute/security-context': 0.7.0-unstable.81
-      '@transmute/web-crypto-key-pair': 0.7.0-unstable.81
+      '@transmute/secp256k1-key-pair': 0.7.0-unstable.82
+      '@transmute/security-context': 0.7.0-unstable.82
+      '@transmute/web-crypto-key-pair': 0.7.0-unstable.82
     transitivePeerDependencies:
       - domexception
       - web-streams-polyfill
@@ -5265,7 +5310,7 @@ packages:
       '@transmute/did-key-ed25519': 0.2.1-unstable.42
       '@transmute/linked-data-proof': 0.2.1-unstable.10
       '@transmute/revocation-list-context': 0.7.0-unstable.82
-      '@transmute/security-context': 0.7.0-unstable.81
+      '@transmute/security-context': 0.7.0-unstable.82
       '@transmute/vc.js': 0.7.0-unstable.82
     transitivePeerDependencies:
       - domexception
@@ -7426,6 +7471,7 @@ packages:
   /crypto-ld@7.0.0:
     resolution: {integrity: sha512-RrXy6aB0TOhSiqsgavTQt1G8mKomKIaNLb2JZxj7A/Vi0EwmXguuBQoeiAvePfK6bDR3uQbqYnaLLs4irTWwgw==}
     engines: {node: '>=14'}
+    requiresBuild: true
     dev: false
 
   /crypto-random-string@1.0.0:
@@ -7463,6 +7509,7 @@ packages:
   /data-uri-to-buffer@3.0.1:
     resolution: {integrity: sha512-WboRycPNsVw3B3TL559F7kuBUM4d8CgMEvk6xEJlOp7OBPjt6G7z8WMWlD2rOFZLk6OYfFIUGsCOWzcQH9K2og==}
     engines: {node: '>= 6'}
+    requiresBuild: true
     dev: false
 
   /data-uri-to-buffer@4.0.1:
@@ -8165,6 +8212,7 @@ packages:
   /esm@3.2.25:
     resolution: {integrity: sha512-U1suiZ2oDVWv4zPO56S0NcR5QriEahGtdN2OR6FiOG4WJvcjBVFB0qI4+eKoWFH483PKGuLuu6V8Z4T5g63UVA==}
     engines: {node: '>=6'}
+    requiresBuild: true
     dev: false
 
   /espree@10.0.1:
@@ -8589,6 +8637,7 @@ packages:
   /fetch-blob@2.1.2:
     resolution: {integrity: sha512-YKqtUDwqLyfyMnmbw8XD6Q8j9i/HggKtPEI+pZ1+8bvheBu78biSmNaXWusx1TauGqtUUGx/cBb1mKdq2rLYow==}
     engines: {node: ^10.17.0 || >=12.3.0}
+    requiresBuild: true
     peerDependencies:
       domexception: '*'
     peerDependenciesMeta:
@@ -10174,6 +10223,7 @@ packages:
   /ky-universal@0.8.2(ky@0.25.1):
     resolution: {integrity: sha512-xe0JaOH9QeYxdyGLnzUOVGK4Z6FGvDVzcXFTdrYA1f33MZdEa45sUDaMBy98xQMcsd2XIBrTXRrRYnegcSdgVQ==}
     engines: {node: '>=10.17'}
+    requiresBuild: true
     peerDependencies:
       ky: '>=0.17.0'
       web-streams-polyfill: '>=2.0.0'
@@ -10191,6 +10241,7 @@ packages:
   /ky@0.25.1:
     resolution: {integrity: sha512-PjpCEWlIU7VpiMVrTwssahkYXX1by6NCT0fhTUX34F3DTinARlgMpriuroolugFPcMgpPWrOW4mTb984Qm1RXA==}
     engines: {node: '>=10'}
+    requiresBuild: true
     dev: false
 
   /ky@0.33.3:
@@ -11196,6 +11247,7 @@ packages:
   /node-fetch@3.0.0-beta.9:
     resolution: {integrity: sha512-RdbZCEynH2tH46+tj0ua9caUHVWrd/RHnRfvly2EVdqGmI3ndS1Vn/xjm5KuGejDt2RNDQsVRLPNd2QPwcewVg==}
     engines: {node: ^10.17 || >=12.3}
+    requiresBuild: true
     dependencies:
       data-uri-to-buffer: 3.0.1
       fetch-blob: 2.1.2
