@@ -1,0 +1,87 @@
+{
+  "type": "object",
+  "properties": {
+    "isPEP": {
+      "type": "boolean"
+    },
+    "uboType": {
+      "type": "string",
+      "enum": [
+        "shareholder (non-voting)",
+        "shareholder (voting)",
+        "natural person with ultimate control via other means",
+        "senior management official (SMO)",
+        "settler",
+        "trustee",
+        "protector",
+        "beneficiary"
+      ]
+    },
+    "did": {
+      "type": "string",
+      "pattern": "^did:[a-z]{1,6}:.+$"
+    },
+    "firstName": {
+      "type": "string"
+    },
+    "middleName": {
+      "type": "string"
+    },
+    "lastName": {
+      "type": "string"
+    },
+    "prefixes": {
+      "type": "string"
+    },
+    "dateOfBirth": {
+      "type": "string",
+      "format": "date"
+    },
+    "nationality": {
+      "type": "string"
+    },
+    "identityDocument": {
+      "type": "string",
+      "enum": [
+        "Paper",
+        "Verifiable Credential"
+      ]
+    },
+    "address": {
+      "type": "object",
+      "properties": {
+        "street": {
+          "type": "string"
+        },
+        "houseNumber":{
+          "type": "string"
+        },
+        "postalCode": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "street",
+        "houseNumber",
+        "postalCode",
+        "city",
+        "country"
+      ]
+    }
+  },
+  "required": [
+    "isPEP",
+    "uboType",
+    "did",
+    "firstName",
+    "dateOfBirth",
+    "lastName",
+    "address"
+  ]
+}

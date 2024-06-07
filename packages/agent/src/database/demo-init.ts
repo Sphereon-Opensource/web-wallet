@@ -4,9 +4,10 @@ import {addContactsKonkuk} from "./demo-data/konkuk/contact-fixtures";
 import {addFormDefsKonkuk} from "./demo-data/konkuk/formdef-fixtures";
 import {addFormDefsBelastingdienst} from "./demo-data/belastingdienst/formdef-fixtures";
 import * as process from "node:process";
+import {addFormDefsUbo} from "./demo-data/ubo/formdef-fixtures";
 
 const allowedFixtureVals = ['contacts', 'formdefs'] as const
-const allowedDemoVals = ['rws', 'konkuk', 'belastingdienst'] as const
+const allowedDemoVals = ['rws', 'konkuk', 'belastingdienst', 'ubo'] as const
 type FixtureType = (typeof allowedFixtureVals)[number]
 type Demo = (typeof allowedDemoVals)[number]
 
@@ -37,6 +38,9 @@ async function handleDemo(fixtureType: FixtureType, demo: Demo) {
                         break;
                     case 'belastingdienst':
                         await addFormDefsBelastingdienst();
+                        break;
+                    case 'ubo':
+                        await addFormDefsUbo();
                         break;
                     default:
                         throw new Error(`Unsupported demo type for form definitions: ${demo}, allowed: ${allowedDemoVals}`);

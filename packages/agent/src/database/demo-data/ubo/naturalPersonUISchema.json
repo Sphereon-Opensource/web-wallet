@@ -1,0 +1,126 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Label",
+      "text": "Natural Person Credential"
+    },
+    {
+      "type": "HorizontalLayout",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "DID",
+          "scope": "#/properties/did"
+        }
+      ]
+    },
+    {
+      "type": "HorizontalLayout",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "Identity document type",
+          "scope": "#/properties/identityDocument"
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Natural Person",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "First name",
+              "scope": "#/properties/firstName"
+            },
+            {
+              "type": "Control",
+              "label": "Initials",
+              "scope": "#/properties/prefixes"
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "Middle name",
+              "scope": "#/properties/middleName"
+            },
+            {
+              "type": "Control",
+              "label": "Last name",
+              "scope": "#/properties/lastName"
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "Date of Birth",
+              "scope": "#/properties/dateOfBirth"
+            },
+            {
+              "type": "Control",
+              "label": "Nationality",
+              "scope": "#/properties/nationality"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Address",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "Street",
+              "scope": "#/properties/address/properties/street"
+            },
+            {
+              "type": "Control",
+              "label": "House number",
+              "scope": "#/properties/address/properties/houseNumber"
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "Postalcode",
+              "scope": "#/properties/address/properties/postalCode"
+            },
+            {
+              "type": "Control",
+              "label": "City",
+              "scope": "#/properties/address/properties/city"
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "Country",
+              "scope": "#/properties/address/properties/country"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
