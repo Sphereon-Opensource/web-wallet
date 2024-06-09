@@ -10,8 +10,8 @@
         "description": "Zout leverancier"
       }
     ],
-    "credentials_supported": [
-      {
+    "credential_configurations_supported": {
+      "Swimmingpool": {
         "display": [
           {
             "name": "Swimming pool",
@@ -58,14 +58,17 @@
             }
           }
         ],
-        "id": "swimmingpool",
-        "types": ["VerifiableCredential", "Swimmingpool"],
         "format": "jwt_vc_json",
-        "@context": ["https://www.w3.org/2018/credentials/v1"],
         "cryptographic_binding_methods_supported": ["did:web", "did:jwk", "did:ion"],
-        "cryptographic_suites_supported": ["ES256", "ES256K1"]
+        "cryptographic_suites_supported": ["ES256", "ES256K1"],
+        "credential_definition": {
+          "type": [
+            "VerifiableCredential",
+            "Swimmingpool"
+          ]
+        }
       },
-      {
+      "MovieTicket": {
         "display": [
           {
             "name": "Movies-r-us",
@@ -112,14 +115,17 @@
             }
           }
         ],
-        "id": "movieticket",
-        "types": ["VerifiableCredential", "MovieTicket"],
         "format": "jwt_vc_json",
-        "@context": ["https://www.w3.org/2018/credentials/v1"],
         "cryptographic_binding_methods_supported": ["did:web", "did:jwk", "did:ion"],
-        "cryptographic_suites_supported": ["ES256", "ES256K1"]
+        "cryptographic_suites_supported": ["ES256", "ES256K1"],
+        "credential_definition": {
+          "type": [
+            "VerifiableCredential",
+            "MovieTicket"
+          ]
+        }
       },
-      {
+      "ClassAchievement": {
         "display": [
           {
             "name": "ClassAchievement",
@@ -154,14 +160,17 @@
             }
           }
         ],
-        "id": "classAchievement",
-        "types": ["VerifiableCredential", "ClassAchievement"],
         "format": "jwt_vc_json",
-        "@context": ["https://www.w3.org/2018/credentials/v1"],
         "cryptographic_binding_methods_supported": ["did:web", "did:jwk", "did:ion"],
-        "cryptographic_suites_supported": ["ES256", "ES256K1"]
+        "cryptographic_suites_supported": ["ES256", "ES256K1"],
+        "credential_definition": {
+          "type": [
+            "VerifiableCredential",
+            "ClassAchievement"
+          ]
+        }
       },
-      {
+      "MicroDegree": {
         "display": [
           {
             "name": "Micro Degree",
@@ -196,14 +205,16 @@
             }
           }
         ],
-        "id": "microDegree",
-        "types": ["VerifiableCredential", "MicroDegree"],
-        "format": "jwt_vc_json",
-        "@context": ["https://www.w3.org/2018/credentials/v1"],
+        "credential_definition": {
+          "type": [
+            "VerifiableCredential",
+            "MicroDegree"
+          ]
+        },
         "cryptographic_binding_methods_supported": ["did:web", "did:jwk", "did:ion"],
         "cryptographic_suites_supported": ["ES256", "ES256K1"]
       },
-      {
+      "Student": {
         "display": [
           {
             "name": "Student",
@@ -250,14 +261,17 @@
             }
           }
         ],
-        "id": "student",
-        "types": ["VerifiableCredential", "Student"],
         "format": "jwt_vc_json",
-        "@context": ["https://www.w3.org/2018/credentials/v1"],
+        "credential_definition": {
+          "type": [
+            "VerifiableCredential",
+            "Student"
+          ]
+        },
         "cryptographic_binding_methods_supported": ["did:web", "did:jwk", "did:ion"],
         "cryptographic_suites_supported": ["ES256", "ES256K1"]
       },
-      {
+      "Employee": {
         "display": [
           {
             "name": "Employee",
@@ -304,14 +318,17 @@
             }
           }
         ],
-        "id": "employee",
-        "types": ["VerifiableCredential", "Employee"],
+        "credential_definition": {
+          "type": [
+            "VerifiableCredential",
+            "Employee"
+          ]
+        },
         "format": "jwt_vc_json",
-        "@context": ["https://www.w3.org/2018/credentials/v1"],
         "cryptographic_binding_methods_supported": ["did:web", "did:jwk", "did:ion"],
         "cryptographic_suites_supported": ["ES256", "ES256K1"]
       },
-      {
+      "Woonplaatsverklaring": {
         "display": [
           {
             "display": [
@@ -478,13 +495,16 @@
             }
           }
         ],
-        "id": "coo",
-        "types": ["VerifiableCredential", "CertificationOfOrigin"],
+        "credential_definition": {
+          "type": [
+            "VerifiableCredential",
+            "CertificationOfOrigin"
+          ]
+        },
         "format": "jwt_vc_json",
-        "@context": ["https://www.w3.org/2018/credentials/v1", "https://w3id.org/traceability/v1"],
         "cryptographic_binding_methods_supported": ["did:web", "did:jwk", "did:ion"],
         "cryptographic_suites_supported": ["ES256", "ES256K1"]
       }
-    ]
+    }
   }
 }
