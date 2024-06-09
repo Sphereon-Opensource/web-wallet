@@ -14,3 +14,27 @@ console.log(`Using DB configuration for a ${postgresConfig.type} database`)
 export const getDbConnection = async (connectionName: string): Promise<DataSource> => {
   return DataSources.singleInstance().addConfig(connectionName, postgresConfig).getDbConnection(connectionName)
 }
+
+/**
+ * Runs a migration down (drops DB schema)
+ * @param dataSource
+ */
+export const revertMigration = async (dataSource: DataSource): Promise<void> => {
+  if (dataSource.isInitialized) {
+    await dataSource.undoLastMigration();
+  } else {
+    console.error("DataSource is not initialized");
+  }
+}
+
+/**
+ * Runs a migration down (drops DB schema)
+ * @param dataSource
+ */
+export const dropDatabase = async (dataSource: DataSource): Promise<void> => {
+  if (dataSource.isInitialized) {
+    await dataSource.dropDatabase();
+  } else {
+    console.error("DataSource is not initialized");
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Label",
+      "text": "Woonplaatsverklaring"
+    },
+    {
+      "type": "Group",
+      "label": "Organisatie",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "Naam onderneming",
+          "scope": "#/properties/naam"
+        },
+        {
+          "type": "Control",
+          "label": "RSIN",
+          "scope": "#/properties/rsin"
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Adres",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "Straat",
+              "scope": "#/properties/adres/properties/straatnaam"
+            },
+            {
+              "type": "Control",
+              "label": "Huisnummer",
+              "scope": "#/properties/adres/properties/huisnummer"
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "Postcode",
+              "scope": "#/properties/adres/properties/postcode"
+            },
+            {
+              "type": "Control",
+              "label": "Plaats",
+              "scope": "#/properties/adres/properties/plaats"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

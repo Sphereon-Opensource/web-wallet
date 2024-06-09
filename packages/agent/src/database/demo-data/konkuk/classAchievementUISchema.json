@@ -1,0 +1,56 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Label",
+      "text": "Class completion"
+    },
+    {
+      "type": "Control",
+      "label": "Completion date",
+      "scope": "#/properties/completionDate"
+    },
+    {
+      "type": "Group",
+      "label": "Student",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "Student number",
+          "scope": "#/properties/student/properties/studentNumber"
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "First name",
+              "scope": "#/properties/student/properties/firstName"
+            },
+            {
+              "type": "Control",
+              "label": "Last name",
+              "scope": "#/properties/student/properties/lastName"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Class",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "Class name",
+          "scope": "#/properties/class/properties/className"
+        },
+        {
+          "type": "Control",
+          "label": "Category",
+          "scope": "#/properties/class/properties/category"
+        }
+      ]
+    }
+  ]
+}

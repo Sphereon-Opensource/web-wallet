@@ -71,12 +71,15 @@ import { PDManager } from '@sphereon/ssi-sdk.pd-manager'
  * Lets setup supported DID resolvers first
  */
 const resolver = createDidResolver()
-const dbConnection = getDbConnection(DB_CONNECTION_NAME)
+
+export const dbConnection = getDbConnection(DB_CONNECTION_NAME)
 
 /**
  * Private key store, responsible for storing private keys in the database using encryption
  */
 const privateKeyStore: PrivateKeyStore = new PrivateKeyStore(dbConnection, new SecretBox(DB_ENCRYPTION_KEY))
+
+const maintenanceMode:boolean = process.env.RUN_MODE === 'maintenance'
 
 /**
  * Define Agent plugins being used. The plugins come from Sphereon's SSI-SDK and Veramo.
@@ -324,5 +327,6 @@ void OID4VCIRestAPI.init({
   credentialDataSupplier: defaultCredentialDataSupplier,
   expressSupport,
 })
-
-expressSupport.start()
+if(!maintenanceMode) {
+    expressSupport.start()
+}

@@ -1,0 +1,57 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Label",
+      "text": "Micro Degree"
+    },
+
+    {
+      "type": "Group",
+      "label": "Student",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "Student number",
+          "scope": "#/properties/student/properties/studentNumber"
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "First name",
+              "scope": "#/properties/student/properties/firstName"
+            },
+            {
+              "type": "Control",
+              "label": "Last name",
+              "scope": "#/properties/student/properties/lastName"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Certificate details",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "Completion date",
+          "scope": "#/properties/certificate/properties/completionDate"
+        },
+        {
+          "type": "Control",
+          "label": "Micro degree type",
+          "scope": "#/properties/certificate/properties/type"
+        },
+        {
+          "type": "Control",
+          "label": "Class names",
+          "scope": "#/properties/certificate/properties/classNames"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "type": "object",
+  "properties": {
+    "movieName": {
+      "type": "string",
+      "enum": ["Godzilla x Kong: The new Empire", "Monkey Man", "Ghostbusters: Frozen empire", "Dune: Part Two"]
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "startTime": {
+      "type": "string",
+      "format": "time"
+    },
+    "seats": {
+      "type": "integer",
+      "default": "1",
+      "minimum": 1,
+      "maximum": 10
+    },
+    "VIP": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "date",
+    "startTime",
+    "seats"
+  ]
+}
