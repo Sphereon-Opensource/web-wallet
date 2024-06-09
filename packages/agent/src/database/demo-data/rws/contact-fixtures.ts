@@ -1,4 +1,4 @@
-import { CorrelationIdentifierType, IdentityRole, NonPersistedIdentity, PartyOrigin, PartyTypeType } from '@sphereon/ssi-sdk.data-store'
+import { CorrelationIdentifierType, CredentialRole, NonPersistedIdentity, PartyOrigin, PartyTypeType } from '@sphereon/ssi-sdk.data-store'
 import { IIdentifier } from '@veramo/core'
 import agent from '../../../agent'
 import { v4 } from 'uuid'
@@ -21,7 +21,7 @@ const toContactIdentityDTO = (contact: Record<string, any>, identifier: IIdentif
   console.log(`Contact received did ${identifier.did}, contact: ${JSON.stringify(contact)}`, identifier.did)
   return {
     alias: identifier.alias ?? contact.displayName,
-    roles: [IdentityRole.ISSUER],
+    roles: [CredentialRole.ISSUER],
     identifier: {
       type: CorrelationIdentifierType.DID,
       correlationId: identifier.did,
