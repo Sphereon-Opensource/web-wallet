@@ -22,7 +22,7 @@ import {
   DataStoreIssuanceBrandingEntities,
   DataStoreIssuanceBrandingMigrations,
   DataStorePresentationDefinitionEntities,
-  DataStorePresentationsDefinitionsMigrations,
+  DataStorePresentationDefinitionMigrations,
   DataStoreStatusListEntities,
   DataStoreStatusListMigrations,
 } from '@sphereon/ssi-sdk.data-store'
@@ -80,7 +80,7 @@ const postgresConfig: PostgresConnectionOptions = validatePostgresOptions({
     ...WebWalletMigrations,
     ...DataStoreEventLoggerMigrations,
     ...DataStoreIssuanceBrandingMigrations,
-    ...DataStorePresentationsDefinitionsMigrations
+    ...DataStorePresentationDefinitionMigrations
   ],
   migrationsRun: false, // We run migrations from code to ensure proper ordering with Redux
   synchronize: false, // We do not enable synchronize, as we use migrations from code
