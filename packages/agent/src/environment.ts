@@ -10,7 +10,8 @@ import { eventLoggerAuditMethods } from '@sphereon/ssi-sdk.event-logger'
 import { oid4vciHolderContextMethods } from '@sphereon/ssi-sdk.oid4vci-holder'
 import { contactManagerMethods } from '@sphereon/ssi-sdk.contact-manager'
 import { sphereonKeyManagerMethods } from '@sphereon/ssi-sdk-ext.key-manager'
-import { issuanceBrandingContextMethods } from '@sphereon/ssi-sdk.issuance-branding'
+import { issuanceBrandingMethods } from '@sphereon/ssi-sdk.issuance-branding'
+import { pdManagerMethods } from '@sphereon/ssi-sdk.pd-manager'
 import { loadJsonFiles } from './utils'
 import { IDIDOpts } from './types'
 
@@ -66,7 +67,8 @@ export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATU
       ...contactManagerMethods,
       ...sphereonKeyManagerMethods,
       'didManagerCreate',
-      ...issuanceBrandingContextMethods
+      ...issuanceBrandingMethods,
+      ...pdManagerMethods
     ]
 
 export const STATUS_LIST_API_BASE_PATH = env('STATUS_LIST_API_BASE_PATH', ENV_VAR_PREFIX) ?? VC_API_BASE_PATH
