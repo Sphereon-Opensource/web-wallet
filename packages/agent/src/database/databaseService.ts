@@ -21,9 +21,9 @@ export const getDbConnection = async (connectionName: string): Promise<DataSourc
  */
 export const revertMigration = async (dataSource: DataSource): Promise<void> => {
   if (dataSource.isInitialized) {
-    await dataSource.undoLastMigration();
+    await dataSource.undoLastMigration()
   } else {
-    console.error("DataSource is not initialized");
+    console.error('DataSource is not initialized')
   }
 }
 
@@ -33,8 +33,8 @@ export const revertMigration = async (dataSource: DataSource): Promise<void> => 
  */
 export const dropDatabase = async (dataSource: DataSource): Promise<void> => {
   if (dataSource.isInitialized) {
-    await dataSource.dropDatabase();
+    await dataSource.dropDatabase()
   } else {
-    console.error("DataSource is not initialized");
+    console.error('DataSource is not initialized')
   }
 }

@@ -62,10 +62,7 @@
         "cryptographic_binding_methods_supported": ["did:web", "did:jwk", "did:ion"],
         "cryptographic_suites_supported": ["ES256", "ES256K1"],
         "credential_definition": {
-          "type": [
-            "VerifiableCredential",
-            "Swimmingpool"
-          ]
+          "type": ["VerifiableCredential", "Swimmingpool"]
         }
       },
       "MovieTicket": {
@@ -119,10 +116,7 @@
         "cryptographic_binding_methods_supported": ["did:web", "did:jwk", "did:ion"],
         "cryptographic_suites_supported": ["ES256", "ES256K1"],
         "credential_definition": {
-          "type": [
-            "VerifiableCredential",
-            "MovieTicket"
-          ]
+          "type": ["VerifiableCredential", "MovieTicket"]
         }
       },
       "ClassAchievement": {
@@ -164,10 +158,7 @@
         "cryptographic_binding_methods_supported": ["did:web", "did:jwk", "did:ion"],
         "cryptographic_suites_supported": ["ES256", "ES256K1"],
         "credential_definition": {
-          "type": [
-            "VerifiableCredential",
-            "ClassAchievement"
-          ]
+          "type": ["VerifiableCredential", "ClassAchievement"]
         }
       },
       "MicroDegree": {
@@ -206,10 +197,7 @@
           }
         ],
         "credential_definition": {
-          "type": [
-            "VerifiableCredential",
-            "MicroDegree"
-          ]
+          "type": ["VerifiableCredential", "MicroDegree"]
         },
         "cryptographic_binding_methods_supported": ["did:web", "did:jwk", "did:ion"],
         "cryptographic_suites_supported": ["ES256", "ES256K1"]
@@ -263,10 +251,7 @@
         ],
         "format": "jwt_vc_json",
         "credential_definition": {
-          "type": [
-            "VerifiableCredential",
-            "Student"
-          ]
+          "type": ["VerifiableCredential", "Student"]
         },
         "cryptographic_binding_methods_supported": ["did:web", "did:jwk", "did:ion"],
         "cryptographic_suites_supported": ["ES256", "ES256K1"]
@@ -319,10 +304,7 @@
           }
         ],
         "credential_definition": {
-          "type": [
-            "VerifiableCredential",
-            "Employee"
-          ]
+          "type": ["VerifiableCredential", "Employee"]
         },
         "format": "jwt_vc_json",
         "cryptographic_binding_methods_supported": ["did:web", "did:jwk", "did:ion"],
@@ -378,17 +360,10 @@
               }
             ],
             "id": "Woonplaatsverklaring",
-            "types": [
-              "VerifiableCredential",
-              "Woonplaatsverklaring"
-            ],
+            "types": ["VerifiableCredential", "Woonplaatsverklaring"],
             "format": "jwt_vc_json",
-            "cryptographic_binding_methods_supported": [
-              "did:jwk"
-            ],
-            "cryptographic_suites_supported": [
-              "ES256"
-            ]
+            "cryptographic_binding_methods_supported": ["did:jwk"],
+            "cryptographic_suites_supported": ["ES256"]
           },
           {
             "display": [
@@ -438,17 +413,10 @@
               }
             ],
             "id": "Omzetbelasting",
-            "types": [
-              "VerifiableCredential",
-              "Omzetbelasting"
-            ],
+            "types": ["VerifiableCredential", "Omzetbelasting"],
             "format": "jwt_vc_json",
-            "cryptographic_binding_methods_supported": [
-              "did:jwk"
-            ],
-            "cryptographic_suites_supported": [
-              "ES256"
-            ]
+            "cryptographic_binding_methods_supported": ["did:jwk"],
+            "cryptographic_suites_supported": ["ES256"]
           },
           {
             "name": "Certificate of Origin",
@@ -496,10 +464,7 @@
           }
         ],
         "credential_definition": {
-          "type": [
-            "VerifiableCredential",
-            "CertificationOfOrigin"
-          ]
+          "type": ["VerifiableCredential", "CertificationOfOrigin"]
         },
         "format": "jwt_vc_json",
         "cryptographic_binding_methods_supported": ["did:web", "did:jwk", "did:ion"],

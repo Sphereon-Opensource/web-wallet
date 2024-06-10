@@ -30,20 +30,20 @@ const toContactIdentityDTO = (contact: Record<string, any>, identifier: IIdentif
 }
 
 export async function addContactsRWS() {
-    try {
-        const personContactType = await agent.cmAddContactType({
-            name: 'people',
-            origin: PartyOrigin.INTERNAL,
-            type: PartyTypeType.NATURAL_PERSON,
-            tenantId: v4()
-        });
+  try {
+    const personContactType = await agent.cmAddContactType({
+      name: 'people',
+      origin: PartyOrigin.INTERNAL,
+      type: PartyTypeType.NATURAL_PERSON,
+      tenantId: v4(),
+    })
 
-        const organizationalContactType = await agent.cmAddContactType({
-            name: 'organizations',
-            origin: PartyOrigin.INTERNAL,
-            type: PartyTypeType.ORGANIZATION,
-            tenantId: v4()
-        });
+    const organizationalContactType = await agent.cmAddContactType({
+      name: 'organizations',
+      origin: PartyOrigin.INTERNAL,
+      type: PartyTypeType.ORGANIZATION,
+      tenantId: v4(),
+    })
 
     const persona1 = {
       firstName: 'Wendy',

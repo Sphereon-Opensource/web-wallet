@@ -71,7 +71,7 @@ const postgresConfig: PostgresConnectionOptions = validatePostgresOptions({
     ...DataStoreContactEntities,
     ...DataStoreEventLoggerEntities,
     ...DataStoreIssuanceBrandingEntities,
-    ...DataStorePresentationDefinitionEntities
+    ...DataStorePresentationDefinitionEntities,
   ],
   migrations: [
     ...VeramoDataStoreMigrations,
@@ -80,7 +80,7 @@ const postgresConfig: PostgresConnectionOptions = validatePostgresOptions({
     ...WebWalletMigrations,
     ...DataStoreEventLoggerMigrations,
     ...DataStoreIssuanceBrandingMigrations,
-    ...DataStorePresentationDefinitionMigrations
+    ...DataStorePresentationDefinitionMigrations,
   ],
   migrationsRun: false, // We run migrations from code to ensure proper ordering with Redux
   synchronize: false, // We do not enable synchronize, as we use migrations from code

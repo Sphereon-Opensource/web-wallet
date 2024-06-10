@@ -11,7 +11,7 @@ export async function defaultCredentialDataSupplier(args: CredentialDataSupplier
   if (!credentialDataSupplierInput) {
     throw Error(`Agent needs a credential data supplier input upfront`)
   }
-  const types: string[] = getTypesFromRequest(credentialRequest, {filterVerifiableCredential: true})
+  const types: string[] = getTypesFromRequest(credentialRequest, { filterVerifiableCredential: true })
 
   if ('hashOrId' in credentialDataSupplierInput && !!credentialDataSupplierInput.hashOrId) {
     const hashOrId = credentialDataSupplierInput?.hashOrId as string
@@ -31,10 +31,11 @@ export async function defaultCredentialDataSupplier(args: CredentialDataSupplier
     }
   } else if ('credentialPayload' in credentialDataSupplierInput && credentialDataSupplierInput.credentialPayload) {
     const credentialPayload = credentialDataSupplierInput.credentialPayload as CredentialPayload
-console.log('-------------> credentialPayload', credentialPayload)
+    console.log('-------------> credentialPayload', credentialPayload)
     if (types.includes('VerifiableCredential') && !credentialPayload.type?.includes('VerifiableCredential')) {
       credentialPayload.type = [...types]
-    } else if (!Array.isArray(credentialPayload.type)) { // TODO do we need this? credentialPayload.type is optional and credentialRequest.credential_identifier supplies the type
+    } else if (!Array.isArray(credentialPayload.type)) {
+      // TODO do we need this? credentialPayload.type is optional and credentialRequest.credential_identifier supplies the type
       throw Error(`Could not infer credential types from offer, or supplied credential payload`)
     } else if (!credentialRequest.proof || !credentialRequest.proof.jwt) {
       throw Error(`Credential request proof was missing`)

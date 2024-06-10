@@ -68,7 +68,7 @@ export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATU
       ...sphereonKeyManagerMethods,
       'didManagerCreate',
       ...issuanceBrandingMethods,
-      ...pdManagerMethods
+      ...pdManagerMethods,
     ]
 
 export const STATUS_LIST_API_BASE_PATH = env('STATUS_LIST_API_BASE_PATH', ENV_VAR_PREFIX) ?? VC_API_BASE_PATH
