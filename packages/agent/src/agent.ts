@@ -55,7 +55,7 @@ import {DidWebServer} from '@sphereon/ssi-sdk.uni-resolver-registrar-api/dist/di
 import {StatuslistManagementApiServer} from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
 import {ContactManagerApiServer} from '@sphereon/ssi-sdk.contact-manager-rest-api'
 import {ContactManager} from '@sphereon/ssi-sdk.contact-manager'
-import {ContactStore, EventLoggerStore, IssuanceBrandingStore} from '@sphereon/ssi-sdk.data-store'
+import { ContactStore, EventLoggerStore, IssuanceBrandingStore, PDStore } from '@sphereon/ssi-sdk.data-store'
 import {IIssuerInstanceArgs, OID4VCIIssuer} from '@sphereon/ssi-sdk.oid4vci-issuer'
 import {OID4VCIStore} from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import {IRequiredContext, OID4VCIRestAPI} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
@@ -64,6 +64,7 @@ import {IOID4VCIRestAPIOpts} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api/src
 import {EventLogger} from '@sphereon/ssi-sdk.event-logger'
 import {RemoteServerApiServer} from '@sphereon/ssi-sdk.remote-server-rest-api'
 import {defaultCredentialDataSupplier} from './credentials/dataSuppliers'
+import { PDManager } from '@sphereon/ssi-sdk.pd-manager'
 import {IssuanceBranding, issuanceBrandingMethods} from '@sphereon/ssi-sdk.issuance-branding';
 
 /**
@@ -83,7 +84,6 @@ const cliMode: boolean = process.env.RUN_MODE === 'cli'
 /**
  * Define Agent plugins being used. The plugins come from Sphereon's SSI-SDK and Veramo.
  */
-
 const plugins: IAgentPlugin[] = [
     new DataStore(dbConnection),
     new DataStoreORM(dbConnection),
@@ -136,6 +136,15 @@ if (IS_OID4VCI_ENABLED) {
             resolveOpts: {
                 resolver,
             },
+  }),
+  new EventLogger({
+    eventTypes: [LoggingEventType.AUDIT],
+    store: new EventLoggerStore(dbConnection),
+  }),
+  new PDManager({
+    store: new PDStore(dbConnection)
+  })
+]
         }))
 }
 
