@@ -123,6 +123,9 @@ const plugins: IAgentPlugin[] = [
         eventTypes: [LoggingEventType.AUDIT],
         store: new EventLoggerStore(dbConnection),
     }),
+    new PDManager({
+        store: new PDStore(dbConnection)
+    })
 ]
 
 if (IS_OID4VCI_ENABLED) {
@@ -136,16 +139,7 @@ if (IS_OID4VCI_ENABLED) {
             resolveOpts: {
                 resolver,
             },
-  }),
-  new EventLogger({
-    eventTypes: [LoggingEventType.AUDIT],
-    store: new EventLoggerStore(dbConnection),
-  }),
-  new PDManager({
-    store: new PDStore(dbConnection)
-  })
-]
-        }))
+  }))
 }
 
 /**
