@@ -59,13 +59,13 @@ import { ContactStore, EventLoggerStore, IssuanceBrandingStore, PDStore } from '
 import {IIssuerInstanceArgs, OID4VCIIssuer} from '@sphereon/ssi-sdk.oid4vci-issuer'
 import {OID4VCIStore} from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import {IRequiredContext, OID4VCIRestAPI} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
-import {LoggingEventType} from '@sphereon/ssi-sdk.core'
 import {IOID4VCIRestAPIOpts} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api/src/OID4VCIRestAPI'
 import {EventLogger} from '@sphereon/ssi-sdk.event-logger'
 import {RemoteServerApiServer} from '@sphereon/ssi-sdk.remote-server-rest-api'
 import {defaultCredentialDataSupplier} from './credentials/dataSuppliers'
 import { PDManager } from '@sphereon/ssi-sdk.pd-manager'
 import {IssuanceBranding, issuanceBrandingMethods} from '@sphereon/ssi-sdk.issuance-branding';
+import {LoggingEventType} from "@sphereon/ssi-types";
 
 /**
  * Lets setup supported DID resolvers first
