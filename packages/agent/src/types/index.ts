@@ -9,12 +9,15 @@ import {
   IKeyManager,
   IResolver,
 } from '@veramo/core'
-import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
-import { IOID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
-import { IOID4VCIIssuer } from '@sphereon/ssi-sdk.oid4vci-issuer'
-import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
-import { ISphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
-import { IPDManager } from '@sphereon/ssi-sdk.pd-manager'
+import {IContactManager} from '@sphereon/ssi-sdk.contact-manager'
+import {IOID4VCIStore} from '@sphereon/ssi-sdk.oid4vci-issuer-store'
+import {IOID4VCIIssuer} from '@sphereon/ssi-sdk.oid4vci-issuer'
+import {IIssuanceBranding} from '@sphereon/ssi-sdk.issuance-branding'
+import {ISphereonKeyManager} from '@sphereon/ssi-sdk-ext.key-manager'
+import {IPDManager} from '@sphereon/ssi-sdk.pd-manager'
+import {IPresentationExchange} from '@sphereon/ssi-sdk.presentation-exchange'
+import {IPEXInstanceOptions} from "@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth/src/types/ISIOPv2RP";
+import {ISIOPv2RP} from "@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth";
 
 export const DID_PREFIX = 'did'
 
@@ -22,18 +25,20 @@ export const DID_PREFIX = 'did'
  * SSI SDK modules supported by this agent. This type is used to expose available agent methods in the IDE
  */
 export type TAgentTypes = IDIDManager &
-  IResolver &
-  IKeyManager &
-  IDataStore &
-  IDataStoreORM &
-  ICredentialVerifier &
-  ICredentialIssuer &
-  IContactManager &
-  IOID4VCIStore &
-  IOID4VCIIssuer &
-  IIssuanceBranding &
-  ISphereonKeyManager &
-  IPDManager
+    IResolver &
+    IKeyManager &
+    IDataStore &
+    IDataStoreORM &
+    ICredentialVerifier &
+    ICredentialIssuer &
+    IContactManager &
+    IOID4VCIStore &
+    IOID4VCIIssuer &
+    IIssuanceBranding &
+    ISphereonKeyManager &
+    IPDManager &
+    IPresentationExchange &
+    ISIOPv2RP
 
 /**
  * The Key Management System (name) to use. Currently, there is only one KMS
@@ -68,6 +73,8 @@ export interface IDIDOpts {
 export interface IDIDResult extends IDIDOpts {
   identifier?: IIdentifier // The identifier that was created
 }
+
+export type OID4VPInstanceOpts = Omit<IPEXInstanceOptions, 'definition'>
 
 /*
 /!**

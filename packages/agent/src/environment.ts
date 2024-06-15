@@ -13,9 +13,13 @@ import {sphereonKeyManagerMethods} from '@sphereon/ssi-sdk-ext.key-manager'
 import {issuanceBrandingMethods} from '@sphereon/ssi-sdk.issuance-branding'
 import {pdManagerMethods} from '@sphereon/ssi-sdk.pd-manager'
 import {loadJsonFiles} from './utils'
-import {IDIDOpts} from './types'
+import {IDIDOpts, OID4VPInstanceOpts} from './types'
+import {IPresentationDefinition} from "@sphereon/pex";
 
 await dotenvConfig()
+
+const toBoolean = (value?: string): boolean => value === undefined || value === 'true';
+
 
 /**
  * Please see .env.example for an explanation of the different environment variables available
@@ -44,7 +48,8 @@ export const EXTERNAL_HOSTNAME = env('EXTERNAL_HOSTNAME', ENV_VAR_PREFIX) ?? 'lo
 export const DEFAULT_DID = env('DEFAULT_DID', ENV_VAR_PREFIX)
 export const DEFAULT_KID = env('DEFAULT_KID', ENV_VAR_PREFIX)
 export const CONF_PATH = env('CONF_PATH', ENV_VAR_PREFIX) ? resolve(env('CONF_PATH', ENV_VAR_PREFIX)!) : resolve('../../conf')
-export const IS_OID4VCI_ENABLED = process.env.OID4VCI_ENABLED === undefined || process.env.OID4VCI_ENABLED === 'true'
+export const IS_OID4VP_ENABLED = toBoolean(process.env.OID4VP_ENABLED)
+export const IS_OID4VCI_ENABLED = toBoolean(process.env.OID4VCI_ENABLED )
 export const OID4VCI_API_BASE_URL = env('OID4VCI_API_BASE_URL', ENV_VAR_PREFIX) ?? '/oid4vci'
 export const OID4VCI_ISSUER_OPTIONS_PATH = `${CONF_PATH}/oid4vci_options`
 export const OID4VCI_ISSUER_METADATA_PATH = `${CONF_PATH}/oid4vci_metadata`
@@ -105,9 +110,16 @@ export const didOptConfigs = loadJsonFiles<IDIDOpts>({
   path: DID_OPTIONS_PATH,
 })
 
+export const OID4VP_DEFINITIONS: string[] = process.env.OID4VP_DEFINITIONS ? process.env.OID4VP_DEFINITIONS.split(/[, ]/).map(val => val.trim()) : []
+export const OID4VP_PRESENTATION_DEFINITION_PATH = `${CONF_PATH}/presentation_definitions`;
+export const OID4VP_RP_OPTIONS_PATH = `${CONF_PATH}/oid4vp_options`;
+
+export const oid4vpInstanceOpts = loadJsonFiles<OID4VPInstanceOpts>({path: OID4VP_RP_OPTIONS_PATH})
+
 export const oid4vciInstanceOpts = loadJsonFiles<IIssuerOptsImportArgs>({
   path: OID4VCI_ISSUER_OPTIONS_PATH,
 })
 export const oid4vciMetadataOpts = loadJsonFiles<IMetadataImportArgs>({
   path: OID4VCI_ISSUER_METADATA_PATH,
 })
+export const syncDefinitionsOpts = loadJsonFiles<IPresentationDefinition>({path: OID4VP_PRESENTATION_DEFINITION_PATH})

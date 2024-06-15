@@ -37,15 +37,15 @@ import {
     DID_API_BASE_PATH,
     DID_API_FEATURES,
     DID_API_RESOLVE_MODE,
-    DID_WEB_SERVICE_FEATURES,
-    IS_OID4VCI_ENABLED,
+    DID_WEB_SERVICE_FEATURES, INTERNAL_PORT,
+    IS_OID4VCI_ENABLED, IS_OID4VP_ENABLED,
     OID4VCI_API_BASE_URL,
     oid4vciInstanceOpts,
-    oid4vciMetadataOpts,
+    oid4vciMetadataOpts, OID4VP_DEFINITIONS,
     REMOTE_SERVER_API_FEATURES,
     STATUS_LIST_API_BASE_PATH,
     STATUS_LIST_API_FEATURES,
-    STATUS_LIST_CORRELATION_ID,
+    STATUS_LIST_CORRELATION_ID, syncDefinitionsOpts,
     VC_API_BASE_PATH,
     VC_API_FEATURES,
 } from './environment'
@@ -67,6 +67,10 @@ import {defaultCredentialDataSupplier} from './credentials/dataSuppliers'
 import {IssuanceBranding, issuanceBrandingMethods} from '@sphereon/ssi-sdk.issuance-branding'
 import {PDManager} from '@sphereon/ssi-sdk.pd-manager'
 import {LoggingEventType} from "@sphereon/ssi-types";
+import {createOID4VPRP} from "./utils/oid4vp";
+import {IPresentationDefinition} from "@sphereon/pex";
+import {PresentationExchange} from "@sphereon/ssi-sdk.presentation-exchange";
+import {ISIOPv2RPRestAPIOpts, SIOPv2RPApiServer} from "@sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-api";
 
 /**
  * Lets setup supported DID resolvers first
@@ -129,20 +133,29 @@ const plugins: IAgentPlugin[] = [
     })
 ]
 
-if (IS_OID4VCI_ENABLED) {
-    plugins.push(
-        new OID4VCIStore({
-            importIssuerOpts: oid4vciInstanceOpts.asArray,
-            importMetadatas: oid4vciMetadataOpts.asArray,
-        }))
-    plugins.push(
-        new OID4VCIIssuer({
-            resolveOpts: {
-                resolver,
-            },
-        }))
-}
+if(!cliMode) {
+    if (IS_OID4VCI_ENABLED) {
+        plugins.push(
+            new OID4VCIStore({
+                importIssuerOpts: oid4vciInstanceOpts.asArray,
+                importMetadatas: oid4vciMetadataOpts.asArray,
+            }))
+        plugins.push(
+            new OID4VCIIssuer({
+                resolveOpts: {
+                    resolver,
+                },
+            }))
+    }
 
+    if (IS_OID4VP_ENABLED) {
+        const oid4vpRP = await createOID4VPRP({resolver})
+        if (oid4vpRP) {
+            plugins.push(new PresentationExchange())
+            plugins.push(oid4vpRP)
+        }
+    }
+}
 /**
  * Create the agent with a context and export it, so it is available for the rest of the code, or code using this module
  */
@@ -207,6 +220,43 @@ if (!cliMode) {
                 },
             },
         })
+    }
+
+    if (IS_OID4VP_ENABLED) {
+        if (!expressSupport) {
+            throw Error('Express support needs to be configured when exposing OID4VP')
+        }
+        const opts: ISIOPv2RPRestAPIOpts = {
+            enableFeatures: ['siop', 'rp-status'],
+            endpointOpts: {
+                basePath: process.env.OID4VP_AGENT_BASE_PATH ?? '',
+                globalAuth: {
+                    authentication: {
+                        enabled: false,
+                        strategy: 'bearer-auth'
+                    },
+                    secureSiopEndpoints: false
+                },
+                webappCreateAuthRequest: {
+                    webappBaseURI: process.env.OID4VP_WEBAPP_BASE_URI ?? `http://localhost:${INTERNAL_PORT}`,
+                    siopBaseURI: process.env.OID4VP_AGENT_BASE_URI ?? `http://localhost:${INTERNAL_PORT}`,
+                },
+                webappAuthStatus: {
+                    // webappBaseURI: process.env.OID4VP_WEBAPP_BASE_URI ?? `http://localhost:${INTERNAL_PORT}`,
+                },
+                webappDeleteAuthRequest: {
+                    // webappBaseURI: process.env.OID4VP_WEBAPP_BASE_URI ?? `http://localhost:${INTERNAL_PORT}`,
+                },
+                siopGetAuthRequest: {
+                    // siopBaseURI: process.env.OID4VP_AGENT_BASE_URI ?? `http://localhost:${INTERNAL_PORT}`,
+                },
+                siopVerifyAuthResponse: {
+                    // siopBaseURI: process.env.OID4VP_AGENT_BASE_URI ?? `http://localhost:${INTERNAL_PORT}`,
+                }
+            }
+        }
+        new SIOPv2RPApiServer({agent, expressSupport, opts})
+        console.log('[OID4VP] SIOPv2 and OID4VP started: ' + process.env.OID4VP_AGENT_BASE_URI ?? `http://localhost:${INTERNAL_PORT}}`)
     }
 
     /**
@@ -354,4 +404,22 @@ if (!cliMode) {
         })
     }
     expressSupport.start()
+
+
+    // Import presentation definitions from disk.
+    const definitionsToImport: Array<IPresentationDefinition> = syncDefinitionsOpts.asArray.filter(definition => {
+        const {id, name} = definition ?? {};
+        if (definition && (OID4VP_DEFINITIONS.length === 0 || OID4VP_DEFINITIONS.includes(id) || (name && OID4VP_DEFINITIONS.includes(name)))) {
+            console.log(`[OID4VP] Enabling Presentation Definition with name '${name ?? '<none>'}' and id '${id}'`);
+            return true
+        }
+        return false
+    })
+
+    if (definitionsToImport.length > 0) {
+        agent.siopImportDefinitions({
+            definitions: definitionsToImport,
+            versionControlMode: 'AutoIncrement' // This is the default, but just to indicate here it exists
+        })
+    }
 }
