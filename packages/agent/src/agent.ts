@@ -150,10 +150,8 @@ if(!cliMode) {
 
     if (IS_OID4VP_ENABLED) {
         const oid4vpRP = await createOID4VPRP({resolver})
-        if (oid4vpRP) {
-            plugins.push(new PresentationExchange())
-            plugins.push(oid4vpRP)
-        }
+        plugins.push(oid4vpRP)
+        plugins.push(new PresentationExchange())
     }
 }
 /**

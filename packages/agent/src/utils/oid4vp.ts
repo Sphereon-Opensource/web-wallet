@@ -64,10 +64,7 @@ export async function getDefaultOID4VPRPOptions(args?: {
 
 }
 
-export async function createOID4VPRP(opts: { resolver: Resolvable }) {
-    if (!IS_OID4VP_ENABLED) {
-        return
-    }
+export async function createOID4VPRP(opts: { resolver: Resolvable }) : Promise<SIOPv2RP> {
     return new SIOPv2RP({
         instanceOpts: toPexInstanceOptions(
             oid4vpInstanceOpts.asArray,
