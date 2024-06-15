@@ -1,4 +1,4 @@
-import { createAgent, IAgentContext, IAgentPlugin, TAgent } from '@veramo/core'
+import {createAgent, IAgentContext, IAgentPlugin, TAgent} from '@veramo/core'
 import {
     CredentialHandlerLDLocal,
     LdDefaultContexts,
@@ -37,7 +37,8 @@ import {
     DID_API_BASE_PATH,
     DID_API_FEATURES,
     DID_API_RESOLVE_MODE,
-    DID_WEB_SERVICE_FEATURES, IS_OID4VCI_ENABLED,
+    DID_WEB_SERVICE_FEATURES,
+    IS_OID4VCI_ENABLED,
     OID4VCI_API_BASE_URL,
     oid4vciInstanceOpts,
     oid4vciMetadataOpts,
@@ -55,7 +56,7 @@ import {DidWebServer} from '@sphereon/ssi-sdk.uni-resolver-registrar-api/dist/di
 import {StatuslistManagementApiServer} from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
 import {ContactManagerApiServer} from '@sphereon/ssi-sdk.contact-manager-rest-api'
 import {ContactManager} from '@sphereon/ssi-sdk.contact-manager'
-import { ContactStore, EventLoggerStore, IssuanceBrandingStore, PDStore } from '@sphereon/ssi-sdk.data-store'
+import {ContactStore, EventLoggerStore, IssuanceBrandingStore, PDStore} from '@sphereon/ssi-sdk.data-store'
 import {IIssuerInstanceArgs, OID4VCIIssuer} from '@sphereon/ssi-sdk.oid4vci-issuer'
 import {OID4VCIStore} from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import {IRequiredContext, OID4VCIRestAPI} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
@@ -63,8 +64,8 @@ import {IOID4VCIRestAPIOpts} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api/src
 import {EventLogger} from '@sphereon/ssi-sdk.event-logger'
 import {RemoteServerApiServer} from '@sphereon/ssi-sdk.remote-server-rest-api'
 import {defaultCredentialDataSupplier} from './credentials/dataSuppliers'
-import { PDManager } from '@sphereon/ssi-sdk.pd-manager'
-import {IssuanceBranding, issuanceBrandingMethods} from '@sphereon/ssi-sdk.issuance-branding';
+import {IssuanceBranding, issuanceBrandingMethods} from '@sphereon/ssi-sdk.issuance-branding'
+import {PDManager} from '@sphereon/ssi-sdk.pd-manager'
 import {LoggingEventType} from "@sphereon/ssi-types";
 
 /**
@@ -139,7 +140,7 @@ if (IS_OID4VCI_ENABLED) {
             resolveOpts: {
                 resolver,
             },
-  }))
+        }))
 }
 
 /**

@@ -13,9 +13,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "studentNumber"
-      ]
+      "required": ["studentNumber"]
     },
     "certificate": {
       "type": "object",
@@ -26,32 +24,19 @@
         },
         "type": {
           "type": "string",
-          "enum": [
-            "VR Micro-Degree",
-            "Another example"
-          ]
+          "enum": ["VR Micro-Degree", "Another example"]
         },
         "classNames": {
           "type": "array",
           "uniqueItems": true,
           "items": {
             "type": "string",
-            "enum": [
-              "Virtual Reality",
-              "Introduction to Metaverse",
-              "Interaction"
-            ]
+            "enum": ["Virtual Reality", "Introduction to Metaverse", "Interaction"]
           }
         }
       },
-      "required": [
-        "completionDate",
-        "type"
-      ]
+      "required": ["completionDate", "type"]
     }
   },
-  "required": [
-    "student",
-    "certificate"
-  ]
+  "required": ["student", "certificate"]
 }

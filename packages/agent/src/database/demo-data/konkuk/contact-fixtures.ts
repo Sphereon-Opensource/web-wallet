@@ -1,3 +1,1 @@
-
-export async function addContactsKonkuk() {
-}
+export async function addContactsKonkuk() {}

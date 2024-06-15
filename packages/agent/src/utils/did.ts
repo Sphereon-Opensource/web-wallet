@@ -38,7 +38,7 @@ export function createDidProviders() {
     }),
     [`${DID_PREFIX}:${DIDMethods.DID_ION}`]: new IonDIDProvider({
       defaultKms: KMS.LOCAL,
-    })
+    }),
   }
 }
 

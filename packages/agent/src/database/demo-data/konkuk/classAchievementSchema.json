@@ -17,33 +17,21 @@
           "type": "string"
         }
       },
-      "required": [
-        "studentNumber"
-      ]
+      "required": ["studentNumber"]
     },
     "class": {
       "type": "object",
       "properties": {
         "className": {
           "type": "string",
-          "enum": [
-            "Software Engineering",
-            "UX Design"
-          ]
+          "enum": ["Software Engineering", "UX Design"]
         },
         "category": {
           "type": "string"
         }
       },
-      "required": [
-        "className",
-        "category"
-      ]
+      "required": ["className", "category"]
     }
   },
-  "required": [
-    "completionDate",
-    "student",
-    "class"
-  ]
+  "required": ["completionDate", "student", "class"]
 }
