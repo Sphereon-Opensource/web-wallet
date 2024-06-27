@@ -71,6 +71,7 @@ import {createOID4VPRP} from "./utils/oid4vp";
 import {IPresentationDefinition} from "@sphereon/pex";
 import {PresentationExchange} from "@sphereon/ssi-sdk.presentation-exchange";
 import {ISIOPv2RPRestAPIOpts, SIOPv2RPApiServer} from "@sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-api";
+import {DidAuthSiopOpAuthenticator} from "@sphereon/ssi-sdk.siopv2-oid4vp-op-auth";
 
 /**
  * Lets setup supported DID resolvers first
@@ -130,7 +131,8 @@ const plugins: IAgentPlugin[] = [
     }),
     new PDManager({
         store: new PDStore(dbConnection)
-    })
+    }),
+    new DidAuthSiopOpAuthenticator()
 ]
 
 if(!cliMode) {
