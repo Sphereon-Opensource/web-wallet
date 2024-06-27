@@ -67,6 +67,7 @@ import {defaultCredentialDataSupplier} from './credentials/dataSuppliers'
 import {IssuanceBranding, issuanceBrandingMethods} from '@sphereon/ssi-sdk.issuance-branding'
 import {PDManager} from '@sphereon/ssi-sdk.pd-manager'
 import {LoggingEventType} from "@sphereon/ssi-types";
+import {DidAuthSiopOpAuthenticator} from "@sphereon/ssi-sdk.siopv2-oid4vp-op-auth";
 
 /**
  * Lets setup supported DID resolvers first
@@ -126,7 +127,8 @@ const plugins: IAgentPlugin[] = [
     }),
     new PDManager({
         store: new PDStore(dbConnection)
-    })
+    }),
+    new DidAuthSiopOpAuthenticator()
 ]
 
 if (IS_OID4VCI_ENABLED) {
