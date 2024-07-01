@@ -1,6 +1,7 @@
 import { Resolver } from 'did-resolver'
 import { getDidJwkResolver } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
 import { getResolver as getDidWebResolver } from 'web-did-resolver'
+import { getResolver as getDidEbsiResolver } from '@sphereon/ssi-sdk-ext.did-resolver-ebsi'
 import { WebDIDProvider } from '@sphereon/ssi-sdk-ext.did-provider-web'
 import { JwkDIDProvider } from '@sphereon/ssi-sdk-ext.did-provider-jwk'
 import agent, { context } from '../agent'
@@ -25,6 +26,7 @@ export function createDidResolver() {
   return new Resolver({
     ...getDidJwkResolver(),
     ...getDidWebResolver(),
+    ...getDidEbsiResolver()
   })
 }
 
