@@ -86,6 +86,7 @@ export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATU
       ...sphereonKeyManagerMethods,
       ...didAuthSiopOpAuthenticatorMethods,
       'didManagerCreate',
+      'createVerifiablePresentation',
       ...issuanceBrandingMethods,
       ...pdManagerMethods,
     ]
