@@ -23,8 +23,7 @@ The idea is that there are 2 agents with each a separate database:
   responsible for issuance and optional
   storage of Verifiable Credentials. Creating DIDs from the REST API is disabled on this agent. Resolution of DIDs will
   use external resolution, meaning any did:web will be resolved to the actual https endpoint.
-- The **Customer Agent**: This agent running on port 5001 by default, is responsible for creating DIDs for customers,
-  and can also verify Verifiable
+- The **Verifier Agent**: This agent running on port 5001 by default, it can verify Verifiable
   Credentials. It has no access to the database of the issuer. Creating Verifiable Credentials is disabled on this
   agent, but verifying them is enabled. The DIDs will be resolved in hybrid mode, meaning the agent will first look
   whether the DID is managed by the agent and then generate a DID resolution result from the database. If not managed by
@@ -41,7 +40,7 @@ root of this project
 
 # DID import from configuration
 
-Both the issuer agent and the customer agent can import DIDs from configuration files. The agent will look for .json
+Both the issuer agent and the Verifier agent can import DIDs from configuration files. The agent will look for .json
 files in the configured path. .json files will be imported, meaning that the keys and DIDs present in these files, will
 be created and/or imported, together with the DIDs.
 
@@ -419,7 +418,7 @@ from `active` -> `suspended`.
 This can be a temporary suspension or a permanent suspension. As the name already implies for this type of statuslist
 you can also go from `suspended` to `active`.
 
-The statuslist itself is a Verifiable Credential as well, which is issued and signed by the issuer of the customer VCs.
+The statuslist itself is a Verifiable Credential as well, which is issued and signed by the issuer of the Verifier VCs.
 The statuslist credentail contains a bitstring. This bitstring is at least 150.000 bits long and whenever a credential
 is being issued a random position in this bitstring will be used. This position will end up in the issued credential as
 a `statusListIndex` property of the `credentialStatus` object in the VC. The issuer will keep track of the statuslist
@@ -607,13 +606,13 @@ be `StatusList2021`.
 The `status` value either has to be "0" for active or "1" for revoked/suspended. The response will be the updated
 statusList credential.
 
-# Customer agent
+# Verifier agent
 
 ## Create a custodial DID
 
 In order to create a custodial DID, the DIF Universal Registrar compatible support of the agent is being used. This
 means a REST API is exposed to create DIDs. Since these DIDs will be custodial (eg SPHEREON is managing these DIDs on
-behalf of its customers), the DIDs and their associated public/private keys will need to be persisted.
+behalf of its Verifiers), the DIDs and their associated public/private keys will need to be persisted.
 
 In order to create a new did:web for GLN `12345678` the following body should be POST-ed to
 http://localhost:5001/did/identifiers?method=web
@@ -791,7 +790,7 @@ If a DID is found it will return the DID Document (not a resolution result)
 
 ### Reverse proxy for DID:WEB hosting
 
-In order to host the custodial did.json files for customers a reverse proxy needs to be configured for the did:web agent
+In order to host the custodial did.json files for Verifiers a reverse proxy needs to be configured for the did:web agent
 service. When the did:web agent service is enabled, it will automatically try to lookup the DID in the agent, whenever a
 URL containing `.well-known/did.json` or `/any/other/path/did.json` is hit with a `GET` call.
 
