@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   issuer-agent:
-    container_name: issuer-agent
+    container_name: sphereon-issuer-agent
     extra_hosts:
       - "host.docker.internal:host-gateway"
     env_file:
@@ -13,15 +13,27 @@ services:
       dockerfile: ./docker/Dockerfile.issuer-agent
     ports:
       - "5000:5000"
-  customer-agent:
-    container_name: customer-agent
+  verifier-agent:
+    container_name: sphereon-verifier-agent
     extra_hosts:
       - "host.docker.internal:host-gateway"
     env_file:
-      - ./docker/.env.customer-agent
+      - ./docker/.env.verifier-agent
     tty: true
     build:
       context: ./
-      dockerfile: ./docker/Dockerfile.customer-agent
+      dockerfile: ./docker/Dockerfile.verifier-agent
     ports:
       - "5001:5001"
+  full-agent:
+    container_name: sphereon-full-agent
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    env_file:
+      - ./docker/.env.full-agent
+    tty: true
+    build:
+      context: ./
+      dockerfile: ./docker/Dockerfile.full-agent
+    ports:
+      - "5002:5002"
