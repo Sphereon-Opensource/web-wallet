@@ -187,7 +187,7 @@ const navigateReviewCredentials = async (args: OID4VCINavigationArgs): Promise<v
     credential: await toNonPersistedCredentialSummary(credentialsToAccept[0].uniformVerifiableCredential, localeBranding, contact),
   }
 
-  navigationEventEmitter.navigateTo(`${MainRoute.OID4VCI}/${OID4VCIRoute.REVIEW_CREDENTIALS}`, {state})
+  navigationEventEmitter.navigateTo(`${MainRoute.OID4VCI}/${OID4VCIRoute.REVIEW_CREDENTIALS}`, {...state})
 }
 
 const navigateError = async (args: OID4VCINavigationArgs, customError?: ErrorDetails): Promise<void> => {

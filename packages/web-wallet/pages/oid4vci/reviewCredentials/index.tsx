@@ -30,9 +30,9 @@ const ReviewCredentialsPage: React.FC = (): ReactElement => {
   const {credential}: ReviewCredentialsPageState = location.state
 
   const credentialCardViewProps: CredentialMiniCardViewProps = {
-    ...(credential?.branding?.logo && {logo: credential?.branding?.logo}),
-    ...(credential?.branding?.background?.image && {backgroundImage: credential?.branding?.background?.image}),
-    ...(credential?.branding?.background?.color && {backgroundColor: credential?.branding?.background?.color}),
+    ...(credential?.branding?.logo && {logo: credential.branding.logo}),
+    ...(credential?.branding?.background?.image && {backgroundImage: credential.branding.background.image}),
+    ...(credential?.branding?.background?.color && {backgroundColor: credential.branding.background.color}),
   }
 
   const onDecline = async (): Promise<void> => {
