@@ -1,0 +1,46 @@
+.container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    background-color: #F4F4FF;
+    padding: 48px 24px;
+}
+
+.contentContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 604px;
+}
+
+.nameInputContainer {
+    background-color: #FBFBFB;
+    border-radius: 8px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    border: 1px solid #C4C4C4;
+}
+
+.nameInputContainerTitle {
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    color: #303030;
+}
+
+.nameInputContainerDescription {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    color: #303030;
+}
+
+.buttonsContainer {
+    display: flex;
+    flex-direction: row;
+}

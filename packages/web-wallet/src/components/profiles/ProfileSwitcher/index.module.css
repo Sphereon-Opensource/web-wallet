@@ -1,0 +1,55 @@
+.container {
+    margin-left: auto;
+    margin-right: 48px;
+    gap: 12px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.dropdown {
+  position: absolute;
+  width: 250px;
+  height: content-box;
+  top: 60px;
+  right: 45px;
+  background-color: #FBFBFB;
+  z-index: 1;
+  padding: 10px;
+  color: #303030;
+}
+
+.dropdown-item {
+  width: 250px;
+  height: 48px;
+  top: 49px;
+}
+
+.inlineContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.namesContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.organizationName {
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    color: #8D9099;
+}
+
+.userName {
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    color: #FBFBFB
+}

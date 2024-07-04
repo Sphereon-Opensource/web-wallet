@@ -1,19 +1,13 @@
-import {
-    CorrelationIdentifierType,
-    CredentialRole,
-    NonPersistedIdentity,
-    PartyOrigin,
-    PartyTypeType
-} from '@sphereon/ssi-sdk.data-store'
-import {IIdentifier} from '@veramo/core'
+import { CorrelationIdentifierType, CredentialRole, NonPersistedIdentity, PartyOrigin, PartyTypeType } from '@sphereon/ssi-sdk.data-store'
+import { IIdentifier } from '@veramo/core'
 import agent from '../../../agent'
-import {v4} from 'uuid'
-import {AddContactArgs} from '@sphereon/ssi-sdk.contact-manager'
-import {IonPublicKeyPurpose} from '@decentralized-identity/ion-sdk'
-import {VC_API_BASE_PATH} from '../../../environment'
-import {DIDMethods} from '../../../types'
-import {IKeyOpts} from '@sphereon/ssi-sdk-ext.did-provider-web'
-import {TKeyType} from '@sphereon/ssi-sdk-ext.key-utils'
+import { v4 } from 'uuid'
+import { AddContactArgs } from '@sphereon/ssi-sdk.contact-manager'
+import { IonPublicKeyPurpose } from '@decentralized-identity/ion-sdk'
+import { VC_API_BASE_PATH } from '../../../environment'
+import { DIDMethods } from '../../../types'
+import { IKeyOpts } from '@sphereon/ssi-sdk-ext.did-provider-web'
+import { TKeyType } from '@sphereon/ssi-sdk-ext.key-utils'
 
 const PRIVATE_RECOVERY_KEY_HEX = 'd39e66e720c00b244923eb861122ed25116555ae771ee9a57b749640173d7cf8'
 const PRIVATE_UPDATE_KEY_HEX = '0121009becfa9caf6221dce6f4f7b55dd3376e79c4ca83ce92bd43861c2393ec'

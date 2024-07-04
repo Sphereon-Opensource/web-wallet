@@ -1,0 +1,81 @@
+
+.pdfViewerContainer {
+    display: flex;
+    min-width: 40em;
+    max-width: 100%;
+    max-height: 100%;
+    flex-direction: column;
+    overflow-y: hidden;
+}
+
+.pdfDocumentContainer {
+    display: flex;
+    min-width: 40em;
+    max-width: 100%;
+    max-height: 100%;
+    overflow-y: clip;
+    flex-direction: column;
+    flex-grow: 100;
+    align-items: stretch;
+}
+
+.pdfViewerToolbar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    max-width: 100%;
+    padding-left: 46px;
+    padding-right: 46px;
+    gap: 45px;
+    background-color: #C4C5CA;
+}
+
+
+.pdfViewerDocument {
+    overflow-x: auto;
+    overflow-y: clip;
+}
+
+.pdfViewerPagesWrapper {
+    max-width: 100%;
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid black;
+    background-color: #525659;
+    overflow-y: scroll;
+}
+
+.pdfViewerToolbar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    max-width: 100%;
+    padding-left: 46px;
+    padding-right: 46px;
+    gap: 45px;
+    background-color: #C4C5CA;
+}
+
+.pdfViewerButton {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    cursor: pointer;
+}
+
+.pdfViewerIcon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 42px;
+    width: 42px;
+}
+
+.pdfViewerTexts {
+    color: #303030;
+    font-size: 12px;
+    font-weight: 400;
+    word-wrap: break-word;
+}

@@ -1,0 +1,45 @@
+.textInputField {
+    display: flex;
+    /* FIXME padding should match the design */
+    padding: 11px 4px 10px 16px;
+    align-items: center;
+    flex-shrink: 0;
+    border-radius: 4px;
+    border: 1px solid #C4C5CA;
+    outline: none;
+    color: rgba(48, 48, 48);
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    background-color: #FBFBFB;
+    font-family: Poppins, serif;
+}
+
+.textInputField:focus {
+    border-color: #7276F7;
+}
+
+.textInputField:hover {
+    border-color: #7276F7;
+}
+
+.labelCaption {
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    color: #303030;
+}
+
+.optionalCaption {
+    font-weight: normal;
+    font-size: 16px;
+    color: #8D9099;
+    margin-left: 4px;
+    font-style: italic;
+}
+
+.labelContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+}

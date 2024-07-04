@@ -1,0 +1,52 @@
+.navigationLink,
+.navigationLink:focus,
+.navigationLink:hover,
+.navigationLink:visited,
+.navigationLink:link,
+.navigationLink:active {
+    color: #4F4F4F;
+    text-decoration: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+    flex-grow: 1;
+}
+
+.subRouteLabel {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    padding-left: 4px;
+}
+
+.mainRouteContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.mainRouteIconContainer {
+    height: 40px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mainRouteLabel {
+    font-size: 14px;
+}
+
+.dropdownIconContainer {
+    cursor: pointer;
+    margin-left: auto;
+    height: 40px;
+    display: flex;
+    align-items: center;
+}
+
+.dropdownContainer {
+    margin-left: 40px;
+}

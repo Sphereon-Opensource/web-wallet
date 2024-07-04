@@ -1,0 +1,42 @@
+.container {
+    display: flex;
+    padding: 24px 24px 12px;
+    gap: 6px;
+    flex-direction: column;
+}
+
+.pathPartText {
+    font-size: 10px;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: 0.1px;
+}
+
+.pathContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+}
+
+.titleContainer {
+    display: flex;
+    flex-direction: row;
+}
+
+.backButtonContainer {
+    width: 32px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.titleText {
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    background: linear-gradient(135deg, #7276F7 0%, #7C40E8 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}

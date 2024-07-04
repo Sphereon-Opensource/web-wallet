@@ -1,0 +1,57 @@
+{
+  "ts-node": {
+    "compilerOptions": {
+      "module": "ESNext"
+    }
+  },
+  "compilerOptions": {
+    "target": "ESNext",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "strictPropertyInitialization": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "noEmit": true,
+    "jsx": "preserve",
+    "baseUrl": ".",
+    "types": ["jest"],
+    "paths": {
+      "@/*": ["./*"],
+      "auth": ["./auth"],
+      "@agent": ["src/agent"],
+      "@components/*": ["src/components/*"],
+      "@components": ["src/components"],
+      "@contexts/*": ["src/contexts/*"],
+      "@contexts": ["src/contexts"],
+      "@styles/*": ["src/styles/*"],
+      "@styles": ["src/styles"],
+      "@helpers/*": ["src/helpers/*"],
+      "@machines": ["src/machines"],
+      "@machines/*": ["src/machines/*"],
+      "@objectstorage": ["src/helpers/ObjectStorage"],
+      "@objectstorage/*": ["src/helpers/ObjectStorage/*"],
+      "@public/*": ["public/*"],
+      "@public": ["public"],
+      "@types/*": ["src/types/*"],
+      "@types": ["src/types"]
+    },
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules", "**/*.test.ts", "**/__tests__/*"]
+}

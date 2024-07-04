@@ -1,0 +1,39 @@
+{
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": ["Generate new key"]
+    },
+    "type": {
+      "type": "string",
+      "enum": ["Secp256r1"]
+    },
+    "alias": {
+      "type": "string"
+    },
+    "key": {
+      "type": "string",
+      "oneOf": [
+        {"const": "key1", "title": "Key 1"},
+        {"const": "key2", "title": "Key 2"},
+        {"const": "key3", "title": "Key 3"}
+      ]
+    },
+    "purposes": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "oneOf": [
+          {"const": "assertion", "title": "Assertion"},
+          {"const": "capabilityInvocation", "title": "Capability Invocation"},
+          {"const": "authentication", "title": "Authentication"},
+          {"const": "capabilityDelegation", "title": "Capability Delegation"},
+          {"const": "keyAgreement", "title": "Key Agreement"}
+        ]
+      },
+      "minItems": 1
+    }
+  },
+  "required": ["type", "purposes"]
+}

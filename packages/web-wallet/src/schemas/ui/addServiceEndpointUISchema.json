@@ -1,0 +1,23 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Control",
+      "label": "Type",
+      "scope": "#/properties/type"
+    },
+    {
+      "type": "Control",
+      "label": "ID",
+      "scope": "#/properties/id"
+    },
+    {
+      "type": "Control",
+      "label": "Service endpoint",
+      "scope": "#/properties/serviceEndpoint",
+      "options": {
+        "multi": true
+      }
+    }
+  ]
+}

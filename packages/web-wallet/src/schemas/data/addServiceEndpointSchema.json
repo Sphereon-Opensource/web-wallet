@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "oneOf": [
+        {"const": "linkedDomains", "title": "Linked domains"},
+        {"const": "didCommMessaging", "title": "DIDComm messaging"},
+        {"const": "credentialRegistry", "title": "Credential registry"},
+        {"const": "openID4VCI", "title": "OpenID for verifiable credential issuance"},
+        {"const": "openID4VP", "title": "OpenID for verifiable presentation"}
+      ]
+    },
+    "id": {
+      "type": "string"
+    },
+    "serviceEndpoint": {
+      "type": "string"
+    }
+  },
+  "required": ["type", "id", "serviceEndpoint"]
+}

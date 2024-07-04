@@ -1,0 +1,58 @@
+.headerContainer {
+    display: flex;
+    border-bottom: 2px solid #E3E3E3;
+    flex-direction: column;
+    padding: 23px 46px 10px 46px;
+}
+.headerTitleContainer {
+    display: flex;
+    flex-direction: row;
+}
+
+.headerTitleCaptionContainer {
+    display: flex;
+    align-items: center;
+}
+
+.headerTitleCaption {
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+
+.headerTitleCloseButtonContainer {
+    margin-left: auto;
+}
+
+.closeButton {
+    display: flex;
+    width: 42px;
+    aspect-ratio: 1;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+}
+
+.headerSubTitleContainer {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: row;
+    align-items: center;
+    padding-top: 10px;
+}
+
+.headerSubTitleContactNameCaption {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+
+.headerSubTitleDateCaption {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin-left: auto;
+}

@@ -1,0 +1,53 @@
+.container {
+    display: flex;
+    width: 582px;
+    /*height: 168px;*/
+    border-radius: 6px;
+    border: 1px solid #8D9099;
+    overflow: hidden;
+    flex-direction: row;
+    align-items: center;
+}
+
+.feedbackContainer {
+    width: 5px;
+    height: 100%;
+    background-color: #00C249;
+    margin-right: 11px;
+}
+
+.contentContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-top: 14px;
+    padding-bottom: 20px;
+}
+
+.fieldContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.inputText {
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    color: #303030
+}
+
+.infoLabel {
+    color: #8D9099;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 400;
+}
+
+.fieldValue {
+    color: #303030;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+}

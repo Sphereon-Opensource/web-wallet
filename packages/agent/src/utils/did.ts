@@ -26,7 +26,7 @@ export function createDidResolver() {
   return new Resolver({
     ...getDidJwkResolver(),
     ...getDidWebResolver(),
-    ...getDidEbsiResolver()
+    ...getDidEbsiResolver(),
   })
 }
 

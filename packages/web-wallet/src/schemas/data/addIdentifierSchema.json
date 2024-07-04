@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "oneOf": [{"const": "DID", "title": "Decentralized identifier (DID)"}]
+    },
+    "method": {
+      "type": "string",
+      "oneOf": [{"const": "jwk", "title": "JWK"}]
+    },
+    "alias": {
+      "type": "string"
+    }
+  },
+  "required": ["type", "method"]
+}

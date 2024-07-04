@@ -1,0 +1,94 @@
+.container {
+    display: flex;
+    flex-direction: column;
+}
+
+.fileInformationContentContainer {
+    display: flex;
+    flex-grow: 1;
+    background-color: #F4F4F4;
+    flex-direction: column;
+    padding: 24px 54px 24px 46px;
+    gap: 24px;
+}
+
+.contentContainer {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    overflow-y: hidden;
+}
+
+.fileInformationContainer {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    width: 720px;
+}
+
+.descriptionCaption {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 0.14px;
+}
+
+.subTitleCaption {
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+
+.buttonsContainer {
+    display: flex;
+    margin-top: auto;
+    padding-right: 54px;
+    background-color: #F4F4F4;
+    gap: 18px;
+    padding-bottom: 48px;
+    justify-content: flex-end;
+}
+
+.tabsInformationRouteContainer {
+    border-top: 2px solid #E3E3E3;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    padding: 12px 54px 12px 46px;
+    background-color: #FBFBFB;
+}
+
+.tabsInformationRouteContentContainer {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 16px;
+}
+
+.informationDataLabel {
+    width: 250px;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.informationDataValue {
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+
+.informationDataRowContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 44px;
+}
+
+.tabsContainer {
+    display: flex;
+    flex-grow: 1;
+}

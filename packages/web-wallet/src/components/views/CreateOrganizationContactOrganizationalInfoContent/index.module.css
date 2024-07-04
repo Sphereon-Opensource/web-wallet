@@ -1,0 +1,29 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 46px;
+    margin-bottom: auto;
+}
+
+.container > div > input[class^="TextInputField" i] {
+    width: 582px;
+}
+
+.titleCaption {
+    color: #000;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.subTitleCaption {
+    max-width: 910px;
+    margin-bottom: 22px;
+    color: rgba(48, 48, 48);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    width: 765px;
+}

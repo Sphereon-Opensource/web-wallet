@@ -1,0 +1,67 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+}
+
+.contentContainer {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.detailsCredentialInformationContainer {
+    display: flex;
+    padding-left: 24px;
+    flex-direction: row;
+    gap: 50px;
+}
+
+.detailsInformationContainer {
+    display: flex;
+    flex-direction: column;
+    margin-top: 30px;
+    border-radius: 4px;
+    border: 1px solid #8D9099;
+    overflow: hidden;
+    padding: 22px 24px;
+    margin-bottom: 51px;
+}
+
+.detailsCredentialCardCaption {
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    color: #303030;
+}
+
+.detailsCredentialCardContainer {
+    margin-top: 23px;
+}
+
+.detailsRelatedInformationContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.detailsRelatedInformationCaption {
+    padding-left: 24px;
+    padding-bottom: 7px;
+    padding-right: 24px;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 0.16px;
+    background: linear-gradient(135deg, #7276F7 0%, #7C40E8 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.sectionContentContainer {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}

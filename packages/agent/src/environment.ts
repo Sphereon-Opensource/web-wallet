@@ -1,25 +1,24 @@
-import {config as dotenvConfig} from 'dotenv-flow'
-import {resolve} from 'path'
-import {vcApiFeatures} from '@sphereon/ssi-sdk.w3c-vc-api'
-import {DidApiFeatures, DidWebServiceFeatures} from '@sphereon/ssi-sdk.uni-resolver-registrar-api'
-import {env} from '@sphereon/ssi-express-support/dist/functions'
-import {statusListFeatures} from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
-import {ContactManagerMRestApiFeatures} from '@sphereon/ssi-sdk.contact-manager-rest-api'
-import {IIssuerOptsImportArgs, IMetadataImportArgs} from '@sphereon/ssi-sdk.oid4vci-issuer-store'
-import {eventLoggerAuditMethods} from '@sphereon/ssi-sdk.event-logger'
-import {oid4vciHolderContextMethods} from '@sphereon/ssi-sdk.oid4vci-holder'
-import {contactManagerMethods} from '@sphereon/ssi-sdk.contact-manager'
-import {sphereonKeyManagerMethods} from '@sphereon/ssi-sdk-ext.key-manager'
-import {issuanceBrandingMethods} from '@sphereon/ssi-sdk.issuance-branding'
-import {pdManagerMethods} from '@sphereon/ssi-sdk.pd-manager'
-import {loadJsonFiles} from './utils'
-import {IDIDOpts, OID4VPInstanceOpts} from './types'
-import {IPresentationDefinition} from "@sphereon/pex";
+import { config as dotenvConfig } from 'dotenv-flow'
+import { resolve } from 'path'
+import { vcApiFeatures } from '@sphereon/ssi-sdk.w3c-vc-api'
+import { DidApiFeatures, DidWebServiceFeatures } from '@sphereon/ssi-sdk.uni-resolver-registrar-api'
+import { env } from '@sphereon/ssi-express-support/dist/functions'
+import { statusListFeatures } from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
+import { ContactManagerMRestApiFeatures } from '@sphereon/ssi-sdk.contact-manager-rest-api'
+import { IIssuerOptsImportArgs, IMetadataImportArgs } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
+import { eventLoggerAuditMethods } from '@sphereon/ssi-sdk.event-logger'
+import { oid4vciHolderContextMethods } from '@sphereon/ssi-sdk.oid4vci-holder'
+import { contactManagerMethods } from '@sphereon/ssi-sdk.contact-manager'
+import { sphereonKeyManagerMethods } from '@sphereon/ssi-sdk-ext.key-manager'
+import { issuanceBrandingMethods } from '@sphereon/ssi-sdk.issuance-branding'
+import { pdManagerMethods } from '@sphereon/ssi-sdk.pd-manager'
+import { loadJsonFiles } from './utils'
+import { IDIDOpts, OID4VPInstanceOpts } from './types'
+import { IPresentationDefinition } from '@sphereon/pex'
 
 await dotenvConfig()
 
-const toBoolean = (value?: string): boolean => value === undefined || value === 'true';
-
+const toBoolean = (value?: string): boolean => value === undefined || value === 'true'
 
 /**
  * Please see .env.example for an explanation of the different environment variables available
@@ -49,7 +48,7 @@ export const DEFAULT_DID = env('DEFAULT_DID', ENV_VAR_PREFIX)
 export const DEFAULT_KID = env('DEFAULT_KID', ENV_VAR_PREFIX)
 export const CONF_PATH = env('CONF_PATH', ENV_VAR_PREFIX) ? resolve(env('CONF_PATH', ENV_VAR_PREFIX)!) : resolve('../../conf')
 export const IS_OID4VP_ENABLED = toBoolean(process.env.OID4VP_ENABLED)
-export const IS_OID4VCI_ENABLED = toBoolean(process.env.OID4VCI_ENABLED )
+export const IS_OID4VCI_ENABLED = toBoolean(process.env.OID4VCI_ENABLED)
 export const OID4VCI_API_BASE_URL = env('OID4VCI_API_BASE_URL', ENV_VAR_PREFIX) ?? '/oid4vci'
 export const OID4VCI_ISSUER_OPTIONS_PATH = `${CONF_PATH}/oid4vci_options`
 export const OID4VCI_ISSUER_METADATA_PATH = `${CONF_PATH}/oid4vci_metadata`
@@ -65,16 +64,16 @@ export const STATUS_LIST_API_FEATURES: statusListFeatures[] = env('STATUS_LIST_A
   ? (env('STATUS_LIST_API_FEATURES', ENV_VAR_PREFIX)?.split(',') as statusListFeatures[])
   : ['status-list-hosting', 'w3c-vc-api-credential-status']
 
-
-export const didAuthSiopOpAuthenticatorMethods: Array<string> = [ // FIXME remove
-    'cmGetContacts',
-    'cmGetContact',
-    'cmAddContact',
-    'cmAddIdentity',
-    'didManagerFind',
-    'didManagerGet',
-    'keyManagerSign',
-    'didManagerGetProviders',
+export const didAuthSiopOpAuthenticatorMethods: Array<string> = [
+  // FIXME remove
+  'cmGetContacts',
+  'cmGetContact',
+  'cmAddContact',
+  'cmAddIdentity',
+  'didManagerFind',
+  'didManagerGet',
+  'keyManagerSign',
+  'didManagerGetProviders',
 ]
 
 export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATURES', ENV_VAR_PREFIX)
@@ -125,11 +124,13 @@ export const didOptConfigs = loadJsonFiles<IDIDOpts>({
   path: DID_OPTIONS_PATH,
 })
 
-export const OID4VP_DEFINITIONS: string[] = process.env.OID4VP_DEFINITIONS ? process.env.OID4VP_DEFINITIONS.split(/[, ]/).map(val => val.trim()) : []
-export const OID4VP_PRESENTATION_DEFINITION_PATH = `${CONF_PATH}/presentation_definitions`;
-export const OID4VP_RP_OPTIONS_PATH = `${CONF_PATH}/oid4vp_options`;
+export const OID4VP_DEFINITIONS: string[] = process.env.OID4VP_DEFINITIONS
+  ? process.env.OID4VP_DEFINITIONS.split(/[, ]/).map((val) => val.trim())
+  : []
+export const OID4VP_PRESENTATION_DEFINITION_PATH = `${CONF_PATH}/presentation_definitions`
+export const OID4VP_RP_OPTIONS_PATH = `${CONF_PATH}/oid4vp_options`
 
-export const oid4vpInstanceOpts = loadJsonFiles<OID4VPInstanceOpts>({path: OID4VP_RP_OPTIONS_PATH})
+export const oid4vpInstanceOpts = loadJsonFiles<OID4VPInstanceOpts>({ path: OID4VP_RP_OPTIONS_PATH })
 
 export const oid4vciInstanceOpts = loadJsonFiles<IIssuerOptsImportArgs>({
   path: OID4VCI_ISSUER_OPTIONS_PATH,
@@ -137,4 +138,4 @@ export const oid4vciInstanceOpts = loadJsonFiles<IIssuerOptsImportArgs>({
 export const oid4vciMetadataOpts = loadJsonFiles<IMetadataImportArgs>({
   path: OID4VCI_ISSUER_METADATA_PATH,
 })
-export const syncDefinitionsOpts = loadJsonFiles<IPresentationDefinition>({path: OID4VP_PRESENTATION_DEFINITION_PATH})
+export const syncDefinitionsOpts = loadJsonFiles<IPresentationDefinition>({ path: OID4VP_PRESENTATION_DEFINITION_PATH })

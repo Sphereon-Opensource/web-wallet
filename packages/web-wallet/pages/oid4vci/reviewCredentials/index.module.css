@@ -1,0 +1,42 @@
+.container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    background-color: var(--background-primary-light);
+}
+
+.tabViewContentContainer {
+    background-color: #F4F4FF;
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    padding: 26px 54px 26px 24px;
+    border-top: 2px solid #C4C4C4;
+    flex-grow: 1;
+}
+
+.tabViewContentTableContainer {
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid #C4C4C4;
+    height: fit-content;
+}
+
+.verifiedInformationDataContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    flex-grow: 1;
+}
+
+.headerContainer {
+    height: 94px;
+    display: flex;
+    align-items: center;
+}
+
+.buttonContainer {
+    display: flex;
+    flex-direction: row;
+}

@@ -1,0 +1,93 @@
+.activeContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    cursor: pointer;
+}
+
+.inactiveContainer {
+    cursor: pointer;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.inactiveCaption {
+    padding-left: 24px;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 0.12px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.activeRouteContainer {
+    background-color: #A9ABF9;
+    width: 145px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+    gap: 10px;
+    align-items: center;
+}
+
+.activeIndicatorContainer {
+    height: 100%;
+    display: flex;
+}
+
+.activeIndicator {
+    margin-top: 6px;
+    margin-bottom: 6px;
+    width: 4px;
+    background-color: #7C40E8;
+    border-radius: 0 2px 2px 0;
+}
+
+.activeCaption {
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    letter-spacing: 0.12px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    color: #7C40E8;
+}
+
+.dropdownIconContainer {
+    margin-left: auto;
+    margin-right: 8px;
+}
+
+.dropdownRoutesContainer {
+    background-color: #ECEDF8;
+    border-radius: 6px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.dropdownRouteContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 6px 10px 6px 38px;
+    cursor: pointer;
+}
+
+.dropdownRouteContainer:hover {
+    background-color: #B7B8D9;
+}
+
+.dropdownRouteCaption {
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 0.12px;
+}
