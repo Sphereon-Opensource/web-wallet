@@ -15,7 +15,7 @@ import { pdManagerMethods } from '@sphereon/ssi-sdk.pd-manager'
 import { loadJsonFiles } from './utils'
 import { IDIDOpts, OID4VPInstanceOpts } from './types'
 import { IPresentationDefinition } from '@sphereon/pex'
-import { didAuthSiopOpAuthenticatorMethods } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth';
+import { didAuthSiopOpAuthenticatorMethods } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 
 await dotenvConfig()
 
