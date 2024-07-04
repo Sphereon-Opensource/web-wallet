@@ -15,6 +15,7 @@ import { pdManagerMethods } from '@sphereon/ssi-sdk.pd-manager'
 import { loadJsonFiles } from './utils'
 import { IDIDOpts, OID4VPInstanceOpts } from './types'
 import { IPresentationDefinition } from '@sphereon/pex'
+import { didAuthSiopOpAuthenticatorMethods } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth';
 
 await dotenvConfig()
 
@@ -63,19 +64,6 @@ export const CONTACT_MANAGER_API_FEATURES: ContactManagerMRestApiFeatures[] = en
 export const STATUS_LIST_API_FEATURES: statusListFeatures[] = env('STATUS_LIST_API_FEATURES', ENV_VAR_PREFIX)
   ? (env('STATUS_LIST_API_FEATURES', ENV_VAR_PREFIX)?.split(',') as statusListFeatures[])
   : ['status-list-hosting', 'w3c-vc-api-credential-status']
-
-export const didAuthSiopOpAuthenticatorMethods: Array<string> = [
-  // FIXME remove
-  'cmGetContacts',
-  'cmGetContact',
-  'cmAddContact',
-  'cmAddIdentity',
-  'didManagerFind',
-  'didManagerGet',
-  'keyManagerSign',
-  'didManagerGetProviders',
-]
-
 export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATURES', ENV_VAR_PREFIX)
   ? (env('REMOTE_SERVER_API_FEATURES', ENV_VAR_PREFIX)?.split(',') as string[])
   : [
@@ -85,6 +73,7 @@ export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATU
       ...sphereonKeyManagerMethods,
       ...didAuthSiopOpAuthenticatorMethods,
       'didManagerCreate',
+      'didManagerGetProviders',
       'createVerifiablePresentation',
       ...issuanceBrandingMethods,
       ...pdManagerMethods,
