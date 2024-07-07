@@ -21,7 +21,7 @@ import {
   OID4VCINavigationArgs,
   OID4VCINavigationEventListenerType,
   OID4VCIRoute,
-  navigationEventEmitter,
+  navigationEventEmitter, SIOPV2Route,
 } from '@types'
 import {toNonPersistedCredentialSummary} from '@sphereon/ui-components.credential-branding'
 import {AuthorizationCodeState} from '@/pages/oid4vci/AuthorizationCodeUrl'
@@ -34,12 +34,20 @@ const navigateLoading = async (args: OID4VCINavigationArgs): Promise<void> => {
     message: 'action_getting_information_message',
   }
 
-  navigationEventEmitter.navigateTo(`${MainRoute.OID4VCI}/${OID4VCIRoute.LOADING}`, {state})
+  navigationEventEmitter.navigateTo(`${MainRoute.OID4VCI}/${OID4VCIRoute.LOADING}`, {...state})
 }
 
 const navigateAddContact = async (args: OID4VCINavigationArgs): Promise<void> => {
   const {abortController, oid4vciMachine, state: machineState, onBack} = args
   const {hasContactConsent, serverMetadata, contactAlias} = machineState.context
+
+  // Avoid duplicate navigation
+  if(!machineState.changed) {
+    return
+  }
+  if (window.location.pathname === `${MainRoute.OID4VP}/${OID4VCIRoute.ADD_CONTACT}`) {
+    return
+  }
 
   if (onBack === undefined) {
     return Promise.reject(Error('Missing onBack in arguments'))
@@ -52,7 +60,6 @@ const navigateAddContact = async (args: OID4VCINavigationArgs): Promise<void> =>
   const issuerUrl: URL = new URL(serverMetadata.issuer)
   const correlationId: string = `${issuerUrl.protocol}//${issuerUrl.hostname}`
   const issuerName: string = getIssuerName(correlationId, serverMetadata.credentialIssuerMetadata)
-
   const onConsentChange = (event: any): void => {
     abortController.abort()
     oid4vciMachine.send({
@@ -112,8 +119,7 @@ const navigateAddContact = async (args: OID4VCINavigationArgs): Promise<void> =>
     contactName: issuerName,
     contactUri: correlationId,
   }
-
-  navigationEventEmitter.navigateTo(`${MainRoute.OID4VCI}/${OID4VCIRoute.ADD_CONTACT}`, {state})
+  navigationEventEmitter.navigateTo(`${MainRoute.OID4VCI}/${OID4VCIRoute.ADD_CONTACT}`, {...state})
 }
 
 const navigateSelectCredentials = async (args: OID4VCINavigationArgs): Promise<void> => {
@@ -126,7 +132,6 @@ const navigatePINVerification = async (args: OID4VCINavigationArgs): Promise<voi
 
 const navigateAuthorizationCodeURL = async (args: OID4VCINavigationArgs): Promise<void> => {
   const {abortController, oid4vciMachine, state: machineState} = args
-  console.log(`MACHINE CONTEXT ${JSON.stringify(machineState.context, null, 2)}`)
   const {authorizationCodeURL, serverMetadata} = machineState.context
   let contactAlias = machineState.context.contactAlias
   const issuerUrl: URL = new URL(serverMetadata!.issuer)
@@ -154,11 +159,19 @@ const navigateAuthorizationCodeURL = async (args: OID4VCINavigationArgs): Promis
   })
 
   const state: AuthorizationCodeState = {authorizationCodeURL, contactAlias}
-  navigationEventEmitter.navigateTo(`${MainRoute.OID4VCI}/${OID4VCIRoute.AUTHORIZATION_CODE}`, {state})
+  navigationEventEmitter.navigateTo(`${MainRoute.OID4VCI}/${OID4VCIRoute.AUTHORIZATION_CODE}`, {...state})
 }
 
 const navigateReviewCredentials = async (args: OID4VCINavigationArgs): Promise<void> => {
   const {abortController, state: machineState, oid4vciMachine, onBack, onNext} = args
+
+  // Avoid duplicate navigation
+  if(!machineState.changed) {
+    return
+  }
+  if (window.location.pathname === `${MainRoute.OID4VP}/${OID4VCIRoute.REVIEW_CREDENTIALS}`) {
+    return
+  }
   const {credentialsToAccept, contact, credentialBranding} = machineState.context
   const localeBranding: Array<IBasicCredentialLocaleBranding> | undefined = credentialBranding?.[machineState.context.selectedCredentials[0]]
 
@@ -215,7 +228,7 @@ const navigateError = async (args: OID4VCINavigationArgs, customError?: ErrorDet
     message: error.message,
   }
 
-  navigationEventEmitter.navigateTo(`${MainRoute.OID4VCI}/${OID4VCIRoute.ERROR}`, {state})
+  navigationEventEmitter.navigateTo(`${MainRoute.OID4VCI}/${OID4VCIRoute.ERROR}`, {...state})
 }
 
 const navigateFinal = async (args: OID4VCINavigationArgs): Promise<void> => {
