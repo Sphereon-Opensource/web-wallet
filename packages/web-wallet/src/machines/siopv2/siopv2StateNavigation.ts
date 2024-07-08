@@ -181,7 +181,6 @@ const addContact = async (siopv2Machine: Siopv2MachineInterpreter, machineState:
 
     const {authorizationRequestData}: Siopv2MachineContext = machineState.context
     const {name, correlationId} = authorizationRequestData ?? {}
-console.log('authorizationRequestData', authorizationRequestData)
 
     if (!correlationId) {
         return Promise.reject(Error('correlationId could not be extracted from the authorization request data'))

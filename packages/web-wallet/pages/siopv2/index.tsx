@@ -3,7 +3,6 @@ import {emitLinkHandlerURLEvent} from '@sphereon/ssi-sdk.core'
 import {agentContext} from '@agent'
 
 const OID4VPStateMachineComponent: FC = (): ReactElement => {
-  console.log('OID4VPStateMachineComponent')
   useEffect((): void => {
     void emitLinkHandlerURLEvent({source: 'URL', url: window.location.href}, agentContext)
   }, [])
