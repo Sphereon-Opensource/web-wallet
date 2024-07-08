@@ -24,6 +24,6 @@ export function getMatchingIdentity(parties: Party[], did: string): {identity: I
   if (result && result.length > 0) {
     return result[0]
   }
-  console.log(`No party found for did: ${did}`)
+  console.log(`No party found for did: ${did}, parties passed in: ${parties?.length ?? 0}`,parties)
   return undefined
 }

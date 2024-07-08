@@ -7,8 +7,8 @@ import {
     Siopv2NavigationEventListenerType,
     SIOPV2Route,
 } from '@types'
-import {LoadingPageState} from '../../../pages/siopv2/loading'
-import {ErrorPageState} from '../../../pages/siopv2/error'
+import {LoadingPageState} from '@/pages/siopv2/loading'
+import {ErrorPageState} from '@/pages/siopv2/error'
 import {
     Siopv2MachineEvents,
     Siopv2MachineInterpreter,
@@ -16,7 +16,7 @@ import {
     Siopv2MachineStates
 } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 import debug from 'debug'
-import {InformationRequestPageState} from '../../../pages/siopv2/informationRequest'
+import {InformationRequestPageState} from '@/pages/siopv2/informationRequest'
 import {PresentationDefinitionWithLocation} from '@sphereon/did-auth-siop'
 import {Format} from '@sphereon/pex-models'
 import {IdentityOrigin} from '@sphereon/ssi-sdk.data-store/dist/types/contact/contact'
@@ -28,7 +28,7 @@ import {
     PartyOrigin,
     PartyTypeType
 } from '@sphereon/ssi-sdk.data-store'
-import {ContactRetrievalCompleteEvent} from "@sphereon/ssi-sdk.siopv2-oid4vp-op-auth/src/types/machine";
+// import {ContactRetrievalCompleteEvent} from "@sphereon/ssi-sdk.siopv2-oid4vp-op-auth/src/types/machine";
 
 const handleNavigation = async (
     path: string,
@@ -181,15 +181,21 @@ const retrieveContact = async (siopv2Machine: Siopv2MachineInterpreter, machineS
         return Promise.reject(Error('correlationId could not be extracted from the authorization request data'))
     }
     console.info('Retrieving contact ', correlationId)
-    const foundContacts = await agent.cmGetContacts({
+    let foundContacts = await agent.cmGetContacts({
         filter: [{identities: {identifier: {correlationId}}}],
     })
-
-    const event:ContactRetrievalCompleteEvent = {
-        type: Siopv2MachineEvents.CONTACT_RETRIEVAL_COMPLETED,
-        data: (foundContacts.length > 0) ? foundContacts[0] : undefined
+    // FIXME: Sander needs to fix/update/commit changes, now creating a contact on the fly instead of using the machine to do it
+    if (foundContacts.length === 0) {
+        await addContact(siopv2Machine, machineState)
+        foundContacts = await agent.cmGetContacts({
+            filter: [{identities: {identifier: {correlationId}}}],
+        })
     }
-    siopv2Machine.send(event)
+
+    if (foundContacts.length > 0) {
+        machineState.context.contact = foundContacts[0]
+        return
+    }
 }
 
 const addContact = async (siopv2Machine: Siopv2MachineInterpreter, machineState: Siopv2MachineState) => {
@@ -210,7 +216,7 @@ const addContact = async (siopv2Machine: Siopv2MachineInterpreter, machineState:
     const identities = [
         {
             alias: correlationId,
-            roles: [CredentialRole.ISSUER],
+            roles: [CredentialRole.VERIFIER],
             origin: IdentityOrigin.EXTERNAL,
             identifier: {type: CorrelationIdentifierType.URL, correlationId},
             connection: {
@@ -278,7 +284,7 @@ const selectCredentials = async (siopv2Machine: Siopv2MachineInterpreter, state:
     })
 }
 
-const showError = async (siopv2Machine: Siopv2MachineInterpreter, state: Siopv2MachineState) => {
+const handleError = async (siopv2Machine: Siopv2MachineInterpreter, state: Siopv2MachineState) => {
     const {abortController, handlers} = createAbortControllerWithBackNextHandlers(siopv2Machine)
     const {onNext, onBack} = handlers
     return navigateError({siopv2Machine, state, onNext, onBack, abortController})
@@ -287,6 +293,10 @@ const showError = async (siopv2Machine: Siopv2MachineInterpreter, state: Siopv2M
 const final = async (siopv2Machine: Siopv2MachineInterpreter, state: Siopv2MachineState) => {
     if(!state.changed) {
         return
+    }
+    if (state.context.error) {
+        console.log(`State context container error:`)
+        console.log(state.context.error)
     }
 
     const {abortController, handlers} = createAbortControllerWithBackNextHandlers(siopv2Machine)
@@ -302,8 +312,8 @@ vpStateCallbacks.set(Siopv2MachineStates.sendResponse, showLoading)
 vpStateCallbacks.set(Siopv2MachineStates.getSelectableCredentials, showLoading)
 vpStateCallbacks.set(Siopv2MachineStates.retrieveContact, retrieveContact)
 vpStateCallbacks.set(Siopv2MachineStates.addContact, addContact)
-vpStateCallbacks.set(Siopv2MachineStates.handleError, showError)
+vpStateCallbacks.set(Siopv2MachineStates.handleError, handleError)
 vpStateCallbacks.set(Siopv2MachineStates.done, final)
-vpStateCallbacks.set(Siopv2MachineStates.error, final)
+vpStateCallbacks.set(Siopv2MachineStates.error, handleError)
 vpStateCallbacks.set(Siopv2MachineStates.aborted, final)
 vpStateCallbacks.set(Siopv2MachineStates.declined, final)

@@ -19,7 +19,7 @@ import { didAuthSiopOpAuthenticatorMethods } from '@sphereon/ssi-sdk.siopv2-oid4
 
 await dotenvConfig()
 
-const toBoolean = (value?: string): boolean => value === undefined || value === 'true'
+const toBoolean = (value: string | undefined, defaultValue?: boolean): boolean => value === undefined ? (defaultValue ?? true)  : value === 'true'
 
 /**
  * Please see .env.example for an explanation of the different environment variables available
@@ -78,6 +78,8 @@ export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATU
       ...issuanceBrandingMethods,
       ...pdManagerMethods,
     ]
+
+export const IS_JWKS_HOSTING_ENABLED = toBoolean(process.env.JWKS_HOSTING_ENABLED, true)
 
 export const STATUS_LIST_API_BASE_PATH = env('STATUS_LIST_API_BASE_PATH', ENV_VAR_PREFIX) ?? VC_API_BASE_PATH
 export const STATUS_LIST_ISSUER = env('STATUS_LIST_ISSUER', ENV_VAR_PREFIX) ?? DEFAULT_DID

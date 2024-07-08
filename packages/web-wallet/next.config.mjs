@@ -11,6 +11,14 @@ const nextConfig = {
       fileName: false,
     }
   },
+  async rewrites() {
+    return [
+      {
+        source: "/.well-known/jwks/:path*",
+        destination: `${process.env.NEXT_PUBLIC_AGENT_BASE_URL}/.well-known/jwks/:path*`,
+      },
+    ]
+  },
   async redirects() {
     /*FIXME: Most of these redirects should not be here. The OID4VCI link handler should simply listen everywhere*/
     return [

@@ -1,12 +1,9 @@
 import React, {ReactElement, useEffect, useState} from 'react'
-import {SSRConfig} from 'next-i18next'
-import {serverSideTranslations} from 'next-i18next/serverSideTranslations'
 import {useLocation} from 'react-router-dom'
 import {useTranslate} from '@refinedev/core'
 import {CredentialStatus} from '@sphereon/ui-components.core'
 
 import {InformationRequestView, PrimaryButton, SecondaryButton} from '@sphereon/ui-components.ssi-react'
-import nextI18NextConfig from '../../../next-i18next.config.mjs'
 import {Siopv2NavigationEventListenerType} from '@types'
 import style from './index.module.css'
 import {IPresentationDefinition} from '@sphereon/pex'

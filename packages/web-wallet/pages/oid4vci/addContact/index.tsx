@@ -4,11 +4,11 @@ import {useTranslate} from '@refinedev/core'
 import {NonPersistedIdentity, Party, PartyOrigin, PartyTypeType} from '@sphereon/ssi-sdk.data-store'
 import {fontColors} from '@sphereon/ui-components.core'
 import {SSICheckbox, PrimaryButton, SecondaryButton, TextInputField} from '@sphereon/ui-components.ssi-react'
-import {addParty} from '../../../src/services/contactService'
-import {CONTACT_ALIAS_MAX_LENGTH} from '../../../src/agent/environment'
+import {addParty} from '@/src/services/contactService'
+import {CONTACT_ALIAS_MAX_LENGTH} from '@/src/agent/environment'
 import {NavigationEventListenerType, OID4VCINavigationEventListenerType} from '@types'
 import style from './index.module.css'
-import {staticPropsWithSST} from '../../../src/i18n/server'
+import {staticPropsWithSST} from '@/src/i18n/server'
 
 export type AddContactPageState = {
   hasContactConsent: boolean
