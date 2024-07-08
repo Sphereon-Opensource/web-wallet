@@ -29,7 +29,6 @@ import {
     PartyOrigin,
     PartyTypeType
 } from '@sphereon/ssi-sdk.data-store'
-import {ContactRetrievalCompleteEvent} from "@sphereon/ssi-sdk.siopv2-oid4vp-op-auth/src/types/machine";
 
 const handleNavigation = async (
     path: string,
