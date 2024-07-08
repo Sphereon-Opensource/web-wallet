@@ -10,6 +10,7 @@ import {
 import {LoadingPageState} from '@/pages/siopv2/loading'
 import {ErrorPageState} from '@/pages/siopv2/error'
 import {
+    Siopv2MachineContext,
     Siopv2MachineEvents,
     Siopv2MachineInterpreter,
     Siopv2MachineState,
@@ -28,7 +29,6 @@ import {
     PartyOrigin,
     PartyTypeType
 } from '@sphereon/ssi-sdk.data-store'
-// import {ContactRetrievalCompleteEvent} from "@sphereon/ssi-sdk.siopv2-oid4vp-op-auth/src/types/machine";
 
 const handleNavigation = async (
     path: string,
@@ -45,6 +45,11 @@ const handleNavigation = async (
 }
 
 const navigateLoading = async (): Promise<void> => {
+    // Avoid navigate again after sending SET_SELECTED_CREDENTIALS after which the machine will update its state and re-trigger the event
+    if (window.location.pathname === `${MainRoute.OID4VP}/${SIOPV2Route.LOADING}`) {
+        return
+    }
+
     const state: LoadingPageState = {
         message: 'action_getting_information_message',
     }
@@ -52,7 +57,7 @@ const navigateLoading = async (): Promise<void> => {
 }
 
 const navigateInformationRequest = async (args: Siopv2NavigationArgs): Promise<void> => {
-    // Avoid navigate again after sending SET_SELECTED_CREDENTIALS after which teh machine will update its state and re-trigger the event
+    // Avoid navigate again after sending SET_SELECTED_CREDENTIALS after which the machine will update its state and re-trigger the event
     if (window.location.pathname === `${MainRoute.OID4VP}/${SIOPV2Route.INFORMATION_REQUEST}`) {
         return
     }
@@ -103,7 +108,6 @@ const navigateInformationRequest = async (args: Siopv2NavigationArgs): Promise<v
     const onDecline = async (): Promise<void> => {
         siopv2Machine.send(Siopv2MachineEvents.DECLINE)
     }
-
     const state: InformationRequestPageState = {
         verifierName: contact.contact.displayName,
         presentationDefinition: presentationDefinitionWithLocation.definition,
@@ -170,52 +174,24 @@ const showLoading = async (siopv2Machine: Siopv2MachineInterpreter, state: Siopv
     return navigateLoading()
 }
 
-const retrieveContact = async (siopv2Machine: Siopv2MachineInterpreter, machineState: Siopv2MachineState) => {
-    if(!machineState.changed) {
-        return
-    }
-
-    const {authorizationRequestData} = machineState.context
-    const {correlationId} = authorizationRequestData ?? {}
-    if (!correlationId) {
-        return Promise.reject(Error('correlationId could not be extracted from the authorization request data'))
-    }
-    console.info('Retrieving contact ', correlationId)
-    let foundContacts = await agent.cmGetContacts({
-        filter: [{identities: {identifier: {correlationId}}}],
-    })
-    // FIXME: Sander needs to fix/update/commit changes, now creating a contact on the fly instead of using the machine to do it
-    if (foundContacts.length === 0) {
-        await addContact(siopv2Machine, machineState)
-        foundContacts = await agent.cmGetContacts({
-            filter: [{identities: {identifier: {correlationId}}}],
-        })
-    }
-
-    if (foundContacts.length > 0) {
-        machineState.context.contact = foundContacts[0]
-        return
-    }
-}
-
 const addContact = async (siopv2Machine: Siopv2MachineInterpreter, machineState: Siopv2MachineState) => {
     if(!machineState.changed) {
         return
     }
 
-    const {authorizationRequestData} = machineState.context
-    const {correlationId} = authorizationRequestData ?? {}
-
+    const {authorizationRequestData}: Siopv2MachineContext = machineState.context
+    const {name, correlationId} = authorizationRequestData ?? {}
 
     if (!correlationId) {
         return Promise.reject(Error('correlationId could not be extracted from the authorization request data'))
     }
+    const contactName = name ?? correlationId
 
     const {abortController} = createAbortControllerWithBackNextHandlers(siopv2Machine)
 
     const identities = [
         {
-            alias: correlationId,
+            alias: contactName,
             roles: [CredentialRole.VERIFIER],
             origin: IdentityOrigin.EXTERNAL,
             identifier: {type: CorrelationIdentifierType.URL, correlationId},
@@ -237,8 +213,8 @@ const addContact = async (siopv2Machine: Siopv2MachineInterpreter, machineState:
     try {
         const party = await agent
             .cmAddContact({
-                legalName: correlationId,
-                displayName: correlationId,
+                legalName: contactName,
+                displayName: contactName,
                 identities,
                 contactType: {
                     id: '3875c12e-fdaa-4ef6-a340-c936e054b627',
@@ -310,7 +286,7 @@ vpStateCallbacks.set(Siopv2MachineStates.createConfig, showLoading)
 vpStateCallbacks.set(Siopv2MachineStates.getSiopRequest, showLoading)
 vpStateCallbacks.set(Siopv2MachineStates.sendResponse, showLoading)
 vpStateCallbacks.set(Siopv2MachineStates.getSelectableCredentials, showLoading)
-vpStateCallbacks.set(Siopv2MachineStates.retrieveContact, retrieveContact)
+vpStateCallbacks.set(Siopv2MachineStates.retrieveContact, showLoading)
 vpStateCallbacks.set(Siopv2MachineStates.addContact, addContact)
 vpStateCallbacks.set(Siopv2MachineStates.handleError, handleError)
 vpStateCallbacks.set(Siopv2MachineStates.done, final)

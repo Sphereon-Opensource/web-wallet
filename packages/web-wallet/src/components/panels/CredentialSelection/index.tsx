@@ -41,12 +41,12 @@ const CredentialSelection: React.FC<CredentialSelectionProps> = ({credentialSumm
 
   return (
     <div className={style.credentialSelectionContainer}>
-      {credentialSummaryItems.map(credential => {
+      {credentialSummaryItems.map((credential, index) => {
         const credentialId = credential.id ?? credential.hash
 
         return (
           <div
-            key={credential.id}
+            key={`${credential.id}_${index}` }
             className={`${style.credentialBox} ${selectedCredential !== null && selectedCredential === credentialId ? style.selected : ''}`}
             onClick={() => handleSelect(credential)}>
             <CredentialViewItem
