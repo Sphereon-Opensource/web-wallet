@@ -49,7 +49,7 @@ const CreateIdentifierKeysContent: FC = (): ReactElement => {
   return (
     <div className={style.container}>
       <div className={style.contentContainer}>
-        {/*{keys.length === 0 &&*/}
+        {keys.length === 0 &&
         <div className={style.formContainer}>
           <div>
             <div className={style.titleCaption}>{translate('create_identifier_keys_title')}</div>
@@ -57,42 +57,42 @@ const CreateIdentifierKeysContent: FC = (): ReactElement => {
           </div>
           <FormView data={keyData?.data} schema={addKeySchema} uiSchema={addKeyUISchema} onFormStateChange={onKeyDataChange} />
         </div>
-        {/*}*/}
-        {/*{keys.length > 0 &&*/}
-        {/*    <div className={style.contentContainer}>*/}
-        {/*        <div className={style.formContainer}>*/}
-        {/*            <div>*/}
-        {/*                <div className={style.titleCaption}>{translate('create_identifier_keys_title')}</div>*/}
-        {/*                <div className={style.descriptionCaption}>{translate('create_identifier_keys_description')}</div>*/}
-        {/*            </div>*/}
-        {/*            {getKeyElements()}*/}
-        {/*        </div>*/}
-        {/*        <div className={style.formContainer}>*/}
-        {/*            <div className={style.addTitleCaption}>{translate('create_identifier_service_endpoints_title')}</div>*/}
-        {/*            <FormView*/}
-        {/*                data={keyData?.data}*/}
-        {/*                schema={generateKeySchema}*/}
-        {/*                uiSchema={generateKeyUISchema}*/}
-        {/*                onFormStateChange={onKeyDataChange}*/}
-        {/*            />*/}
-        {/*        </div>*/}
-        {/*    </div>*/}
-        {/*}*/}
-        {/*{keyData?.data?.action &&*/}
-        {/*    <div className={style.addContainer}>*/}
-        {/*        <IconButton*/}
-        {/*            icon={ButtonIcon.ADD}*/}
-        {/*            onClick={onAddKey}*/}
-        {/*            disabled={keyData?.errors !== undefined && keyData?.errors.length > 0}*/}
-        {/*        />*/}
-        {/*        <div*/}
-        {/*            className={style.addAnotherTitleCaption}*/}
-        {/*            style={{opacity: (keyData?.errors !== undefined && keyData?.errors.length > 0) ? 0.5 : 1}}*/}
-        {/*        >*/}
-        {/*            {translate('create_identifier_keys_add_another_key_label')}*/}
-        {/*        </div>*/}
-        {/*    </div>*/}
-        {/*}*/}
+        }
+        {keys.length > 0 &&
+            <div className={style.contentContainer}>
+                <div className={style.formContainer}>
+                    <div>
+                        <div className={style.titleCaption}>{translate('create_identifier_keys_title')}</div>
+                        <div className={style.descriptionCaption}>{translate('create_identifier_keys_description')}</div>
+                    </div>
+                    {getKeyElements()}
+                </div>
+                <div className={style.formContainer}>
+                    <div className={style.addTitleCaption}>{translate('create_identifier_service_endpoints_title')}</div>
+                    <FormView
+                        data={keyData?.data}
+                        schema={addKeySchema}
+                        uiSchema={addKeyUISchema}
+                        onFormStateChange={onKeyDataChange}
+                    />
+                </div>
+            </div>
+        }
+        {keyData?.data?.action &&
+            <div className={style.addContainer}>
+                <IconButton
+                    icon={ButtonIcon.ADD}
+                    onClick={onAddKey}
+                    disabled={keyData?.errors !== undefined && keyData?.errors.length > 0}
+                />
+                <div
+                    className={style.addAnotherTitleCaption}
+                    style={{opacity: (keyData?.errors !== undefined && keyData?.errors.length > 0) ? 0.5 : 1}}
+                >
+                    {translate('create_identifier_keys_add_another_key_label')}
+                </div>
+            </div>
+        }
       </div>
     </div>
   )

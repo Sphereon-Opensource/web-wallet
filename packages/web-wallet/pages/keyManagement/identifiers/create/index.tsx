@@ -75,11 +75,11 @@ const IdentifierCreatePage: FC = () => {
               title: translate('create_identifier_add_keys_step_title'),
               description: translate('create_identifier_add_keys_step_description'),
             },
-            // TODO add for WALL-245
-            // {
-            //   title: translate('create_identifier_add_service_endpoint_step_title'),
-            //   description: translate('create_identifier_add_service_endpoint_step_description'),
-            // },
+
+            {
+              title: translate('create_identifier_add_service_endpoint_step_title'),
+               description: translate('create_identifier_add_service_endpoint_step_description'),
+            },
             {
               title: translate('create_identifier_summary_step_title'),
               description: translate('create_identifier_summary_step_description'),
