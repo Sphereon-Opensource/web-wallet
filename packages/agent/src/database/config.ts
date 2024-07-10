@@ -7,7 +7,7 @@ import {
   DB_PORT,
   DB_SCHEMA,
   DB_SSL_ALLOW_SELF_SIGNED,
-  DB_SSL_CA,
+  DB_SSL_CA, DB_TYPE,
   DB_URL,
   DB_USE_SSL,
   DB_USERNAME,
@@ -27,6 +27,7 @@ import {
   DataStoreStatusListMigrations,
 } from '@sphereon/ssi-sdk.data-store'
 import { WebWalletMigrations } from './migrations'
+import {SqliteConnectionOptions} from "typeorm/driver/sqlite/SqliteConnectionOptions";
 
 if (!process.env.DB_ENCRYPTION_KEY) {
   console.warn(
@@ -49,6 +50,22 @@ let ssl: TlsOptions | boolean = enableSSL
   : false
 if (enableSSL && Object.keys(ssl).length === 0) {
   ssl = true
+}
+
+
+/**
+ * SQLite3 DB configuration
+ */
+const sqliteConfig: SqliteConnectionOptions = {
+  type: 'sqlite',
+  database: DB_URL!,
+  entities: [...VeramoDataStoreEntities],
+  migrations: [...VeramoDataStoreMigrations],
+  migrationsRun: false, // We run migrations from code to ensure proper ordering with Redux
+  synchronize: false, // We do not enable synchronize, as we use migrations from code
+  migrationsTransactionMode: 'each', // protect every migration with a separate transaction
+  logging: ['info', 'error'], // 'all' means to enable all logging
+  logger: 'advanced-console',
 }
 
 /**
@@ -98,4 +115,5 @@ function validatePostgresOptions(options: PostgresConnectionOptions) {
   return options
 }
 
-export { postgresConfig }
+console.log(`Database type '${DB_TYPE}' is being used`)
+export const DB_CONFIG = DB_TYPE === 'postgres' ? postgresConfig : sqliteConfig

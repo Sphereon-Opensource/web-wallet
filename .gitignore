@@ -56,22 +56,13 @@ test/*.js
 *.swp
 *~
 
-/packages/mnemonic-seed-manager/plugin.schema.json
-/packages/vc-api-issuer/plugin.schema.json
-/packages/vc-api-verifier/plugin.schema.json
-/packages/contact-manager/plugin.schema.json
-/packages/bls-key-manager/plugin.schema.json
-/packages/ms-request-api/plugin.schema.json
-/packages/siopv2-oid4vp-rp-rest-client/plugin.schema.json
-/packages/vc-handler-ld-local/plugin.schema.json
-/packages/issuance-branding/plugin.schema.json
-/packages/oid4vci-issuer-rest-client/plugin.schema.json
-
 .vscode/*
 *.iml
-/packages/agent/.env.local
+/packages/agent/.env.local.back
 /packages/agent/.env
 /packages/agent/conf/dev/
 
 # Local config files
 /packages/**/192.168.2.90.json
+/docker/wallet-agent-full/volumes/db/data/**/*
+/docker/wallet-agent-full/volumes/storage/stub/dpp-workflow-storage/**/*

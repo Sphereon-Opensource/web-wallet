@@ -1,0 +1,18 @@
+name: sphereon-wallet
+
+services:
+  wallet-frontend:
+    container_name: wallet-frontend
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    env_file:
+      - .env
+    tty: true
+    build:
+      context: ../../packages/web-wallet
+      dockerfile: ../../docker/wallet-frontend-only/Dockerfile
+      args:
+        progress: plain
+        no-cache: true
+    ports:
+      - "3001:3001"

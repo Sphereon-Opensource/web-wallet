@@ -1,8 +1,8 @@
 import { DataSource } from 'typeorm'
-import { postgresConfig } from './config'
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
+import {DB_CONFIG} from "./config";
 
-console.log(`Using DB configuration for a ${postgresConfig.type} database`)
+console.log(`Using DB configuration for a ${DB_CONFIG.type} database`)
 
 /**
  * Gets the database connection.
@@ -12,7 +12,7 @@ console.log(`Using DB configuration for a ${postgresConfig.type} database`)
  * @param connectionName The database name
  */
 export const getDbConnection = async (connectionName: string): Promise<DataSource> => {
-  return DataSources.singleInstance().addConfig(connectionName, postgresConfig).getDbConnection(connectionName)
+  return DataSources.singleInstance().addConfig(connectionName, DB_CONFIG).getDbConnection(connectionName)
 }
 
 /**

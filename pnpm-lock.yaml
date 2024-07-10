@@ -22,9 +22,11 @@ overrides:
   '@sphereon/oid4vci-common': 0.14.0
   '@sphereon/oid4vci-issuer-server': 0.14.0
   '@sphereon/oid4vci-client': 0.14.0
-  '@codemirror/view': 6.28.0
+  '@codemirror/view': 6.28.4
   '@codemirror/state': 6.4.1
   '@codemirror/search': 6.5.6
+  '@codemirror/lang-json': 6.0.1
+  '@codemirror/lint': ^6.8.1
   '@veramo/cli': 4.2.0
   '@noble/hashes': 1.2.0
   typeorm: 0.3.20
@@ -415,14 +417,20 @@ importers:
         specifier: ^0.20.0
         version: 0.20.0
       '@codemirror/lang-json':
-        specifier: ^6.0.1
+        specifier: 6.0.1
         version: 6.0.1
       '@codemirror/lint':
-        specifier: ^6.8.0
+        specifier: ^6.8.1
         version: 6.8.1
+      '@codemirror/search':
+        specifier: 6.5.6
+        version: 6.5.6
       '@codemirror/state':
         specifier: 6.4.1
         version: 6.4.1
+      '@codemirror/view':
+        specifier: 6.28.4
+        version: 6.28.4
       '@emotion/react':
         specifier: ^11.11.4
         version: 11.11.4(@types/react@18.3.3)(react@18.2.0)
@@ -526,14 +534,14 @@ importers:
         specifier: 0.27.1-unstable.11
         version: 0.27.1-unstable.11
       '@sphereon/ui-components.core':
-        specifier: 0.2.1-unstable.46
-        version: 0.2.1-unstable.46(@babel/core@7.24.6)(react-dom@18.3.1)(react-is@18.3.1)(react@18.2.0)
+        specifier: 0.2.1-next.77
+        version: 0.2.1-next.77(@babel/core@7.24.6)(react-dom@18.3.1)(react-is@18.3.1)(react@18.2.0)
       '@sphereon/ui-components.credential-branding':
-        specifier: 0.2.1-unstable.46
-        version: 0.2.1-unstable.46(@babel/core@7.24.6)(expo@51.0.9)(msrcrypto@1.5.8)(react-dom@18.3.1)(react-is@18.3.1)(react@18.2.0)(ts-node@10.9.2)
+        specifier: 0.2.1-next.77
+        version: 0.2.1-next.77(@babel/core@7.24.6)(expo@51.0.9)(msrcrypto@1.5.8)(react-dom@18.3.1)(react-is@18.3.1)(react@18.2.0)(ts-node@10.9.2)
       '@sphereon/ui-components.ssi-react':
-        specifier: 0.2.1-unstable.46
-        version: 0.2.1-unstable.46(@babel/core@7.24.6)(@types/react@18.3.3)(dayjs@1.11.11)(react-dom@18.3.1)(react-is@18.3.1)(react@18.2.0)
+        specifier: 0.2.1-next.77
+        version: 0.2.1-next.77(@babel/core@7.24.6)(@types/react@18.3.3)(dayjs@1.11.11)(react-dom@18.3.1)(react-is@18.3.1)(react@18.2.0)
       '@supabase/postgrest-js':
         specifier: 1.15.2
         version: 1.15.2
@@ -574,7 +582,7 @@ importers:
         specifier: ^5.0.2
         version: 5.0.2
       codemirror:
-        specifier: ^6.0.1
+        specifier: 6.0.1
         version: 6.0.1(@lezer/common@1.2.1)
       cookie:
         specifier: ^0.5.0
@@ -653,7 +661,7 @@ importers:
         version: 4.2.2
       thememirror:
         specifier: ^2.0.1
-        version: 2.0.1(@codemirror/language@6.10.2)(@codemirror/state@6.4.1)(@codemirror/view@6.28.0)
+        version: 2.0.1(@codemirror/language@6.10.2)(@codemirror/state@6.4.1)(@codemirror/view@6.28.4)
       uuid:
         specifier: ^9.0.1
         version: 9.0.1
@@ -2305,21 +2313,21 @@ packages:
     dependencies:
       '@codemirror/language': 0.20.2
       '@codemirror/state': 6.4.1
-      '@codemirror/view': 6.28.0
+      '@codemirror/view': 6.28.4
       '@lezer/common': 0.16.1
     dev: false
 
-  /@codemirror/autocomplete@6.17.0(@codemirror/language@6.10.2)(@codemirror/state@6.4.1)(@codemirror/view@6.28.0)(@lezer/common@1.2.1):
+  /@codemirror/autocomplete@6.17.0(@codemirror/language@6.10.2)(@codemirror/state@6.4.1)(@codemirror/view@6.28.4)(@lezer/common@1.2.1):
     resolution: {integrity: sha512-fdfj6e6ZxZf8yrkMHUSJJir7OJkHkZKaOZGzLWIYp2PZ3jd+d+UjG8zVPqJF6d3bKxkhvXTPan/UZ1t7Bqm0gA==}
     peerDependencies:
       '@codemirror/language': ^6.0.0
       '@codemirror/state': 6.4.1
-      '@codemirror/view': 6.28.0
+      '@codemirror/view': 6.28.4
       '@lezer/common': ^1.0.0
     dependencies:
       '@codemirror/language': 6.10.2
       '@codemirror/state': 6.4.1
-      '@codemirror/view': 6.28.0
+      '@codemirror/view': 6.28.4
       '@lezer/common': 1.2.1
     dev: false
 
@@ -2330,10 +2338,10 @@ packages:
       '@codemirror/autocomplete': 0.20.3
       '@codemirror/commands': 0.20.0
       '@codemirror/language': 0.20.2
-      '@codemirror/lint': 0.20.3
+      '@codemirror/lint': 6.8.1
       '@codemirror/search': 6.5.6
       '@codemirror/state': 6.4.1
-      '@codemirror/view': 6.28.0
+      '@codemirror/view': 6.28.4
     dev: false
 
   /@codemirror/commands@0.20.0:
@@ -2341,7 +2349,7 @@ packages:
     dependencies:
       '@codemirror/language': 0.20.2
       '@codemirror/state': 6.4.1
-      '@codemirror/view': 6.28.0
+      '@codemirror/view': 6.28.4
       '@lezer/common': 0.16.1
     dev: false
 
@@ -2350,7 +2358,7 @@ packages:
     dependencies:
       '@codemirror/language': 6.10.2
       '@codemirror/state': 6.4.1
-      '@codemirror/view': 6.28.0
+      '@codemirror/view': 6.28.4
       '@lezer/common': 1.2.1
     dev: false
 
@@ -2365,7 +2373,7 @@ packages:
     resolution: {integrity: sha512-WB3Bnuusw0xhVvhBocieYKwJm04SOk5bPoOEYksVHKHcGHFOaYaw+eZVxR4gIqMMcGzOIUil0FsCmFk8yrhHpw==}
     dependencies:
       '@codemirror/state': 6.4.1
-      '@codemirror/view': 6.28.0
+      '@codemirror/view': 6.28.4
       '@lezer/common': 0.16.1
       '@lezer/highlight': 0.16.0
       '@lezer/lr': 0.16.3
@@ -2376,26 +2384,18 @@ packages:
     resolution: {integrity: sha512-kgbTYTo0Au6dCSc/TFy7fK3fpJmgHDv1sG1KNQKJXVi+xBTEeBPY/M30YXiU6mMXeH+YIDLsbrT4ZwNRdtF+SA==}
     dependencies:
       '@codemirror/state': 6.4.1
-      '@codemirror/view': 6.28.0
+      '@codemirror/view': 6.28.4
       '@lezer/common': 1.2.1
       '@lezer/highlight': 1.2.0
       '@lezer/lr': 1.4.1
       style-mod: 4.1.2
     dev: false
 
-  /@codemirror/lint@0.20.3:
-    resolution: {integrity: sha512-06xUScbbspZ8mKoODQCEx6hz1bjaq9m8W8DxdycWARMiiX1wMtfCh/MoHpaL7ws/KUMwlsFFfp2qhm32oaCvVA==}
-    dependencies:
-      '@codemirror/state': 6.4.1
-      '@codemirror/view': 6.28.0
-      crelt: 1.0.6
-    dev: false
-
   /@codemirror/lint@6.8.1:
     resolution: {integrity: sha512-IZ0Y7S4/bpaunwggW2jYqwLuHj0QtESf5xcROewY6+lDNwZ/NzvR4t+vpYgg9m7V8UXLPYqG+lu3DF470E5Oxg==}
     dependencies:
       '@codemirror/state': 6.4.1
-      '@codemirror/view': 6.28.0
+      '@codemirror/view': 6.28.4
       crelt: 1.0.6
     dev: false
 
@@ -2403,7 +2403,7 @@ packages:
     resolution: {integrity: sha512-rpMgcsh7o0GuCDUXKPvww+muLA1pDJaFrpq/CCHtpQJYz8xopu4D1hPcKRoDD0YlF8gZaqTNIRa4VRBWyhyy7Q==}
     dependencies:
       '@codemirror/state': 6.4.1
-      '@codemirror/view': 6.28.0
+      '@codemirror/view': 6.28.4
       crelt: 1.0.6
     dev: false
 
@@ -2411,8 +2411,8 @@ packages:
     resolution: {integrity: sha512-QkEyUiLhsJoZkbumGZlswmAhA7CBU02Wrz7zvH4SrcifbsqwlXShVXg65f3v/ts57W3dqyamEriMhij1Z3Zz4A==}
     dev: false
 
-  /@codemirror/view@6.28.0:
-    resolution: {integrity: sha512-fo7CelaUDKWIyemw4b+J57cWuRkOu4SWCCPfNDkPvfWkGjM9D5racHQXr4EQeYCD6zEBIBxGCeaKkQo+ysl0gA==}
+  /@codemirror/view@6.28.4:
+    resolution: {integrity: sha512-QScv95fiviSQ/CaVGflxAvvvDy/9wi0RFyDl4LkHHWiMr/UPebyuTspmYSeN5Nx6eujcPYwsQzA6ZIZucKZVHQ==}
     dependencies:
       '@codemirror/state': 6.4.1
       style-mod: 4.1.2
@@ -5510,7 +5510,7 @@ packages:
     dependencies:
       '@sphereon/react-native-argon2': 2.0.9(react-native@0.74.2)
       argon2-browser: 1.18.0
-      react-native: 0.74.2(@babel/core@7.24.6)(@babel/preset-env@7.24.6)(react@18.2.0)
+      react-native: 0.74.2(@babel/core@7.24.6)(@babel/preset-env@7.24.6)(@types/react@18.3.3)(react@18.2.0)
       uint8arrays: 3.1.1
     dev: false
 
@@ -5647,7 +5647,7 @@ packages:
     peerDependencies:
       react-native: '>=0.67.0'
     dependencies:
-      react-native: 0.74.2(@babel/core@7.24.6)(@babel/preset-env@7.24.6)(react@18.2.0)
+      react-native: 0.74.2(@babel/core@7.24.6)(@babel/preset-env@7.24.6)(@types/react@18.3.3)(react@18.2.0)
     dev: false
 
   /@sphereon/ssi-express-support@0.27.1-unstable.11(@noble/hashes@1.2.0)(passport-azure-ad@4.3.5):
@@ -7085,8 +7085,8 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /@sphereon/ui-components.core@0.2.1-unstable.46(@babel/core@7.24.6)(react-dom@18.3.1)(react-is@18.3.1)(react@18.2.0):
-    resolution: {integrity: sha512-iSN1fxGHak+9/hhkEJuYDZdOFFjIPRhE2aBAQnpRi3FYLEQD1LoMR155cAgnHT4v9knWQ5IAxcEv+xOTG+22RQ==}
+  /@sphereon/ui-components.core@0.2.1-next.77(@babel/core@7.24.6)(react-dom@18.3.1)(react-is@18.3.1)(react@18.2.0):
+    resolution: {integrity: sha512-ItJiyJ7nYo6EFWhld+Dhi90QHrZJrjXxXanGj9fHgBVgyRAxEKFZvF9z/xmiVwVRmfYpQp3GRT+iHt0WdYUpwA==}
     peerDependencies:
       react: '>= 18'
     dependencies:
@@ -7100,15 +7100,15 @@ packages:
       - react-is
     dev: false
 
-  /@sphereon/ui-components.credential-branding@0.2.1-unstable.46(@babel/core@7.24.6)(expo@51.0.9)(msrcrypto@1.5.8)(react-dom@18.3.1)(react-is@18.3.1)(react@18.2.0)(ts-node@10.9.2):
-    resolution: {integrity: sha512-bwl9ipIetKlJS06bWThQxROr2hMuUgVJm3E53FvLybXRHzGUuG2IJdL6udC+ULnYLUM4a4BLwZS5t9uZJQ5Rkw==}
+  /@sphereon/ui-components.credential-branding@0.2.1-next.77(@babel/core@7.24.6)(expo@51.0.9)(msrcrypto@1.5.8)(react-dom@18.3.1)(react-is@18.3.1)(react@18.2.0)(ts-node@10.9.2):
+    resolution: {integrity: sha512-ogodlp5RlZ+Hxskk72W0szBOUGvPiCVTvMfsQyT54gbBtuouUxDdFliEFO7q3ObF8Od0KG5ArKFp1V4+ZYUVYw==}
     peerDependencies:
       react: '>= 18'
     dependencies:
       '@sphereon/ssi-sdk.core': 0.27.1-unstable.11
       '@sphereon/ssi-sdk.data-store': 0.27.1-unstable.11(expo@51.0.9)(msrcrypto@1.5.8)(pg@8.12.0)(react-native-securerandom@1.0.1)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-types': 0.27.1-unstable.11
-      '@sphereon/ui-components.core': 0.2.1-unstable.46(@babel/core@7.24.6)(react-dom@18.3.1)(react-is@18.3.1)(react@18.2.0)
+      '@sphereon/ui-components.core': 0.2.1-next.77(@babel/core@7.24.6)(react-dom@18.3.1)(react-is@18.3.1)(react@18.2.0)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/utils': 4.2.0
       i18n-js: 3.9.2
@@ -7144,8 +7144,8 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ui-components.ssi-react@0.2.1-unstable.46(@babel/core@7.24.6)(@types/react@18.3.3)(dayjs@1.11.11)(react-dom@18.3.1)(react-is@18.3.1)(react@18.2.0):
-    resolution: {integrity: sha512-tOEreX3WGUzIanK++CxtvLZ32hTr3XSnNoZOXWMlLpE4FShJ6VJp/DttTo5xOCGMJkUnyxDUqrrwlcXx3IUFbg==}
+  /@sphereon/ui-components.ssi-react@0.2.1-next.77(@babel/core@7.24.6)(@types/react@18.3.3)(dayjs@1.11.11)(react-dom@18.3.1)(react-is@18.3.1)(react@18.2.0):
+    resolution: {integrity: sha512-x5of883qp6f7jMiy5yl65WduO9vcSb0XIpevembQgkvGFV8WqQsNKjxgUfu1RMqzBAXldGsqU+yeFCh+iu7pJg==}
     peerDependencies:
       react: '>= 18'
     dependencies:
@@ -7160,7 +7160,7 @@ packages:
       '@mui/styled-engine-sc': 5.14.12(styled-components@5.3.11)
       '@mui/system': 5.15.20(@emotion/react@11.11.4)(@emotion/styled@11.11.5)(@types/react@18.3.3)(react@18.2.0)
       '@mui/x-date-pickers': 6.20.2(@emotion/react@11.11.4)(@emotion/styled@11.11.5)(@mui/material@5.15.21)(@mui/system@5.15.20)(@types/react@18.3.3)(dayjs@1.11.11)(react-dom@18.3.1)(react@18.2.0)
-      '@sphereon/ui-components.core': 0.2.1-unstable.46(@babel/core@7.24.6)(react-dom@18.3.1)(react-is@18.3.1)(react@18.2.0)
+      '@sphereon/ui-components.core': 0.2.1-next.77(@babel/core@7.24.6)(react-dom@18.3.1)(react-is@18.3.1)(react@18.2.0)
       '@tanstack/react-table': 8.19.2(react-dom@18.3.1)(react@18.2.0)
       react: 18.2.0
       react-json-tree: 0.18.0(@types/react@18.3.3)(react@18.2.0)
@@ -10560,13 +10560,13 @@ packages:
   /codemirror@6.0.1(@lezer/common@1.2.1):
     resolution: {integrity: sha512-J8j+nZ+CdWmIeFIGXEFbFPtpiYacFMDR8GlHK3IyHQJMCaVRfGx9NT+Hxivv1ckLWPvNdZqndbr/7lVhrf/Svg==}
     dependencies:
-      '@codemirror/autocomplete': 6.17.0(@codemirror/language@6.10.2)(@codemirror/state@6.4.1)(@codemirror/view@6.28.0)(@lezer/common@1.2.1)
+      '@codemirror/autocomplete': 6.17.0(@codemirror/language@6.10.2)(@codemirror/state@6.4.1)(@codemirror/view@6.28.4)(@lezer/common@1.2.1)
       '@codemirror/commands': 6.6.0
       '@codemirror/language': 6.10.2
       '@codemirror/lint': 6.8.1
       '@codemirror/search': 6.5.6
       '@codemirror/state': 6.4.1
-      '@codemirror/view': 6.28.0
+      '@codemirror/view': 6.28.4
     transitivePeerDependencies:
       - '@lezer/common'
     dev: false
@@ -19696,16 +19696,16 @@ packages:
   /text-table@0.2.0:
     resolution: {integrity: sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==}
 
-  /thememirror@2.0.1(@codemirror/language@6.10.2)(@codemirror/state@6.4.1)(@codemirror/view@6.28.0):
+  /thememirror@2.0.1(@codemirror/language@6.10.2)(@codemirror/state@6.4.1)(@codemirror/view@6.28.4):
     resolution: {integrity: sha512-d5i6FVvWWPkwrm4cHLI3t9AT1OrkAt7Ig8dtdYSofgF7C/eiyNuq6zQzSTusWTde3jpW9WLvA9J/fzNKMUsd0w==}
     peerDependencies:
       '@codemirror/language': ^6.0.0
       '@codemirror/state': 6.4.1
-      '@codemirror/view': 6.28.0
+      '@codemirror/view': 6.28.4
     dependencies:
       '@codemirror/language': 6.10.2
       '@codemirror/state': 6.4.1
-      '@codemirror/view': 6.28.0
+      '@codemirror/view': 6.28.4
     dev: false
 
   /thenify-all@1.6.0:

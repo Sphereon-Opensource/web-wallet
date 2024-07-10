@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  standalone-agent-verifier:
+    container_name: sphereon-standalone-agent-verifier
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    env_file:
+      - .env
+    tty: true
+    build:
+      context: ../../packages/agent
+      dockerfile: ../../docker/standalone-agent-verifier/Dockerfile
+    ports:
+      - "5001:5001"

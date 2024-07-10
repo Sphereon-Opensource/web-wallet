@@ -1,4 +1,4 @@
-import {createAgent, IAgentContext, IAgentPlugin, TAgent} from '@veramo/core'
+import {createAgent, IAgentContext, IAgentPlugin, ProofFormat, TAgent} from '@veramo/core'
 import {
     CredentialHandlerLDLocal,
     LdDefaultContexts,
@@ -38,9 +38,9 @@ import {
     DID_API_FEATURES,
     DID_API_RESOLVE_MODE,
     DID_WEB_SERVICE_FEATURES,
-    INTERNAL_PORT, IS_JWKS_HOSTING_ENABLED,
+    INTERNAL_PORT, IS_CONTACT_MANAGER_ENABLED, IS_JWKS_HOSTING_ENABLED,
     IS_OID4VCI_ENABLED,
-    IS_OID4VP_ENABLED,
+    IS_OID4VP_ENABLED, IS_VC_API_ENABLED,
     OID4VCI_API_BASE_URL,
     oid4vciInstanceOpts,
     oid4vciMetadataOpts,
@@ -50,7 +50,7 @@ import {
     STATUS_LIST_API_FEATURES,
     STATUS_LIST_CORRELATION_ID,
     syncDefinitionsOpts,
-    VC_API_BASE_PATH,
+    VC_API_BASE_PATH, VC_API_DEFAULT_PROOF_FORMAT,
     VC_API_FEATURES,
 } from './environment'
 import {VcApiServer} from '@sphereon/ssi-sdk.w3c-vc-api'
@@ -211,7 +211,7 @@ if (!cliMode) {
     /**
      * Enable the Verifiable Credentials API
      */
-    if (IS_OID4VCI_ENABLED && VC_API_FEATURES.length > 0) {
+    if (IS_VC_API_ENABLED && VC_API_FEATURES.length > 0) {
         new VcApiServer({
             agent,
             expressSupport,
@@ -222,7 +222,7 @@ if (!cliMode) {
                 },
                 issueCredentialOpts: {
                     enableFeatures: VC_API_FEATURES,
-                    proofFormat: 'jwt', //VC_API_DEFAULT_PROOF_FORMAT as ProofFormat,
+                    proofFormat: VC_API_DEFAULT_PROOF_FORMAT as ProofFormat,
                     persistIssuedCredentials: VC_API_FEATURES.includes('vc-persist'),
                 },
             },
@@ -263,7 +263,7 @@ if (!cliMode) {
             },
         }
         new SIOPv2RPApiServer({agent, expressSupport, opts})
-        console.log('[OID4VP] SIOPv2 and OID4VP started: ' + process.env.OID4VP_AGENT_BASE_URI ?? `http://localhost:${INTERNAL_PORT}}`)
+        console.log('[OID4VP] SIOPv2 and OID4VP started: ' + (process.env.OID4VP_AGENT_BASE_URI ?? `http://localhost:${INTERNAL_PORT}`))
     }
 
     /**
@@ -340,7 +340,7 @@ if (!cliMode) {
     /**
      * Enable the Contact Manager API
      */
-    if (CONTACT_MANAGER_API_FEATURES.length > 0) {
+    if (IS_CONTACT_MANAGER_ENABLED && CONTACT_MANAGER_API_FEATURES.length > 0) {
         new ContactManagerApiServer({
             opts: {
                 endpointOpts: {
@@ -411,15 +411,13 @@ if (!cliMode) {
         })
     }
 
-
     if (IS_JWKS_HOSTING_ENABLED) {
         new PublicKeyHosting({agent, expressSupport, opts: {hostingOpts: {enableFeatures: ['did-jwks']}}})
     }
 
-
-    expressSupport.start()
-
     // Import presentation definitions from disk.
+
+    console.log(`DEFINITIONS IMPORT PRE`)
     const definitionsToImport: Array<IPresentationDefinition> = syncDefinitionsOpts.asArray.filter((definition) => {
         const {id, name} = definition ?? {}
         if (definition && (OID4VP_DEFINITIONS.length === 0 || OID4VP_DEFINITIONS.includes(id) || (name && OID4VP_DEFINITIONS.includes(name)))) {
@@ -428,11 +426,14 @@ if (!cliMode) {
         }
         return false
     })
-
     if (definitionsToImport.length > 0) {
-        agent.siopImportDefinitions({
+
+        await agent.siopImportDefinitions({
             definitions: definitionsToImport,
             versionControlMode: 'AutoIncrement', // This is the default, but just to indicate here it exists
         })
     }
+    console.log(`DEFINITIONS IMPORT POST`)
+
+    expressSupport.start()
 }

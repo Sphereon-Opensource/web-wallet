@@ -32,16 +32,16 @@ directory.
 # Agent instances
 
 The agent can be configured using several environment variables. Amongst these are variables to enable certain
-functionalities of the agent.
-The idea is that there are 2 agents with each a separate database:
+functionalities of the agent. If you want to use Docker then there are 2 distinct agent versions you can run.
+- A standalone agent, to be used without the web wallet, only enabling REST APIs
+- The web wallet agent, enabling certain features needed for the web wallet to run
 
-- The Sphereon **Issuer Agent**: This agent running on port 5000 by default, contains the did:web of SPHEREON, and is
+- The Sphereon **Standalone Agent**: This agent running on port 5001 by default, contains the did:web of SPHEREON, and is
   responsible for issuance and optional
-  storage of Verifiable Credentials. Creating DIDs from the REST API is disabled on this agent. Resolution of DIDs will
-  use external resolution, meaning any did:web will be resolved to the actual https endpoint.
-- TThe **Verifier Agent**: This agent running on port 5001 by default, it can verify Verifiable
-  Credentials. It has no access to the database of the issuer. Creating Verifiable Credentials is disabled on this
-  agent, but verifying them is enabled. The DIDs will be resolved in hybrid mode, meaning the agent will first look
+  storage of Verifiable Credentials. Creating DIDs from the REST API is enabled on this agent. Resolution of DIDs will
+  use hybrid resolution, meaning any did:web will be resolved to the actual https endpoint, but it also resolved non-published DIDs only available to the agent.
+- The **Wallet Agent**: This agent running on port 5010 by default, it can create and verify Verifiable
+  Credentials using a W3C VC API, or using OID4VC. The DIDs will be resolved in hybrid mode, meaning the agent will first look
   whether the DID is managed by the agent and then generate a DID resolution result from the database. If not managed by
   the agent it will perform an external resolution call.
 
@@ -54,10 +54,9 @@ environment variables, as well as how to call the different REST API endpoints
 
 ## Docker
 
-Docker images are provided in the `docker` folder for both the issuer and customer agents
+Docker images are provided in the `docker` folder for both agent types. Please read the [Docker readme](./docker/README.docker.md)
 
-You can run `docker compose up` to run both agents in Docker. The issuer agent will run on port 5000 by default and the
-customer agent will run on port 5001 by default.
+You can run `docker compose up` to run the agents in Docker. 
 
 ## Postman collection
 
