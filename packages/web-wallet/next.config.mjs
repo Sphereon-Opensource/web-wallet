@@ -3,8 +3,10 @@ import i18nNextConfig from './next-i18next.config.mjs';
 process.env.I18NEXT_DEFAULT_CONFIG_PATH = `./next-i18next.config.mjs`;
 const nextConfig = {
   i18n: i18nNextConfig.i18n,
-  swcMinify: false,
+
+  transpilePackages: ['@sphereon/ui-components.ssi-react'],
   compiler: {
+
     styledComponents:  {
       ssr: true,
       displayName: true,
