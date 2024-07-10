@@ -55,6 +55,7 @@ export enum DIDMethods {
   DID_JWK = 'jwk',
   DID_WEB = 'web',
   DID_KEY = 'key',
+  DID_EBSI = 'ebsi',
 }
 
 /**

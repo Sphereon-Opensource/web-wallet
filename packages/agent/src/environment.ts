@@ -28,8 +28,9 @@ const toBoolean = (value: string | undefined, defaultValue?: boolean): boolean =
  * so the rest of the code doesn't have to know the exact environment values
  */
 export const ENV_VAR_PREFIX = process.env.ENV_VAR_PREFIX ?? ''
-export const DB_TYPE = env('DB_TYPE', ENV_VAR_PREFIX)
-export const DB_URL = env('DB_URL', ENV_VAR_PREFIX)
+export const DB_TYPE = env('DB_TYPE', ENV_VAR_PREFIX) ?? 'postgres'
+//#DB_URL="database/agent_default.sqlite"
+export const DB_URL = env('DB_URL', ENV_VAR_PREFIX) ?? 'postgresql://postgres:your-super-secret-and-long-postgres-password@127.0.0.1:5432/postgres'
 export const DB_HOST = env('DB_HOST', ENV_VAR_PREFIX)
 export const DB_PORT = env('DB_PORT', ENV_VAR_PREFIX)
 export const DB_USERNAME = env('DB_USERNAME', ENV_VAR_PREFIX)
@@ -48,16 +49,21 @@ export const EXTERNAL_HOSTNAME = env('EXTERNAL_HOSTNAME', ENV_VAR_PREFIX) ?? 'lo
 export const DEFAULT_DID = env('DEFAULT_DID', ENV_VAR_PREFIX)
 export const DEFAULT_KID = env('DEFAULT_KID', ENV_VAR_PREFIX)
 export const CONF_PATH = env('CONF_PATH', ENV_VAR_PREFIX) ? resolve(env('CONF_PATH', ENV_VAR_PREFIX)!) : resolve('../../conf')
-export const IS_OID4VP_ENABLED = toBoolean(process.env.OID4VP_ENABLED)
-export const IS_OID4VCI_ENABLED = toBoolean(process.env.OID4VCI_ENABLED)
-export const OID4VCI_API_BASE_URL = env('OID4VCI_API_BASE_URL', ENV_VAR_PREFIX) ?? '/oid4vci'
+export const IS_OID4VP_ENABLED = toBoolean(process.env.OID4VP_ENABLED, true)
+
+export const IS_OID4VCI_ENABLED = toBoolean(process.env.OID4VCI_ENABLED, true)
+export const OID4VCI_API_BASE_URL = env('OID4VCI_API_BASE_URL', ENV_VAR_PREFIX) ?? `${INTERNAL_HOSTNAME_OR_IP}:${INTERNAL_PORT}/oid4vci`
 export const OID4VCI_ISSUER_OPTIONS_PATH = `${CONF_PATH}/oid4vci_options`
 export const OID4VCI_ISSUER_METADATA_PATH = `${CONF_PATH}/oid4vci_metadata`
+
+export const IS_VC_API_ENABLED = toBoolean(process.env.VC_API_ENABLED, true)
 export const VC_API_BASE_PATH = env('VC_API_BASE_PATH', ENV_VAR_PREFIX) ?? '/vc'
-export const VC_API_DEFAULT_PROOF_FORMAT = env('VC_API_DEFAULT_PROOF_FORMAT', ENV_VAR_PREFIX) ?? 'lds'
+export const VC_API_DEFAULT_PROOF_FORMAT = env('VC_API_DEFAULT_PROOF_FORMAT', ENV_VAR_PREFIX) ?? 'jwt' // 'lds' for json-ld
 export const VC_API_FEATURES: vcApiFeatures[] = env('VC_API_FEATURES', ENV_VAR_PREFIX)
   ? (env('VC_API_FEATURES', ENV_VAR_PREFIX)?.split(',') as vcApiFeatures[])
   : ['vc-issue', 'vc-verify', 'vc-persist']
+
+export const IS_CONTACT_MANAGER_ENABLED = toBoolean(process.env.CONTACT_MANAGER_ENABLED, true)
 export const CONTACT_MANAGER_API_FEATURES: ContactManagerMRestApiFeatures[] = env('CONTACT_MANAGER_API_FEATURES', ENV_VAR_PREFIX)
   ? (env('CONTACT_MANAGER_API_FEATURES', ENV_VAR_PREFIX)?.split(',') as ContactManagerMRestApiFeatures[])
   : ['party_read', 'party_write', 'party_type_read', 'identity_read']
@@ -78,7 +84,6 @@ export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATU
       ...issuanceBrandingMethods,
       ...pdManagerMethods,
     ]
-
 export const IS_JWKS_HOSTING_ENABLED = toBoolean(process.env.JWKS_HOSTING_ENABLED, true)
 
 export const STATUS_LIST_API_BASE_PATH = env('STATUS_LIST_API_BASE_PATH', ENV_VAR_PREFIX) ?? VC_API_BASE_PATH

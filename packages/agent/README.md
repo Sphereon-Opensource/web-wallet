@@ -1,12 +1,13 @@
 <!--suppress HtmlDeprecatedAttribute -->
 <h1 align="center">
   <br>
-  <br>SPHEREON VC API 
+  <br>Shereon agent 
   <br>
 </h1>
 
-The SPHEREON VC API is responsible for issuing and verifying Verifiable Credentials as well as creating and resolving
-Decentralized Identifiers
+The Sphereon agent is responsible for issuing and verifying Verifiable Credentials as well as creating and resolving
+Decentralized Identifiers. It can be run standalone for issuer and verifier roles, but can also be started as a backend
+to the web wallet.
 
 # Environment variables
 
@@ -15,24 +16,25 @@ Please see [.env.example](.env.example) for a list and explanation of all the en
 
 # Agent instances
 
-The agent can be configured using several environment variables. Amongst these are variables to enable certain
-functionalities of the agent.
-The idea is that there are 2 agents with each a separate database:
+TThe agent can be configured using several environment variables. Amongst these are variables to enable certain
+functionalities of the agent. If you want to use Docker then there are 2 distinct agent versions you can run.
+- A standalone agent, to be used without the web wallet, only enabling REST APIs
+- The web wallet agent, enabling certain features needed for the web wallet to run
 
-- The SPHEREON **Issuer Agent**: This agent, running on port 5000 by default, contains the did:web of SPHEREON, and is
+- The Sphereon **Standalone Agent**: This agent running on port 5001 by default, contains the did:web of SPHEREON, and is
   responsible for issuance and optional
-  storage of Verifiable Credentials. Creating DIDs from the REST API is disabled on this agent. Resolution of DIDs will
-  use external resolution, meaning any did:web will be resolved to the actual https endpoint.
-- The **Verifier Agent**: This agent running on port 5001 by default, it can verify Verifiable
-  Credentials. It has no access to the database of the issuer. Creating Verifiable Credentials is disabled on this
-  agent, but verifying them is enabled. The DIDs will be resolved in hybrid mode, meaning the agent will first look
+  storage of Verifiable Credentials. Creating DIDs from the REST API is enabled on this agent. Resolution of DIDs will
+  use hybrid resolution, meaning any did:web will be resolved to the actual https endpoint, but it also resolved non-published DIDs only available to the agent.
+- The **Wallet Agent**: This agent running on port 5010 by default, it can create and verify Verifiable
+  Credentials using a W3C VC API, or using OID4VC. The DIDs will be resolved in hybrid mode, meaning the agent will first look
   whether the DID is managed by the agent and then generate a DID resolution result from the database. If not managed by
   the agent it will perform an external resolution call.
 
 # More details about the APIs and functions
 
-The SPHEREON VC API, is re-using features exposed by Sphereon's SSI-SDK, amongst which as API's and endpoint functions that
-are compatible with the W3C VC API, DIF Universal Resolver, DIF Universal Registrar and W3C did:web hosting.
+The Sphereon agent, is re-using features exposed by Sphereon's SSI-SDK, amongst which as API's and endpoint functions
+that
+are compatible with the W3C VC API, DIF Universal Resolver, DIF Universal Registrar and W3C did:web hosting, OpenID for Verifiable Credentials, StatusList 2021.
 
 Some more information can be found in the [SSI-SDK Github](https://github.com/Sphereon-Opensource/ssi-sdk).
 The [DID documentation](../../docs/DID-API.md) and [VC API documentation]() is also available in the docs folder in the
@@ -40,13 +42,13 @@ root of this project
 
 # DID import from configuration
 
-Both the issuer agent and the Verifier agent can import DIDs from configuration files. The agent will look for .json
+The agent can import DIDs from configuration files. The agent will look for .json
 files in the configured path. .json files will be imported, meaning that the keys and DIDs present in these files, will
 be created and/or imported, together with the DIDs.
 
 ## Config path location
 
-The DID files are read from the path configured by the `CONF_PATH` environment variable (defaults to `./conf/dev`). The
+The DID files are read from the path configured by the `CONF_PATH` environment variable (defaults to `./conf/examples`). The
 DIDs are read from the `dids` folder in the `CONF_PATH`, so do not put your DID files in the main folder. Any
 files not ending in .json will be ignored. You should update this environment variable to reflect your import location
 and not load some test/default DIDs.
@@ -114,7 +116,8 @@ Example:
 Note: The `keys` property is an array, so you could import multiple keys (and certificates) if you want.
 
 The `did` and `alias` values should be kept the same. If you are going to host the main DID on let's
-say `verification.sphereon.com`, the the value would become `did:web:verification.sphereon.com`. The agent will be able to use these
+say `verification.sphereon.com`, the the value would become `did:web:verification.sphereon.com`. The agent will be able
+to use these
 did:web values even if the DID document is not hosted at http://localhost/.well-known/did.json yet (via copy
 to webhosting server, or via reverse proxy to the agent did:web hosting facility).
 
@@ -161,7 +164,10 @@ Example body:
       "https://ref.sphereon.com/sphereon/vc/license-context/"
     ],
     "id": "http://localhost/vc/license/company_prefix/8790171",
-    "type": ["VerifiableCredential", "SPHEREONCompanyPrefixLicenseCredential"],
+    "type": [
+      "VerifiableCredential",
+      "SPHEREONCompanyPrefixLicenseCredential"
+    ],
     "issuer": "did:jwk:eyJhbGciOiJFZERTQSIsInVzZSI6InNpZyIsImt0eSI6Ik9LUCIsImNydiI6IkVkMjU1MTkiLCJ4IjoiaWFSbUhrUnJSa0FUSmFPTk95QllMUjNTZC10RWlqR0JBU3BuRzNyaFdEYyJ9",
     "issuanceDate": "2023-06-22T00:00:00Z",
     "validUntil": "2024-06-22T00:00:00Z",
@@ -198,7 +204,10 @@ Response:
       "https://w3id.org/security/suites/jws-2020/v1"
     ],
     "id": "http://localhost/vc/license/company_prefix/8790171",
-    "type": ["VerifiableCredential", "SPHEREONCompanyPrefixLicenseCredential"],
+    "type": [
+      "VerifiableCredential",
+      "SPHEREONCompanyPrefixLicenseCredential"
+    ],
     "issuer": "did:jwk:eyJhbGciOiJFZERTQSIsInVzZSI6InNpZyIsImt0eSI6Ik9LUCIsImNydiI6IkVkMjU1MTkiLCJ4IjoiaWFSbUhrUnJSa0FUSmFPTk95QllMUjNTZC10RWlqR0JBU3BuRzNyaFdEYyJ9",
     "issuanceDate": "2023-06-22T00:00:00Z",
     "validUntil": "2024-06-22T00:00:00Z",
@@ -257,7 +266,10 @@ Example verification body:
       "https://w3id.org/security/suites/jws-2020/v1"
     ],
     "id": "http://localhost/vc/license/company_prefix/8790171",
-    "type": ["VerifiableCredential", "SPHEREONCompanyPrefixLicenseCredential"],
+    "type": [
+      "VerifiableCredential",
+      "SPHEREONCompanyPrefixLicenseCredential"
+    ],
     "issuer": "did:jwk:eyJhbGciOiJFZERTQSIsInVzZSI6InNpZyIsImt0eSI6Ik9LUCIsImNydiI6IkVkMjU1MTkiLCJ4IjoiaWFSbUhrUnJSa0FUSmFPTk95QllMUjNTZC10RWlqR0JBU3BuRzNyaFdEYyJ9",
     "issuanceDate": "2023-06-22T00:00:00Z",
     "validUntil": "2024-06-22T00:00:00Z",
@@ -293,7 +305,8 @@ Example verification body:
 }
 ```
 
-Please note that the `issuer` DID value does not have to be the SPHEREON issuer. If however a did:web is used as issuer, the
+Please note that the `issuer` DID value does not have to be the SPHEREON issuer. If however a did:web is used as issuer,
+the
 respective did:web has to be able to be resolved from an https location. For testing therefor it is easiest to use did:
 jwk, as these DIDs do not need any external hosting.
 
@@ -491,7 +504,10 @@ The response:
       ],
       "id": "http://localhost:5000/vc/status-lists/1",
       "issuer": "did:jwk:eyJhbGciOiJFZERTQSIsInVzZSI6InNpZyIsImt0eSI6Ik9LUCIsImNydiI6IkVkMjU1MTkiLCJ4IjoiaWFSbUhrUnJSa0FUSmFPTk95QllMUjNTZC10RWlqR0JBU3BuRzNyaFdEYyJ9",
-      "type": ["VerifiableCredential", "StatusList2021Credential"],
+      "type": [
+        "VerifiableCredential",
+        "StatusList2021Credential"
+      ],
       "credentialSubject": {
         "id": "http://localhost:5000/vc/status-lists/1",
         "type": "StatusList2021",
@@ -731,7 +747,9 @@ Response example:
     "assertionMethod": [
       "did:web:verification.sphereon.com:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"
     ],
-    "authentication": ["did:web:verification.sphereon.com:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"]
+    "authentication": [
+      "did:web:verification.sphereon.com:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"
+    ]
   },
   "didResolutionMetadata": {},
   "didDocumentMetadata": {
@@ -783,8 +801,12 @@ If a DID is found it will return the DID Document (not a resolution result)
       "type": "JsonWebKey2020"
     }
   ],
-  "assertionMethod": ["did:web:verification.sphereon.com:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"],
-  "authentication": ["did:web:verification.sphereon.com:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"]
+  "assertionMethod": [
+    "did:web:verification.sphereon.com:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"
+  ],
+  "authentication": [
+    "did:web:verification.sphereon.com:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"
+  ]
 }
 ```
 
@@ -810,18 +832,14 @@ See the example below to have a database available in the `database/example.db` 
 ```properties
 # The database connection name
 DB_CONNECTION_NAME=default
-
 # Whether to enable the cache on the DB.
 DB_CACHE_ENABLED=true
-
 # The Database type. Currently only sqlite and postgresql are supported
 DB_TYPE=sqlite
-
 # The URL of the database. Either use the URL (more flexible), or you can also use DB_HOST and DB_PORT for postgres
 # In case of sqlite, this should be the path, like 'database/agent_default.sqlite'
 # For postgres you can also include username and password: postgresql://user:password:5432/vc-issuer-db
 DB_URL="database/agent_default.sqlite"
-
 # The encryption key to use for the database for encrypted fields, like private keys. Needs to be unique per environment.
 # Key needs to be in hex with length 64.
 DB_ENCRYPTION_KEY=29739248cad1bd1a0fc4d9b75cd4d2990de535baf5caadfdf8d8f86664aa830c
@@ -835,19 +853,15 @@ password `password`
 ```properties
 # The database connection name
 DB_CONNECTION_NAME=default
-
 # Whether to enable the cache for the DB.
 DB_CACHE_ENABLED=true
-
 # The Database type. Currently only sqlite and postgresql are supported
 DB_TYPE=postgresql
-
 # The URL of the database. Either use the URL (more flexible), or you can also use DB_HOST and DB_PORT for postgres
 # In case of sqlite, this should be the path, like 'database/agent_default.sqlite'
 # For postgres you can also include username and password: postgresql://user:password:5432/vc-issuer-db?sslmode=prefer
 # When using a postgresl url, the sslmode param options can be found here: https://www.postgresql.org/docs/12/libpq-connect.html
 DB_URL="postgresql://user:password@localhost:5432/vc-issuer-db?sslmode=prefer"
-
 # The encryption key to use for the database for encrypted fields, like private keys. Needs to be unique per environment.
 # Key needs to be in hex with length 64.
 DB_ENCRYPTION_KEY=29739248cad1bd1a0fc4d9b75cd4d2990de535baf5caadfdf8d8f86664aa830c
