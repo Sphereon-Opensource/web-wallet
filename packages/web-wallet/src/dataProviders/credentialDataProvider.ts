@@ -21,6 +21,9 @@ import {FetchOptions} from '@sphereon/ssi-sdk.pd-manager'
 import {
   FindDigitalCredentialArgs
 } from "@sphereon/ssi-sdk.data-store/dist/types/digitalCredential/IAbstractDigitalCredentialStore";
+import {MetaQuery} from "@refinedev/core/src/contexts/data/types";
+import {OptionalUniqueDigitalCredential} from "@sphereon/ssi-sdk.credential-store";
+import {GetCredentialsByIdOrHashArgs} from "@sphereon/ssi-sdk.credential-store/dist/types/ICredentialStore";
 
 
 export type DigitalCredentialFilter = Partial<DigitalCredential>
@@ -46,7 +49,6 @@ export const credentialDataProvider = (): DataProvider => ({
   }: GetListParams): Promise<GetListResponse<TData>> => {
     assertResource(resource)
 
-    console.log('====> getList called')
     const findArgs: FindDigitalCredentialArgs = []
     let filterItem: DigitalCredentialFilter
     filters?.forEach(filter => {
@@ -78,11 +80,16 @@ export const credentialDataProvider = (): DataProvider => ({
       total: items.length,
     }
   },
-  getOne: async <TData extends BaseRecord = BaseRecord>({resource, id}: GetOneParams): Promise<GetOneResponse<TData>> => {
+  getOne: async <TData extends BaseRecord = BaseRecord>({resource, id, meta}: GetOneParams): Promise<GetOneResponse<TData>> => {
     assertResource(resource)
-    const credential: DigitalCredential = await agent.crsGetCredential({id: id as string})
+console.log('== meta',  meta)
+    if (meta === undefined || meta.variables === undefined || !('credentialRole' in meta.variables)) {
+      return Promise.reject(Error('credentialRole not found in meta query'))
+    }
+    const args: GetCredentialsByIdOrHashArgs = {credentialRole: meta.variables.credentialRole, idOrHash: id as string};
+    const credential: OptionalUniqueDigitalCredential = await agent.crsGetUniqueCredentialByIdOrHash(args)
     return {
-      data: credential as unknown as TData,
+      data: credential?.digitalCredential as unknown as TData,
     }
   },
   create: async <TData extends BaseRecord = BaseRecord, TVariables = {}>({

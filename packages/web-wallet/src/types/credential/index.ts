@@ -1,4 +1,4 @@
-import {DigitalCredentialEntity, Party} from '@sphereon/ssi-sdk.data-store'
+import {Party} from '@sphereon/ssi-sdk.data-store'
 import {CredentialStatus} from '@sphereon/ui-components.core'
 import {CredentialMiniCardViewProps} from '@sphereon/ui-components.ssi-react'
 import {CredentialSummary} from '@sphereon/ui-components.credential-branding'
@@ -6,6 +6,7 @@ import {getMatchingIdentity} from '@helpers/IdentityFilters'
 import {formatDate} from '@helpers/date/DateHelper'
 import {CredentialMapper} from '@sphereon/ssi-types'
 import {IVerifiableCredential} from "@sphereon/ssi-types/src/types";
+import {DigitalCredential} from "@sphereon/ssi-sdk.credential-store";
 
 export type Credential = {
   hash: string
@@ -73,7 +74,7 @@ export class CredentialTableItem {
     this.miniCardView = data.credentialCardViewProps
   }
 
-  static from(credential: DigitalCredentialEntity, parties: Party[], credentialSummary?: CredentialSummary): CredentialTableItem {
+  static from(credential: DigitalCredential, parties: Party[], credentialSummary?: CredentialSummary): CredentialTableItem {
     const issuerPartyIdentity = getMatchingIdentity(parties, credential.issuerCorrelationId)
     if (!issuerPartyIdentity) {
       throw new Error(`Couldn't find matching identity for the issuer: ${credential.issuerCorrelationId}`)

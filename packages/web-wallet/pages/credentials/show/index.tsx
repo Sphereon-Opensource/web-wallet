@@ -1,5 +1,5 @@
-import React, {ReactElement, useEffect, useState} from 'react'
-import {HttpError, useList, useOne, useTranslate} from '@refinedev/core'
+import React, {FC, ReactElement, useEffect, useState} from 'react'
+import {HttpError, useList, useOne, useResource, useTranslate} from '@refinedev/core'
 import {TabViewRoute} from '@sphereon/ui-components.core'
 import {
   ColumnHeader,
@@ -13,13 +13,14 @@ import {
 } from '@sphereon/ui-components.ssi-react'
 import PageHeaderBar from '@components/bars/PageHeaderBar'
 import style from './index.module.css'
-import {Credential, CredentialTableItem} from '@types'
+import {CredentialTableItem, DataResource} from '@types'
 import {CredentialRole, NaturalPerson, Organization, Party, PartyTypeType} from '@sphereon/ssi-sdk.data-store'
 import {useParams} from 'react-router-dom'
 import {staticPropsWithSST} from '../../../src/i18n/server'
 import agent from '@agent'
 
 import {CredentialSummary, toCredentialSummary} from '@sphereon/ui-components.credential-branding'
+import {DigitalCredential} from "@sphereon/ssi-sdk.credential-store";
 
 enum CredentialDetailsTabRoute {
   INFO = 'info',
@@ -57,16 +58,16 @@ type DocumentItem = {
 
 const truncationLength: number = process.env.NEXT_PUBLIC_TRUNCATION_LENGTH ? Number(process.env.NEXT_PUBLIC_TRUNCATION_LENGTH) : 8
 
-const ShowCredentialDetails = () => {
+const ShowCredentialDetails: FC = (): ReactElement => {
   const translate = useTranslate()
-  const {id} = useParams()
+  const params = useParams();
+  console.log('params', params)
+  const {id} = params
   const [credentialSummary, setCredentialSummary] = useState<CredentialSummary | undefined>(undefined)
-
-  const credentialResult = useOne<Credential, HttpError>({
-    dataProviderName: 'supaBase',
-    resource: 'credential',
+  const credentialResult = useOne<DigitalCredential, HttpError>({
+    resource: DataResource.CREDENTIALS,
     id,
-    meta: {idColumnName: 'hash'},
+    meta: {variables: { credentialRole: CredentialRole.HOLDER}} // FIXME before PR
   })
 
   const partyResults = useList<Party, HttpError>({resource: 'parties'})
@@ -75,16 +76,16 @@ const ShowCredentialDetails = () => {
     const fetchBranding = async () => {
       if (!credentialResult.data?.data) return
 
-      const {hash, issuerDid, subjectDid} = credentialResult.data.data
+      const {hash, issuerCorrelationId, subjectCorrelationId} = credentialResult.data.data
 
       try {
         const issuerParties: Party[] = await agent.cmGetContacts({
-          filter: [{identities: {identifier: {correlationId: issuerDid}}}],
+          filter: [{identities: {identifier: {correlationId: issuerCorrelationId}}}],
         })
 
-        const subjectParties = subjectDid
+        const subjectParties = subjectCorrelationId
           ? await agent.cmGetContacts({
-              filter: [{identities: {identifier: {correlationId: subjectDid}}}],
+              filter: [{identities: {identifier: {correlationId: subjectCorrelationId}}}],
             })
           : []
 
@@ -97,7 +98,7 @@ const ShowCredentialDetails = () => {
         })
 
         const credentialSummary: CredentialSummary = await toCredentialSummary(
-          {hash, verifiableCredential: JSON.parse(credentialResult.data.data.raw)},
+          {hash, verifiableCredential: JSON.parse(credentialResult.data.data.rawDocument)},
           credentialBrandings[0].localeBranding,
           // @ts-ignore
           issuerParties.length ? issuerParties[0] : undefined,
@@ -133,7 +134,7 @@ const ShowCredentialDetails = () => {
     ...(credentialSummary?.branding?.background?.color && {backgroundColor: credentialSummary?.branding?.background?.color}),
   }
   const getVerifiedInformationContent = (): ReactElement => {
-    const credentialSubject = JSON.parse(credentialResult.data.data.raw).credentialSubject
+    const credentialSubject = JSON.parse(credentialResult.data.data.rawDocument).credentialSubject
     if ('id' in credentialSubject) {
       delete credentialSubject.id
     }

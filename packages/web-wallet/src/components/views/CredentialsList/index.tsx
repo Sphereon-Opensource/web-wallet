@@ -5,15 +5,17 @@ import {ButtonIcon} from '@sphereon/ui-components.core'
 import {Credential, CredentialReference, CredentialTableItem, DataResource} from '@types'
 import {toCredentialSummary} from '@sphereon/ui-components.credential-branding'
 import agent from '@agent'
-import {DigitalCredentialEntity, Party} from '@sphereon/ssi-sdk.data-store'
+import {Party} from '@sphereon/ssi-sdk.data-store'
+import {CredentialRole, DigitalCredential} from '@sphereon/ssi-sdk.credential-store'
 import {getMatchingIdentity} from '@helpers/IdentityFilters'
 
 type Props = {
-  allowIssueCredential?: boolean
+  credentialRole: CredentialRole,
+  allowIssueCredential?: boolean,
 }
 
 const CredentialsList: FC<Props> = (props: Props): ReactElement => {
-  const {allowIssueCredential = true} = props
+  const {credentialRole, allowIssueCredential = true} = props
   const translate = useTranslate()
   const {mutateAsync: deleteCredential} = useDelete<Credential, HttpError>()
   const {mutateAsync: deleteCredentialReference} = useDelete<CredentialReference, HttpError>()
@@ -25,7 +27,7 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
     isLoading: credentialsLoading,
     isError: credentialsError,
     refetch: refetchCredentials,
-  } = useList<DigitalCredentialEntity, HttpError>({
+  } = useList<DigitalCredential, HttpError>({
     resource: DataResource.CREDENTIALS,
     pagination: {
       pageSize: 1000,
@@ -43,7 +45,7 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
     filters: [{
       field: 'credentialRole',
       operator: 'eq',
-      value: 'HOLDER',
+      value: credentialRole,
     },
       {
         field: 'documentType',
@@ -64,7 +66,6 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
         const credentialBrandings = await agent.ibGetCredentialBranding()
         const newCredentialTableItems = await Promise.all(
           credentialData.data.map(async credential => {
-            console.log('credential', credential)
             const filteredCredentialBrandings = credentialBrandings.filter(cb => cb.vcHash === credential.hash)
             const issuerPartyIdentity = credential.issuerCorrelationId !== undefined
                 ? getMatchingIdentity(partyData.data, credential.issuerCorrelationId)
@@ -229,7 +230,7 @@ console.log('newCredentialTableItems items', newCredentialTableItems.length)
   }
 
   const onShowCredentialDetails = async (row: Row<CredentialTableItem>): Promise<void> => {
-    show(DataResource.CREDENTIALS, row.original.hash, undefined, {idColumnName: 'hash'})
+    show(DataResource.CREDENTIALS, row.original.hash, undefined, {variables: {credentialRole: credentialRole}})
   }
 
   const buildActionList = () => {
