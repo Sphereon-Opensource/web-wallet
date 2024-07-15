@@ -1,10 +1,10 @@
 import { CredentialDataSupplierArgs, CredentialDataSupplierResult, CredentialSignerCallback } from '@sphereon/oid4vci-issuer'
 import { getTypesFromRequest } from '@sphereon/oid4vci-common'
 import { CredentialPayload, DIDDocument } from '@veramo/core'
-import { getCredentialByIdOrHash } from '@sphereon/ssi-sdk.core'
 import { CredentialMapper, ICredential, OriginalVerifiableCredential } from '@sphereon/ssi-types'
-import { context } from '../agent'
+import agent, { context } from '../agent'
 import { decodeJWT } from 'did-jwt'
+import {CredentialRole} from "@sphereon/ssi-sdk.data-store";
 
 export async function defaultCredentialDataSupplier(args: CredentialDataSupplierArgs): Promise<CredentialDataSupplierResult> {
   const { credentialDataSupplierInput, credentialRequest, credentialOffer, issuerState, preAuthorizedCode } = args
@@ -16,11 +16,14 @@ export async function defaultCredentialDataSupplier(args: CredentialDataSupplier
   if ('hashOrId' in credentialDataSupplierInput && !!credentialDataSupplierInput.hashOrId) {
     const hashOrId = credentialDataSupplierInput?.hashOrId as string
     // todo: move to new credential storage implementation
-    const credentialResult = await getCredentialByIdOrHash(context, hashOrId)
-    if (!credentialResult?.vc) {
+    const credentialResult = await agent.crsGetUniqueCredentialByIdOrHash({
+      credentialRole: CredentialRole.HOLDER,
+      idOrHash: hashOrId
+    })
+    if (!credentialResult?.originalCredential) {
       throw Error(`Could not get credential for id ${hashOrId}`)
     }
-    const credential = CredentialMapper.storedCredentialToOriginalFormat(credentialResult.vc as OriginalVerifiableCredential)
+    const credential = CredentialMapper.storedCredentialToOriginalFormat(credentialResult.originalCredential as OriginalVerifiableCredential)
 
     // Since this is an already issued credential we are looking up from our store, we provide a signer that does nothing
     const signCallback: CredentialSignerCallback<DIDDocument> = () => Promise.resolve(credential)

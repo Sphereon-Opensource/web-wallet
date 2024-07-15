@@ -60,7 +60,13 @@ import {DidWebServer} from '@sphereon/ssi-sdk.uni-resolver-registrar-api/dist/di
 import {StatuslistManagementApiServer} from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
 import {ContactManagerApiServer} from '@sphereon/ssi-sdk.contact-manager-rest-api'
 import {ContactManager} from '@sphereon/ssi-sdk.contact-manager'
-import {ContactStore, EventLoggerStore, IssuanceBrandingStore, PDStore} from '@sphereon/ssi-sdk.data-store'
+import {
+    ContactStore,
+    DigitalCredentialStore,
+    EventLoggerStore,
+    IssuanceBrandingStore,
+    PDStore
+} from '@sphereon/ssi-sdk.data-store'
 import {IIssuerInstanceArgs, OID4VCIIssuer} from '@sphereon/ssi-sdk.oid4vci-issuer'
 import {OID4VCIStore} from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import {IRequiredContext, OID4VCIRestAPI} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
@@ -77,6 +83,7 @@ import {PresentationExchange} from '@sphereon/ssi-sdk.presentation-exchange'
 import {ISIOPv2RPRestAPIOpts, SIOPv2RPApiServer} from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-api'
 import {DidAuthSiopOpAuthenticator} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 import {PublicKeyHosting} from "@sphereon/ssi-sdk.public-key-hosting";
+import {CredentialStore} from '@sphereon/ssi-sdk.credential-store';
 
 /**
  * Lets setup supported DID resolvers first
@@ -137,6 +144,7 @@ const plugins: IAgentPlugin[] = [
     new PDManager({
         store: new PDStore(dbConnection),
     }),
+    new CredentialStore({store: new DigitalCredentialStore(dbConnection)}),
     new DidAuthSiopOpAuthenticator(),
 ]
 

@@ -16,6 +16,7 @@ import { loadJsonFiles } from './utils'
 import { IDIDOpts, OID4VPInstanceOpts } from './types'
 import { IPresentationDefinition } from '@sphereon/pex'
 import { didAuthSiopOpAuthenticatorMethods } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
+import { credentialStoreMethods } from '@sphereon/ssi-sdk.credential-store';
 
 await dotenvConfig()
 
@@ -30,7 +31,7 @@ const toBoolean = (value: string | undefined, defaultValue?: boolean): boolean =
 export const ENV_VAR_PREFIX = process.env.ENV_VAR_PREFIX ?? ''
 export const DB_TYPE = env('DB_TYPE', ENV_VAR_PREFIX) ?? 'postgres'
 //#DB_URL="database/agent_default.sqlite"
-export const DB_URL = env('DB_URL', ENV_VAR_PREFIX) ?? 'postgresql://postgres:your-super-secret-and-long-postgres-password@127.0.0.1:5432/postgres'
+export const DB_URL = env('DB_URL', ENV_VAR_PREFIX) // Using DB_URL is optional
 export const DB_HOST = env('DB_HOST', ENV_VAR_PREFIX)
 export const DB_PORT = env('DB_PORT', ENV_VAR_PREFIX)
 export const DB_USERNAME = env('DB_USERNAME', ENV_VAR_PREFIX)
@@ -83,6 +84,7 @@ export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATU
       'createVerifiablePresentation',
       ...issuanceBrandingMethods,
       ...pdManagerMethods,
+        ...credentialStoreMethods,
     ]
 export const IS_JWKS_HOSTING_ENABLED = toBoolean(process.env.JWKS_HOSTING_ENABLED, true)
 

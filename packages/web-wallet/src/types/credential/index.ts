@@ -1,10 +1,11 @@
-import {Party} from '@sphereon/ssi-sdk.data-store'
+import {DigitalCredentialEntity, Party} from '@sphereon/ssi-sdk.data-store'
 import {CredentialStatus} from '@sphereon/ui-components.core'
 import {CredentialMiniCardViewProps} from '@sphereon/ui-components.ssi-react'
 import {CredentialSummary} from '@sphereon/ui-components.credential-branding'
 import {getMatchingIdentity} from '@helpers/IdentityFilters'
 import {formatDate} from '@helpers/date/DateHelper'
 import {CredentialMapper} from '@sphereon/ssi-types'
+import {IVerifiableCredential} from "@sphereon/ssi-types/src/types";
 
 export type Credential = {
   hash: string
@@ -72,20 +73,20 @@ export class CredentialTableItem {
     this.miniCardView = data.credentialCardViewProps
   }
 
-  static from(credential: Credential, parties: Party[], credentialSummary?: CredentialSummary): CredentialTableItem {
-    const issuerPartyIdentity = getMatchingIdentity(parties, credential.issuerDid)
+  static from(credential: DigitalCredentialEntity, parties: Party[], credentialSummary?: CredentialSummary): CredentialTableItem {
+    const issuerPartyIdentity = getMatchingIdentity(parties, credential.issuerCorrelationId)
     if (!issuerPartyIdentity) {
-      throw new Error(`Couldn't find matching identity for the issuer: ${credential.issuerDid}`)
+      throw new Error(`Couldn't find matching identity for the issuer: ${credential.issuerCorrelationId}`)
     }
 
-    const subjectPartyIdentity = credential.subjectDid ? getMatchingIdentity(parties, credential.subjectDid) : undefined
+    const subjectPartyIdentity = credential.subjectCorrelationId ? getMatchingIdentity(parties, credential.subjectCorrelationId) : undefined
     const subjectParty = subjectPartyIdentity ? subjectPartyIdentity.party : undefined
 
-    const issuanceDateStr = formatDate(credential.issuanceDate)
-    const expirationDateStr = formatDate(credential.expirationDate)
+    const issuanceDateStr = formatDate(credential.createdAt as unknown as string) // FIXME use other REST client
+    const expirationDateStr = formatDate(credential.validUntil as unknown as string) // FIXME use other REST client
 
-    const status = CredentialMapper.hasProof(JSON.parse(credential.raw))
-      ? credential.expirationDate && new Date(credential.expirationDate) < new Date()
+    const status = CredentialMapper.hasProof(JSON.parse(credential.uniformDocument))
+      ? credential.validUntil && new Date(credential.validUntil) < new Date()
         ? CredentialStatus.EXPIRED
         : CredentialStatus.VALID
       : CredentialStatus.DRAFT
@@ -96,20 +97,22 @@ export class CredentialTableItem {
       ...(credentialSummary?.branding?.background?.color && {backgroundColor: credentialSummary?.branding?.background?.color}),
     }
 
+    const vc = JSON.parse(credential.uniformDocument ?? credential.rawDocument ) as IVerifiableCredential
+    const vcType = (Array.isArray(vc.type) ? (vc.type as string[]).find(type => type !== 'VerifiableCredential')
+        : (vc.type as string).split(',')
+            .filter(type => type !== 'VerifiableCredential')
+            .join(',')) ?? ''
     return new CredentialTableItem({
       id: credential.id,
       hash: credential.hash,
       createdStr: issuanceDateStr,
       validFromStr: issuanceDateStr,
       expirationDateStr,
-      context: credential.context,
-      type: credential.type
-        .split(',')
-        .filter(type => type !== 'VerifiableCredential')
-        .join(','),
+      context: '', //vc["@context"] , FIXME BEFORE PR
+      type: vcType,
       issuer: issuerPartyIdentity.party,
       subject: subjectParty,
-      raw: credential.raw,
+      raw: credential.rawDocument,
       status,
       credentialCardViewProps,
     })

@@ -5,7 +5,7 @@ import {ButtonIcon} from '@sphereon/ui-components.core'
 import {Credential, CredentialReference, CredentialTableItem, DataResource} from '@types'
 import {toCredentialSummary} from '@sphereon/ui-components.credential-branding'
 import agent from '@agent'
-import {Party} from '@sphereon/ssi-sdk.data-store'
+import {DigitalCredentialEntity, Party} from '@sphereon/ssi-sdk.data-store'
 import {getMatchingIdentity} from '@helpers/IdentityFilters'
 
 type Props = {
@@ -25,22 +25,31 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
     isLoading: credentialsLoading,
     isError: credentialsError,
     refetch: refetchCredentials,
-  } = useList<Credential, HttpError>({
-    resource: 'credential',
-    dataProviderName: 'supaBase',
+  } = useList<DigitalCredentialEntity, HttpError>({
+    resource: DataResource.CREDENTIALS,
     pagination: {
       pageSize: 1000,
       mode: 'server',
     },
     sorters: [
       {
-        field: 'issuanceDate',
+        field: 'createdAt', // FIXME BEFORE PR - Don't we need a field: 'issuanceDate' ?
         order: 'asc',
       },
     ],
     meta: {
       idColumnName: 'hash',
     },
+    filters: [{
+      field: 'credentialRole',
+      operator: 'eq',
+      value: 'HOLDER',
+    },
+      {
+        field: 'documentType',
+        operator: 'eq',
+        value: 'VC',
+      }]
   })
 
   const {data: partyData, isLoading: partiesLoading, isError: partiesError} = useList<Party, HttpError>({resource: 'parties'})
@@ -55,11 +64,16 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
         const credentialBrandings = await agent.ibGetCredentialBranding()
         const newCredentialTableItems = await Promise.all(
           credentialData.data.map(async credential => {
+            console.log('credential', credential)
             const filteredCredentialBrandings = credentialBrandings.filter(cb => cb.vcHash === credential.hash)
-            const issuerPartyIdentity = getMatchingIdentity(partyData.data, credential.issuerDid)
-            const subjectPartyIdentity = getMatchingIdentity(partyData.data, credential.subjectDid)
+            const issuerPartyIdentity = credential.issuerCorrelationId !== undefined
+                ? getMatchingIdentity(partyData.data, credential.issuerCorrelationId)
+                : undefined
+            const subjectPartyIdentity = credential.subjectCorrelationId !== undefined
+                ? getMatchingIdentity(partyData.data, credential.subjectCorrelationId)
+                : undefined
             const credentialSummary = await toCredentialSummary(
-              {hash: credential.hash, verifiableCredential: JSON.parse(credential.raw)},
+              {hash: credential.hash, verifiableCredential: JSON.parse(credential.uniformDocument ?? credential.rawDocument)},
               filteredCredentialBrandings.length ? filteredCredentialBrandings[0].localeBranding : undefined,
               issuerPartyIdentity?.party,
               subjectPartyIdentity?.party,
@@ -68,7 +82,7 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
             return CredentialTableItem.from(credential, partyData.data, credentialSummary)
           }),
         )
-
+console.log('newCredentialTableItems items', newCredentialTableItems.length)
         setCredentialTableItems(newCredentialTableItems)
       } catch (error) {
         console.error(error)
