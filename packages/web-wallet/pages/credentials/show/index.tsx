@@ -13,7 +13,7 @@ import {
 } from '@sphereon/ui-components.ssi-react'
 import PageHeaderBar from '@components/bars/PageHeaderBar'
 import style from './index.module.css'
-import {Credential, CredentialTableItem} from '@types'
+import {Credential, CredentialTableItem} from '@typings'
 import {CredentialRole, NaturalPerson, Organization, Party, PartyTypeType} from '@sphereon/ssi-sdk.data-store'
 import {useParams} from 'react-router-dom'
 import {staticPropsWithSST} from '../../../src/i18n/server'

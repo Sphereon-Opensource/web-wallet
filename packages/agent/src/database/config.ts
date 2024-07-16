@@ -7,7 +7,8 @@ import {
   DB_PORT,
   DB_SCHEMA,
   DB_SSL_ALLOW_SELF_SIGNED,
-  DB_SSL_CA, DB_TYPE,
+  DB_SSL_CA,
+  DB_TYPE,
   DB_URL,
   DB_USE_SSL,
   DB_USERNAME,
@@ -27,7 +28,7 @@ import {
   DataStoreStatusListMigrations,
 } from '@sphereon/ssi-sdk.data-store'
 import { WebWalletMigrations } from './migrations'
-import {SqliteConnectionOptions} from "typeorm/driver/sqlite/SqliteConnectionOptions";
+import { SqliteConnectionOptions } from 'typeorm/driver/sqlite/SqliteConnectionOptions'
 
 if (!process.env.DB_ENCRYPTION_KEY) {
   console.warn(
@@ -51,7 +52,6 @@ let ssl: TlsOptions | boolean = enableSSL
 if (enableSSL && Object.keys(ssl).length === 0) {
   ssl = true
 }
-
 
 /**
  * SQLite3 DB configuration

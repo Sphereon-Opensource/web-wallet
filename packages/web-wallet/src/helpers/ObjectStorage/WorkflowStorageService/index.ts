@@ -6,7 +6,7 @@ import {
   WorkflowDocumentStorageInfo,
   WorkflowDTOType,
   WorkflowEntityType,
-} from '@types'
+} from '@typings'
 import {StoragePathResolver} from '@objectstorage/StoragePathResolver'
 import {FileBody} from '@objectstorage/types'
 import {FileOptions, TransformOptions} from '@supabase/storage-js'

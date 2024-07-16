@@ -3,8 +3,8 @@ import style from './index.module.css'
 import {useTranslate} from '@refinedev/core'
 import {ProgressStepIndicator, PrimaryButton, SecondaryButton} from '@sphereon/ui-components.ssi-react'
 import {Outlet} from 'react-router-dom'
-import {useNaturalPersonMachine} from '@types'
-import {staticPropsWithSST} from '../../../src/i18n/server'
+import {useNaturalPersonMachine} from '@typings'
+import {staticPropsWithSST} from '@/src/i18n/server'
 
 const FINISH_STEP = 5
 

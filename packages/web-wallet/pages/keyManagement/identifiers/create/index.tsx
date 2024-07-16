@@ -1,12 +1,8 @@
 import React, {FC} from 'react'
 import {useTranslate} from '@refinedev/core'
-import {ProgressStepIndicator, PrimaryButton, SecondaryButton} from '@sphereon/ui-components.ssi-react'
-import {SSRConfig} from 'next-i18next'
-import {serverSideTranslations} from 'next-i18next/serverSideTranslations'
-import nextI18NextConfig from '../../../../next-i18next.config.mjs'
+import {PrimaryButton, ProgressStepIndicator, SecondaryButton} from '@sphereon/ui-components.ssi-react'
 import {Outlet} from 'react-router-dom'
-// @ts-ignore // FIXME CWALL-245 path complaining
-import {useIdentifiersCreateMachine} from '@types/machine/identifiers/create'
+import {useIdentifiersCreateMachine} from '@typings/machine/identifiers/create'
 import style from './index.module.css'
 import {staticPropsWithSST} from '@/src/i18n/server'
 
@@ -16,6 +12,7 @@ const IdentifierCreatePage: FC = () => {
   const {
     onNext,
     onBack,
+    capabilitiesInfo,
     onIdentifierDataChange,
     identifierData,
     keys,
@@ -29,7 +26,32 @@ const IdentifierCreatePage: FC = () => {
     disabled,
     step,
     maxInteractiveSteps,
+    identifierMiddleware,
+    identifierKeyMiddleware,
   } = useIdentifiersCreateMachine()
+
+  const steps = [
+    {
+      title: translate('create_identifier_select_type_step_title'),
+      description: translate('create_identifier_select_type_step_description'),
+      required: true,
+    },
+    {
+      title: translate('create_identifier_add_keys_step_title'),
+      description: translate('create_identifier_add_keys_step_description'),
+    },
+  ]
+  if (capabilitiesInfo?.identifierCapability?.serviceEndpoints !== false) {
+    steps.push({
+      title: translate('create_identifier_add_service_endpoint_step_title'),
+      description: translate('create_identifier_add_service_endpoint_step_description'),
+      required: false,
+    })
+  }
+  steps.push({
+    title: translate('create_identifier_summary_step_title'),
+    description: translate('create_identifier_summary_step_description'),
+  })
 
   return (
     <div className={style.container}>
@@ -51,6 +73,9 @@ const IdentifierCreatePage: FC = () => {
               onSetServiceEndpoints,
               serviceEndpointData,
               onServiceEndpointChange,
+              identifierMiddleware,
+              identifierKeyMiddleware,
+              capabilitiesInfo,
             }}
           />
           <div className={style.buttonsContainer}>
@@ -65,28 +90,7 @@ const IdentifierCreatePage: FC = () => {
         </div>
       </div>
       <div className={style.identifierCreateGuideContainer}>
-        <ProgressStepIndicator
-          steps={[
-            {
-              title: translate('create_identifier_select_type_step_title'),
-              description: translate('create_identifier_select_type_step_description'),
-            },
-            {
-              title: translate('create_identifier_add_keys_step_title'),
-              description: translate('create_identifier_add_keys_step_description'),
-            },
-
-            {
-              title: translate('create_identifier_add_service_endpoint_step_title'),
-               description: translate('create_identifier_add_service_endpoint_step_description'),
-            },
-            {
-              title: translate('create_identifier_summary_step_title'),
-              description: translate('create_identifier_summary_step_description'),
-            },
-          ]}
-          activeStep={step}
-        />
+        <ProgressStepIndicator steps={steps} activeStep={step} />
       </div>
     </div>
   )

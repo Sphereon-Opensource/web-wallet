@@ -11,6 +11,7 @@ import {getDidKeyResolver} from '@veramo/did-provider-key'
 import {DIDResolverPlugin} from '@veramo/did-resolver'
 import {AgentRestClient} from '@veramo/remote-client'
 import {Resolver} from 'did-resolver'
+import {ebsiSupportMethods} from '@sphereon/ssi-sdk.ebsi-support'
 import {AGENT_BASE_URL, OID4VCI_API_URL, VC_API_GET_CREDENTIAL_ISSUE_URL} from './environment'
 import {OID4VCIHolder, oid4vciHolderContextMethods, OID4VCIHolderLinkHandler} from '@sphereon/ssi-sdk.oid4vci-holder'
 import {contactManagerMethods} from '@sphereon/ssi-sdk.contact-manager'
@@ -19,7 +20,7 @@ import {pdManagerMethods} from '@sphereon/ssi-sdk.pd-manager'
 import {oid4vciStateNavigationListener} from '@machines/oid4vci/oid4vciStateNavigation'
 import {AuthorizationRequestOpts, PARMode} from '@sphereon/oid4vci-common'
 import {CLIENT_ID, OID4VCI_CODE_URL_REGEX, OID4VCI_DEFAULT_REDIRECT_URI, SIOP_DEFAULT_REDIRECT_URI} from '@/app'
-import {TAgentTypes} from '@types'
+import {TAgentTypes} from '@typings'
 import {DidAuthSiopOpAuthenticator, OID4VPCallbackStateListener, Siopv2OID4VPLinkHandler} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 import {vpStateCallbacks} from '@machines/siopv2/siopv2StateNavigation'
 import {didAuthSiopOpAuthenticatorMethods} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
@@ -56,6 +57,7 @@ const plugins: IAgentPlugin[] = [
       ...oid4vciHolderContextMethods,
       ...didAuthSiopOpAuthenticatorMethods,
       'didManagerCreate',
+      ...ebsiSupportMethods,
       ...pdManagerMethods,
       ...contactManagerMethods,
       ...sphereonKeyManagerMethods,

@@ -11,6 +11,7 @@ import { oid4vciHolderContextMethods } from '@sphereon/ssi-sdk.oid4vci-holder'
 import { contactManagerMethods } from '@sphereon/ssi-sdk.contact-manager'
 import { sphereonKeyManagerMethods } from '@sphereon/ssi-sdk-ext.key-manager'
 import { issuanceBrandingMethods } from '@sphereon/ssi-sdk.issuance-branding'
+import { ebsiSupportMethods } from '@sphereon/ssi-sdk.ebsi-support'
 import { pdManagerMethods } from '@sphereon/ssi-sdk.pd-manager'
 import { loadJsonFiles } from './utils'
 import { IDIDOpts, OID4VPInstanceOpts } from './types'
@@ -19,7 +20,7 @@ import { didAuthSiopOpAuthenticatorMethods } from '@sphereon/ssi-sdk.siopv2-oid4
 
 await dotenvConfig()
 
-const toBoolean = (value: string | undefined, defaultValue?: boolean): boolean => value === undefined ? (defaultValue ?? true)  : value === 'true'
+const toBoolean = (value: string | undefined, defaultValue?: boolean): boolean => (value === undefined ? defaultValue ?? true : value === 'true')
 
 /**
  * Please see .env.example for an explanation of the different environment variables available
@@ -81,6 +82,7 @@ export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATU
       'didManagerCreate',
       'didManagerGetProviders',
       'createVerifiablePresentation',
+      ...ebsiSupportMethods,
       ...issuanceBrandingMethods,
       ...pdManagerMethods,
     ]
@@ -103,7 +105,7 @@ export const DID_API_FEATURES: DidApiFeatures[] = env('DID_API_FEATURES', ENV_VA
   : ['did-persist', 'did-resolve']
 export const DID_WEB_SERVICE_FEATURES: DidWebServiceFeatures[] = env('DID_WEB_SERVICE_FEATURES', ENV_VAR_PREFIX)
   ? (env('DID_WEB_SERVICE_FEATURES', ENV_VAR_PREFIX)?.split(',') as DidWebServiceFeatures[])
-  : [] // Let's not enable global did web hosting by default
+  : ['did-web-global-resolution']
 
 export const DID_IMPORT_MODE = env('DID_IMPORT_MODE', ENV_VAR_PREFIX) ?? 'filesystem,environment'
 export const DID_WEB_DID = env('DID_WEB_DID', ENV_VAR_PREFIX)

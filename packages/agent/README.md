@@ -18,6 +18,7 @@ Please see [.env.example](.env.example) for a list and explanation of all the en
 
 TThe agent can be configured using several environment variables. Amongst these are variables to enable certain
 functionalities of the agent. If you want to use Docker then there are 2 distinct agent versions you can run.
+
 - A standalone agent, to be used without the web wallet, only enabling REST APIs
 - The web wallet agent, enabling certain features needed for the web wallet to run
 
@@ -164,10 +165,7 @@ Example body:
       "https://ref.sphereon.com/sphereon/vc/license-context/"
     ],
     "id": "http://localhost/vc/license/company_prefix/8790171",
-    "type": [
-      "VerifiableCredential",
-      "SPHEREONCompanyPrefixLicenseCredential"
-    ],
+    "type": ["VerifiableCredential", "SPHEREONCompanyPrefixLicenseCredential"],
     "issuer": "did:jwk:eyJhbGciOiJFZERTQSIsInVzZSI6InNpZyIsImt0eSI6Ik9LUCIsImNydiI6IkVkMjU1MTkiLCJ4IjoiaWFSbUhrUnJSa0FUSmFPTk95QllMUjNTZC10RWlqR0JBU3BuRzNyaFdEYyJ9",
     "issuanceDate": "2023-06-22T00:00:00Z",
     "validUntil": "2024-06-22T00:00:00Z",
@@ -204,10 +202,7 @@ Response:
       "https://w3id.org/security/suites/jws-2020/v1"
     ],
     "id": "http://localhost/vc/license/company_prefix/8790171",
-    "type": [
-      "VerifiableCredential",
-      "SPHEREONCompanyPrefixLicenseCredential"
-    ],
+    "type": ["VerifiableCredential", "SPHEREONCompanyPrefixLicenseCredential"],
     "issuer": "did:jwk:eyJhbGciOiJFZERTQSIsInVzZSI6InNpZyIsImt0eSI6Ik9LUCIsImNydiI6IkVkMjU1MTkiLCJ4IjoiaWFSbUhrUnJSa0FUSmFPTk95QllMUjNTZC10RWlqR0JBU3BuRzNyaFdEYyJ9",
     "issuanceDate": "2023-06-22T00:00:00Z",
     "validUntil": "2024-06-22T00:00:00Z",
@@ -266,10 +261,7 @@ Example verification body:
       "https://w3id.org/security/suites/jws-2020/v1"
     ],
     "id": "http://localhost/vc/license/company_prefix/8790171",
-    "type": [
-      "VerifiableCredential",
-      "SPHEREONCompanyPrefixLicenseCredential"
-    ],
+    "type": ["VerifiableCredential", "SPHEREONCompanyPrefixLicenseCredential"],
     "issuer": "did:jwk:eyJhbGciOiJFZERTQSIsInVzZSI6InNpZyIsImt0eSI6Ik9LUCIsImNydiI6IkVkMjU1MTkiLCJ4IjoiaWFSbUhrUnJSa0FUSmFPTk95QllMUjNTZC10RWlqR0JBU3BuRzNyaFdEYyJ9",
     "issuanceDate": "2023-06-22T00:00:00Z",
     "validUntil": "2024-06-22T00:00:00Z",
@@ -504,10 +496,7 @@ The response:
       ],
       "id": "http://localhost:5000/vc/status-lists/1",
       "issuer": "did:jwk:eyJhbGciOiJFZERTQSIsInVzZSI6InNpZyIsImt0eSI6Ik9LUCIsImNydiI6IkVkMjU1MTkiLCJ4IjoiaWFSbUhrUnJSa0FUSmFPTk95QllMUjNTZC10RWlqR0JBU3BuRzNyaFdEYyJ9",
-      "type": [
-        "VerifiableCredential",
-        "StatusList2021Credential"
-      ],
+      "type": ["VerifiableCredential", "StatusList2021Credential"],
       "credentialSubject": {
         "id": "http://localhost:5000/vc/status-lists/1",
         "type": "StatusList2021",
@@ -747,9 +736,7 @@ Response example:
     "assertionMethod": [
       "did:web:verification.sphereon.com:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"
     ],
-    "authentication": [
-      "did:web:verification.sphereon.com:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"
-    ]
+    "authentication": ["did:web:verification.sphereon.com:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"]
   },
   "didResolutionMetadata": {},
   "didDocumentMetadata": {
@@ -801,12 +788,8 @@ If a DID is found it will return the DID Document (not a resolution result)
       "type": "JsonWebKey2020"
     }
   ],
-  "assertionMethod": [
-    "did:web:verification.sphereon.com:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"
-  ],
-  "authentication": [
-    "did:web:verification.sphereon.com:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"
-  ]
+  "assertionMethod": ["did:web:verification.sphereon.com:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"],
+  "authentication": ["did:web:verification.sphereon.com:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"]
 }
 ```
 

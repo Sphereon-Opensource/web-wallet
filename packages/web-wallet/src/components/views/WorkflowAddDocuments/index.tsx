@@ -4,7 +4,7 @@ import HeaderContainer from '@components/views/HeaderContainer'
 import ItemCaption from '@components/views/ItemCaption'
 import SelectionField from '@components/fields/SelectionField'
 import AddDocuments from '@components/views/AddDocuments'
-import {AssetFilePermission, SelectedAssetFile} from '@types'
+import {AssetFilePermission, SelectedAssetFile} from '@typings'
 import {PrimaryButton, SecondaryButton} from '@sphereon/ui-components.ssi-react'
 import {useTranslate} from '@refinedev/core'
 

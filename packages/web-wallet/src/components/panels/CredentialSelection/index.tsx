@@ -46,7 +46,7 @@ const CredentialSelection: React.FC<CredentialSelectionProps> = ({credentialSumm
 
         return (
           <div
-            key={`${credential.id}_${index}` }
+            key={`${credential.id}_${index}`}
             className={`${style.credentialBox} ${selectedCredential !== null && selectedCredential === credentialId ? style.selected : ''}`}
             onClick={() => handleSelect(credential)}>
             <CredentialViewItem

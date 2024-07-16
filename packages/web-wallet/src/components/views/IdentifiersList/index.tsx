@@ -3,7 +3,7 @@ import short from 'short-uuid'
 import {useTranslate, useNavigation, useList, HttpError} from '@refinedev/core'
 import {ButtonIcon} from '@sphereon/ui-components.core'
 import {ColumnHeader, SSITableView, TableCellType} from '@sphereon/ui-components.ssi-react'
-import {DataResource, KeyManagementIdentifier} from '@types'
+import {DataResource, KeyManagementIdentifier} from '@typings'
 import {IIdentifier} from '@veramo/core'
 import {getDidMethodFromDID} from '@helpers/DID/DIDService'
 

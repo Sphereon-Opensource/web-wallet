@@ -21,8 +21,9 @@ import {
   OID4VCINavigationArgs,
   OID4VCINavigationEventListenerType,
   OID4VCIRoute,
-  navigationEventEmitter, SIOPV2Route,
-} from '@types'
+  navigationEventEmitter,
+  SIOPV2Route,
+} from '@typings'
 import {toNonPersistedCredentialSummary} from '@sphereon/ui-components.credential-branding'
 import {AuthorizationCodeState} from '@/pages/oid4vci/AuthorizationCodeUrl'
 import agent from '@agent'
@@ -42,7 +43,7 @@ const navigateAddContact = async (args: OID4VCINavigationArgs): Promise<void> =>
   const {hasContactConsent, serverMetadata, contactAlias} = machineState.context
 
   // Avoid duplicate navigation
-  if(!machineState.changed) {
+  if (!machineState.changed) {
     return
   }
   if (window.location.pathname === `${MainRoute.OID4VP}/${OID4VCIRoute.ADD_CONTACT}`) {
@@ -166,7 +167,7 @@ const navigateReviewCredentials = async (args: OID4VCINavigationArgs): Promise<v
   const {abortController, state: machineState, oid4vciMachine, onBack, onNext} = args
 
   // Avoid duplicate navigation
-  if(!machineState.changed) {
+  if (!machineState.changed) {
     return
   }
   if (window.location.pathname === `${MainRoute.OID4VP}/${OID4VCIRoute.REVIEW_CREDENTIALS}`) {

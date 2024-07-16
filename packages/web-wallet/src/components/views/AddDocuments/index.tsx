@@ -1,5 +1,5 @@
 import React, {CSSProperties, ReactElement} from 'react'
-import {AssetFilePermission, SelectedAssetFile} from '@types'
+import {AssetFilePermission, SelectedAssetFile} from '@typings'
 import styles from './index.module.css'
 import DragAndDropBox from '@components/fields/DragAndDropBox'
 import FileSelectionField from '@components/fields/FileSelectionField'

@@ -1,18 +1,22 @@
 import React, {FC, ReactElement} from 'react'
 import {useTranslate} from '@refinedev/core'
 import {ButtonIcon} from '@sphereon/ui-components.core'
-import {FormView, IconButton} from '@sphereon/ui-components.ssi-react'
+import {FormView, IconButton, PrimaryButton} from '@sphereon/ui-components.ssi-react'
 import addServiceEndpointSchema from '../../../../src/schemas/data/addServiceEndpointSchema.json' assert {type: 'json'}
 import addServiceEndpointUISchema from '../../../../src/schemas/ui/addServiceEndpointUISchema.json' assert {type: 'json'}
 import SelectionField from '@components/fields/SelectionField'
-// @ts-ignore // FIXME WALL-245 path complaining
-import {IdentifierServiceEndpoint, useIdentifierCreateOutletContext} from '@types/machine/identifiers/create'
+import {useIdentifierCreateOutletContext} from '@typings/machine/identifiers/create'
 import style from './index.module.css'
+import {IdentifierServiceEndpoint} from '@typings'
 
 const CreateIdentifierAddServiceEndpointContent: FC = (): ReactElement => {
   const translate = useTranslate()
 
-  const {serviceEndpoints, onSetServiceEndpoints, serviceEndpointData, onServiceEndpointChange} = useIdentifierCreateOutletContext()
+  const {serviceEndpoints, onSetServiceEndpoints, serviceEndpointData, onServiceEndpointChange, capabilitiesInfo} = useIdentifierCreateOutletContext()
+
+  const serviceEndpointsPossible = capabilitiesInfo?.identifierCapability?.serviceEndpoints
+
+  console.log(`Service endpoints possible: ${serviceEndpointsPossible}`)
 
   const onRemoveServiceEndpoint = async (id: string): Promise<void> => {
     onSetServiceEndpoints(prevServiceEndpoints => prevServiceEndpoints.filter(serviceEndpoint => serviceEndpoint.id !== id))
@@ -66,7 +70,18 @@ const CreateIdentifierAddServiceEndpointContent: FC = (): ReactElement => {
               </div>
               <div className={style.descriptionCaption}>{translate('create_identifier_service_endpoints_description')}</div>
             </div>
-            <FormView schema={addServiceEndpointSchema} uiSchema={addServiceEndpointUISchema} onFormStateChange={onServiceEndpointChange} />
+            <FormView
+              schema={addServiceEndpointSchema}
+              uiSchema={addServiceEndpointUISchema}
+              onFormStateChange={onServiceEndpointChange}
+              readonly={!serviceEndpointsPossible}
+            />
+            <PrimaryButton
+              caption={translate('create_identifier_service_endpoints_add_service_endpoint_label')}
+              onClick={onAddServiceEndpoint}
+              icon={ButtonIcon.ADD}
+              disabled={!serviceEndpointsPossible || (serviceEndpointData?.errors !== undefined && serviceEndpointData?.errors.length > 0)}
+            />
           </div>
         )}
         {serviceEndpoints.length > 0 && (
@@ -80,11 +95,22 @@ const CreateIdentifierAddServiceEndpointContent: FC = (): ReactElement => {
             </div>
             <div className={style.formContainer}>
               <div className={style.addTitleCaption}>{translate('create_identifier_service_endpoints_title')}</div>
-              <FormView schema={addServiceEndpointSchema} uiSchema={addServiceEndpointUISchema} onFormStateChange={onServiceEndpointChange} />
+              <FormView
+                schema={addServiceEndpointSchema}
+                uiSchema={addServiceEndpointUISchema}
+                onFormStateChange={onServiceEndpointChange}
+                readonly={!serviceEndpointsPossible}
+              />
+              <PrimaryButton
+                caption={translate('create_identifier_service_endpoints_add_service_endpoint_label')}
+                onClick={onAddServiceEndpoint}
+                icon={ButtonIcon.ADD}
+                disabled={!serviceEndpointsPossible || (serviceEndpointData?.errors !== undefined && serviceEndpointData?.errors.length > 0)}
+              />
             </div>
           </div>
         )}
-        <div className={style.addContainer}>
+        {/*        <div className={style.addContainer}>
           <IconButton
             icon={ButtonIcon.ADD}
             onClick={onAddServiceEndpoint}
@@ -93,9 +119,9 @@ const CreateIdentifierAddServiceEndpointContent: FC = (): ReactElement => {
           <div
             className={style.addAnotherTitleCaption}
             style={{opacity: serviceEndpointData?.errors !== undefined && serviceEndpointData?.errors.length > 0 ? 0.5 : 1}}>
-            {translate('create_identifier_service_endpoints_add_another_service_endpoint_label')}
+            {translate('create_identifier_service_endpoints_add_service_endpoint_label')}
           </div>
-        </div>
+        </div>*/}
       </div>
     </div>
   )

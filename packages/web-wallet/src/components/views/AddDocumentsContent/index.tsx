@@ -1,6 +1,6 @@
 import React, {ReactElement} from 'react'
 import AddDocuments from '@components/views/AddDocuments'
-import {AssetFilePermission, useAssetOutletContext} from '@types'
+import {AssetFilePermission, useAssetOutletContext} from '@typings'
 import {useTranslate} from '@refinedev/core'
 
 const AddDocumentsContent = (): ReactElement => {

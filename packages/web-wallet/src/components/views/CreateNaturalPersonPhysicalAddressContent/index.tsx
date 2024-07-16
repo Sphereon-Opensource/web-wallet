@@ -1,7 +1,7 @@
 import React, {FC} from 'react'
 import {useTranslate} from '@refinedev/core'
 import TextInputField from '@components/fields/TextInputField'
-import {useNaturalPersonOutletContext} from '@types'
+import {useNaturalPersonOutletContext} from '@typings'
 import style from './index.module.css'
 
 const CreateNaturalPersonPhysicalAddressContent: FC = () => {

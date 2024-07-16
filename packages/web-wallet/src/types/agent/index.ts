@@ -1,4 +1,4 @@
-import {ICredentialIssuer, ICredentialPlugin, IDIDManager, IResolver} from '@veramo/core'
+import {ICredentialIssuer, ICredentialPlugin, IDIDManager, IKeyManager, IResolver} from '@veramo/core'
 import {IVcApiIssuerClient} from '@sphereon/ssi-sdk.w3c-vc-api-issuer-rest-client'
 import {IOID4VCIRestClient} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-client'
 import {IQRCodeGenerator} from '@sphereon/ssi-sdk.qr-code-generator'
@@ -9,6 +9,7 @@ import {IEventLogger} from '@sphereon/ssi-sdk.event-logger'
 import {ISphereonKeyManager} from '@sphereon/ssi-sdk-ext.key-manager'
 import {IPDManager} from '@sphereon/ssi-sdk.pd-manager'
 import {IDidAuthSiopOpAuthenticator} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
+import {IEbsiSupport} from "@sphereon/ssi-sdk.ebsi-support";
 
 export type TAgentTypes = IResolver &
   IVcApiIssuerClient &
@@ -23,4 +24,6 @@ export type TAgentTypes = IResolver &
   IDIDManager &
   IPDManager &
   IDidAuthSiopOpAuthenticator &
+  IEbsiSupport &
+  IKeyManager &
   ICredentialIssuer

@@ -3,7 +3,7 @@ import style from './index.module.css'
 import {useTranslate} from '@refinedev/core'
 import {ProgressStepIndicator, PrimaryButton, SecondaryButton} from '@sphereon/ui-components.ssi-react'
 import {Outlet} from 'react-router-dom'
-import {useOrganizationContactMachine} from '@types'
+import {useOrganizationContactMachine} from '@typings'
 import {staticPropsWithSST} from '../../../src/i18n/server'
 
 const FINISH_STEP = 3

@@ -6,7 +6,7 @@ import SelectionField from '@components/fields/SelectionField'
 import FileSelectionField from '@components/fields/FileSelectionField'
 import TextArea from '@components/fields/TextArea'
 import {useTranslate} from '@refinedev/core'
-import {useAssetOutletContext} from '@types'
+import {useAssetOutletContext} from '@typings'
 
 const GetAssetSummaryContent = (): ReactElement => {
   const translate = useTranslate()

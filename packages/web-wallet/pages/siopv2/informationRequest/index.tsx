@@ -4,7 +4,7 @@ import {useTranslate} from '@refinedev/core'
 import {CredentialStatus} from '@sphereon/ui-components.core'
 
 import {InformationRequestView, PrimaryButton, SecondaryButton} from '@sphereon/ui-components.ssi-react'
-import {Siopv2NavigationEventListenerType} from '@types'
+import {Siopv2NavigationEventListenerType} from '@typings'
 import style from './index.module.css'
 import {IPresentationDefinition} from '@sphereon/pex'
 import CredentialSelectionView from '@components/views/CredentialSelectionView'

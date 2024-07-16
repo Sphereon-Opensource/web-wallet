@@ -1,4 +1,4 @@
-import {getStorageObjectDecorator} from '@types'
+import {getStorageObjectDecorator} from '@typings'
 import {CorrelationId, IObjectCorrelation, IStoragePathResolver, StorageCorrelationType, StorageOptions} from '../types'
 import {StoragePathResolver} from '../StoragePathResolver'
 import {determineRoot, getCorrelationValue} from '../functions'

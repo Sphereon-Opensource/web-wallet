@@ -11,9 +11,9 @@ import {
   SecondaryButton,
   SSITabView,
 } from '@sphereon/ui-components.ssi-react'
-import {OID4VCINavigationEventListenerType} from '@types'
+import {OID4VCINavigationEventListenerType} from '@typings'
 import style from './index.module.css'
-import {staticPropsWithSST} from '../../../src/i18n/server'
+import {staticPropsWithSST} from '@/src/i18n/server'
 import {CredentialSummary, getCredentialStatus} from '@sphereon/ui-components.credential-branding'
 
 enum CredentialDetailsTabRoute {

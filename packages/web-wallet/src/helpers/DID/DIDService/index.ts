@@ -5,7 +5,7 @@ import {DefaultActionSubType, LogLevel, ActionType, System, InitiatorType, SubSy
 
 import {agentContext} from '@agent'
 import {parseDid} from '@sphereon/ssi-types'
-import {IdentifierMethod} from '@types'
+import {IdentifierMethod} from '@typings'
 import {IDIDState} from '@sphereon/did-uni-client/dist/types/types'
 
 const logger: EventLogger = new EventLoggerBuilder()

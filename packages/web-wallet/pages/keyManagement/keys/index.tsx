@@ -3,9 +3,6 @@ import {useTranslate} from '@refinedev/core'
 import AppHeaderBar from '@components/bars/AppHeaderBar'
 import KeysList from '@components/views/KeysList'
 import style from './index.module.css'
-import {SSRConfig} from 'next-i18next'
-import {serverSideTranslations} from 'next-i18next/serverSideTranslations'
-import nextI18nextConfig from '@/next-i18next.config.mjs'
 import {staticPropsWithSST} from '@/src/i18n/server'
 
 const KeysListPage: React.FC = () => {

@@ -1,4 +1,4 @@
-import {AddNaturalPersonArgs, AddPartyRelationshipArgs, NaturalPersonData} from '@types'
+import {AddNaturalPersonArgs, AddPartyRelationshipArgs, NaturalPersonData} from '@typings'
 import {supabaseServiceClient} from '@helpers/SupabaseClient'
 import {EventLogger, EventLoggerBuilder} from '@sphereon/ssi-sdk.core'
 import {ActionType, InitiatorType, LogLevel, SubSystem, System, LoggingEventType} from '@sphereon/ssi-types'
@@ -125,6 +125,6 @@ async function storePartyRelationship(leftId: string, rightId: string): Promise<
 export const addParty = async (args: AddContactArgs): Promise<RealParty> => {
   return agent.cmAddContact(args).catch((error: Error) => {
     console.error(error) // log with stack trace
-    return Promise.reject(Error(`Unable to create contact. Error: ${error}`));
+    return Promise.reject(Error(`Unable to create contact. Error: ${error}`))
   })
 }

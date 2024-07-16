@@ -1,8 +1,8 @@
 import React, {createContext, useCallback, useContext, useEffect, useState} from 'react'
 import {CredentialFormData, CredentialFormSelectionType, ValueSelection} from '@sphereon/ui-components.ssi-react'
 import {useNavigate, useOutletContext} from 'react-router-dom'
-import {IssueCredentialRoute, IssueMethod} from '@types'
-import {UIContextType} from '@types'
+import {IssueCredentialRoute, IssueMethod} from '@typings'
+import {UIContextType} from '@typings'
 import {useTranslate} from '@refinedev/core'
 
 export type CredentialsCreateContextType = UIContextType & {

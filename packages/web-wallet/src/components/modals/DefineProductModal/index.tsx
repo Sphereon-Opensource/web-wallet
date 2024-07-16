@@ -5,7 +5,7 @@ import {Country} from 'iso-3166-1/dist/iso-3166'
 import CrossIcon from '@components/assets/icons/CrossIcon'
 import DropDownList from '@components/lists/DropDownList'
 import TextInputField from '@components/fields/TextInputField'
-import {Product, ValueSelection} from '@types'
+import {Product, ValueSelection} from '@typings'
 import style from './index.module.css'
 import {isNonEmptyString} from '@helpers/StringUtils'
 

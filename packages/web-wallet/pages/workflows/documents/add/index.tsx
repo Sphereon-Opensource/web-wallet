@@ -1,6 +1,6 @@
 import {useTranslate} from '@refinedev/core'
 import React, {CSSProperties, useState} from 'react'
-import {AssetFilePermission, SelectedAssetFile} from '@types'
+import {AssetFilePermission, SelectedAssetFile} from '@typings'
 import WorkflowAddDocuments from '@components/views/WorkflowAddDocuments'
 import {IWorkflowStepData, progressWorkflowState} from '../../../../src/workflows/simpleWorkflowRouter'
 import {WorkflowStorageService} from '@objectstorage/WorkflowStorageService'

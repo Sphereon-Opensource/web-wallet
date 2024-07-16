@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm'
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
-import {DB_CONFIG} from "./config";
+import { DB_CONFIG } from './config'
 
 console.log(`Using DB configuration for a ${DB_CONFIG.type} database`)
 

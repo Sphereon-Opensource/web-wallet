@@ -18,7 +18,7 @@ import {
   FormStepEntityType,
   FormDefToFormStepEntityType,
   FormStepToSchemaDefinitionEntityType,
-} from '@types'
+} from '@typings'
 import {v4 as uuidv4} from 'uuid'
 import {
   MetaDataKeysDTO,

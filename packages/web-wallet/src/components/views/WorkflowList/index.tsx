@@ -14,7 +14,7 @@ import {
   WorkflowStepDTO,
   WorkflowStepDTOType,
   WorkflowStepEntity,
-} from '@types'
+} from '@typings'
 import {WorkflowStorageService} from '@objectstorage/WorkflowStorageService'
 import {HttpError, useList, useTranslate} from '@refinedev/core'
 import SidePanelModal from '@components/modals/SidePanelModal'

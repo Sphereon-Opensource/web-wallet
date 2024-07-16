@@ -3,11 +3,91 @@
   "properties": {
     "type": {
       "type": "string",
-      "oneOf": [{"const": "DID", "title": "Decentralized identifier (DID)"}]
+      "oneOf": [
+        {
+          "const": "did",
+          "title": "Decentralized Identifier (DID)"
+        }
+      ],
+      "default": "did"
     },
     "method": {
       "type": "string",
-      "oneOf": [{"const": "jwk", "title": "JWK"}]
+      "oneOf": [
+        {
+          "const": "key:jwk_jcs-pub",
+          "title": "EBSI Natural Person"
+        },
+        {
+          "const": "ebsi",
+          "title": "EBSI Legal Entity"
+        },
+        {
+          "const": "jwk",
+          "title": "JWK"
+        },
+        {
+          "const": "key",
+          "title": "KEY"
+        },
+        {
+          "const": "web",
+          "title": "WEB"
+        }
+      ],
+      "default": "ebsi"
+    },
+    "ebsi": {
+      "type": "object",
+      "properties": {
+        "tao": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "format": "url",
+              "default": "https://api-conformance.ebsi.eu/conformance/v3/issuer-mock"
+            },
+            "name": {
+              "type": "string",
+              "default": "EBSI Conformance Test issuer"
+            }
+          },
+          "required": ["url"]
+        },
+        "executeLedgerOperation": {
+          "type": "boolean",
+          "default": true
+        }
+      },
+      "required": ["tao"]
+    },
+    "web": {
+      "type": "object",
+      "properties": {
+        "hostName": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string",
+          "default": "/.well-known"
+        }
+      },
+      "required": ["hostName"]
+    },
+    "network": {
+      "type": "string",
+      "oneOf": [
+        {
+          "const": "conformance",
+          "title": "Conformance"
+        },
+        {
+          "const": "pilot",
+          "title": "Pilot"
+        }
+      ],
+      "default": "conformance"
     },
     "alias": {
       "type": "string"

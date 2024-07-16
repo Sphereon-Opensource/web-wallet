@@ -55,7 +55,7 @@ import {
   OID4VCIRoute,
   SIOPV2Route,
   OrganizationContactCreationRoute,
-} from '@types'
+} from '@typings'
 import CreateIdentifierKeysContent from '@components/views/CreateIdentifierKeysContent'
 import CreateIdentifierAddServiceEndpointContent from '@components/views/CreateIdentifierAddServiceEndpointContent'
 import CreateIdentifierSummaryContent from '@components/views/CreateIdentifierSummaryContent'

@@ -3,13 +3,14 @@ import {useTranslate} from '@refinedev/core'
 import {FormView} from '@sphereon/ui-components.ssi-react'
 import addIdentifierSchema from '../../../../src/schemas/data/addIdentifierSchema.json' assert {type: 'json'}
 import addIdentifierUISchema from '../../../../src/schemas/ui/addIdentifierUISchema.json' assert {type: 'json'}
-// @ts-ignore // FIXME WALL-245 path complaining
-import {useIdentifierCreateOutletContext} from '@types/machine/identifiers/create'
+import {useIdentifierCreateOutletContext} from '@typings/machine/identifiers/create'
 import style from './index.module.css'
+import {createAjv} from '@jsonforms/core'
 
 const CreateIdentifierSelectTypeContent: FC = (): ReactElement => {
   const translate = useTranslate()
-  const {onIdentifierDataChange, identifierData} = useIdentifierCreateOutletContext()
+  const {onIdentifierDataChange, identifierData, identifierMiddleware} = useIdentifierCreateOutletContext()
+  const ajv = createAjv({useDefaults: 'empty', coerceTypes: true})
 
   return (
     <div className={style.container}>
@@ -19,6 +20,8 @@ const CreateIdentifierSelectTypeContent: FC = (): ReactElement => {
         uiSchema={addIdentifierUISchema}
         data={identifierData?.data}
         onFormStateChange={onIdentifierDataChange}
+        ajv={ajv}
+        middleware={identifierMiddleware}
       />
     </div>
   )

@@ -1,4 +1,4 @@
-import {FormDefinitionDTO, SchemaDefinitionDTO, SchemaType} from '@types'
+import {FormDefinitionDTO, SchemaDefinitionDTO, SchemaType} from '@typings'
 import {ByFormName, ById, FormsService} from '../../services/forms/FormsService'
 import {useCallback, useEffect, useMemo, useState} from 'react'
 import {CredentialFormSelectionType} from '@sphereon/ui-components.ssi-react'

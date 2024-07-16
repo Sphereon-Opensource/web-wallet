@@ -3,7 +3,7 @@ import {useTranslate} from '@refinedev/core'
 import AppHeaderBar from '@components/bars/AppHeaderBar'
 import ContactsList from '@components/views/ContactsList'
 import style from './index.module.css'
-import {staticPropsWithSST} from '../../src/i18n/server'
+import {staticPropsWithSST} from '@/src/i18n/server'
 
 const ContactsListPage: React.FC = () => {
   const translate = useTranslate()

@@ -1,6 +1,6 @@
 import React, {FC} from 'react'
 import SelectionField from '@components/fields/SelectionField'
-import {useOrganizationContactOutletContext} from '@types'
+import {useOrganizationContactOutletContext} from '@typings'
 import style from './index.module.css'
 import {useTranslate} from '@refinedev/core'
 
