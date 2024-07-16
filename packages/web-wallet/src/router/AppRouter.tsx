@@ -65,6 +65,7 @@ import OID4VPStateMachineComponent from '../../pages/siopv2'
 import InformationRequestPage from '../../pages/siopv2/informationRequest'
 import Siopv2ErrorPage from '@/pages/siopv2/error'
 import {NavigationProvider} from './NavigationContext'
+import {CredentialRole} from "@sphereon/ssi-sdk.data-store";
 
 const KeycloakLoginPage = (props: PropsWithChildren<any>) => {
   const {mutate: login} = useLogin()
@@ -148,7 +149,7 @@ const AppRouter: React.FC = () => {
               <Route path={IssueCredentialRoute.DETAILS} element={<IssueCredentialEnterDetailsContent />} />
               <Route path={IssueCredentialRoute.ISSUE_METHOD} element={<IssueCredentialIssueMethodContent />} />
             </Route>
-            <Route path={MainRoute.SUB_ID} element={<ShowCredentialDetails />} />
+            <Route path={MainRoute.SUB_ID} element={<ShowCredentialDetails credentialRole={CredentialRole.HOLDER} />} />
           </Route>
           <Route path={MainRoute.DOCUMENTS}>
             <Route index element={<DocumentsListPage />} />

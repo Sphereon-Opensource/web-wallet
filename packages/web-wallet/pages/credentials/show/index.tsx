@@ -58,16 +58,20 @@ type DocumentItem = {
 
 const truncationLength: number = process.env.NEXT_PUBLIC_TRUNCATION_LENGTH ? Number(process.env.NEXT_PUBLIC_TRUNCATION_LENGTH) : 8
 
-const ShowCredentialDetails: FC = (): ReactElement => {
+type Props = {
+  credentialRole: CredentialRole,
+}
+
+const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
+  const {credentialRole} = props
   const translate = useTranslate()
   const params = useParams();
-  console.log('params', params)
   const {id} = params
   const [credentialSummary, setCredentialSummary] = useState<CredentialSummary | undefined>(undefined)
   const credentialResult = useOne<DigitalCredential, HttpError>({
     resource: DataResource.CREDENTIALS,
     id,
-    meta: {variables: { credentialRole: CredentialRole.HOLDER}} // FIXME before PR
+    meta: {variables: { credentialRole: credentialRole}}
   })
 
   const partyResults = useList<Party, HttpError>({resource: 'parties'})

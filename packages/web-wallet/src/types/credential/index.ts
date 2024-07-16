@@ -7,6 +7,7 @@ import {formatDate} from '@helpers/date/DateHelper'
 import {CredentialMapper} from '@sphereon/ssi-types'
 import {IVerifiableCredential} from "@sphereon/ssi-types/src/types";
 import {DigitalCredential} from "@sphereon/ssi-sdk.credential-store";
+import {contextToString} from "@helpers/Credentials/CredentialsHelper";
 
 export type Credential = {
   hash: string
@@ -109,7 +110,7 @@ export class CredentialTableItem {
       createdStr: issuanceDateStr,
       validFromStr: issuanceDateStr,
       expirationDateStr,
-      context: '', //vc["@context"] , FIXME BEFORE PR
+      context: contextToString(vc["@context"]),
       type: vcType,
       issuer: issuerPartyIdentity.party,
       subject: subjectParty,

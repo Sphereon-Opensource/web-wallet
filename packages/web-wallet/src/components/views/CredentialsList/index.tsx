@@ -35,7 +35,7 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
     },
     sorters: [
       {
-        field: 'createdAt', // FIXME BEFORE PR - Don't we need a field: 'issuanceDate' ?
+        field: 'createdAt', // We don't we have a field 'issuanceDate' in the db anymore, so sort on createdAt
         order: 'asc',
       },
     ],

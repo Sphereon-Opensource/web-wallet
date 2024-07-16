@@ -1,4 +1,4 @@
-import {IIssuer} from '@sphereon/ssi-types'
+import {ICredentialContextType, IIssuer} from '@sphereon/ssi-types'
 import {KeyValuePair, Product} from '@types'
 import {uuid} from 'short-uuid'
 import {CredentialPayload, VerifiableCredential} from '@veramo/core'
@@ -135,4 +135,33 @@ const buildInformationItem = (key: string, credentialSubjectElement: any, inform
   } else {
     informationDetails.push({label: key, value: credentialSubjectElement})
   }
+}
+
+export const contextToString = (context: ICredentialContextType | ICredentialContextType[]): string => {
+  if (Array.isArray(context)) {
+    return context.map(item => singleContextToString(item)).join(', ')
+  }
+  return singleContextToString(context)
+}
+
+const singleContextToString = (item: ICredentialContextType): string => {
+  if (item === undefined) {
+    return ''
+  }
+
+  if (typeof item === 'string') {
+    return item
+  }
+  if (typeof item === 'object') {
+    const {name, did, ...additional} = item
+    const parts: string[] = []
+    if (name) parts.push(name)
+    if (did) parts.push(did)
+    const additionalStr = Object.entries(additional)
+        .map(([key, value]) => `${key}: ${value}`)
+        .join(', ')
+    if (additionalStr) parts.push(additionalStr)
+    return parts.join(', ')
+  }
+  return ''
 }
