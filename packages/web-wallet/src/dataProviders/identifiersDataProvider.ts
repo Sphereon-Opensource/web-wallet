@@ -74,12 +74,10 @@ export const identifiersDataProvider = (): DataProvider => ({
                                                                                               variables,
                                                                                               meta,
                                                                                           }: CreateParams<TVars>): Promise<CreateResponse<TData>> => {
-        const kms = variables.kms ?? KeyManagementSystem.LOCAL
-        const keys = variables.keys ?? []
-        const method = variables.method
+        const {kms = KeyManagementSystem.LOCAL, keys = [], method, identifier : kmIdentifier} = variables
         const clientId = process?.env?.NEXT_PUBLIC_CLIENT_ID ?? `${window.location.protocol}//${window.location.hostname}`
-        const network = variables?.identifier?.network
-        const ebsi = variables?.identifier?.ebsi
+        const network = kmIdentifier?.network
+        const ebsi = kmIdentifier?.ebsi
         let alias = variables.alias
 
         const options: Record<string, any> = {
@@ -97,7 +95,7 @@ export const identifiersDataProvider = (): DataProvider => ({
             let path = variables.identifier.web.path
             options['hostName'] = variables.identifier.web.hostName
             options['path'] = path
-            alias = variables.identifier.web.hostName
+            alias = variables.identifier.web.hostName.replace('http://', '').replace('https://', '')
             if (path && (!path.endsWith('./well-known') && !path.endsWith('./well-known/'))) {
                 if (!path.startsWith('/')) {
                     path = `/${path}`
