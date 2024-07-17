@@ -16,7 +16,7 @@ import style from './index.module.css'
 import {Credential, CredentialTableItem} from '@typings'
 import {CredentialRole, NaturalPerson, Organization, Party, PartyTypeType} from '@sphereon/ssi-sdk.data-store'
 import {useParams} from 'react-router-dom'
-import {staticPropsWithSST} from '../../../src/i18n/server'
+import {staticPropsWithSST} from '@/src/i18n/server'
 import agent from '@agent'
 
 import {CredentialSummary, toCredentialSummary} from '@sphereon/ui-components.credential-branding'
@@ -98,7 +98,7 @@ const ShowCredentialDetails = () => {
 
         const credentialSummary: CredentialSummary = await toCredentialSummary(
           {hash, verifiableCredential: JSON.parse(credentialResult.data.data.raw)},
-          credentialBrandings[0].localeBranding,
+          credentialBrandings.length ? credentialBrandings[0].localeBranding : undefined,
           // @ts-ignore
           issuerParties.length ? issuerParties[0] : undefined,
           subjectParties.length ? subjectParties[0] : undefined,
@@ -134,13 +134,14 @@ const ShowCredentialDetails = () => {
   }
   const getVerifiedInformationContent = (): ReactElement => {
     const credentialSubject = JSON.parse(credentialResult.data.data.raw).credentialSubject
-    if ('id' in credentialSubject) {
+    if ('id' in credentialSubject && credentialSubject.id.startsWith('did:')) {
       delete credentialSubject.id
     }
+    const termsOfUse = credentialSummary.termsOfUse?.length ? credentialSummary.termsOfUse.length === 1 ? credentialSummary.termsOfUse[0]: credentialSummary.termsOfUse : undefined
     return (
       <div className={style.tabViewContentContainer}>
         <div className={style.verifiedInformationDataContainer}>
-          <JSONDataView data={credentialSubject} shouldExpandNodeInitially={true} />
+          <JSONDataView data={ {type: credentialSummary.title ,issuer: credentialSummary.issuer,  ...(termsOfUse && {termsOfUse}), ...credentialSubject} } shouldExpandNodeInitially={true} />
         </div>
         <SSICredentialCardView
           header={{
@@ -152,6 +153,7 @@ const ShowCredentialDetails = () => {
           }}
           footer={{
             credentialStatus: credentialTableItem.status,
+            expirationDate: credentialSummary.expirationDate
           }}
           display={{
             backgroundColor: credentialSummary.branding?.background?.color,
