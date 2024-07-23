@@ -9,7 +9,7 @@ import {IEventLogger} from '@sphereon/ssi-sdk.event-logger'
 import {ISphereonKeyManager} from '@sphereon/ssi-sdk-ext.key-manager'
 import {IPDManager} from '@sphereon/ssi-sdk.pd-manager'
 import {IDidAuthSiopOpAuthenticator} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
-import {IEbsiSupport} from "@sphereon/ssi-sdk.ebsi-support";
+import {IEbsiSupport} from '@sphereon/ssi-sdk.ebsi-support'
 
 export type TAgentTypes = IResolver &
   IVcApiIssuerClient &
