@@ -22,12 +22,15 @@ functionalities of the agent. If you want to use Docker then there are 2 distinc
 - A standalone agent, to be used without the web wallet, only enabling REST APIs
 - The web wallet agent, enabling certain features needed for the web wallet to run
 
-- The Sphereon **Standalone Agent**: This agent running on port 5001 by default, contains the did:web of SPHEREON, and is
+- The Sphereon **Standalone Agent**: This agent running on port 5001 by default, contains the did:web of SPHEREON, and
+  is
   responsible for issuance and optional
   storage of Verifiable Credentials. Creating DIDs from the REST API is enabled on this agent. Resolution of DIDs will
-  use hybrid resolution, meaning any did:web will be resolved to the actual https endpoint, but it also resolved non-published DIDs only available to the agent.
+  use hybrid resolution, meaning any did:web will be resolved to the actual https endpoint, but it also resolved
+  non-published DIDs only available to the agent.
 - The **Wallet Agent**: This agent running on port 5010 by default, it can create and verify Verifiable
-  Credentials using a W3C VC API, or using OID4VC. The DIDs will be resolved in hybrid mode, meaning the agent will first look
+  Credentials using a W3C VC API, or using OID4VC. The DIDs will be resolved in hybrid mode, meaning the agent will
+  first look
   whether the DID is managed by the agent and then generate a DID resolution result from the database. If not managed by
   the agent it will perform an external resolution call.
 
@@ -35,7 +38,8 @@ functionalities of the agent. If you want to use Docker then there are 2 distinc
 
 The Sphereon agent, is re-using features exposed by Sphereon's SSI-SDK, amongst which as API's and endpoint functions
 that
-are compatible with the W3C VC API, DIF Universal Resolver, DIF Universal Registrar and W3C did:web hosting, OpenID for Verifiable Credentials, StatusList 2021.
+are compatible with the W3C VC API, DIF Universal Resolver, DIF Universal Registrar and W3C did:web hosting, OpenID for
+Verifiable Credentials, StatusList 2021.
 
 Some more information can be found in the [SSI-SDK Github](https://github.com/Sphereon-Opensource/ssi-sdk).
 The [DID documentation](../../docs/DID-API.md) and [VC API documentation]() is also available in the docs folder in the
@@ -49,7 +53,8 @@ be created and/or imported, together with the DIDs.
 
 ## Config path location
 
-The DID files are read from the path configured by the `CONF_PATH` environment variable (defaults to `./conf/examples`). The
+The DID files are read from the path configured by the `CONF_PATH` environment variable (defaults to `./conf/examples`).
+The
 DIDs are read from the `dids` folder in the `CONF_PATH`, so do not put your DID files in the main folder. Any
 files not ending in .json will be ignored. You should update this environment variable to reflect your import location
 and not load some test/default DIDs.
@@ -165,7 +170,10 @@ Example body:
       "https://ref.sphereon.com/sphereon/vc/license-context/"
     ],
     "id": "http://localhost/vc/license/company_prefix/8790171",
-    "type": ["VerifiableCredential", "SPHEREONCompanyPrefixLicenseCredential"],
+    "type": [
+      "VerifiableCredential",
+      "SPHEREONCompanyPrefixLicenseCredential"
+    ],
     "issuer": "did:jwk:eyJhbGciOiJFZERTQSIsInVzZSI6InNpZyIsImt0eSI6Ik9LUCIsImNydiI6IkVkMjU1MTkiLCJ4IjoiaWFSbUhrUnJSa0FUSmFPTk95QllMUjNTZC10RWlqR0JBU3BuRzNyaFdEYyJ9",
     "issuanceDate": "2023-06-22T00:00:00Z",
     "validUntil": "2024-06-22T00:00:00Z",
@@ -202,7 +210,10 @@ Response:
       "https://w3id.org/security/suites/jws-2020/v1"
     ],
     "id": "http://localhost/vc/license/company_prefix/8790171",
-    "type": ["VerifiableCredential", "SPHEREONCompanyPrefixLicenseCredential"],
+    "type": [
+      "VerifiableCredential",
+      "SPHEREONCompanyPrefixLicenseCredential"
+    ],
     "issuer": "did:jwk:eyJhbGciOiJFZERTQSIsInVzZSI6InNpZyIsImt0eSI6Ik9LUCIsImNydiI6IkVkMjU1MTkiLCJ4IjoiaWFSbUhrUnJSa0FUSmFPTk95QllMUjNTZC10RWlqR0JBU3BuRzNyaFdEYyJ9",
     "issuanceDate": "2023-06-22T00:00:00Z",
     "validUntil": "2024-06-22T00:00:00Z",
@@ -261,7 +272,10 @@ Example verification body:
       "https://w3id.org/security/suites/jws-2020/v1"
     ],
     "id": "http://localhost/vc/license/company_prefix/8790171",
-    "type": ["VerifiableCredential", "SPHEREONCompanyPrefixLicenseCredential"],
+    "type": [
+      "VerifiableCredential",
+      "SPHEREONCompanyPrefixLicenseCredential"
+    ],
     "issuer": "did:jwk:eyJhbGciOiJFZERTQSIsInVzZSI6InNpZyIsImt0eSI6Ik9LUCIsImNydiI6IkVkMjU1MTkiLCJ4IjoiaWFSbUhrUnJSa0FUSmFPTk95QllMUjNTZC10RWlqR0JBU3BuRzNyaFdEYyJ9",
     "issuanceDate": "2023-06-22T00:00:00Z",
     "validUntil": "2024-06-22T00:00:00Z",
@@ -496,7 +510,10 @@ The response:
       ],
       "id": "http://localhost:5000/vc/status-lists/1",
       "issuer": "did:jwk:eyJhbGciOiJFZERTQSIsInVzZSI6InNpZyIsImt0eSI6Ik9LUCIsImNydiI6IkVkMjU1MTkiLCJ4IjoiaWFSbUhrUnJSa0FUSmFPTk95QllMUjNTZC10RWlqR0JBU3BuRzNyaFdEYyJ9",
-      "type": ["VerifiableCredential", "StatusList2021Credential"],
+      "type": [
+        "VerifiableCredential",
+        "StatusList2021Credential"
+      ],
       "credentialSubject": {
         "id": "http://localhost:5000/vc/status-lists/1",
         "type": "StatusList2021",
@@ -736,7 +753,9 @@ Response example:
     "assertionMethod": [
       "did:web:verification.sphereon.com:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"
     ],
-    "authentication": ["did:web:verification.sphereon.com:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"]
+    "authentication": [
+      "did:web:verification.sphereon.com:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"
+    ]
   },
   "didResolutionMetadata": {},
   "didDocumentMetadata": {
@@ -788,8 +807,12 @@ If a DID is found it will return the DID Document (not a resolution result)
       "type": "JsonWebKey2020"
     }
   ],
-  "assertionMethod": ["did:web:verification.sphereon.com:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"],
-  "authentication": ["did:web:verification.sphereon.com:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"]
+  "assertionMethod": [
+    "did:web:verification.sphereon.com:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"
+  ],
+  "authentication": [
+    "did:web:verification.sphereon.com:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"
+  ]
 }
 ```
 
@@ -801,6 +824,12 @@ URL containing `.well-known/did.json` or `/any/other/path/did.json` is hit with 
 
 This means you can setup a reverse proxy doing TLS termination for your domain and have it point to the agent, using the
 same Path.
+
+# OID4VCI support
+
+The agent supports both OID4VP and OID4VCI (and SIOPv2, Presentation-Exchange). In order to issue credentials using
+OID4VCI, please have a look at
+the [respective VCI REST documentation](https://github.com/Sphereon-Opensource/OID4VC/blob/develop/packages/issuer-rest/README.md)
 
 # Database support
 
