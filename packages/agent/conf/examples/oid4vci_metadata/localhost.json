@@ -11,6 +11,120 @@
       }
     ],
     "credential_configurations_supported": {
+      "NaturalPerson": {
+        "display": [
+          {
+            "name": "NaturalPerson",
+            "description": "Natural Person",
+            "background_color": "rgba(0, 0, 0, 0.2)",
+            "text_color": "#FBFBFB",
+            "background_image": {
+              "url": "https://i.ibb.co/kmfrH4F/tulips.png",
+              "alt_text": "Black and white photo of tulips with one red tulip"
+            },
+            "logo": {
+              "url": "https://i.ibb.co/NWQQ9kt/sphereon-logo.png",
+              "alt_text": "Red square depicting Sphereon logo."
+            }
+          },
+          {
+            "locale": "en-US",
+            "name": "NaturalPerson",
+            "description": "Natural Person",
+            "background_color": "rgba(0, 0, 0, 0.2)",
+            "text_color": "#FBFBFB",
+            "background_image": {
+              "url": "https://i.ibb.co/kmfrH4F/tulips.png",
+              "alt_text": "Black and white photo of tulips with one red tulip"
+            },
+            "logo": {
+              "url": "https://i.ibb.co/NWQQ9kt/sphereon-logo.png",
+              "alt_text": "Red square depicting Sphereon logo."
+            }
+          },
+          {
+            "locale": "nl-NL",
+            "name": "NaturalPerson",
+            "description": "Natural Person",
+            "background_color": "rgba(0, 0, 0, 0.2)",
+            "text_color": "#FBFBFB",
+            "background_image": {
+              "url": "https://i.ibb.co/kmfrH4F/tulips.png",
+              "alt_text": "Black and white photo of tulips with one red tulip"
+            },
+            "logo": {
+              "url": "https://i.ibb.co/NWQQ9kt/sphereon-logo.png",
+              "alt_text": "Red square depicting Sphereon logo."
+            }
+          }
+        ],
+        "format": "jwt_vc_json",
+        "credential_definition": {
+          "type": [
+            "VerifiableCredential",
+            "NaturalPerson"
+          ]
+        },
+        "cryptographic_binding_methods_supported": ["did:web", "did:jwk", "did:ion"],
+        "cryptographic_suites_supported": ["ES256", "ES256K1"]
+      },
+      "UBO": {
+        "display": [
+          {
+            "name": "UBO",
+            "description": "Ultimate Beneficial Owner",
+            "background_color": "rgba(0, 0, 0, 0.2)",
+            "text_color": "#FBFBFB",
+            "background_image": {
+              "url": "https://i.ibb.co/kmfrH4F/tulips.png",
+              "alt_text": "Black and white photo of tulips with one red tulip"
+            },
+            "logo": {
+              "url": "https://i.ibb.co/NWQQ9kt/sphereon-logo.png",
+              "alt_text": "Red square depicting Sphereon logo."
+            }
+          },
+          {
+            "locale": "en-US",
+            "name": "UBO",
+            "description": "Ultimate Beneficial Owner",
+            "background_color": "rgba(0, 0, 0, 0.2)",
+            "text_color": "#FBFBFB",
+            "background_image": {
+              "url": "https://i.ibb.co/kmfrH4F/tulips.png",
+              "alt_text": "Black and white photo of tulips with one red tulip"
+            },
+            "logo": {
+              "url": "https://i.ibb.co/NWQQ9kt/sphereon-logo.png",
+              "alt_text": "Red square depicting Sphereon logo."
+            }
+          },
+          {
+            "locale": "nl-NL",
+            "name": "UBO",
+            "description": "Ultimate Beneficial Owner",
+            "background_color": "rgba(0, 0, 0, 0.2)",
+            "text_color": "#FBFBFB",
+            "background_image": {
+              "url": "https://i.ibb.co/kmfrH4F/tulips.png",
+              "alt_text": "Black and white photo of tulips with one red tulip"
+            },
+            "logo": {
+              "url": "https://i.ibb.co/NWQQ9kt/sphereon-logo.png",
+              "alt_text": "Red square depicting Sphereon logo."
+            }
+          }
+        ],
+        "format": "jwt_vc_json",
+        "credential_definition": {
+          "type": [
+            "VerifiableCredential",
+            "UBO"
+          ]
+        },
+        "cryptographic_binding_methods_supported": ["did:web", "did:jwk", "did:ion"],
+        "cryptographic_suites_supported": ["ES256", "ES256K1"]
+      },
       "Swimmingpool": {
         "display": [
           {
@@ -359,13 +473,18 @@
                 }
               }
             ],
-            "id": "Woonplaatsverklaring",
-            "types": ["VerifiableCredential", "Woonplaatsverklaring"],
+            "credential_definition": {
+              "type": ["VerifiableCredential", "Woonplaatsverklaring"]
+            },
             "format": "jwt_vc_json",
             "cryptographic_binding_methods_supported": ["did:jwk"],
-            "cryptographic_suites_supported": ["ES256"]
+            "cryptographic_suites_supported": [
+              "ES256"
+            ]
+          }
+        ]
           },
-          {
+      "Omzetbelasting": {
             "display": [
               {
                 "name": "Omzetbelasting",
@@ -412,12 +531,21 @@
                 }
               }
             ],
-            "id": "Omzetbelasting",
-            "types": ["VerifiableCredential", "Omzetbelasting"],
+            "credential_definition": {
+              "type": [
+                "VerifiableCredential",
+                "Omzetbelasting"
+              ]
+            },
             "format": "jwt_vc_json",
             "cryptographic_binding_methods_supported": ["did:jwk"],
-            "cryptographic_suites_supported": ["ES256"]
+        "cryptographic_suites_supported": [
+          "ES256"
+        ]
+      }
           },
+    "CertificationOfOrigin": {
+      "display": [
           {
             "name": "Certificate of Origin",
             "description": "Certificate of Origin",
@@ -468,8 +596,10 @@
         },
         "format": "jwt_vc_json",
         "cryptographic_binding_methods_supported": ["did:web", "did:jwk", "did:ion"],
-        "cryptographic_suites_supported": ["ES256", "ES256K1"]
-      }
+      "cryptographic_suites_supported": [
+        "ES256",
+        "ES256K1"
+      ]
     }
   }
 }
