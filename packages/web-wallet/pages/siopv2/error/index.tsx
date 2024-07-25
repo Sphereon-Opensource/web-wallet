@@ -5,7 +5,7 @@ import {SSRConfig} from 'next-i18next'
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations'
 import nextI18NextConfig from '../../../next-i18next.config.mjs'
 import {PrimaryButton, WarningImage} from '@sphereon/ui-components.ssi-react'
-import {OID4VCINavigationEventListenerType, Siopv2NavigationEventListenerType} from '@types'
+import {OID4VCINavigationEventListenerType, Siopv2NavigationEventListenerType} from '@typings'
 import style from './index.module.css'
 import {staticPropsWithSST} from '@/src/i18n/server'
 

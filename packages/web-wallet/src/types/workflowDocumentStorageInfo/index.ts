@@ -1,4 +1,4 @@
-import {DocumentCategory, DocumentType} from '@types'
+import {DocumentCategory, DocumentType} from '@typings'
 import {formatDate} from '@helpers/date/DateHelper'
 
 export class WorkflowDocumentStorageInfoDTO {

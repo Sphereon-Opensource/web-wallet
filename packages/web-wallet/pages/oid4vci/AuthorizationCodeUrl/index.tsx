@@ -3,7 +3,7 @@ import {useLocation} from 'react-router-dom'
 import {useTranslate} from '@refinedev/core'
 import style from './index.module.css'
 import {staticPropsWithSST} from '../../../src/i18n/server'
-import {OID4VCINavigationEventListenerType} from '@types'
+import {OID4VCINavigationEventListenerType} from '@typings'
 import {PrimaryButton, WarningImage} from '@sphereon/ui-components.ssi-react'
 
 export type AuthorizationCodeState = {

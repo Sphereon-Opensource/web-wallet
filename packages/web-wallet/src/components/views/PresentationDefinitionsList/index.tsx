@@ -4,7 +4,7 @@ import {HttpError, useDeleteMany, useList, useNavigation, useTranslate, useDataP
 import {ButtonIcon} from '@sphereon/ui-components.core'
 import {ColumnHeader, Row, SSITableView, TableCellType} from '@sphereon/ui-components.ssi-react'
 import {PresentationDefinitionItem} from '@sphereon/ssi-sdk.data-store'
-import {DataProvider, DataResource} from '@types'
+import {DataProvider, DataResource} from '@typings'
 
 type Props = {
   allowAddNewPresentationDefinition?: boolean

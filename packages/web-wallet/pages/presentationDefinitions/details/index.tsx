@@ -8,7 +8,7 @@ import nextI18nextConfig from '@/next-i18next.config.mjs'
 import {useNavigate, useParams} from 'react-router-dom'
 // @ts-ignore // FIXME CWALL-245 path complaining
 import style from './index.module.css'
-import {DataResource, MainRoute} from '@types'
+import {DataResource, MainRoute} from '@typings'
 import {PresentationDefinitionItem} from '@sphereon/ssi-sdk.data-store'
 import {PartialPresentationDefinitionItem} from '@sphereon/ssi-sdk.data-store/src/types/presentationDefinition/presentationDefinition'
 import PageHeaderBar from '@components/bars/PageHeaderBar'

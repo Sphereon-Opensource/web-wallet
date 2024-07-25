@@ -4,7 +4,7 @@ import React, {CSSProperties, useEffect, useState} from 'react'
 import WorkflowApproveAsset from '@components/views/WorkflowApproveAsset'
 import {buildInformationDetails} from '@helpers/Credentials/CredentialsHelper'
 import {IWorkflowStepData, progressWorkflowState} from '../../../../src/workflows/simpleWorkflowRouter'
-import {KeyValuePair} from '@types'
+import {KeyValuePair} from '@typings'
 import {staticPropsWithSST} from '../../../../src/i18n/server'
 
 type Props = {

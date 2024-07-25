@@ -2,7 +2,7 @@ import {Interpreter, State, StateMachine} from 'xstate'
 import React, {createContext, ReactNode, useContext} from 'react'
 import {NavigateFunction, useOutletContext} from 'react-router-dom'
 import {Party} from '@sphereon/ssi-sdk.data-store'
-import {UIContextType} from '@types'
+import {UIContextType} from '@typings'
 
 export enum CredentialCreateEvents {
   ABORT = 'ABORT',

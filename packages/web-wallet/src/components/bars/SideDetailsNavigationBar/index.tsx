@@ -1,6 +1,6 @@
 import React, {ReactElement, useState} from 'react'
 import SideDetailsNavigationCategory from '@components/bars/SideDetailsNavigationBar/SideDetailsNavigationCategory'
-import {DetailsRoute} from '@types'
+import {DetailsRoute} from '@typings'
 import style from './index.module.css'
 
 type Props = {

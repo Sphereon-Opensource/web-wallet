@@ -16,7 +16,7 @@ import {
 } from '@refinedev/core'
 import {PartialKey} from '@sphereon/ssi-sdk-ext.key-manager'
 import agent from '@agent'
-import {KeyManagementSystem} from '@types'
+import {KeyManagementSystem} from '@typings'
 
 // TODO CWALL-242 further implement
 
@@ -65,6 +65,7 @@ export const keysDataProvider = (): DataProvider => ({
     variables,
     meta,
   }: CreateManyParams<TVariables>): Promise<CreateManyResponse<TData>> => {
+    // @ts-ignore
     const keyCreations: Array<Promise<PartialKey>> = variables.map(async key =>
       // FIXME CWALL-242 fix ignores
       agent.keyManagerCreate({

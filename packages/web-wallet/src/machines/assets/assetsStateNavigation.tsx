@@ -13,7 +13,7 @@ import {
   MainRoute,
   Product,
   SelectedAssetFile,
-} from '@types'
+} from '@typings'
 import React, {useCallback, useEffect, useMemo, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import {generateCredential} from '@helpers/Credentials/CredentialsHelper'

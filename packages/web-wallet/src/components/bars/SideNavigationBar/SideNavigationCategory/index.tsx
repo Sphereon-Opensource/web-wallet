@@ -1,6 +1,6 @@
 import {SSIArrowDownIcon} from '@sphereon/ui-components.ssi-react'
 import React, {ReactElement, useState} from 'react'
-import {NavigationRoute, MainRoute} from '@types'
+import {NavigationRoute, MainRoute} from '@typings'
 import style from './index.module.css'
 import AssetIcon from '@components/assets/icons/AssetIcon'
 import {NavLink} from 'react-router-dom'

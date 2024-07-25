@@ -2,7 +2,7 @@ import React, {FC} from 'react'
 import style from './index.module.css'
 import TextInputField from '@components/fields/TextInputField'
 import {useTranslate} from '@refinedev/core'
-import {useNaturalPersonOutletContext} from '@types'
+import {useNaturalPersonOutletContext} from '@typings'
 
 const CreateNaturalPersonPersonalInfoContent: FC = () => {
   const translate = useTranslate()

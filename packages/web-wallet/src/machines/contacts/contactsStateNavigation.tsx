@@ -14,7 +14,7 @@ import {
   NaturalPersonState,
   NaturalPersonCreationRoute,
   MainRoute,
-} from '@types'
+} from '@typings'
 
 const naturalPersonStateNavigationListener = async (
   contactMachine: ContactInterpretType,

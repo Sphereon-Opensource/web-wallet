@@ -1,5 +1,5 @@
 import React, {ReactElement} from 'react'
-import {useAssetOutletContext} from '@types'
+import {useAssetOutletContext} from '@typings'
 import style from './index.module.css'
 import DropDownList from '@components/lists/DropDownList'
 import SelectionField from '@components/fields/SelectionField'

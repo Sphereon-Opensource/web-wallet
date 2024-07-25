@@ -1,6 +1,6 @@
 import React, {ReactElement, useEffect, useState} from 'react'
 import short from 'short-uuid'
-import {KeyValuePair} from '@types'
+import {KeyValuePair} from '@typings'
 import style from './index.module.css'
 
 type Props = {

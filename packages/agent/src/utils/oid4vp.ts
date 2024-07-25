@@ -4,7 +4,7 @@ import { IS_OID4VP_ENABLED, oid4vpInstanceOpts } from '../environment'
 import { CheckLinkedDomain, SupportedVersion } from '@sphereon/did-auth-siop'
 import { Resolvable } from 'did-resolver'
 import { OID4VPInstanceOpts } from '../types'
-import { createDidResolver, getDefaultDID, getDefaultKid, getIdentifier } from './did'
+import { createDidResolver, getDefaultDID, getDefaultKerRef, getIdentifier } from './did'
 
 function toPexInstanceOptions(
   oid4vpInstanceOpts: OID4VPInstanceOpts[],
@@ -53,7 +53,7 @@ export async function getDefaultOID4VPRPOptions(args?: { did?: string; resolver?
       checkLinkedDomains: CheckLinkedDomain.IF_PRESENT,
       identifierOpts: {
         identifier,
-        kid: await getDefaultKid({ did }),
+        kmsKeyRef: await getDefaultKerRef({ did }),
       },
     },
   }

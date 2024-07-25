@@ -2,7 +2,7 @@ import React, {CSSProperties, ReactElement} from 'react'
 import styles from './index.module.css'
 import {fontColors} from '@sphereon/ui-components.core'
 import BinIcon from '@components/assets/icons/BinIcon'
-import {SelectionFieldDetail} from '@types'
+import {SelectionFieldDetail} from '@typings'
 import {PencilIcon} from '@sphereon/ui-components.ssi-react'
 
 type Props = {

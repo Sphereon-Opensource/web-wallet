@@ -12,7 +12,7 @@ import {
   FilePermissionChangedEvent,
   OwnerContactEvent,
   SetProductEvent,
-} from '@types'
+} from '@typings'
 
 export const ownerContactDataGuard = (ctx: AssetMachineContext, _event: AssetEventTypes) => {
   return !!ctx.ownerContact

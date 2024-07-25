@@ -1,6 +1,7 @@
 <!--suppress HtmlDeprecatedAttribute -->
 <h1 align="center">
   <br>
+<a href="https://www.sphereon.com"><img src="https://sphereon.com/content/themes/sphereon/assets/img/logo.svg" alt="Sphereon" width="400"></a>
   <br>SSI web-wallet and agent
   <br>
 </h1>

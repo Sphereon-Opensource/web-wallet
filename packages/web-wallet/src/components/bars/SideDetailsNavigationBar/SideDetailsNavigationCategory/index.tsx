@@ -1,6 +1,6 @@
 import {SSIArrowDownIcon} from '@sphereon/ui-components.ssi-react'
 import React, {ReactElement, useEffect, useState} from 'react'
-import {DetailsRoute} from '@types'
+import {DetailsRoute} from '@typings'
 import style from './index.module.css'
 
 type Props = {

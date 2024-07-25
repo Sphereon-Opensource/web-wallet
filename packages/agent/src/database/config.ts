@@ -17,7 +17,7 @@ import {PostgresConnectionOptions} from 'typeorm/driver/postgres/PostgresConnect
 import {TlsOptions} from 'tls'
 import {DataStoreEntities, DataStoreMigrations,} from '@sphereon/ssi-sdk.data-store'
 import {WebWalletMigrations} from './migrations'
-import {SqliteConnectionOptions} from "typeorm/driver/sqlite/SqliteConnectionOptions";
+import { SqliteConnectionOptions } from 'typeorm/driver/sqlite/SqliteConnectionOptions'
 
 if (!process.env.DB_ENCRYPTION_KEY) {
   console.warn(
@@ -41,7 +41,6 @@ let ssl: TlsOptions | boolean = enableSSL
 if (enableSSL && Object.keys(ssl).length === 0) {
   ssl = true
 }
-
 
 /**
  * SQLite3 DB configuration

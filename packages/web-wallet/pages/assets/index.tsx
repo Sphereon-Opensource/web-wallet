@@ -3,7 +3,7 @@ import {ColumnHeader, SSITableView, TableCellType} from '@sphereon/ui-components
 import {ButtonIcon} from '@sphereon/ui-components.core'
 import React, {ChangeEvent, useState} from 'react'
 import AppHeaderBar from '@components/bars/AppHeaderBar'
-import {Asset, CredentialReference, DataResource} from '@types'
+import {Asset, CredentialReference, DataResource} from '@typings'
 import style from './index.module.css'
 import {VerifiableCredential} from '@veramo/core'
 import {getMatchingIdentity} from '@helpers/IdentityFilters'

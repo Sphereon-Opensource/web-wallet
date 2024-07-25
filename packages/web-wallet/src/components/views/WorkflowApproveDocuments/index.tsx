@@ -9,7 +9,7 @@ import PdfViewer from '@components/viewers/PdfViewer'
 import styles from './index.module.css'
 import {ObjectStorage} from '@objectstorage'
 import {StoragePathResolver} from '@objectstorage/StoragePathResolver'
-import {WorkflowDocumentStorageInfo} from '@types'
+import {WorkflowDocumentStorageInfo} from '@typings'
 
 type Props = {
   filePath: string // TODO we need to support multiple files in the future

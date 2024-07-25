@@ -2,7 +2,7 @@ import React, {CSSProperties, ReactElement} from 'react'
 import DocumentIcon from '@components/assets/icons/DocumentIcon'
 import DropDownList from '@components/lists/DropDownList'
 import styles from './index.module.css'
-import {AssetFilePermission, ValueSelection} from '@types'
+import {AssetFilePermission, ValueSelection} from '@typings'
 
 type Props = {
   file: File

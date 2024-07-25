@@ -3,7 +3,7 @@ import style from '../../../../pages/assets/create/index.module.css'
 import TextInputField from '@components/fields/TextInputField'
 import SelectionField from '@components/fields/SelectionField'
 import {useTranslate} from '@refinedev/core'
-import {useAssetOutletContext} from '@types'
+import {useAssetOutletContext} from '@typings'
 
 const DefineAssetProductContent = (): ReactElement => {
   const translate = useTranslate()

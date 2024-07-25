@@ -19,7 +19,7 @@ import {
   CountryCodeNaturalPersonContactEvent,
   BuildingNameNaturalPersonContactEvent,
   ProvinceNameNaturalPersonContactEvent,
-} from '@types'
+} from '@typings'
 
 export const naturalPersonPersonalDataGuard = (ctx: NaturalPersonMachineContext, _event: NaturalPersonEventTypes) => {
   return !!ctx.firstName && !!ctx.lastName && !!ctx.emailAddress && !!ctx.phoneNumber

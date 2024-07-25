@@ -5,7 +5,7 @@ import short from 'short-uuid'
 import HeaderContainer from '@components/views/HeaderContainer'
 import styles from './index.module.css'
 import {VerifiableCredential} from '@veramo/core'
-import {KeyValuePair} from '@types'
+import {KeyValuePair} from '@typings'
 import {CredentialStatus, fontColors} from '@sphereon/ui-components.core'
 
 type Props = {

@@ -2,7 +2,7 @@ import {useTranslate} from '@refinedev/core'
 import React, {CSSProperties} from 'react'
 import WorkflowApproveDocuments from '@components/views/WorkflowApproveDocuments'
 import {IWorkflowStepData, progressWorkflowState} from '../../../../src/workflows/simpleWorkflowRouter'
-import {WorkflowDocumentStorageInfo} from '@types'
+import {WorkflowDocumentStorageInfo} from '@typings'
 import {staticPropsWithSST} from '../../../../src/i18n/server'
 
 type Props = {

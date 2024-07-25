@@ -17,7 +17,7 @@ import {
   BuildingNameOrganizationContactEvent,
   ProvinceNameOrganizationContactEvent,
   DisplayNameOrganizationContactEvent,
-} from '@types'
+} from '@typings'
 
 export const organizationalDataGuard = (ctx: OrganizationContactMachineContext, _event: OrganizationContactMachineEventTypes) => {
   return !!ctx.legalName && !!ctx.displayName && !!ctx.emailAddress && !!ctx.phoneNumber

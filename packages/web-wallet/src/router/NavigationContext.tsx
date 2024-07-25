@@ -1,6 +1,6 @@
 import React, {createContext, ReactNode, useContext, useEffect} from 'react'
 import {Location, useLocation, useNavigate} from 'react-router-dom'
-import {navigationEventEmitter, NavigationEvent} from '@types'
+import {navigationEventEmitter, NavigationEvent} from '@typings'
 
 interface NavigationContextType {
   navigateTo: (path: string, state?: any) => void

@@ -1,7 +1,7 @@
 import React, {ReactElement, useEffect, useState} from 'react'
 import {ColumnHeader, Row, SSITableView, TableCellType} from '@sphereon/ui-components.ssi-react'
 import {HttpError, useList, useTranslate} from '@refinedev/core'
-import {createStorageDocumentTableRows, StorageDocumentDTO, StorageDocumentTableItem, StorageObject, WorkflowDocumentStorageInfo} from '@types'
+import {createStorageDocumentTableRows, StorageDocumentDTO, StorageDocumentTableItem, StorageObject, WorkflowDocumentStorageInfo} from '@typings'
 import SidePanelModal from '@components/modals/SidePanelModal'
 import DocumentViewerModal from '../../../../pages/documents/show'
 import {ButtonIcon} from '@sphereon/ui-components.core'

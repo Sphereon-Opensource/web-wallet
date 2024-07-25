@@ -1,7 +1,7 @@
 import React, {FC} from 'react'
 import {useTranslate} from '@refinedev/core'
 import TextInputField from '@components/fields/TextInputField'
-import {useOrganizationContactOutletContext} from '@types'
+import {useOrganizationContactOutletContext} from '@typings'
 import style from './index.module.css'
 
 const CreateOrganizationContactPhysicalAddressContent: FC = () => {

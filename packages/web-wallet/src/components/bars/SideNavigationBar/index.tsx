@@ -1,7 +1,7 @@
 import React, {ReactElement} from 'react'
 import {useTranslate} from '@refinedev/core'
 import SideNavigationCategory from '@components/bars/SideNavigationBar/SideNavigationCategory'
-import {KeyManagementRoute, MainRoute, NavigationRoute} from '@types'
+import {KeyManagementRoute, MainRoute, NavigationRoute} from '@typings'
 import style from './index.module.css'
 
 const SideNavigationBar: React.FC = (): ReactElement => {

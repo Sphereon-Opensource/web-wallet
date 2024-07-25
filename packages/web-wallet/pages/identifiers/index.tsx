@@ -3,7 +3,7 @@ import {useTranslate} from '@refinedev/core'
 import AppHeaderBar from '@components/bars/AppHeaderBar'
 import style from './index.module.css'
 import IdentifiersList from '@components/views/IdentifiersList'
-import {staticPropsWithSST} from '../../src/i18n/server'
+import {staticPropsWithSST} from '@/src/i18n/server'
 
 const IdentifiersListPage: React.FC = () => {
   const translate = useTranslate()

@@ -56,11 +56,11 @@ async function handleDemo(fixtureType: FixtureType, demo: Demo) {
   }
 }
 
-function parseArgs(args: string[]): { fixture: FixtureType; demo: Demo } {
+function parseArgs(args?: string[]): { fixture: FixtureType; demo: Demo } {
   // todo: We really should use a lib for commands/args
-  if (args.length !== 2) {
+  if (!args || args.length !== 2) {
     console.log(
-      `Expected exactly two arguments: fixture and demo. Fixture values one of: "${allowedFixtureVals}", demo values one of "${allowedFixtureVals}". Args length: ${args.length}, args: ${args}`,
+      `Expected exactly two arguments: fixture and demo. Fixture values one of: "${allowedFixtureVals}", demo values one of "${allowedFixtureVals}". Args length: ${args?.length ?? 0}, args: ${args}`,
     )
     console.log('example:')
     console.log('  pnpm demo:init contacts konkuk')
@@ -85,6 +85,7 @@ function parseArgs(args: string[]): { fixture: FixtureType; demo: Demo } {
 
 async function main() {
   const args = process.argv
+  console.log(args)
   // We remove -- from args, as that gets included as arg on some platforms it seems
   const { fixture, demo } = parseArgs(args.filter((val) => val !== '--').slice(2))
   await handleDemo(fixture, demo)

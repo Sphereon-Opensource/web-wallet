@@ -12,7 +12,7 @@ import {
   OrganizationContactMachineStates,
   OrganizationContactsMachineInterpretType,
   OrganizationContactsMachineState,
-} from '@types'
+} from '@typings'
 import {organizationalDataGuard, organizationContactMachine, physicalAddressGuard} from '@machines/contacts/organizationContactsMachine'
 import {addContact, getContactType} from '../../services/contactService'
 

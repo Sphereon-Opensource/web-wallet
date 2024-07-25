@@ -3,18 +3,102 @@
   "elements": [
     {
       "type": "Control",
-      "label": "Type",
-      "scope": "#/properties/type"
+      "label": "Alias name",
+      "scope": "#/properties/alias"
+    },
+    {
+      "type": "Control",
+      "label": "Identifier type",
+      "scope": "#/properties/type",
+      "options": {
+        "autocomplete": false
+      }
     },
     {
       "type": "Control",
       "label": "DID method",
-      "scope": "#/properties/method"
+      "scope": "#/properties/method",
+      "options": {
+        "autocomplete": false
+      }
     },
     {
-      "type": "Control",
-      "label": "Alias",
-      "scope": "#/properties/alias"
+      "type": "Group",
+      "label": "EBSI details",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "Network name",
+          "scope": "#/properties/network",
+          "options": {
+            "default": "pilot",
+            "required": true,
+            "autocomplete": true
+          }
+        },
+        {
+          "type": "Control",
+          "label": "Trusted Accreditation Issuer URL",
+          "scope": "#/properties/ebsi/properties/tao/properties/url",
+          "options": {
+            "required": true
+          }
+        },
+        {
+          "type": "Control",
+          "label": "Trusted Accreditation Issuer name",
+          "scope": "#/properties/ebsi/properties/tao/properties/name"
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/ebsi/properties/executeLedgerOperation",
+          "label": "Immediate accreditation and anchor",
+          "options": {
+            "toggle": true
+          }
+        }
+      ],
+      "rule": {
+        "effect": "SHOW",
+        "condition": {
+          "scope": "#/properties/method",
+          "schema": {
+            "const": "ebsi"
+          }
+        }
+      }
+    },
+    {
+      "type": "Group",
+      "label": "WEB details",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "Hostname",
+          "scope": "#/properties/web/properties/hostName",
+          "options": {
+            "required": true
+          }
+        },
+        {
+          "type": "Control",
+          "label": "Path",
+          "scope": "#/properties/web/properties/path",
+          "options": {
+            "required": false,
+            "default": "/.well-known"
+          }
+        }
+      ],
+      "rule": {
+        "effect": "SHOW",
+        "condition": {
+          "scope": "#/properties/method",
+          "schema": {
+            "const": "web"
+          }
+        }
+      }
     }
   ]
 }

@@ -1,10 +1,10 @@
 import {ColumnHeader, Row, SSITableView, TableCellType} from '@sphereon/ui-components.ssi-react'
 import React, {FC, ReactElement} from 'react'
 import {HttpError, useDelete, useList, useTranslate} from '@refinedev/core'
-import {DataResource} from '@types'
+import {DataResource} from '@typings'
 import {ButtonIcon} from '@sphereon/ui-components.core'
 import {IIdentifier, ManagedKeyInfo} from '@veramo/core'
-import {DataProvider} from '@types'
+import {DataProvider} from '@typings'
 
 class KeyTableItem {
   kid: string

@@ -1,5 +1,5 @@
 import {ICredentialContextType, IIssuer} from '@sphereon/ssi-types'
-import {KeyValuePair, Product} from '@types'
+import {KeyValuePair, Product} from '@typings'
 import {uuid} from 'short-uuid'
 import {CredentialPayload, VerifiableCredential} from '@veramo/core'
 import {supabaseServiceClient} from '@helpers/SupabaseClient'

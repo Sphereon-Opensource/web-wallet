@@ -8,7 +8,7 @@ import {
   SchemaDefinitionDTO,
   SchemaDefinitionEntity,
   SchemaType,
-} from '@types'
+} from '@typings'
 import {MetaDataKeysDTO, MetaDataKeysEntity, MetaDataSetDTO, MetaDataSetEntity, MetaDataValuesEntity, ValueType} from '../../types/metadata'
 import {CredentialFormSelectionType} from '@sphereon/ui-components.ssi-react'
 

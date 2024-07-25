@@ -3,8 +3,7 @@ import {useTranslate} from '@refinedev/core'
 import {TabViewRoute} from '@sphereon/ui-components.core'
 import {SSITabView} from '@sphereon/ui-components.ssi-react'
 import SelectionField from '@components/fields/SelectionField'
-// @ts-ignore // FIXME WALL-245 path complaining
-import {useIdentifierCreateOutletContext} from '@types/machine/identifiers/create'
+import {useIdentifierCreateOutletContext} from '@typings/machine/identifiers/create'
 import style from './index.module.css'
 
 const CreateIdentifierSummaryContent: FC = (): ReactElement => {
@@ -75,15 +74,17 @@ const CreateIdentifierSummaryContent: FC = (): ReactElement => {
           <div className={style.headerTitle}>{translate('create_identifier_summary_title')}</div>
           <div className={style.headerDescription}>{translate('create_identifier_summary_description')}</div>
         </div>
-        <SelectionField
-          details={[
-            {title: translate('create_identifier_summary_card_identifier_type_label'), value: identifierData?.data.type},
-            {title: translate('create_identifier_summary_card_did_method_label'), value: identifierData?.data.method},
-            ...(identifierData?.data.alias
-              ? [{title: translate('create_identifier_summary_card_alias_label'), value: identifierData?.data.alias}]
-              : []),
-          ]}
-        />
+        {identifierData && (
+          <SelectionField
+            details={[
+              {title: translate('create_identifier_summary_card_identifier_type_label'), value: identifierData.data.type},
+              {title: translate('create_identifier_summary_card_did_method_label'), value: identifierData.data.method},
+              ...(identifierData.data.alias
+                ? [{title: translate('create_identifier_summary_card_alias_label'), value: identifierData.data.alias}]
+                : []),
+            ]}
+          />
+        )}
       </div>
       <SSITabView routes={routes} />
     </div>

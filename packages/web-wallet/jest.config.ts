@@ -12,7 +12,7 @@ const config: Config.InitialOptions = {
     '^@machines(/?.*)$': '<rootDir>/src/machines$1',
     '^@objectstorage(/?.*)$': '<rootDir>/src/helpers/ObjectStorage$1',
     '^@public(/?.*)$': '<rootDir>/public$1',
-    '^@types(/?.*)$': '<rootDir>/src/types$1',
+    '^@typings(/?.*)$': '<rootDir>/src/types$1',
   },
   extensionsToTreatAsEsm: ['.ts'],
   testEnvironment: 'jsdom',

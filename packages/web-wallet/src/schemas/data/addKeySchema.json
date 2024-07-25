@@ -3,11 +3,34 @@
   "properties": {
     "action": {
       "type": "string",
-      "enum": ["Generate new key"]
+      "oneOf": [
+        {
+          "const": "generate",
+          "title": "Generate new key"
+        }
+      ],
+      "default": "generate"
     },
     "type": {
       "type": "string",
-      "enum": ["Secp256r1"]
+      "oneOf": [
+        {
+          "const": "Secp256r1",
+          "title": "ES256 (Secp256r1)"
+        },
+        {
+          "const": "Secp256k1",
+          "title": "ES256k1 (Secp256k1)"
+        },
+        {
+          "const": "Ed25519",
+          "title": "Ed25519"
+        },
+        {
+          "const": "RSA",
+          "title": "RSA"
+        }
+      ]
     },
     "alias": {
       "type": "string"
@@ -15,9 +38,18 @@
     "key": {
       "type": "string",
       "oneOf": [
-        {"const": "key1", "title": "Key 1"},
-        {"const": "key2", "title": "Key 2"},
-        {"const": "key3", "title": "Key 3"}
+        {
+          "const": "key1",
+          "title": "Key 1"
+        },
+        {
+          "const": "key2",
+          "title": "Key 2"
+        },
+        {
+          "const": "key3",
+          "title": "Key 3"
+        }
       ]
     },
     "purposes": {
@@ -25,11 +57,26 @@
       "uniqueItems": true,
       "items": {
         "oneOf": [
-          {"const": "assertion", "title": "Assertion"},
-          {"const": "capabilityInvocation", "title": "Capability Invocation"},
-          {"const": "authentication", "title": "Authentication"},
-          {"const": "capabilityDelegation", "title": "Capability Delegation"},
-          {"const": "keyAgreement", "title": "Key Agreement"}
+          {
+            "const": "authentication",
+            "title": "Authentication"
+          },
+          {
+            "const": "assertionMethod",
+            "title": "Assertion Method"
+          },
+          {
+            "const": "capabilityInvocation",
+            "title": "Capability Invocation"
+          },
+          {
+            "const": "capabilityDelegation",
+            "title": "Capability Delegation"
+          },
+          {
+            "const": "keyAgreement",
+            "title": "Key Agreement"
+          }
         ]
       },
       "minItems": 1

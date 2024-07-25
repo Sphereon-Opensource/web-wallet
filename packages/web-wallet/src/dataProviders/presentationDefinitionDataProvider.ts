@@ -16,7 +16,7 @@ import {
 } from '@refinedev/core'
 import agent from '@agent'
 import {FindDefinitionArgs, PresentationDefinitionItem} from '@sphereon/ssi-sdk.data-store'
-import {DataResource} from '@types'
+import {DataResource} from '@typings'
 import {PresentationDefinitionItemFilter} from '@sphereon/ssi-sdk.data-store/src/types/presentationDefinition/presentationDefinition'
 import {FetchOptions} from '@sphereon/ssi-sdk.pd-manager'
 

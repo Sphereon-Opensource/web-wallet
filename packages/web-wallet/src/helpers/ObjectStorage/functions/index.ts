@@ -1,5 +1,5 @@
 import {FetchParameters, FileObject, SearchOptions, StorageClient} from '@supabase/storage-js'
-import {storage} from '@types'
+import {storage} from '@typings'
 import {IObjectCorrelation, IStoragePathResolver, ObjectStorageMode, StorageCorrelationType, StorageOptions} from '../types'
 import {WF_BUCKET_STORAGE_ID} from '@components/views/WorkflowApproveDocuments'
 

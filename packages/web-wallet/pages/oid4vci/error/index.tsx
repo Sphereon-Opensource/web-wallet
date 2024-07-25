@@ -2,7 +2,7 @@ import React, {ReactElement} from 'react'
 import {useLocation} from 'react-router-dom'
 import {useTranslate} from '@refinedev/core'
 import {PrimaryButton, WarningImage} from '@sphereon/ui-components.ssi-react'
-import {OID4VCINavigationEventListenerType} from '@types'
+import {OID4VCINavigationEventListenerType} from '@typings'
 import style from './index.module.css'
 import {staticPropsWithSST} from '../../../src/i18n/server'
 
