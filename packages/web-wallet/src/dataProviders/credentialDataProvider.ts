@@ -16,7 +16,7 @@ import {
 } from '@refinedev/core'
 import agent from '@agent'
 import {DigitalCredential, UpdateCredentialStateArgs} from '@sphereon/ssi-sdk.data-store'
-import {DataResource} from '@types'
+import {DataResource} from '@typings'
 import {FetchOptions} from '@sphereon/ssi-sdk.pd-manager'
 import {
   FindDigitalCredentialArgs
