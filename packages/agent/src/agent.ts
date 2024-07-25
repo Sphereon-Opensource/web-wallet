@@ -21,7 +21,7 @@ import {
   createDidResolver,
   expressBuilder,
   getDefaultDID,
-  getDefaultKid,
+  getDefaultKerRef,
   getOrCreateDIDsFromFS,
   getOrCreateDIDWebFromEnv,
 } from './utils'
@@ -190,7 +190,7 @@ await getOrCreateDIDsFromFS().catch((e) => console.log(`ERROR dids: ${e}`))
 
 const defaultDID = await getDefaultDID()
 console.log(`[DID] default DID: ${defaultDID}`)
-const defaultKid = await getDefaultKid({ did: defaultDID })
+const defaultKid = await getDefaultKerRef({ did: defaultDID })
 console.log(`[DID] default key identifier: ${defaultKid}`)
 if (!defaultDID || !defaultKid) {
   console.log('[DID] Agent has no default DID and Key Identifier!')
