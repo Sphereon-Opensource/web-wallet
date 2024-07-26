@@ -87,7 +87,8 @@ export class CredentialTableItem {
     const issuanceDateStr = formatDate(credential.createdAt as unknown as string) // FIXME use other REST client
     const expirationDateStr = formatDate(credential.validUntil as unknown as string) // FIXME use other REST client
 
-    const status = CredentialMapper.hasProof(JSON.parse(credential.uniformDocument))
+    const vc = JSON.parse(credential.uniformDocument ?? credential.rawDocument) as IVerifiableCredential // TODO create function for this in CredentialMapper
+    const status = CredentialMapper.hasProof(vc)
       ? credential.validUntil && new Date(credential.validUntil) < new Date()
         ? CredentialStatus.EXPIRED
         : CredentialStatus.VALID
@@ -99,7 +100,6 @@ export class CredentialTableItem {
       ...(credentialSummary?.branding?.background?.color && {backgroundColor: credentialSummary?.branding?.background?.color}),
     }
 
-    const vc = JSON.parse(credential.uniformDocument ?? credential.rawDocument) as IVerifiableCredential
     const vcType =
       (Array.isArray(vc.type)
         ? (vc.type as string[]).find(type => type !== 'VerifiableCredential')
