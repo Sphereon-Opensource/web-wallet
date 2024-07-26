@@ -18,19 +18,31 @@ import agent from '@agent'
 import {DigitalCredential, UpdateCredentialStateArgs} from '@sphereon/ssi-sdk.data-store'
 import {DataResource} from '@typings'
 import {FetchOptions} from '@sphereon/ssi-sdk.pd-manager'
-import {
-  FindDigitalCredentialArgs
-} from "@sphereon/ssi-sdk.data-store/dist/types/digitalCredential/IAbstractDigitalCredentialStore"
-import {OptionalUniqueDigitalCredential} from "@sphereon/ssi-sdk.credential-store"
-import {GetCredentialsByIdOrHashArgs} from "@sphereon/ssi-sdk.credential-store/dist/types/ICredentialStore"
-
+import {FindDigitalCredentialArgs} from '@sphereon/ssi-sdk.data-store/dist/types/digitalCredential/IAbstractDigitalCredentialStore'
+import {OptionalUniqueDigitalCredential} from '@sphereon/ssi-sdk.credential-store'
+import {GetCredentialsByIdOrHashArgs} from '@sphereon/ssi-sdk.credential-store/dist/types/ICredentialStore'
 
 export type DigitalCredentialFilter = Partial<DigitalCredential>
 
-const filterableFields: (keyof DigitalCredential)[] = ['id', 'tenantId', 'credentialRole', 'hash', 'createdAt', 'documentFormat',
-  'documentType', 'issuerCorrelationId', 'issuerCorrelationType', 'subjectCorrelationType', 'credentialRole', 'lastUpdatedAt',
-  'revokedAt', 'validFrom', 'validUntil', 'verifiedAt', 'verifiedState']
-
+const filterableFields: (keyof DigitalCredential)[] = [
+  'id',
+  'tenantId',
+  'credentialRole',
+  'hash',
+  'createdAt',
+  'documentFormat',
+  'documentType',
+  'issuerCorrelationId',
+  'issuerCorrelationType',
+  'subjectCorrelationType',
+  'credentialRole',
+  'lastUpdatedAt',
+  'revokedAt',
+  'validFrom',
+  'validUntil',
+  'verifiedAt',
+  'verifiedState',
+]
 
 const assertResource = (resource: string) => {
   if (resource != DataResource.CREDENTIALS) {
@@ -70,7 +82,7 @@ export const credentialDataProvider = (): DataProvider => ({
       fetchOptions.showVersionHistory = meta.variables.showVersionHistory
     }
 
-    const items: Array<DigitalCredential> = await agent.crsGetCredentials({ filter: findArgs })
+    const items: Array<DigitalCredential> = await agent.crsGetCredentials({filter: findArgs})
     // FIXME CWALL-234 there should be a better way for this but i could not find any yet without refine.dev not complaining
     const data: TData[] = items.map(item => ({...(item as any)}))
 
@@ -81,11 +93,11 @@ export const credentialDataProvider = (): DataProvider => ({
   },
   getOne: async <TData extends BaseRecord = BaseRecord>({resource, id, meta}: GetOneParams): Promise<GetOneResponse<TData>> => {
     assertResource(resource)
-console.log('== meta',  meta)
+    console.log('== meta', meta)
     if (meta === undefined || meta.variables === undefined || !('credentialRole' in meta.variables)) {
       return Promise.reject(Error('credentialRole not found in meta query'))
     }
-    const args: GetCredentialsByIdOrHashArgs = {credentialRole: meta.variables.credentialRole, idOrHash: id as string};
+    const args: GetCredentialsByIdOrHashArgs = {credentialRole: meta.variables.credentialRole, idOrHash: id as string}
     const credential: OptionalUniqueDigitalCredential = await agent.crsGetUniqueCredentialByIdOrHash(args)
     return {
       data: credential?.digitalCredential as unknown as TData,

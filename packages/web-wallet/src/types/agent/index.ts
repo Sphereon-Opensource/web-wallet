@@ -9,7 +9,7 @@ import {IEventLogger} from '@sphereon/ssi-sdk.event-logger'
 import {ISphereonKeyManager} from '@sphereon/ssi-sdk-ext.key-manager'
 import {IPDManager} from '@sphereon/ssi-sdk.pd-manager'
 import {IDidAuthSiopOpAuthenticator} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
-import {ICredentialStore} from "@sphereon/ssi-sdk.credential-store";
+import {ICredentialStore} from '@sphereon/ssi-sdk.credential-store'
 import {IEbsiSupport} from '@sphereon/ssi-sdk.ebsi-support'
 
 export type TAgentTypes = IResolver &

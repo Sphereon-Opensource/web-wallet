@@ -20,7 +20,7 @@ import {staticPropsWithSST} from '@/src/i18n/server'
 import agent from '@agent'
 
 import {CredentialSummary, toCredentialSummary} from '@sphereon/ui-components.credential-branding'
-import {DigitalCredential} from "@sphereon/ssi-sdk.credential-store";
+import {DigitalCredential} from '@sphereon/ssi-sdk.credential-store'
 import {VerifiableCredential} from '@veramo/core'
 
 enum CredentialDetailsTabRoute {
@@ -60,19 +60,19 @@ type DocumentItem = {
 const truncationLength: number = process.env.NEXT_PUBLIC_TRUNCATION_LENGTH ? Number(process.env.NEXT_PUBLIC_TRUNCATION_LENGTH) : 8
 
 type Props = {
-  credentialRole: CredentialRole,
+  credentialRole: CredentialRole
 }
 
 const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
   const {credentialRole} = props
   const translate = useTranslate()
-  const params = useParams();
+  const params = useParams()
   const {id} = params
   const [credentialSummary, setCredentialSummary] = useState<CredentialSummary | undefined>(undefined)
   const credentialResult = useOne<DigitalCredential, HttpError>({
     resource: DataResource.CREDENTIALS,
     id,
-    meta: {variables: { credentialRole: credentialRole}}
+    meta: {variables: {credentialRole: credentialRole}},
   })
 
   const partyResults = useList<Party, HttpError>({resource: 'parties'})
@@ -145,11 +145,18 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
     if ('id' in credentialSubject && credentialSubject.id.startsWith('did:')) {
       delete credentialSubject.id
     }
-    const termsOfUse = credentialSummary.termsOfUse?.length ? credentialSummary.termsOfUse.length === 1 ? credentialSummary.termsOfUse[0]: credentialSummary.termsOfUse : undefined
+    const termsOfUse = credentialSummary.termsOfUse?.length
+      ? credentialSummary.termsOfUse.length === 1
+        ? credentialSummary.termsOfUse[0]
+        : credentialSummary.termsOfUse
+      : undefined
     return (
       <div className={style.tabViewContentContainer}>
         <div className={style.verifiedInformationDataContainer}>
-          <JSONDataView data={ {type: credentialSummary.title ,issuer: credentialSummary.issuer,  ...(termsOfUse && {termsOfUse}), ...credentialSubject} } shouldExpandNodeInitially={true} />
+          <JSONDataView
+            data={{type: credentialSummary.title, issuer: credentialSummary.issuer, ...(termsOfUse && {termsOfUse}), ...credentialSubject}}
+            shouldExpandNodeInitially={true}
+          />
         </div>
         <SSICredentialCardView
           header={{
@@ -161,7 +168,7 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
           }}
           footer={{
             credentialStatus: credentialTableItem.status,
-            expirationDate: credentialSummary.expirationDate
+            expirationDate: credentialSummary.expirationDate,
           }}
           display={{
             backgroundColor: credentialSummary.branding?.background?.color,

@@ -4,7 +4,7 @@ import { CredentialPayload, DIDDocument } from '@veramo/core'
 import { CredentialMapper, ICredential, OriginalVerifiableCredential } from '@sphereon/ssi-types'
 import agent, { context } from '../agent'
 import { decodeJWT } from 'did-jwt'
-import {CredentialRole} from "@sphereon/ssi-sdk.data-store";
+import { CredentialRole } from '@sphereon/ssi-sdk.data-store'
 
 export async function defaultCredentialDataSupplier(args: CredentialDataSupplierArgs): Promise<CredentialDataSupplierResult> {
   const { credentialDataSupplierInput, credentialRequest, credentialOffer, issuerState, preAuthorizedCode } = args
@@ -18,7 +18,7 @@ export async function defaultCredentialDataSupplier(args: CredentialDataSupplier
     // todo: move to new credential storage implementation
     const credentialResult = await agent.crsGetUniqueCredentialByIdOrHash({
       credentialRole: CredentialRole.HOLDER,
-      idOrHash: hashOrId
+      idOrHash: hashOrId,
     })
     if (!credentialResult?.originalCredential) {
       throw Error(`Could not get credential for id ${hashOrId}`)

@@ -158,8 +158,8 @@ const singleContextToString = (item: ICredentialContextType): string => {
     if (name) parts.push(name)
     if (did) parts.push(did)
     const additionalStr = Object.entries(additional)
-        .map(([key, value]) => `${key}: ${value}`)
-        .join(', ')
+      .map(([key, value]) => `${key}: ${value}`)
+      .join(', ')
     if (additionalStr) parts.push(additionalStr)
     return parts.join(', ')
   }

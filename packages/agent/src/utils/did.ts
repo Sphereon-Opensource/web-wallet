@@ -97,9 +97,12 @@ export async function getDefaultKerRef({
     (await getAgentResolver(context)
       .resolve(identifier.did)
       .then((result) => result.didDocument ?? undefined)) ?? undefined
-  let keys = await mapIdentifierKeysToDocWithJwkSupport({identifier, vmRelationship: verificationMethodName ?? 'assertionMethod', didDocument}, context)
+  let keys = await mapIdentifierKeysToDocWithJwkSupport(
+    { identifier, vmRelationship: verificationMethodName ?? 'assertionMethod', didDocument },
+    context,
+  )
   if (keys.length === 0 && (verificationMethodFallback === undefined || verificationMethodFallback)) {
-    keys = await mapIdentifierKeysToDocWithJwkSupport({identifier, vmRelationship: 'verificationMethod', didDocument}, context)
+    keys = await mapIdentifierKeysToDocWithJwkSupport({ identifier, vmRelationship: 'verificationMethod', didDocument }, context)
   }
   if (keys.length === 0) {
     return undefined

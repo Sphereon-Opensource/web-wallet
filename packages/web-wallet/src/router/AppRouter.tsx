@@ -65,7 +65,7 @@ import OID4VPStateMachineComponent from '../../pages/siopv2'
 import InformationRequestPage from '../../pages/siopv2/informationRequest'
 import Siopv2ErrorPage from '@/pages/siopv2/error'
 import {NavigationProvider} from './NavigationContext'
-import {CredentialRole} from "@sphereon/ssi-sdk.data-store";
+import {CredentialRole} from '@sphereon/ssi-sdk.data-store'
 
 const KeycloakLoginPage = (props: PropsWithChildren<any>) => {
   const {mutate: login} = useLogin()

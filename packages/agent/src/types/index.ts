@@ -18,7 +18,7 @@ import { IPDManager } from '@sphereon/ssi-sdk.pd-manager'
 import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { IPEXInstanceOptions } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { ISIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
-import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store';
+import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
 
 export const DID_PREFIX = 'did'
 

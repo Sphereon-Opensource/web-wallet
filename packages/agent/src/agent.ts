@@ -1,95 +1,89 @@
-import {createAgent, IAgentContext, IAgentPlugin, ProofFormat, TAgent} from '@veramo/core'
+import { createAgent, IAgentContext, IAgentPlugin, ProofFormat, TAgent } from '@veramo/core'
 import {
-    CredentialHandlerLDLocal,
-    LdDefaultContexts,
-    MethodNames,
-    SphereonEcdsaSecp256k1RecoverySignature2020,
-    SphereonEd25519Signature2018,
-    SphereonEd25519Signature2020,
-    SphereonJsonWebSignature2020,
+  CredentialHandlerLDLocal,
+  LdDefaultContexts,
+  MethodNames,
+  SphereonEcdsaSecp256k1RecoverySignature2020,
+  SphereonEd25519Signature2018,
+  SphereonEd25519Signature2020,
+  SphereonJsonWebSignature2020,
 } from '@sphereon/ssi-sdk.vc-handler-ld-local'
-import {CredentialPlugin} from '@veramo/credential-w3c'
-import {DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore} from '@veramo/data-store'
-import {DIDManager} from '@veramo/did-manager'
-import {DIDResolverPlugin} from '@veramo/did-resolver'
-import {SphereonKeyManager} from '@sphereon/ssi-sdk-ext.key-manager'
-import {SecretBox} from '@veramo/kms-local'
-import {SphereonKeyManagementSystem} from '@sphereon/ssi-sdk-ext.kms-local'
-import {getDbConnection} from './database'
+import { CredentialPlugin } from '@veramo/credential-w3c'
+import { DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore } from '@veramo/data-store'
+import { DIDManager } from '@veramo/did-manager'
+import { DIDResolverPlugin } from '@veramo/did-resolver'
+import { SphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
+import { SecretBox } from '@veramo/kms-local'
+import { SphereonKeyManagementSystem } from '@sphereon/ssi-sdk-ext.kms-local'
+import { getDbConnection } from './database'
 import {
-    createDidProviders,
-    createDidResolver,
-    expressBuilder,
-    getDefaultDID,
-    getDefaultKerRef,
-    getOrCreateDIDsFromFS,
-    getOrCreateDIDWebFromEnv,
+  createDidProviders,
+  createDidResolver,
+  expressBuilder,
+  getDefaultDID,
+  getDefaultKerRef,
+  getOrCreateDIDsFromFS,
+  getOrCreateDIDWebFromEnv,
 } from './utils'
 import {
-    ASSET_DEFAULT_DID_METHOD,
-    AUTHENTICATION_ENABLED,
-    AUTHENTICATION_STRATEGY,
-    AUTHORIZATION_ENABLED,
-    AUTHORIZATION_GLOBAL_REQUIRE_USER_IN_ROLES,
-    CONTACT_MANAGER_API_FEATURES,
-    DB_CONNECTION_NAME,
-    DB_ENCRYPTION_KEY,
-    DID_API_BASE_PATH,
-    DID_API_FEATURES,
-    DID_API_RESOLVE_MODE,
-    DID_WEB_SERVICE_FEATURES,
-    INTERNAL_PORT,
-    IS_CONTACT_MANAGER_ENABLED,
-    IS_JWKS_HOSTING_ENABLED,
-    IS_OID4VCI_ENABLED,
-    IS_OID4VP_ENABLED,
-    IS_VC_API_ENABLED,
-    OID4VCI_API_BASE_URL,
-    oid4vciInstanceOpts,
-    oid4vciMetadataOpts,
-    OID4VP_DEFINITIONS,
-    REMOTE_SERVER_API_FEATURES,
-    STATUS_LIST_API_BASE_PATH,
-    STATUS_LIST_API_FEATURES,
-    STATUS_LIST_CORRELATION_ID,
-    syncDefinitionsOpts,
-    VC_API_BASE_PATH,
-    VC_API_DEFAULT_PROOF_FORMAT,
-    VC_API_FEATURES,
+  ASSET_DEFAULT_DID_METHOD,
+  AUTHENTICATION_ENABLED,
+  AUTHENTICATION_STRATEGY,
+  AUTHORIZATION_ENABLED,
+  AUTHORIZATION_GLOBAL_REQUIRE_USER_IN_ROLES,
+  CONTACT_MANAGER_API_FEATURES,
+  DB_CONNECTION_NAME,
+  DB_ENCRYPTION_KEY,
+  DID_API_BASE_PATH,
+  DID_API_FEATURES,
+  DID_API_RESOLVE_MODE,
+  DID_WEB_SERVICE_FEATURES,
+  INTERNAL_PORT,
+  IS_CONTACT_MANAGER_ENABLED,
+  IS_JWKS_HOSTING_ENABLED,
+  IS_OID4VCI_ENABLED,
+  IS_OID4VP_ENABLED,
+  IS_VC_API_ENABLED,
+  OID4VCI_API_BASE_URL,
+  oid4vciInstanceOpts,
+  oid4vciMetadataOpts,
+  OID4VP_DEFINITIONS,
+  REMOTE_SERVER_API_FEATURES,
+  STATUS_LIST_API_BASE_PATH,
+  STATUS_LIST_API_FEATURES,
+  STATUS_LIST_CORRELATION_ID,
+  syncDefinitionsOpts,
+  VC_API_BASE_PATH,
+  VC_API_DEFAULT_PROOF_FORMAT,
+  VC_API_FEATURES,
 } from './environment'
-import {VcApiServer} from '@sphereon/ssi-sdk.w3c-vc-api'
-import {UniResolverApiServer} from '@sphereon/ssi-sdk.uni-resolver-registrar-api'
-import {DID_PREFIX, DIDMethods, TAgentTypes} from './types'
-import {DidWebServer} from '@sphereon/ssi-sdk.uni-resolver-registrar-api/dist/did-web-server'
-import {StatuslistManagementApiServer} from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
-import {ContactManagerApiServer} from '@sphereon/ssi-sdk.contact-manager-rest-api'
-import {ContactManager} from '@sphereon/ssi-sdk.contact-manager'
-import {
-    ContactStore,
-    DigitalCredentialStore,
-    EventLoggerStore,
-    IssuanceBrandingStore,
-    PDStore
-} from '@sphereon/ssi-sdk.data-store'
-import {IIssuerInstanceArgs, OID4VCIIssuer} from '@sphereon/ssi-sdk.oid4vci-issuer'
-import {OID4VCIStore} from '@sphereon/ssi-sdk.oid4vci-issuer-store'
-import {IRequiredContext, OID4VCIRestAPI} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
-import {IOID4VCIRestAPIOpts} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
-import {EventLogger} from '@sphereon/ssi-sdk.event-logger'
-import {RemoteServerApiServer} from '@sphereon/ssi-sdk.remote-server-rest-api'
-import {defaultCredentialDataSupplier} from './credentials/dataSuppliers'
-import {IssuanceBranding, issuanceBrandingMethods} from '@sphereon/ssi-sdk.issuance-branding'
-import {PDManager} from '@sphereon/ssi-sdk.pd-manager'
-import {LoggingEventType} from '@sphereon/ssi-types'
-import {createOID4VPRP} from './utils/oid4vp'
-import {IPresentationDefinition} from '@sphereon/pex'
-import {PresentationExchange} from '@sphereon/ssi-sdk.presentation-exchange'
-import {ISIOPv2RPRestAPIOpts, SIOPv2RPApiServer} from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-api'
-import {DidAuthSiopOpAuthenticator} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
-import {PublicKeyHosting} from "@sphereon/ssi-sdk.public-key-hosting";
-import {CredentialStore} from '@sphereon/ssi-sdk.credential-store';
-import {EbsiSupport} from '@sphereon/ssi-sdk.ebsi-support'
-import {OID4VCIHolder} from '@sphereon/ssi-sdk.oid4vci-holder'
+import { VcApiServer } from '@sphereon/ssi-sdk.w3c-vc-api'
+import { UniResolverApiServer } from '@sphereon/ssi-sdk.uni-resolver-registrar-api'
+import { DID_PREFIX, DIDMethods, TAgentTypes } from './types'
+import { DidWebServer } from '@sphereon/ssi-sdk.uni-resolver-registrar-api/dist/did-web-server'
+import { StatuslistManagementApiServer } from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
+import { ContactManagerApiServer } from '@sphereon/ssi-sdk.contact-manager-rest-api'
+import { ContactManager } from '@sphereon/ssi-sdk.contact-manager'
+import { ContactStore, DigitalCredentialStore, EventLoggerStore, IssuanceBrandingStore, PDStore } from '@sphereon/ssi-sdk.data-store'
+import { IIssuerInstanceArgs, OID4VCIIssuer } from '@sphereon/ssi-sdk.oid4vci-issuer'
+import { OID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
+import { IRequiredContext, OID4VCIRestAPI } from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
+import { IOID4VCIRestAPIOpts } from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
+import { EventLogger } from '@sphereon/ssi-sdk.event-logger'
+import { RemoteServerApiServer } from '@sphereon/ssi-sdk.remote-server-rest-api'
+import { defaultCredentialDataSupplier } from './credentials/dataSuppliers'
+import { IssuanceBranding, issuanceBrandingMethods } from '@sphereon/ssi-sdk.issuance-branding'
+import { PDManager } from '@sphereon/ssi-sdk.pd-manager'
+import { LoggingEventType } from '@sphereon/ssi-types'
+import { createOID4VPRP } from './utils/oid4vp'
+import { IPresentationDefinition } from '@sphereon/pex'
+import { PresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
+import { ISIOPv2RPRestAPIOpts, SIOPv2RPApiServer } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-api'
+import { DidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
+import { PublicKeyHosting } from '@sphereon/ssi-sdk.public-key-hosting'
+import { CredentialStore } from '@sphereon/ssi-sdk.credential-store'
+import { EbsiSupport } from '@sphereon/ssi-sdk.ebsi-support'
+import { OID4VCIHolder } from '@sphereon/ssi-sdk.oid4vci-holder'
 
 /**
  * Lets setup supported DID resolvers first
@@ -150,7 +144,7 @@ const plugins: IAgentPlugin[] = [
   new PDManager({
     store: new PDStore(dbConnection),
   }),
-    new CredentialStore({store: new DigitalCredentialStore(dbConnection)}),
+  new CredentialStore({ store: new DigitalCredentialStore(dbConnection) }),
   new DidAuthSiopOpAuthenticator(),
   new OID4VCIHolder({}),
   new EbsiSupport(),
@@ -324,7 +318,7 @@ if (!cliMode) {
           enabled: DID_WEB_SERVICE_FEATURES.includes('did-web-global-resolution'),
           // TODO: This does limit hosting to the frontend only, whilst the agent could be behind multiple reverse proxy
           // Reason is that nextjs rewrites return the internal IP address instead of the original
-          ...(process?.env?.NEXT_PUBLIC_CLIENT_ID && {hostname: process.env.NEXT_PUBLIC_CLIENT_ID.replace('https://', '').replace('http://', '')}),
+          ...(process?.env?.NEXT_PUBLIC_CLIENT_ID && { hostname: process.env.NEXT_PUBLIC_CLIENT_ID.replace('https://', '').replace('http://', '') }),
         },
         enableFeatures: DID_WEB_SERVICE_FEATURES,
       },

@@ -10,7 +10,7 @@ export function getMatchingIdentities(parties: Party[], did: string): Array<{ide
   const ids = parties
     .map(party => {
       const identity = party.identities.find(identity => {
-          return identity.identifier.correlationId === checkDid
+        return identity.identifier.correlationId === checkDid
       })
       if (identity) {
         return {identity, party}

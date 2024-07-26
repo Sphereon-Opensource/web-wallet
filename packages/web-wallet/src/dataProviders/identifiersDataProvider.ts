@@ -138,7 +138,7 @@ export const identifiersDataProvider = (): DataProvider => ({
         credentialIssuer: ebsi?.tao?.url!,
         jwksUri,
         environment: network as EbsiEnvironment,
-        attestationToOnboardCredentialRole: CredentialRole.HOLDER
+        attestationToOnboardCredentialRole: CredentialRole.HOLDER,
       }
     }
 

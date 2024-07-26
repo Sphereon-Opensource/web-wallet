@@ -14,7 +14,7 @@ import {InputDescriptorV2} from '@sphereon/pex-models'
 import Debug, {Debugger} from 'debug'
 import {SelectableCredential} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth/src/types/siop-service'
 import {toCredentialSummary} from '@sphereon/ui-components.credential-branding'
-import {UniqueDigitalCredential} from "@sphereon/ssi-sdk.credential-store";
+import {UniqueDigitalCredential} from '@sphereon/ssi-sdk.credential-store'
 import {VerifiableCredential} from '@veramo/core'
 
 const debug: Debugger = Debug('sphereon:cloud-wallet:CredentialSelectionView')

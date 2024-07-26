@@ -5,9 +5,9 @@ import {CredentialSummary} from '@sphereon/ui-components.credential-branding'
 import {getMatchingIdentity} from '@helpers/IdentityFilters'
 import {formatDate} from '@helpers/date/DateHelper'
 import {CredentialMapper} from '@sphereon/ssi-types'
-import {IVerifiableCredential} from "@sphereon/ssi-types";
-import {DigitalCredential} from "@sphereon/ssi-sdk.credential-store";
-import {contextToString} from "@helpers/Credentials/CredentialsHelper";
+import {IVerifiableCredential} from '@sphereon/ssi-types'
+import {DigitalCredential} from '@sphereon/ssi-sdk.credential-store'
+import {contextToString} from '@helpers/Credentials/CredentialsHelper'
 
 export type Credential = {
   hash: string
@@ -99,9 +99,12 @@ export class CredentialTableItem {
       ...(credentialSummary?.branding?.background?.color && {backgroundColor: credentialSummary?.branding?.background?.color}),
     }
 
-    const vc = JSON.parse(credential.uniformDocument ?? credential.rawDocument ) as IVerifiableCredential
-    const vcType = (Array.isArray(vc.type) ? (vc.type as string[]).find(type => type !== 'VerifiableCredential')
-        : (vc.type as string).split(',')
+    const vc = JSON.parse(credential.uniformDocument ?? credential.rawDocument) as IVerifiableCredential
+    const vcType =
+      (Array.isArray(vc.type)
+        ? (vc.type as string[]).find(type => type !== 'VerifiableCredential')
+        : (vc.type as string)
+            .split(',')
             .filter(type => type !== 'VerifiableCredential')
             .join(',')) ?? ''
     return new CredentialTableItem({
@@ -110,7 +113,7 @@ export class CredentialTableItem {
       createdStr: issuanceDateStr,
       validFromStr: issuanceDateStr,
       expirationDateStr,
-      context: contextToString(vc["@context"]),
+      context: contextToString(vc['@context']),
       type: vcType,
       issuer: issuerPartyIdentity.party,
       subject: subjectParty,

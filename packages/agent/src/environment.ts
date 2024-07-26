@@ -17,11 +17,11 @@ import { loadJsonFiles } from './utils'
 import { IDIDOpts, OID4VPInstanceOpts } from './types'
 import { IPresentationDefinition } from '@sphereon/pex'
 import { didAuthSiopOpAuthenticatorMethods } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
-import { credentialStoreMethods } from '@sphereon/ssi-sdk.credential-store';
+import { credentialStoreMethods } from '@sphereon/ssi-sdk.credential-store'
 
 await dotenvConfig()
 
-const toBoolean = (value: string | undefined, defaultValue?: boolean): boolean => (value === undefined ? defaultValue ?? true : value === 'true')
+const toBoolean = (value: string | undefined, defaultValue?: boolean): boolean => (value === undefined ? (defaultValue ?? true) : value === 'true')
 
 /**
  * Please see .env.example for an explanation of the different environment variables available
@@ -86,7 +86,7 @@ export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATU
       ...ebsiSupportMethods,
       ...issuanceBrandingMethods,
       ...pdManagerMethods,
-        ...credentialStoreMethods,
+      ...credentialStoreMethods,
     ]
 export const IS_JWKS_HOSTING_ENABLED = toBoolean(process.env.JWKS_HOSTING_ENABLED, true)
 

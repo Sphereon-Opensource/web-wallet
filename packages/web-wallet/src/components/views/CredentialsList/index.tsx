@@ -12,8 +12,8 @@ import {CredentialMapper, OriginalVerifiableCredential} from '@sphereon/ssi-type
 import {VerifiableCredential} from '@veramo/core'
 
 type Props = {
-  credentialRole: CredentialRole,
-  allowIssueCredential?: boolean,
+  credentialRole: CredentialRole
+  allowIssueCredential?: boolean
 }
 
 const CredentialsList: FC<Props> = (props: Props): ReactElement => {
@@ -44,16 +44,18 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
     meta: {
       idColumnName: 'hash',
     },
-    filters: [{
-      field: 'credentialRole',
-      operator: 'eq',
-      value: credentialRole,
-    },
+    filters: [
+      {
+        field: 'credentialRole',
+        operator: 'eq',
+        value: credentialRole,
+      },
       {
         field: 'documentType',
         operator: 'eq',
         value: 'VC',
-      }]
+      },
+    ],
   })
 
   const {data: partyData, isLoading: partiesLoading, isError: partiesError} = useList<Party, HttpError>({resource: 'parties'})
@@ -68,14 +70,12 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
       try {
         const credentialBrandings = await agent.ibGetCredentialBranding()
         const newCredentialTableItems = await Promise.all(
-          digitalCredentials.map(async (credential:DigitalCredential) => {
+          digitalCredentials.map(async (credential: DigitalCredential) => {
             const filteredCredentialBrandings = credentialBrandings.filter(cb => cb.vcHash === credential.hash)
-            const issuerPartyIdentity = credential.issuerCorrelationId !== undefined
-                ? getMatchingIdentity(partyData.data, credential.issuerCorrelationId)
-                : undefined
-            const subjectPartyIdentity = credential.subjectCorrelationId !== undefined
-                ? getMatchingIdentity(partyData.data, credential.subjectCorrelationId)
-                : undefined
+            const issuerPartyIdentity =
+              credential.issuerCorrelationId !== undefined ? getMatchingIdentity(partyData.data, credential.issuerCorrelationId) : undefined
+            const subjectPartyIdentity =
+              credential.subjectCorrelationId !== undefined ? getMatchingIdentity(partyData.data, credential.subjectCorrelationId) : undefined
             const originalVerifiableCredential = JSON.parse(credential.uniformDocument ?? credential.rawDocument) as OriginalVerifiableCredential
             const credentialSummary = await toCredentialSummary(
               originalVerifiableCredential as VerifiableCredential,
@@ -88,7 +88,7 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
             return CredentialTableItem.from(credential, partyData.data, credentialSummary)
           }),
         )
-console.log('newCredentialTableItems items', newCredentialTableItems.length)
+        console.log('newCredentialTableItems items', newCredentialTableItems.length)
         setCredentialTableItems(newCredentialTableItems)
       } catch (error) {
         console.error(error)

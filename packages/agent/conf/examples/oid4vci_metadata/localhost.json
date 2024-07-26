@@ -60,10 +60,7 @@
         ],
         "format": "jwt_vc_json",
         "credential_definition": {
-          "type": [
-            "VerifiableCredential",
-            "NaturalPerson"
-          ]
+          "type": ["VerifiableCredential", "NaturalPerson"]
         },
         "cryptographic_binding_methods_supported": ["did:web", "did:jwk", "did:ion"],
         "cryptographic_suites_supported": ["ES256", "ES256K1"]
@@ -117,10 +114,7 @@
         ],
         "format": "jwt_vc_json",
         "credential_definition": {
-          "type": [
-            "VerifiableCredential",
-            "UBO"
-          ]
+          "type": ["VerifiableCredential", "UBO"]
         },
         "cryptographic_binding_methods_supported": ["did:web", "did:jwk", "did:ion"],
         "cryptographic_suites_supported": ["ES256", "ES256K1"]
@@ -478,128 +472,118 @@
             },
             "format": "jwt_vc_json",
             "cryptographic_binding_methods_supported": ["did:jwk"],
-            "cryptographic_suites_supported": [
-              "ES256"
-            ]
+            "cryptographic_suites_supported": ["ES256"]
           }
         ]
-          },
+      },
       "Omzetbelasting": {
-            "display": [
-              {
-                "name": "Omzetbelasting",
-                "description": "Omzetbelastingverklaring Belastingdienst",
-                "background_color": "rgba(0, 0, 0, 0.2)",
-                "text_color": "#FBFBFB",
-                "logo": {
-                  "url": "https://i.ibb.co/pyZpF8m/Belastingdienst.png",
-                  "alt_text": "Belastingdienst logo"
-                },
-                "background_image": {
-                  "url": "https://i.ibb.co/c6hQwRP/hector-j-rivas.jpg",
-                  "alt_text": "Mirrors background"
-                }
-              },
-              {
-                "locale": "en-US",
-                "name": "Tax registration statement",
-                "description": "Tax registration statement Belastingdienst",
-                "background_color": "rgba(0, 0, 0, 0.2)",
-                "text_color": "#FBFBFB",
-                "logo": {
-                  "url": "https://i.ibb.co/pyZpF8m/Belastingdienst.png",
-                  "alt_text": "Belastingdienst logo"
-                },
-                "background_image": {
-                  "url": "https://i.ibb.co/c6hQwRP/hector-j-rivas.jpg",
-                  "alt_text": "Mirrors background"
-                }
-              },
-              {
-                "locale": "nl-NL",
-                "name": "Omzetbelasting",
-                "description": "Omzetbelastingverklaring Belastingdienst",
-                "background_color": "rgba(0, 0, 0, 0.2)",
-                "text_color": "#FBFBFB",
-                "logo": {
-                  "url": "https://i.ibb.co/pyZpF8m/Belastingdienst.png",
-                  "alt_text": "Belastingdienst logo"
-                },
-                "background_image": {
-                  "url": "https://i.ibb.co/c6hQwRP/hector-j-rivas.jpg",
-                  "alt_text": "Mirrors background"
-                }
-              }
-            ],
-            "credential_definition": {
-              "type": [
-                "VerifiableCredential",
-                "Omzetbelasting"
-              ]
-            },
-            "format": "jwt_vc_json",
-            "cryptographic_binding_methods_supported": ["did:jwk"],
-        "cryptographic_suites_supported": [
-          "ES256"
-        ]
-      }
-          },
-    "CertificationOfOrigin": {
-      "display": [
+        "display": [
           {
-            "name": "Certificate of Origin",
-            "description": "Certificate of Origin",
+            "name": "Omzetbelasting",
+            "description": "Omzetbelastingverklaring Belastingdienst",
             "background_color": "rgba(0, 0, 0, 0.2)",
             "text_color": "#FBFBFB",
             "logo": {
-              "url": "https://web-wallet.demo.sphereon.com/images/card_logo.png",
-              "alt_text": "RWS Logo"
+              "url": "https://i.ibb.co/pyZpF8m/Belastingdienst.png",
+              "alt_text": "Belastingdienst logo"
             },
             "background_image": {
-              "url": "https://web-wallet.demo.sphereon.com/images/card_background.png",
-              "alt_text": "RWS background"
+              "url": "https://i.ibb.co/c6hQwRP/hector-j-rivas.jpg",
+              "alt_text": "Mirrors background"
             }
           },
           {
             "locale": "en-US",
-            "name": "Certificate of Origin",
-            "description": "Certificate of Origin",
+            "name": "Tax registration statement",
+            "description": "Tax registration statement Belastingdienst",
             "background_color": "rgba(0, 0, 0, 0.2)",
             "text_color": "#FBFBFB",
             "logo": {
-              "url": "https://web-wallet.demo.sphereon.com/images/card_logo.png",
-              "alt_text": "RWS Logo"
+              "url": "https://i.ibb.co/pyZpF8m/Belastingdienst.png",
+              "alt_text": "Belastingdienst logo"
             },
             "background_image": {
-              "url": "https://web-wallet.demo.sphereon.com/images/card_background.png",
-              "alt_text": "RWS background"
+              "url": "https://i.ibb.co/c6hQwRP/hector-j-rivas.jpg",
+              "alt_text": "Mirrors background"
             }
           },
           {
             "locale": "nl-NL",
-            "name": "Certificaat van oorsprong",
-            "description": "Certificaat van oorsprong",
+            "name": "Omzetbelasting",
+            "description": "Omzetbelastingverklaring Belastingdienst",
             "background_color": "rgba(0, 0, 0, 0.2)",
             "text_color": "#FBFBFB",
             "logo": {
-              "url": "https://web-wallet.demo.sphereon.com/images/card_logo.png",
-              "alt_text": "RWS Logo"
+              "url": "https://i.ibb.co/pyZpF8m/Belastingdienst.png",
+              "alt_text": "Belastingdienst logo"
             },
             "background_image": {
-              "url": "https://web-wallet.demo.sphereon.com/images/card_background.png",
-              "alt_text": "RWS background"
+              "url": "https://i.ibb.co/c6hQwRP/hector-j-rivas.jpg",
+              "alt_text": "Mirrors background"
             }
           }
         ],
         "credential_definition": {
-          "type": ["VerifiableCredential", "CertificationOfOrigin"]
+          "type": ["VerifiableCredential", "Omzetbelasting"]
         },
         "format": "jwt_vc_json",
-        "cryptographic_binding_methods_supported": ["did:web", "did:jwk", "did:ion"],
-      "cryptographic_suites_supported": [
-        "ES256",
-        "ES256K1"
-      ]
+        "cryptographic_binding_methods_supported": ["did:jwk"],
+        "cryptographic_suites_supported": ["ES256"]
+      }
+    },
+    "CertificationOfOrigin": {
+      "display": [
+        {
+          "name": "Certificate of Origin",
+          "description": "Certificate of Origin",
+          "background_color": "rgba(0, 0, 0, 0.2)",
+          "text_color": "#FBFBFB",
+          "logo": {
+            "url": "https://web-wallet.demo.sphereon.com/images/card_logo.png",
+            "alt_text": "RWS Logo"
+          },
+          "background_image": {
+            "url": "https://web-wallet.demo.sphereon.com/images/card_background.png",
+            "alt_text": "RWS background"
+          }
+        },
+        {
+          "locale": "en-US",
+          "name": "Certificate of Origin",
+          "description": "Certificate of Origin",
+          "background_color": "rgba(0, 0, 0, 0.2)",
+          "text_color": "#FBFBFB",
+          "logo": {
+            "url": "https://web-wallet.demo.sphereon.com/images/card_logo.png",
+            "alt_text": "RWS Logo"
+          },
+          "background_image": {
+            "url": "https://web-wallet.demo.sphereon.com/images/card_background.png",
+            "alt_text": "RWS background"
+          }
+        },
+        {
+          "locale": "nl-NL",
+          "name": "Certificaat van oorsprong",
+          "description": "Certificaat van oorsprong",
+          "background_color": "rgba(0, 0, 0, 0.2)",
+          "text_color": "#FBFBFB",
+          "logo": {
+            "url": "https://web-wallet.demo.sphereon.com/images/card_logo.png",
+            "alt_text": "RWS Logo"
+          },
+          "background_image": {
+            "url": "https://web-wallet.demo.sphereon.com/images/card_background.png",
+            "alt_text": "RWS background"
+          }
+        }
+      ],
+      "credential_definition": {
+        "type": ["VerifiableCredential", "CertificationOfOrigin"]
+      },
+      "format": "jwt_vc_json",
+      "cryptographic_binding_methods_supported": ["did:web", "did:jwk", "did:ion"],
+      "cryptographic_suites_supported": ["ES256", "ES256K1"]
     }
   }
 }
