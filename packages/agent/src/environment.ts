@@ -32,6 +32,7 @@ const toBoolean = (value: string | undefined, defaultValue?: boolean): boolean =
 export const ENV_VAR_PREFIX = process.env.ENV_VAR_PREFIX ?? ''
 export const DB_TYPE = env('DB_TYPE', ENV_VAR_PREFIX) ?? 'postgres'
 //#DB_URL="database/agent_default.sqlite"
+//#DB_URL="'postgresql://postgres:your-super-secret-and-long-postgres-password@127.0.0.1:5432/postgres"
 export const DB_URL = env('DB_URL', ENV_VAR_PREFIX) // Using DB_URL is optional
 export const DB_HOST = env('DB_HOST', ENV_VAR_PREFIX)
 export const DB_PORT = env('DB_PORT', ENV_VAR_PREFIX)
