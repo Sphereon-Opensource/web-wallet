@@ -15,14 +15,13 @@ import {
 } from '../environment'
 import {PostgresConnectionOptions} from 'typeorm/driver/postgres/PostgresConnectionOptions'
 import {TlsOptions} from 'tls'
-import {DataStoreEntities, DataStoreMigrations} from '@sphereon/ssi-sdk.data-store'
 import {WebWalletMigrations} from './migrations'
 import {SqliteConnectionOptions} from 'typeorm/driver/sqlite/SqliteConnectionOptions'
 import {
   DataStoreContactEntities, DataStoreDigitalCredentialEntities, DataStoreEventLoggerEntities,
   DataStoreIssuanceBrandingEntities, DataStoreMachineStateEntities, DataStorePresentationDefinitionEntities,
   DataStoreStatusListEntities,
-} from '@sphereon/ssi-sdk.data-store/src'
+} from '@sphereon/ssi-sdk.data-store'
 import {
   DataStoreContactMigrations,
   DataStoreDigitalCredentialMigrations,
@@ -31,7 +30,7 @@ import {
   DataStoreMachineStateMigrations,
   DataStorePresentationDefinitionMigrations,
   DataStoreStatusListMigrations,
-} from '@sphereon/ssi-sdk.data-store/src/migrations/generic'
+} from '@sphereon/ssi-sdk.data-store'
 
 if (!process.env.DB_ENCRYPTION_KEY) {
   console.warn(
