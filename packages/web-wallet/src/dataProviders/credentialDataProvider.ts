@@ -93,7 +93,6 @@ export const credentialDataProvider = (): DataProvider => ({
   },
   getOne: async <TData extends BaseRecord = BaseRecord>({resource, id, meta}: GetOneParams): Promise<GetOneResponse<TData>> => {
     assertResource(resource)
-    console.log('== meta', meta)
     if (meta === undefined || meta.variables === undefined || !('credentialRole' in meta.variables)) {
       return Promise.reject(Error('credentialRole not found in meta query'))
     }
@@ -149,6 +148,6 @@ export const credentialDataProvider = (): DataProvider => ({
 
   getApiUrl: (): string => {
     // TODO implement
-    return 'some api url'
+    throw Error("Not implemented")
   },
 })

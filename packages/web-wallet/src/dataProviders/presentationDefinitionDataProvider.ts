@@ -125,6 +125,6 @@ export const presentationDefinitionDataProvider = (): DataProvider => ({
 
   getApiUrl: (): string => {
     // TODO CWALL-234 implement
-    return 'some api url'
+    throw Error("Not implemented")
   },
 })

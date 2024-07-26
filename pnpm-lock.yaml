@@ -544,14 +544,14 @@ importers:
         specifier: 0.28.1-next.39
         version: 0.28.1-next.39
       '@sphereon/ui-components.core':
-        specifier: 0.2.1-unstable.92
-        version: 0.2.1-unstable.92(@babel/core@7.24.9)(react-dom@18.3.1)(react-is@18.3.1)(react@18.3.1)
+        specifier: 0.2.1-next.94
+        version: 0.2.1-next.94(@babel/core@7.24.9)(react-dom@18.3.1)(react-is@18.3.1)(react@18.3.1)
       '@sphereon/ui-components.credential-branding':
-        specifier: 0.2.1-unstable.92
-        version: 0.2.1-unstable.92(@babel/core@7.24.9)(expo@51.0.20)(msrcrypto@1.5.8)(react-dom@18.3.1)(react-is@18.3.1)(react@18.3.1)(ts-node@10.9.2)
+        specifier: 0.2.1-next.94
+        version: 0.2.1-next.94(@babel/core@7.24.9)(expo@51.0.20)(msrcrypto@1.5.8)(react-dom@18.3.1)(react-is@18.3.1)(react@18.3.1)(ts-node@10.9.2)
       '@sphereon/ui-components.ssi-react':
-        specifier: 0.2.1-unstable.92
-        version: 0.2.1-unstable.92(@babel/core@7.24.9)(@types/react@18.3.3)(dayjs@1.11.11)(react-dom@18.3.1)(react-is@18.3.1)(react@18.3.1)
+        specifier: 0.2.1-next.94
+        version: 0.2.1-next.94(@babel/core@7.24.9)(@types/react@18.3.3)(dayjs@1.11.11)(react-dom@18.3.1)(react-is@18.3.1)(react@18.3.1)
       '@supabase/postgrest-js':
         specifier: 1.15.2
         version: 1.15.2
@@ -7352,8 +7352,8 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /@sphereon/ui-components.core@0.2.1-unstable.92(@babel/core@7.24.9)(react-dom@18.3.1)(react-is@18.3.1)(react@18.3.1):
-    resolution: {integrity: sha512-fAmYeUuKTbJipfApRlQKGMXYWw2fnYfDNT8nGy2cH+9YYkzIuK9pmc7vu500cRVGnoWSB87j8EB6jARJpLBJoA==}
+  /@sphereon/ui-components.core@0.2.1-next.94(@babel/core@7.24.9)(react-dom@18.3.1)(react-is@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-bJkYgeAc4lW5+LOpz7UtnR41UVbWw1RslISirZ+zHgUAXT4eKCc1oGlIUvDKQA0ROhYwyiez1ME9nAA9Dr+7xg==}
     peerDependencies:
       react: '>= 18'
     dependencies:
@@ -7367,16 +7367,15 @@ packages:
       - react-is
     dev: false
 
-  /@sphereon/ui-components.credential-branding@0.2.1-unstable.92(@babel/core@7.24.9)(expo@51.0.20)(msrcrypto@1.5.8)(react-dom@18.3.1)(react-is@18.3.1)(react@18.3.1)(ts-node@10.9.2):
-    resolution: {integrity: sha512-pBg2as+6XxKakRz0/Gb5gJ32xYtdu7w5wtnflFJ9Kgbz3lCGREncrX7IoBzKIMerta5Rukeu5kS6dccqfnQG5w==}
+  /@sphereon/ui-components.credential-branding@0.2.1-next.94(@babel/core@7.24.9)(expo@51.0.20)(msrcrypto@1.5.8)(react-dom@18.3.1)(react-is@18.3.1)(react@18.3.1)(ts-node@10.9.2):
+    resolution: {integrity: sha512-KZHphS32U2ehaGUw68TeXdlx3EKpM3YGQA5bgxir4yezYKCLUe+Jyaq3QmEnLiYoE4spb9c/OqB6yU4XDXSW4w==}
     peerDependencies:
       react: '>= 18'
     dependencies:
       '@sphereon/ssi-sdk.core': 0.28.1-next.39
-      '@sphereon/ssi-sdk.credential-store': 0.28.1-next.39(expo@51.0.20)(msrcrypto@1.5.8)(pg@8.12.0)(react-native-securerandom@1.0.1)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.data-store': 0.28.1-next.39(expo@51.0.20)(msrcrypto@1.5.8)(pg@8.12.0)(react-native-securerandom@1.0.1)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-types': 0.28.1-next.39
-      '@sphereon/ui-components.core': 0.2.1-unstable.92(@babel/core@7.24.9)(react-dom@18.3.1)(react-is@18.3.1)(react@18.3.1)
+      '@sphereon/ui-components.core': 0.2.1-next.94(@babel/core@7.24.9)(react-dom@18.3.1)(react-is@18.3.1)(react@18.3.1)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/utils': 4.2.0
       i18n-js: 3.9.2
@@ -7412,8 +7411,8 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ui-components.ssi-react@0.2.1-unstable.92(@babel/core@7.24.9)(@types/react@18.3.3)(dayjs@1.11.11)(react-dom@18.3.1)(react-is@18.3.1)(react@18.3.1):
-    resolution: {integrity: sha512-7Whfht/zAmj2r0ZQalDKqnOFg4wrvVyjDgEYsAGyT2C/YfYQzn3/Sc0/Ywx/FIcqmIYcSZ4KVgWmDAecq2qDqQ==}
+  /@sphereon/ui-components.ssi-react@0.2.1-next.94(@babel/core@7.24.9)(@types/react@18.3.3)(dayjs@1.11.11)(react-dom@18.3.1)(react-is@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-CvzaqyCJmlQRrFK8TeqTPhxjzy4Yfv8jhtzYiVqhlDE4dnFyhZ7uGuoDi/mmg4ZxfpZfeqCpJeB8++0Y12XNPA==}
     peerDependencies:
       react: '>= 18'
     dependencies:
@@ -7428,7 +7427,7 @@ packages:
       '@mui/styled-engine-sc': 5.14.12(styled-components@5.3.11)
       '@mui/system': 5.16.4(@emotion/react@11.11.4)(@emotion/styled@11.11.5)(@types/react@18.3.3)(react@18.3.1)
       '@mui/x-date-pickers': 6.20.2(@emotion/react@11.11.4)(@emotion/styled@11.11.5)(@mui/material@5.16.4)(@mui/system@5.16.4)(@types/react@18.3.3)(dayjs@1.11.11)(react-dom@18.3.1)(react@18.3.1)
-      '@sphereon/ui-components.core': 0.2.1-unstable.92(@babel/core@7.24.9)(react-dom@18.3.1)(react-is@18.3.1)(react@18.3.1)
+      '@sphereon/ui-components.core': 0.2.1-next.94(@babel/core@7.24.9)(react-dom@18.3.1)(react-is@18.3.1)(react@18.3.1)
       '@tanstack/react-table': 8.19.3(react-dom@18.3.1)(react@18.3.1)
       react: 18.3.1
       react-json-tree: 0.18.0(@types/react@18.3.3)(react@18.3.1)

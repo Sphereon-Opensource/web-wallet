@@ -84,7 +84,7 @@ export class CredentialTableItem {
     const subjectPartyIdentity = credential.subjectCorrelationId ? getMatchingIdentity(parties, credential.subjectCorrelationId) : undefined
     const subjectParty = subjectPartyIdentity ? subjectPartyIdentity.party : undefined
 
-    const issuanceDateStr = formatDate(credential.createdAt as unknown as string) // FIXME use other REST client
+    const issuanceDateStr = formatDate(credential.validFrom as unknown as string) // FIXME use other REST client
     const expirationDateStr = formatDate(credential.validUntil as unknown as string) // FIXME use other REST client
 
     const vc = JSON.parse(credential.uniformDocument ?? credential.rawDocument) as IVerifiableCredential // TODO create function for this in CredentialMapper
