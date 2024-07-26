@@ -21,6 +21,7 @@ import agent from '@agent'
 
 import {CredentialSummary, toCredentialSummary} from '@sphereon/ui-components.credential-branding'
 import {DigitalCredential} from "@sphereon/ssi-sdk.credential-store";
+import {VerifiableCredential} from '@veramo/core'
 
 enum CredentialDetailsTabRoute {
   INFO = 'info',
@@ -80,7 +81,7 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
     const fetchBranding = async () => {
       if (!credentialResult.data?.data) return
 
-      const {hash, issuerCorrelationId, subjectCorrelationId} = credentialResult.data.data
+      const {hash, issuerCorrelationId, subjectCorrelationId, rawDocument} = credentialResult.data.data
 
       try {
         const issuerParties: Party[] = await agent.cmGetContacts({
@@ -101,8 +102,10 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
           ],
         })
 
+        const originalVerifiyableDocument = JSON.parse(rawDocument) as VerifiableCredential
         const credentialSummary: CredentialSummary = await toCredentialSummary(
-          {hash, verifiableCredential: JSON.parse(credentialResult.data.data.rawDocument)},
+          originalVerifiyableDocument,
+          hash,
           credentialBrandings.length ? credentialBrandings[0].localeBranding : undefined,
           // @ts-ignore
           issuerParties.length ? issuerParties[0] : undefined,

@@ -17,7 +17,7 @@ import {
 import agent from '@agent'
 import {FindDefinitionArgs, PresentationDefinitionItem} from '@sphereon/ssi-sdk.data-store'
 import {DataResource} from '@typings'
-import {PresentationDefinitionItemFilter} from '@sphereon/ssi-sdk.data-store/src/types/presentationDefinition/presentationDefinition'
+import {PresentationDefinitionItemFilter} from '@sphereon/ssi-sdk.data-store'
 import {FetchOptions} from '@sphereon/ssi-sdk.pd-manager'
 
 const filterableFields: (keyof PresentationDefinitionItemFilter)[] = ['definitionId', 'tenantId', 'version', 'name', 'purpose', 'id']

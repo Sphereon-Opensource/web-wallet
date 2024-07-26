@@ -20,10 +20,9 @@ import {DataResource} from '@typings'
 import {FetchOptions} from '@sphereon/ssi-sdk.pd-manager'
 import {
   FindDigitalCredentialArgs
-} from "@sphereon/ssi-sdk.data-store/dist/types/digitalCredential/IAbstractDigitalCredentialStore";
-import {MetaQuery} from "@refinedev/core/src/contexts/data/types";
-import {OptionalUniqueDigitalCredential} from "@sphereon/ssi-sdk.credential-store";
-import {GetCredentialsByIdOrHashArgs} from "@sphereon/ssi-sdk.credential-store/dist/types/ICredentialStore";
+} from "@sphereon/ssi-sdk.data-store/dist/types/digitalCredential/IAbstractDigitalCredentialStore"
+import {OptionalUniqueDigitalCredential} from "@sphereon/ssi-sdk.credential-store"
+import {GetCredentialsByIdOrHashArgs} from "@sphereon/ssi-sdk.credential-store/dist/types/ICredentialStore"
 
 
 export type DigitalCredentialFilter = Partial<DigitalCredential>

@@ -8,6 +8,8 @@ import agent from '@agent'
 import {Party} from '@sphereon/ssi-sdk.data-store'
 import {CredentialRole, DigitalCredential} from '@sphereon/ssi-sdk.credential-store'
 import {getMatchingIdentity} from '@helpers/IdentityFilters'
+import {CredentialMapper, OriginalVerifiableCredential} from '@sphereon/ssi-types'
+import {VerifiableCredential} from '@veramo/core'
 
 type Props = {
   credentialRole: CredentialRole,
@@ -62,10 +64,11 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
         return
       }
 
+      const digitalCredentials = credentialData.data as Array<DigitalCredential>
       try {
         const credentialBrandings = await agent.ibGetCredentialBranding()
         const newCredentialTableItems = await Promise.all(
-          credentialData.data.map(async credential => {
+          digitalCredentials.map(async (credential:DigitalCredential) => {
             const filteredCredentialBrandings = credentialBrandings.filter(cb => cb.vcHash === credential.hash)
             const issuerPartyIdentity = credential.issuerCorrelationId !== undefined
                 ? getMatchingIdentity(partyData.data, credential.issuerCorrelationId)
@@ -73,8 +76,10 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
             const subjectPartyIdentity = credential.subjectCorrelationId !== undefined
                 ? getMatchingIdentity(partyData.data, credential.subjectCorrelationId)
                 : undefined
+            const originalVerifiableCredential = JSON.parse(credential.uniformDocument ?? credential.rawDocument) as OriginalVerifiableCredential
             const credentialSummary = await toCredentialSummary(
-              {hash: credential.hash, verifiableCredential: JSON.parse(credential.uniformDocument ?? credential.rawDocument)},
+              originalVerifiableCredential as VerifiableCredential,
+              credential.hash,
               filteredCredentialBrandings.length ? filteredCredentialBrandings[0].localeBranding : undefined,
               issuerPartyIdentity?.party,
               subjectPartyIdentity?.party,

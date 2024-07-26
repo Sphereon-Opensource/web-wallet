@@ -5,7 +5,7 @@ import {CredentialSummary} from '@sphereon/ui-components.credential-branding'
 import {getMatchingIdentity} from '@helpers/IdentityFilters'
 import {formatDate} from '@helpers/date/DateHelper'
 import {CredentialMapper} from '@sphereon/ssi-types'
-import {IVerifiableCredential} from "@sphereon/ssi-types/src/types";
+import {IVerifiableCredential} from "@sphereon/ssi-types";
 import {DigitalCredential} from "@sphereon/ssi-sdk.credential-store";
 import {contextToString} from "@helpers/Credentials/CredentialsHelper";
 

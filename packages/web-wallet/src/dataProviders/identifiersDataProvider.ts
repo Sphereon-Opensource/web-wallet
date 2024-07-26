@@ -1,5 +1,4 @@
 import {
-  BaseOption,
   BaseRecord,
   CreateManyParams,
   CreateManyResponse,
@@ -17,13 +16,12 @@ import {
 } from '@refinedev/core'
 import {DID_PREFIX} from '@sphereon/ssi-sdk-ext.did-utils'
 import agent, {agentContext} from '@agent'
-import {DidEbsi, DidWeb, IdentifierKey, IdentifierServiceEndpoint, KeyManagementIdentifier, KeyManagementSystem, Tao} from '@typings'
-import {IIdentifier, IKey, MinimalImportableKey} from '@veramo/core'
-import {ebsiCreateDidOnLedger, generateEbsiMethodSpecificId} from '@sphereon/ssi-sdk.ebsi-support/dist/did/functions'
-import {windows} from 'rimraf'
-import {AccessTokenOpts} from '@sphereon/ssi-sdk.oid4vci-holder'
-import {EbsiAccessTokenOpts, IKeyOpts} from '@sphereon/ssi-sdk.ebsi-support/dist/did'
+import {IdentifierKey, IdentifierServiceEndpoint, KeyManagementIdentifier, KeyManagementSystem} from '@typings'
+import {IIdentifier} from '@veramo/core'
+import {generateEbsiMethodSpecificId} from '@sphereon/ssi-sdk.ebsi-support/dist/did/functions'
+import {EbsiAccessTokenOpts} from '@sphereon/ssi-sdk.ebsi-support/dist/did'
 import {EbsiEnvironment} from '@sphereon/ssi-sdk.ebsi-support'
+import {CredentialRole} from '@sphereon/ssi-sdk.data-store'
 
 // TODO CWALL-244 further implement
 
@@ -140,6 +138,7 @@ export const identifiersDataProvider = (): DataProvider => ({
         credentialIssuer: ebsi?.tao?.url!,
         jwksUri,
         environment: network as EbsiEnvironment,
+        attestationToOnboardCredentialRole: CredentialRole.HOLDER
       }
     }
 

@@ -6,7 +6,7 @@ import {PrimaryButton} from '@sphereon/ui-components.ssi-react'
 import {CreateElementArgs, QRType, URIData, ValueResult} from '@sphereon/ssi-sdk.qr-code-generator'
 import agent from '../../../agent'
 import {RotateLoader} from 'react-spinners'
-import {QRRenderingProps} from '@sphereon/ssi-sdk.qr-code-generator/src/types/IQRCodeGenerator'
+import {QRRenderingProps} from '@sphereon/ssi-sdk.qr-code-generator'
 import Debug, {Debugger} from 'debug'
 
 const debug: Debugger = Debug('sphereon:ui-components:qr')
