@@ -75,7 +75,7 @@ import { defaultCredentialDataSupplier } from './credentials/dataSuppliers'
 import { IssuanceBranding, issuanceBrandingMethods } from '@sphereon/ssi-sdk.issuance-branding'
 import { PDManager } from '@sphereon/ssi-sdk.pd-manager'
 import { LoggingEventType } from '@sphereon/ssi-types'
-import { createOID4VPRP } from './utils/oid4vp'
+import {createOID4VPRP, getDefaultOID4VPRPOptions} from './utils/oid4vp'
 import { IPresentationDefinition } from '@sphereon/pex'
 import { PresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { ISIOPv2RPRestAPIOpts, SIOPv2RPApiServer } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-api'
@@ -86,6 +86,7 @@ import { EbsiSupport } from '@sphereon/ssi-sdk.ebsi-support'
 import { OID4VCIHolder } from '@sphereon/ssi-sdk.oid4vci-holder'
 import {addDefaultsToOpts} from './utils/oid4vci'
 import {getCredentialDataSupplier} from './utils/oid4vciCredentialSuppliers'
+import {SIOPv2RP} from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 
 /**
  * Lets setup supported DID resolvers first
@@ -152,6 +153,8 @@ const plugins: IAgentPlugin[] = [
   new EbsiSupport(),
 ]
 
+let oid4vpRP: SIOPv2RP | undefined
+
 if (!cliMode) {
   if (IS_OID4VCI_ENABLED) {
     plugins.push(
@@ -169,12 +172,13 @@ if (!cliMode) {
     )
   }
 
-  if (IS_OID4VP_ENABLED) {
-    const oid4vpRP = await createOID4VPRP({ resolver })
+   oid4vpRP = IS_OID4VP_ENABLED ? await createOID4VPRP({resolver}) : undefined;
+  if (oid4vpRP) {
     plugins.push(oid4vpRP)
     plugins.push(new PresentationExchange())
   }
 }
+
 /**
  * Create the agent with a context and export it, so it is available for the rest of the code, or code using this module
  */
@@ -199,6 +203,12 @@ console.log(`[DID] default key identifier: ${defaultKid}`)
 if (!defaultDID || !defaultKid) {
   console.log('[DID] Agent has no default DID and Key Identifier!')
 }
+
+const oid4vpOpts = IS_OID4VP_ENABLED ? await getDefaultOID4VPRPOptions({did: defaultDID, resolver}) : undefined
+if (oid4vpOpts && oid4vpRP) {
+  oid4vpRP.setDefaultOpts(oid4vpOpts, context)
+}
+
 
 /**
  * Build a common express REST API configuration first, used by the exposed Routers/Services below
