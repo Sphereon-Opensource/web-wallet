@@ -88,6 +88,7 @@ export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATU
       ...issuanceBrandingMethods,
       ...pdManagerMethods,
       ...credentialStoreMethods,
+      'crsGetUniqueCredentials' // FIXME in SSI_SDK
     ]
 export const IS_JWKS_HOSTING_ENABLED = toBoolean(process.env.JWKS_HOSTING_ENABLED, true)
 
