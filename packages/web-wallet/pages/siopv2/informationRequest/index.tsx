@@ -10,8 +10,9 @@ import {IPresentationDefinition} from '@sphereon/pex'
 import CredentialSelectionView from '@components/views/CredentialSelectionView'
 import {OriginalVerifiableCredential} from '@sphereon/ssi-types'
 import {SelectableCredentialsMap} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
-import {UniqueVerifiableCredential} from '@veramo/core'
+
 import {staticPropsWithSST} from '@/src/i18n/server'
+import {UniqueDigitalCredential} from '@sphereon/ssi-sdk.credential-store'
 
 export type InformationRequestPageState = {
   verifierName: string
@@ -25,13 +26,13 @@ const InformationRequestPage: React.FC = (): ReactElement => {
   const translate = useTranslate()
   const location = useLocation()
   const {verifierName, presentationDefinition, selectableCredentialsMap}: InformationRequestPageState = location.state
-  const [selectedCredential, setSelectedCredential] = useState<UniqueVerifiableCredential | undefined>()
+  const [selectedCredential, setSelectedCredential] = useState<UniqueDigitalCredential | undefined>()
   const [isSendDisabled, setIsSendDisabled] = useState<boolean>(true)
 
   const emitSelectedCredentialsEvent = (eventType: Siopv2NavigationEventListenerType): void => {
     const detail: Array<OriginalVerifiableCredential> = []
     if (selectedCredential !== undefined) {
-      detail.push(selectedCredential.verifiableCredential as OriginalVerifiableCredential)
+      detail.push(selectedCredential.originalCredential as OriginalVerifiableCredential)
     }
     const event: CustomEvent<Array<OriginalVerifiableCredential>> = new CustomEvent(eventType, {detail: detail})
     window.dispatchEvent(event)
@@ -62,7 +63,7 @@ const InformationRequestPage: React.FC = (): ReactElement => {
     window.dispatchEvent(event)
   }
 
-  const handleCredentialSelect = (credential: UniqueVerifiableCredential | undefined) => {
+  const handleCredentialSelect = (credential: UniqueDigitalCredential | undefined) => {
     setSelectedCredential(credential)
   }
 

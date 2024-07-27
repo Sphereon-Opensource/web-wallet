@@ -24,6 +24,7 @@ import {TAgentTypes} from '@typings'
 import {DidAuthSiopOpAuthenticator, OID4VPCallbackStateListener, Siopv2OID4VPLinkHandler} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 import {vpStateCallbacks} from '@machines/siopv2/siopv2StateNavigation'
 import {didAuthSiopOpAuthenticatorMethods} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
+import {credentialStoreMethods} from '@sphereon/ssi-sdk.credential-store'
 
 export const resolver = new Resolver({
   ...getDidKeyResolver(),
@@ -59,6 +60,7 @@ const plugins: IAgentPlugin[] = [
       'didManagerCreate',
       ...ebsiSupportMethods,
       ...pdManagerMethods,
+      ...credentialStoreMethods,
       ...contactManagerMethods,
       ...sphereonKeyManagerMethods,
     ],

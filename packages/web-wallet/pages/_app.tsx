@@ -26,6 +26,7 @@ import '../src/i18n/client'
 
 // Do not remove. We need to import CSS, which is available in the dist folder
 import '@sphereon/ui-components.ssi-react/dist/components/views/FormView/styles.css'
+import {credentialDataProvider} from '@/src/dataProviders/credentialDataProvider'
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   noLayout?: boolean
@@ -70,6 +71,7 @@ const _app = (props: React.PropsWithChildren<unknown>) => {
       list: MainRoute.CREDENTIALS,
       create: `${MainRoute.CREDENTIALS}/${MainRoute.SUB_CREATE}`,
       show: `${MainRoute.CREDENTIALS}/${MainRoute.SUB_ID}`,
+      meta: {dataProviderName: DataProvider.CREDENTIALS},
     },
     {
       name: DataResource.WORKFLOWS,
@@ -102,6 +104,7 @@ const _app = (props: React.PropsWithChildren<unknown>) => {
   const dataProviders = {
     [DataProvider.DEFAULT]: dataProvider(process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5010'),
     [DataProvider.SUPABASE]: supabaseDataProvider(supabaseServiceClient),
+    [DataProvider.CREDENTIALS]: credentialDataProvider(),
     [DataProvider.KEYS]: keysDataProvider(),
     [DataProvider.IDENTIFIERS]: identifiersDataProvider(),
     [DataProvider.PRESENTATION_DEFINITIONS]: presentationDefinitionDataProvider(),

@@ -6,14 +6,18 @@ import {Credential, CredentialReference, CredentialTableItem, DataResource} from
 import {toCredentialSummary} from '@sphereon/ui-components.credential-branding'
 import agent from '@agent'
 import {Party} from '@sphereon/ssi-sdk.data-store'
+import {CredentialRole, DigitalCredential} from '@sphereon/ssi-sdk.credential-store'
 import {getMatchingIdentity} from '@helpers/IdentityFilters'
+import {CredentialMapper, OriginalVerifiableCredential} from '@sphereon/ssi-types'
+import {VerifiableCredential} from '@veramo/core'
 
 type Props = {
+  credentialRole: CredentialRole
   allowIssueCredential?: boolean
 }
 
 const CredentialsList: FC<Props> = (props: Props): ReactElement => {
-  const {allowIssueCredential = true} = props
+  const {credentialRole, allowIssueCredential = true} = props
   const translate = useTranslate()
   const {mutateAsync: deleteCredential} = useDelete<Credential, HttpError>()
   const {mutateAsync: deleteCredentialReference} = useDelete<CredentialReference, HttpError>()
@@ -25,22 +29,33 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
     isLoading: credentialsLoading,
     isError: credentialsError,
     refetch: refetchCredentials,
-  } = useList<Credential, HttpError>({
-    resource: 'credential',
-    dataProviderName: 'supaBase',
+  } = useList<DigitalCredential, HttpError>({
+    resource: DataResource.CREDENTIALS,
     pagination: {
       pageSize: 1000,
       mode: 'server',
     },
     sorters: [
       {
-        field: 'issuanceDate',
+        field: 'validFrom', // We don't we have a field 'issuanceDate' in the db anymore, so sort on validFrom
         order: 'asc',
       },
     ],
     meta: {
       idColumnName: 'hash',
     },
+    filters: [
+      {
+        field: 'credentialRole',
+        operator: 'eq',
+        value: credentialRole,
+      },
+      {
+        field: 'documentType',
+        operator: 'eq',
+        value: 'VC',
+      },
+    ],
   })
 
   const {data: partyData, isLoading: partiesLoading, isError: partiesError} = useList<Party, HttpError>({resource: 'parties'})
@@ -51,15 +66,20 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
         return
       }
 
+      const digitalCredentials = credentialData.data as Array<DigitalCredential>
       try {
         const credentialBrandings = await agent.ibGetCredentialBranding()
         const newCredentialTableItems = await Promise.all(
-          credentialData.data.map(async credential => {
+          digitalCredentials.map(async (credential: DigitalCredential) => {
             const filteredCredentialBrandings = credentialBrandings.filter(cb => cb.vcHash === credential.hash)
-            const issuerPartyIdentity = getMatchingIdentity(partyData.data, credential.issuerDid)
-            const subjectPartyIdentity = getMatchingIdentity(partyData.data, credential.subjectDid)
+            const issuerPartyIdentity =
+              credential.issuerCorrelationId !== undefined ? getMatchingIdentity(partyData.data, credential.issuerCorrelationId) : undefined
+            const subjectPartyIdentity =
+              credential.subjectCorrelationId !== undefined ? getMatchingIdentity(partyData.data, credential.subjectCorrelationId) : undefined
+            const originalVerifiableCredential = JSON.parse(credential.uniformDocument ?? credential.rawDocument) as OriginalVerifiableCredential
             const credentialSummary = await toCredentialSummary(
-              {hash: credential.hash, verifiableCredential: JSON.parse(credential.raw)},
+              originalVerifiableCredential as VerifiableCredential,
+              credential.hash,
               filteredCredentialBrandings.length ? filteredCredentialBrandings[0].localeBranding : undefined,
               issuerPartyIdentity?.party,
               subjectPartyIdentity?.party,
@@ -68,7 +88,7 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
             return CredentialTableItem.from(credential, partyData.data, credentialSummary)
           }),
         )
-
+        console.log('newCredentialTableItems items', newCredentialTableItems.length)
         setCredentialTableItems(newCredentialTableItems)
       } catch (error) {
         console.error(error)
@@ -215,7 +235,7 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
   }
 
   const onShowCredentialDetails = async (row: Row<CredentialTableItem>): Promise<void> => {
-    show(DataResource.CREDENTIALS, row.original.hash, undefined, {idColumnName: 'hash'})
+    show(DataResource.CREDENTIALS, row.original.hash, undefined, {variables: {credentialRole: credentialRole}})
   }
 
   const buildActionList = () => {
