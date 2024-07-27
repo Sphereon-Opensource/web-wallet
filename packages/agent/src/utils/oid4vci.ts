@@ -12,7 +12,7 @@ import {
     OID4VCIStore,
 } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import {IIssuerOptsImportArgs} from '@sphereon/ssi-sdk.oid4vci-issuer-store/src/types/IOID4VCIStore'
-import {createDidResolver, getDefaultDID, getDefaultKerRef, getIdentifier} from './did'
+import {createDidResolver, getDefaultDID, getDefaultKeyRef, getIdentifier} from './did'
 
 
 export function toImportIssuerOptions(args?: { oid4vciInstanceOpts: IIssuerOptsImportArgs[] }): IIssuerOptsImportArgs[] {
@@ -40,7 +40,7 @@ export async function getDefaultOID4VCIIssuerOptions(args?: { did?: string, reso
             },
             identifierOpts: {
                 identifier,
-                kmsKeyRef: await getDefaultKerRef({did})
+                kmsKeyRef: await getDefaultKeyRef({did})
             }
         }
     }

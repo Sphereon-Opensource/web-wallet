@@ -21,7 +21,7 @@ import {
   createDidResolver,
   expressBuilder,
   getDefaultDID,
-  getDefaultKerRef,
+  getDefaultKeyRef,
   getOrCreateDIDsFromFS,
   getOrCreateDIDWebFromEnv,
 } from './utils'
@@ -198,7 +198,7 @@ await getOrCreateDIDsFromFS().catch((e) => console.log(`ERROR dids: ${e}`))
 
 const defaultDID = await getDefaultDID()
 console.log(`[DID] default DID: ${defaultDID}`)
-const defaultKid = await getDefaultKerRef({ did: defaultDID })
+const defaultKid = await getDefaultKeyRef({ did: defaultDID })
 console.log(`[DID] default key identifier: ${defaultKid}`)
 if (!defaultDID || !defaultKid) {
   console.log('[DID] Agent has no default DID and Key Identifier!')
@@ -388,29 +388,12 @@ if (!cliMode) {
   /**
    * Enable the Veramo remote server API
    */
-  if (REMOTE_SERVER_API_FEATURES.length > 0) {
+  if (expressSupport && REMOTE_SERVER_API_FEATURES.length > 0) {
     new RemoteServerApiServer({
       agent,
       expressSupport,
       opts: {
         exposedMethods: REMOTE_SERVER_API_FEATURES,
-        endpointOpts: {
-          globalAuth: {
-            authentication: {
-              enabled: false,
-            },
-          },
-        },
-      },
-    })
-  }
-
-  if (expressSupport) {
-    new RemoteServerApiServer({
-      agent,
-      expressSupport,
-      opts: {
-        exposedMethods: [...issuanceBrandingMethods],
         endpointOpts: {
           globalAuth: {
             authentication: {
@@ -465,7 +448,9 @@ if (!cliMode) {
   }
   console.log(`DEFINITIONS IMPORT POST`)
 
-  expressSupport.start()
+  if(expressSupport) {
+    expressSupport.start()
+  }
 }
 
 

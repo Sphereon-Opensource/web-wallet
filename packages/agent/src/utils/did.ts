@@ -69,11 +69,11 @@ export async function getDefaultDID(): Promise<string | undefined> {
     if (!ids || ids.length === 0) {
       return
     }
-    return ids[0].did
+    return ids[1].did // FIXME [0] is did:web:localhost
   })
 }
 
-export async function getDefaultKerRef({
+export async function getDefaultKeyRef({
   did,
   verificationMethodName,
   verificationMethodFallback,
