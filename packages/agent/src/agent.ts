@@ -66,7 +66,7 @@ import { ContactManagerApiServer } from '@sphereon/ssi-sdk.contact-manager-rest-
 import { ContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { ContactStore, DigitalCredentialStore, EventLoggerStore, IssuanceBrandingStore, PDStore } from '@sphereon/ssi-sdk.data-store'
 import { IIssuerInstanceArgs, OID4VCIIssuer } from '@sphereon/ssi-sdk.oid4vci-issuer'
-import { OID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
+import {IIssuerInstanceOptions, IIssuerOptsPersistArgs, OID4VCIStore} from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import { IRequiredContext, OID4VCIRestAPI } from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
 import { IOID4VCIRestAPIOpts } from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
 import { EventLogger } from '@sphereon/ssi-sdk.event-logger'
@@ -84,6 +84,8 @@ import { PublicKeyHosting } from '@sphereon/ssi-sdk.public-key-hosting'
 import { CredentialStore } from '@sphereon/ssi-sdk.credential-store'
 import { EbsiSupport } from '@sphereon/ssi-sdk.ebsi-support'
 import { OID4VCIHolder } from '@sphereon/ssi-sdk.oid4vci-holder'
+import {addDefaultsToOpts} from './utils/oid4vci'
+import {getCredentialDataSupplier} from './utils/oid4vciCredentialSuppliers'
 
 /**
  * Lets setup supported DID resolvers first
@@ -411,20 +413,23 @@ if (!cliMode) {
   }
 
   if (IS_OID4VCI_ENABLED) {
-    void OID4VCIRestAPI.init({
-      opts: {
-        baseUrl: OID4VCI_API_BASE_URL,
-        endpointOpts: {},
-      } as IOID4VCIRestAPIOpts,
-      context: context as unknown as IRequiredContext,
-      issuerInstanceArgs: {
-        credentialIssuer: OID4VCI_API_BASE_URL,
-        storeId: '_default', // TODO configurable?
-        namespace: 'oid4vci', // TODO configurable?
-      } as IIssuerInstanceArgs,
-      credentialDataSupplier: defaultCredentialDataSupplier,
-      expressSupport,
-    })
+    oid4vciInstanceOpts.asArray.map(async opts => issuerPersistToInstanceOpts(opts).then(async instanceOpt => {
+      void OID4VCIRestAPI.init({
+        opts: {
+          baseUrl: OID4VCI_API_BASE_URL,
+          endpointOpts: {},
+        } as IOID4VCIRestAPIOpts,
+        context: context as unknown as IRequiredContext,
+        issuerInstanceArgs: {
+          credentialIssuer: OID4VCI_API_BASE_URL,
+          storeId: '_default', // TODO configurable?
+          namespace: 'oid4vci', // TODO configurable?
+        } as IIssuerInstanceArgs,
+        //credentialDataSupplier: defaultCredentialDataSupplier,
+        credentialDataSupplier: getCredentialDataSupplier(instanceOpt.credentialIssuer),
+        expressSupport,
+      })
+    }))
   }
 
   if (IS_JWKS_HOSTING_ENABLED) {
@@ -451,4 +456,16 @@ if (!cliMode) {
   console.log(`DEFINITIONS IMPORT POST`)
 
   expressSupport.start()
+}
+
+
+
+export async function issuerPersistToInstanceOpts(opt: IIssuerOptsPersistArgs): Promise<IIssuerInstanceOptions> {
+  const issuerOpts = await addDefaultsToOpts(opt.issuerOpts);
+  return {
+    credentialIssuer: opt.correlationId,
+    issuerOpts,
+    storeId: opt.storeId,
+    storeNamespace: opt.namespace
+  }
 }

@@ -19,6 +19,7 @@ import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { IPEXInstanceOptions } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { ISIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
+import {CredentialSupplierConfig} from '@sphereon/oid4vci-common'
 
 export const DID_PREFIX = 'did'
 
@@ -78,6 +79,18 @@ export interface IDIDResult extends IDIDOpts {
 }
 
 export type OID4VPInstanceOpts = Omit<IPEXInstanceOptions, 'definition'>
+
+
+export interface CredentialSupplierConfigWithTemplateSupport extends CredentialSupplierConfig {
+  templates_base_dir?: string
+  template_mappings?: TemplateMapping[]
+}
+
+interface TemplateMapping {
+  credential_types: string[]
+  template_path: string
+  format?: string
+}
 
 /*
 /!**
