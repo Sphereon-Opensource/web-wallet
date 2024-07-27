@@ -61,6 +61,7 @@ const plugins: IAgentPlugin[] = [
       ...ebsiSupportMethods,
       ...pdManagerMethods,
       ...credentialStoreMethods,
+      'crsGetUniqueCredentials',
       ...contactManagerMethods,
       ...sphereonKeyManagerMethods,
     ],
