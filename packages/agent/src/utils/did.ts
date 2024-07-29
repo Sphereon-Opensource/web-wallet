@@ -1,16 +1,16 @@
-import { Resolver } from 'did-resolver'
-import { getDidJwkResolver } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
-import { getResolver as getDidWebResolver } from 'web-did-resolver'
-import { getResolver as getDidEbsiResolver } from '@sphereon/ssi-sdk-ext.did-resolver-ebsi'
+import {Resolver} from 'did-resolver'
+import {getDidJwkResolver} from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
+import {getResolver as getDidWebResolver} from 'web-did-resolver'
+import {getResolver as getDidEbsiResolver} from '@sphereon/ssi-sdk-ext.did-resolver-ebsi'
 // import { getResolver as getDidKeyResolver } from '@sphereon/ssi-sdk-ext.did-resolver-key'
-import { WebDIDProvider } from '@sphereon/ssi-sdk-ext.did-provider-web'
-import { JwkDIDProvider } from '@sphereon/ssi-sdk-ext.did-provider-jwk'
-import agent, { context } from '../agent'
-import { DIDDocumentSection, IIdentifier } from '@veramo/core'
-import { DID_PREFIX, DIDMethods, IDIDResult, KMS } from '../index'
-import { getAgentResolver, mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-ext.did-utils'
-import { generatePrivateKeyHex, TKeyType, toJwk } from '@sphereon/ssi-sdk-ext.key-utils'
-import { getDidIonResolver, IonDIDProvider } from '@veramo/did-provider-ion'
+import {WebDIDProvider} from '@sphereon/ssi-sdk-ext.did-provider-web'
+import {JwkDIDProvider} from '@sphereon/ssi-sdk-ext.did-provider-jwk'
+import agent, {context} from '../agent'
+import {DIDDocumentSection, IIdentifier} from '@veramo/core'
+import {DID_PREFIX, DIDMethods, IDIDResult, KMS} from '../index'
+import {getAgentResolver, mapIdentifierKeysToDocWithJwkSupport} from '@sphereon/ssi-sdk-ext.did-utils'
+import {generatePrivateKeyHex, TKeyType, toJwk} from '@sphereon/ssi-sdk-ext.key-utils'
+import {getDidIonResolver, IonDIDProvider} from '@veramo/did-provider-ion'
 import {
   DEFAULT_DID,
   DEFAULT_KID,
@@ -22,7 +22,7 @@ import {
   DID_WEB_PRIVATE_KEY_PEM,
   didOptConfigs,
 } from '../environment'
-import { EbsiDidProvider } from '@sphereon/ssi-sdk.ebsi-support'
+import {EbsiDidProvider} from '@sphereon/ssi-sdk.ebsi-support'
 
 export function createDidResolver() {
   return new Resolver({
@@ -55,7 +55,7 @@ export function createDidProviders() {
 }
 
 export async function getIdentifier(did: string): Promise<IIdentifier | undefined> {
-  return await agent.didManagerGet({ did }).catch((e) => {
+  return await agent.didManagerGet({did}).catch((e) => {
     console.log(`DID ${did} not available in agent`)
     return undefined
   })
@@ -65,19 +65,25 @@ export async function getDefaultDID(): Promise<string | undefined> {
   if (DEFAULT_DID) {
     return DEFAULT_DID
   }
-  return agent.didManagerFind().then((ids) => {
-    if (!ids || ids.length === 0) {
-      return
-    }
-    return ids[1].did // FIXME [0] is did:web:localhost
-  })
+  return agent.didManagerFind()
+    .then((ids) => {
+      if (!ids || ids.length === 0) {
+        return
+      }
+
+      const id: IIdentifier | undefined = ids.find((value: IIdentifier) => value.did !== 'did:web:localhost') // FIXME how to select which credential when there are multiple?
+      if (id === undefined) {
+        throw new Error('Could not find a suitable default did identifier. (did:web:localhost is not suitable because RSA keys are not supported)')
+      }
+      return id.did
+    })
 }
 
 export async function getDefaultKeyRef({
-  did,
-  verificationMethodName,
-  verificationMethodFallback,
-}: {
+                                         did,
+                                         verificationMethodName,
+                                         verificationMethodFallback,
+                                       }: {
   did?: string
   verificationMethodName?: DIDDocumentSection
   verificationMethodFallback?: boolean
@@ -98,11 +104,15 @@ export async function getDefaultKeyRef({
       .resolve(identifier.did)
       .then((result) => result.didDocument ?? undefined)) ?? undefined
   let keys = await mapIdentifierKeysToDocWithJwkSupport(
-    { identifier, vmRelationship: verificationMethodName ?? 'assertionMethod', didDocument },
+    {identifier, vmRelationship: verificationMethodName ?? 'assertionMethod', didDocument},
     context,
   )
   if (keys.length === 0 && (verificationMethodFallback === undefined || verificationMethodFallback)) {
-    keys = await mapIdentifierKeysToDocWithJwkSupport({ identifier, vmRelationship: 'verificationMethod', didDocument }, context)
+    keys = await mapIdentifierKeysToDocWithJwkSupport({
+      identifier,
+      vmRelationship: 'verificationMethod',
+      didDocument,
+    }, context)
   }
   if (keys.length === 0) {
     return undefined
@@ -120,7 +130,7 @@ export async function getOrCreateDIDWebFromEnv(): Promise<IDIDResult[]> {
   if (identifier) {
     console.log(`Identifier exists for DID ${did}`)
     console.log(`${JSON.stringify(identifier)}`)
-    identifier.keys.map((key: { kid: any; publicKeyHex: any; type: any }) =>
+    identifier.keys.map((key: {kid: any; publicKeyHex: any; type: any}) =>
       console.log(`kid: ${key.kid}:\r\n ` + JSON.stringify(toJwk(key.publicKeyHex, key.type), null, 2)),
     )
   } else {
@@ -149,7 +159,7 @@ export async function getOrCreateDIDWebFromEnv(): Promise<IDIDResult[]> {
   }
   console.log(`${JSON.stringify(identifier, null, 2)}`)
 
-  return [{ did, identifier }] as IDIDResult[]
+  return [{did, identifier}] as IDIDResult[]
 }
 
 export async function getOrCreateDIDsFromFS(): Promise<IDIDResult[]> {
@@ -164,14 +174,14 @@ export async function getOrCreateDIDsFromFS(): Promise<IDIDResult[]> {
     if (identifier) {
       console.log(`Identifier exists for DID ${did}`)
       console.log(`${JSON.stringify(identifier)}`)
-      identifier.keys.map((key: { kid: any; publicKeyHex: any; type: any }) =>
+      identifier.keys.map((key: {kid: any; publicKeyHex: any; type: any}) =>
         console.log(`kid: ${key.kid}:\r\n ` + JSON.stringify(toJwk(key.publicKeyHex, key.type), null, 2)),
       )
     } else {
       console.log(`No identifier for DID ${did} exists yet. Will create the DID...`)
       let args = opts.createArgs
       if (!args) {
-        args = { options: {} }
+        args = {options: {}}
       }
 
       if (!privateKeyHex && !did?.startsWith('did:web')) {
@@ -189,7 +199,7 @@ export async function getOrCreateDIDsFromFS(): Promise<IDIDResult[]> {
       if (privateKeyHex) {
         if (args.options && !('key' in args.options)) {
           // @ts-ignore
-          args.options['key'] = { privateKeyHex }
+          args.options['key'] = {privateKeyHex}
           // @ts-ignore
         } else if (
           args.options &&
@@ -215,7 +225,7 @@ export async function getOrCreateDIDsFromFS(): Promise<IDIDResult[]> {
 
     console.log(`${JSON.stringify(identifier, null, 2)}`)
 
-    return { ...opts, did, identifier } as IDIDResult
+    return {...opts, did, identifier} as IDIDResult
   })
   return Promise.all(result)
 }
