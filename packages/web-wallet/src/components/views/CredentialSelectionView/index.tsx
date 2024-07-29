@@ -70,7 +70,7 @@ const CredentialSelectionView: React.FC<CredentialSelectionViewProps> = ({
         selectableCredentials.map(async selectableCredential => {
           const uniqueDigitalCredential = selectableCredential.credential
           return await toCredentialSummary(
-            uniqueDigitalCredential.originalCredential as VerifiableCredential,
+            uniqueDigitalCredential.originalVerifiableCredential as VerifiableCredential,
             uniqueDigitalCredential.hash,
             selectableCredential.credentialBranding,
             selectableCredential.issuerParty,

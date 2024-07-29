@@ -54,10 +54,10 @@ class TemplateCredentialDataSupplier {
                 credentialRole: CredentialRole.HOLDER,
                 idOrHash: hashOrId,
             })
-            if (!credentialResult?.originalCredential) {
+            if (!credentialResult?.originalVerifiableCredential) {
                 throw Error(`Could not get credential for id ${hashOrId}`)
             }
-            const credential = CredentialMapper.storedCredentialToOriginalFormat(credentialResult.originalCredential as OriginalVerifiableCredential)
+            const credential = CredentialMapper.storedCredentialToOriginalFormat(credentialResult.originalVerifiableCredential as OriginalVerifiableCredential)
 
             // Since this is an already issued credential we are looking up from our store, we provide a signer that does nothing
             const signCallback: CredentialSignerCallback<DIDDocument> = () => Promise.resolve(credential)

@@ -32,7 +32,7 @@ const InformationRequestPage: React.FC = (): ReactElement => {
   const emitSelectedCredentialsEvent = (eventType: Siopv2NavigationEventListenerType): void => {
     const detail: Array<OriginalVerifiableCredential> = []
     if (selectedCredential !== undefined) {
-      detail.push(selectedCredential.originalCredential as OriginalVerifiableCredential)
+      detail.push(selectedCredential.originalVerifiableCredential as OriginalVerifiableCredential)
     }
     const event: CustomEvent<Array<OriginalVerifiableCredential>> = new CustomEvent(eventType, {detail: detail})
     window.dispatchEvent(event)
