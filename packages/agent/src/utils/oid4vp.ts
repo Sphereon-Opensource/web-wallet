@@ -1,5 +1,5 @@
 import { IRPDefaultOpts, SIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
-import { IPEXInstanceOptions } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth/src/types/ISIOPv2RP'
+import { IPEXInstanceOptions } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { IS_OID4VP_ENABLED, oid4vpInstanceOpts } from '../environment'
 import { CheckLinkedDomain, SupportedVersion } from '@sphereon/did-auth-siop'
 import { Resolvable } from 'did-resolver'

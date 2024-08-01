@@ -15,22 +15,42 @@ import {
   UpdateResponse,
 } from '@refinedev/core'
 import agent from '@agent'
-import {FindDefinitionArgs, PresentationDefinitionItem} from '@sphereon/ssi-sdk.data-store'
+import {DigitalCredential, UpdateCredentialStateArgs} from '@sphereon/ssi-sdk.data-store'
 import {DataResource} from '@typings'
-import {PresentationDefinitionItemFilter} from '@sphereon/ssi-sdk.data-store'
 import {FetchOptions} from '@sphereon/ssi-sdk.pd-manager'
+import {FindDigitalCredentialArgs} from '@sphereon/ssi-sdk.data-store/dist/types/digitalCredential/IAbstractDigitalCredentialStore'
+import {OptionalUniqueDigitalCredential} from '@sphereon/ssi-sdk.credential-store'
+import {GetCredentialsByIdOrHashArgs} from '@sphereon/ssi-sdk.credential-store/dist/types/ICredentialStore'
 
-const filterableFields: (keyof PresentationDefinitionItemFilter)[] = ['definitionId', 'tenantId', 'version', 'name', 'purpose', 'id']
+export type DigitalCredentialFilter = Partial<DigitalCredential>
 
-// TODO CWALL-234 further implement
+const filterableFields: (keyof DigitalCredential)[] = [
+  'id',
+  'tenantId',
+  'credentialRole',
+  'hash',
+  'createdAt',
+  'documentFormat',
+  'documentType',
+  'issuerCorrelationId',
+  'issuerCorrelationType',
+  'subjectCorrelationType',
+  'credentialRole',
+  'lastUpdatedAt',
+  'revokedAt',
+  'validFrom',
+  'validUntil',
+  'verifiedAt',
+  'verifiedState',
+]
 
 const assertResource = (resource: string) => {
-  if (resource != DataResource.PRESENTATION_DEFINITIONS) {
-    throw new Error(`presentationDefinitionDataProvider can only handle resource type "${DataResource.PRESENTATION_DEFINITIONS}"`)
+  if (resource != DataResource.CREDENTIALS) {
+    throw new Error(`credentialDataProvider can only handle resource type "${DataResource.CREDENTIALS}"`)
   }
 }
 
-export const presentationDefinitionDataProvider = (): DataProvider => ({
+export const credentialDataProvider = (): DataProvider => ({
   getList: async <TData extends BaseRecord = BaseRecord>({
     resource,
     pagination,
@@ -39,17 +59,16 @@ export const presentationDefinitionDataProvider = (): DataProvider => ({
     sort,
   }: GetListParams): Promise<GetListResponse<TData>> => {
     assertResource(resource)
-    // TODO CWALL-246 switch to our REST implementation
 
-    const findArgs: FindDefinitionArgs = []
-    let filterItem: PresentationDefinitionItemFilter
+    const findArgs: FindDigitalCredentialArgs = []
+    let filterItem: DigitalCredentialFilter
     filters?.forEach(filter => {
       if (filter.operator === 'eq') {
         if (filterItem === undefined) {
           filterItem = {}
           findArgs.push(filterItem)
         }
-        const filterField = filter.field as keyof PresentationDefinitionItemFilter
+        const filterField = filter.field as keyof DigitalCredentialFilter
         if (filterableFields.includes(filterField)) {
           filterItem[filterField] = filter.value
         }
@@ -63,7 +82,7 @@ export const presentationDefinitionDataProvider = (): DataProvider => ({
       fetchOptions.showVersionHistory = meta.variables.showVersionHistory
     }
 
-    const items: PresentationDefinitionItem[] = await agent.pdmGetDefinitions({filter: findArgs, opts: fetchOptions})
+    const items: Array<DigitalCredential> = await agent.crsGetCredentials({filter: findArgs})
     // FIXME CWALL-234 there should be a better way for this but i could not find any yet without refine.dev not complaining
     const data: TData[] = items.map(item => ({...(item as any)}))
 
@@ -72,11 +91,15 @@ export const presentationDefinitionDataProvider = (): DataProvider => ({
       total: items.length,
     }
   },
-  getOne: async <TData extends BaseRecord = BaseRecord>({resource, id}: GetOneParams): Promise<GetOneResponse<TData>> => {
+  getOne: async <TData extends BaseRecord = BaseRecord>({resource, id, meta}: GetOneParams): Promise<GetOneResponse<TData>> => {
     assertResource(resource)
-    const item: PresentationDefinitionItem = await agent.pdmGetDefinition({itemId: id as string})
+    if (meta === undefined || meta.variables === undefined || !('credentialRole' in meta.variables)) {
+      return Promise.reject(Error('credentialRole not found in meta query'))
+    }
+    const args: GetCredentialsByIdOrHashArgs = {credentialRole: meta.variables.credentialRole, idOrHash: id as string}
+    const credential: OptionalUniqueDigitalCredential = await agent.crsGetUniqueCredentialByIdOrHash(args)
     return {
-      data: item as unknown as TData,
+      data: credential?.digitalCredential as unknown as TData,
     }
   },
   create: async <TData extends BaseRecord = BaseRecord, TVariables = {}>({
@@ -84,7 +107,7 @@ export const presentationDefinitionDataProvider = (): DataProvider => ({
     variables,
   }: CreateParams<TVariables>): Promise<CreateResponse<TData>> => {
     assertResource(resource)
-    const item: PresentationDefinitionItem = await agent.pdmPersistDefinition({definitionItem: variables as PresentationDefinitionItem})
+    const item: DigitalCredential = await agent.crsAddCredential({credential: variables as DigitalCredential})
     return {
       data: item as unknown as TData,
     }
@@ -95,7 +118,7 @@ export const presentationDefinitionDataProvider = (): DataProvider => ({
     variables,
   }: UpdateParams<TVariables>): Promise<UpdateResponse<TData>> => {
     assertResource(resource)
-    const item: PresentationDefinitionItem = await agent.pdmPersistDefinition({definitionItem: variables as PresentationDefinitionItem})
+    const item: DigitalCredential = await agent.crsUpdateCredentialState(variables as UpdateCredentialStateArgs)
     return {
       data: item as unknown as TData,
     }
@@ -105,17 +128,17 @@ export const presentationDefinitionDataProvider = (): DataProvider => ({
     id,
   }: DeleteOneParams<TVariables>): Promise<DeleteOneResponse<TData>> => {
     assertResource(resource)
-    await agent.pdmDeleteDefinition({itemId: id as string})
+    await agent.crsDeleteCredential({id: id as string})
     return {
       data: {} as TData,
     }
   },
   deleteMany: async <TData, TVariables>(params: DeleteManyParams<TVariables>): Promise<DeleteManyResponse<TData>> => {
     assertResource(params.resource)
-    const filter: FindDefinitionArgs = params.ids.map(id => {
+    const filter: FindDigitalCredentialArgs = params.ids.map(id => {
       return {id: id as string}
     })
-    await agent.pdmDeleteDefinitions({
+    await agent.crsDeleteCredentials({
       filter: filter,
     })
     return {
@@ -124,7 +147,7 @@ export const presentationDefinitionDataProvider = (): DataProvider => ({
   },
 
   getApiUrl: (): string => {
-    // TODO CWALL-234 implement
+    // TODO implement
     throw Error("Not implemented")
   },
 })

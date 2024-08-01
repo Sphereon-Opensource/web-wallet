@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react'
 import {MachineDTO, MachineEntity, MachineEntityType} from '@typings'
 import {CreateResponse, FormAction, HttpError, useForm} from '@refinedev/core'
-import {UseFormProps} from '@refinedev/core/src/hooks/form'
+import {UseFormProps} from '@refinedev/core'
 import {v4 as uuidv4} from 'uuid'
 import {CrudFormProps} from '../types'
 

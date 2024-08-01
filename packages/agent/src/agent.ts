@@ -64,11 +64,11 @@ import { DidWebServer } from '@sphereon/ssi-sdk.uni-resolver-registrar-api/dist/
 import { StatuslistManagementApiServer } from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
 import { ContactManagerApiServer } from '@sphereon/ssi-sdk.contact-manager-rest-api'
 import { ContactManager } from '@sphereon/ssi-sdk.contact-manager'
-import { ContactStore, EventLoggerStore, IssuanceBrandingStore, PDStore } from '@sphereon/ssi-sdk.data-store'
+import { ContactStore, DigitalCredentialStore, EventLoggerStore, IssuanceBrandingStore, PDStore } from '@sphereon/ssi-sdk.data-store'
 import { IIssuerInstanceArgs, OID4VCIIssuer } from '@sphereon/ssi-sdk.oid4vci-issuer'
 import { OID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import { IRequiredContext, OID4VCIRestAPI } from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
-import { IOID4VCIRestAPIOpts } from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api/src/OID4VCIRestAPI'
+import { IOID4VCIRestAPIOpts } from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
 import { EventLogger } from '@sphereon/ssi-sdk.event-logger'
 import { RemoteServerApiServer } from '@sphereon/ssi-sdk.remote-server-rest-api'
 import { defaultCredentialDataSupplier } from './credentials/dataSuppliers'
@@ -81,6 +81,7 @@ import { PresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { ISIOPv2RPRestAPIOpts, SIOPv2RPApiServer } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-api'
 import { DidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 import { PublicKeyHosting } from '@sphereon/ssi-sdk.public-key-hosting'
+import { CredentialStore } from '@sphereon/ssi-sdk.credential-store'
 import { EbsiSupport } from '@sphereon/ssi-sdk.ebsi-support'
 import { OID4VCIHolder } from '@sphereon/ssi-sdk.oid4vci-holder'
 
@@ -143,6 +144,7 @@ const plugins: IAgentPlugin[] = [
   new PDManager({
     store: new PDStore(dbConnection),
   }),
+  new CredentialStore({ store: new DigitalCredentialStore(dbConnection) }),
   new DidAuthSiopOpAuthenticator(),
   new OID4VCIHolder({}),
   new EbsiSupport(),
@@ -316,7 +318,7 @@ if (!cliMode) {
           enabled: DID_WEB_SERVICE_FEATURES.includes('did-web-global-resolution'),
           // TODO: This does limit hosting to the frontend only, whilst the agent could be behind multiple reverse proxy
           // Reason is that nextjs rewrites return the internal IP address instead of the original
-          ...(process?.env?.NEXT_PUBLIC_CLIENT_ID && {hostname: process.env.NEXT_PUBLIC_CLIENT_ID.replace('https://', '').replace('http://', '')}),
+          ...(process?.env?.NEXT_PUBLIC_CLIENT_ID && { hostname: process.env.NEXT_PUBLIC_CLIENT_ID.replace('https://', '').replace('http://', '') }),
         },
         enableFeatures: DID_WEB_SERVICE_FEATURES,
       },

@@ -1,6 +1,6 @@
 import {CredentialPayload} from '@veramo/core'
 import agent, {agentContext} from '@agent'
-import {OriginalVerifiableCredential} from '@sphereon/ssi-types/src/types/vc'
+import {OriginalVerifiableCredential} from '@sphereon/ssi-types'
 import {EventLogger, EventLoggerBuilder} from '@sphereon/ssi-sdk.core'
 import {DefaultActionSubType, LogLevel, ActionType, System, InitiatorType, SubSystem, LoggingEventType} from '@sphereon/ssi-types'
 
