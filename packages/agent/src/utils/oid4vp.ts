@@ -1,10 +1,11 @@
 import { IRPDefaultOpts, SIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { IPEXInstanceOptions } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
-import { IS_OID4VP_ENABLED, oid4vpInstanceOpts } from '../environment'
+import { IS_OID4VP_ENABLED } from '../environment'
 import { CheckLinkedDomain, SupportedVersion } from '@sphereon/did-auth-siop'
 import { Resolvable } from 'did-resolver'
 import { OID4VPInstanceOpts } from '../types'
-import { createDidResolver, getDefaultDID, getDefaultKerRef, getIdentifier } from './did'
+import { createDidResolver, getDefaultDID, getDefaultKeyRef, getIdentifier } from './did'
+import {oid4vpInstanceOpts} from "../environment-deps";
 
 function toPexInstanceOptions(
   oid4vpInstanceOpts: OID4VPInstanceOpts[],
@@ -53,7 +54,7 @@ export async function getDefaultOID4VPRPOptions(args?: { did?: string; resolver?
       checkLinkedDomains: CheckLinkedDomain.IF_PRESENT,
       identifierOpts: {
         identifier,
-        kmsKeyRef: await getDefaultKerRef({ did }),
+        kmsKeyRef: await getDefaultKeyRef({ did }),
       },
     },
   }

@@ -12,7 +12,7 @@ import {OriginalVerifiableCredential} from '@sphereon/ssi-types'
 import {SelectableCredentialsMap} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 
 import {staticPropsWithSST} from '@/src/i18n/server'
-import {UniqueDigitalCredential} from '@sphereon/ssi-sdk.credential-store'
+import {CredentialRole, UniqueDigitalCredential} from '@sphereon/ssi-sdk.credential-store'
 
 export type InformationRequestPageState = {
   verifierName: string
@@ -32,7 +32,7 @@ const InformationRequestPage: React.FC = (): ReactElement => {
   const emitSelectedCredentialsEvent = (eventType: Siopv2NavigationEventListenerType): void => {
     const detail: Array<OriginalVerifiableCredential> = []
     if (selectedCredential !== undefined) {
-      detail.push(selectedCredential.originalCredential as OriginalVerifiableCredential)
+      detail.push(selectedCredential.originalVerifiableCredential as OriginalVerifiableCredential)
     }
     const event: CustomEvent<Array<OriginalVerifiableCredential>> = new CustomEvent(eventType, {detail: detail})
     window.dispatchEvent(event)
@@ -80,6 +80,7 @@ const InformationRequestPage: React.FC = (): ReactElement => {
         {presentationDefinition.input_descriptors.map((descriptor, index) => (
           <CredentialSelectionView
             key={descriptor.id}
+            credentialRole={CredentialRole.HOLDER}
             inputDescriptor={descriptor}
             selectableCredentials={selectableCredentialsMap.get(descriptor.id) ?? []}
             fallbackPurpose={presentationDefinition.purpose}

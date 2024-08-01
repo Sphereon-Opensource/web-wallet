@@ -106,6 +106,6 @@ export const keysDataProvider = (): DataProvider => ({
   },
   getApiUrl: (): string => {
     // TODO CWALL-242 implement
-    throw Error("Not implemented")
+    throw Error('Not implemented')
   },
 })

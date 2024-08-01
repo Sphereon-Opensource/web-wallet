@@ -2,7 +2,7 @@ import { Resolver } from 'did-resolver'
 import { getDidJwkResolver } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
 import { getResolver as getDidWebResolver } from 'web-did-resolver'
 import { getResolver as getDidEbsiResolver } from '@sphereon/ssi-sdk-ext.did-resolver-ebsi'
-// import { getResolver as getDidKeyResolver } from '@sphereon/ssi-sdk-ext.did-resolver-key'
+import { getResolver as getDidKeyResolver } from '@sphereon/ssi-sdk-ext.did-resolver-key'
 import { WebDIDProvider } from '@sphereon/ssi-sdk-ext.did-provider-web'
 import { JwkDIDProvider } from '@sphereon/ssi-sdk-ext.did-provider-jwk'
 import agent, { context } from '../agent'
@@ -10,7 +10,7 @@ import { DIDDocumentSection, IIdentifier } from '@veramo/core'
 import { DID_PREFIX, DIDMethods, IDIDResult, KMS } from '../index'
 import { getAgentResolver, mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-ext.did-utils'
 import { generatePrivateKeyHex, TKeyType, toJwk } from '@sphereon/ssi-sdk-ext.key-utils'
-import { getDidIonResolver, IonDIDProvider } from '@veramo/did-provider-ion'
+
 import {
   DEFAULT_DID,
   DEFAULT_KID,
@@ -20,17 +20,17 @@ import {
   DID_WEB_DID,
   DID_WEB_KID,
   DID_WEB_PRIVATE_KEY_PEM,
-  didOptConfigs,
 } from '../environment'
 import { EbsiDidProvider } from '@sphereon/ssi-sdk.ebsi-support'
+import { SphereonKeyDidProvider } from '@sphereon/ssi-sdk-ext.did-provider-key'
+import {didOptConfigs} from "../environment-deps";
 
 export function createDidResolver() {
   return new Resolver({
     ...getDidJwkResolver(),
-    // ...getDidKeyResolver(),
+    ...getDidKeyResolver(),
     ...getDidWebResolver(),
     ...getDidEbsiResolver(),
-    ...getDidIonResolver(),
   })
 }
 
@@ -42,13 +42,10 @@ export function createDidProviders() {
     [`${DID_PREFIX}:${DIDMethods.DID_JWK}`]: new JwkDIDProvider({
       defaultKms: KMS.LOCAL,
     }),
-    /*[`${DID_PREFIX}:${DIDMethods.DID_KEY}`]: new SphereonKeyDidProvider({
-      defaultKms: KMS.LOCAL,
-    }),*/
-    [`${DID_PREFIX}:${DIDMethods.DID_EBSI}`]: new EbsiDidProvider({
+    [`${DID_PREFIX}:${DIDMethods.DID_KEY}`]: new SphereonKeyDidProvider({
       defaultKms: KMS.LOCAL,
     }),
-    [`${DID_PREFIX}:${DIDMethods.DID_ION}`]: new IonDIDProvider({
+    [`${DID_PREFIX}:${DIDMethods.DID_EBSI}`]: new EbsiDidProvider({
       defaultKms: KMS.LOCAL,
     }),
   }
@@ -69,11 +66,16 @@ export async function getDefaultDID(): Promise<string | undefined> {
     if (!ids || ids.length === 0) {
       return
     }
-    return ids[0].did
+
+    const id: IIdentifier | undefined = ids.find((value: IIdentifier) => value.did !== 'did:web:localhost') // FIXME how to select which credential when there are multiple?
+    if (id === undefined) {
+      throw new Error('Could not find a suitable default did identifier. (did:web:localhost is not suitable because RSA keys are not supported)')
+    }
+    return id.did
   })
 }
 
-export async function getDefaultKerRef({
+export async function getDefaultKeyRef({
   did,
   verificationMethodName,
   verificationMethodFallback,
@@ -102,7 +104,14 @@ export async function getDefaultKerRef({
     context,
   )
   if (keys.length === 0 && (verificationMethodFallback === undefined || verificationMethodFallback)) {
-    keys = await mapIdentifierKeysToDocWithJwkSupport({ identifier, vmRelationship: 'verificationMethod', didDocument }, context)
+    keys = await mapIdentifierKeysToDocWithJwkSupport(
+      {
+        identifier,
+        vmRelationship: 'verificationMethod',
+        didDocument,
+      },
+      context,
+    )
   }
   if (keys.length === 0) {
     return undefined

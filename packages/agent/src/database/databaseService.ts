@@ -1,6 +1,7 @@
 import { DataSource } from 'typeorm'
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import { DB_CONFIG } from './config'
+import {DB_CONNECTION_NAME} from "../environment";
 
 console.log(`Using DB configuration for a ${DB_CONFIG.type} database`)
 
@@ -12,7 +13,10 @@ console.log(`Using DB configuration for a ${DB_CONFIG.type} database`)
  * @param connectionName The database name
  */
 export const getDbConnection = async (connectionName: string): Promise<DataSource> => {
-  return DataSources.singleInstance().addConfig(connectionName, DB_CONFIG).getDbConnection(connectionName)
+  if (!DataSources.singleInstance().has(connectionName)) {
+    DataSources.singleInstance().addConfig(connectionName, DB_CONFIG)
+  }
+  return DataSources.singleInstance().getDbConnection(connectionName)
 }
 
 /**
@@ -38,3 +42,6 @@ export const dropDatabase = async (dataSource: DataSource): Promise<void> => {
     console.error('DataSource is not initialized')
   }
 }
+
+
+export const dbConnection = getDbConnection(DB_CONNECTION_NAME)

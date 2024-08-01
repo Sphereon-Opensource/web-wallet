@@ -103,14 +103,14 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
         })
 
         const originalVerifiyableDocument = JSON.parse(rawDocument) as VerifiableCredential
-        const credentialSummary: CredentialSummary = await toCredentialSummary(
-          originalVerifiyableDocument,
+        const credentialSummary: CredentialSummary = await toCredentialSummary({
+          verifiableCredential: originalVerifiyableDocument,
           hash,
-          credentialBrandings.length ? credentialBrandings[0].localeBranding : undefined,
-          // @ts-ignore
-          issuerParties.length ? issuerParties[0] : undefined,
-          subjectParties.length ? subjectParties[0] : undefined,
-        )
+          credentialRole,
+          branding: credentialBrandings.length ? credentialBrandings[0].localeBranding : undefined,
+          issuer: issuerParties.length ? issuerParties[0] : undefined,
+          subject: subjectParties.length ? subjectParties[0] : undefined,
+        })
 
         setCredentialSummary(credentialSummary)
       } catch (error) {

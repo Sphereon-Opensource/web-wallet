@@ -6,8 +6,7 @@ import {QrCodeProvider} from '@sphereon/ssi-sdk.qr-code-generator'
 import {LinkHandlerEventType, LinkHandlerPlugin, LinkHandlers, LogLinkHandler} from '@sphereon/ssi-sdk.core'
 import {OID4VCIRestClient} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-client'
 import {createAgent, IAgentContext, IAgentPlugin} from '@veramo/core'
-import {getDidIonResolver} from '@veramo/did-provider-ion'
-import {getDidKeyResolver} from '@veramo/did-provider-key'
+import {getResolver as getDidKeyResolver} from '@sphereon/ssi-sdk-ext.did-resolver-key'
 import {DIDResolverPlugin} from '@veramo/did-resolver'
 import {AgentRestClient} from '@veramo/remote-client'
 import {Resolver} from 'did-resolver'
@@ -17,6 +16,7 @@ import {OID4VCIHolder, oid4vciHolderContextMethods, OID4VCIHolderLinkHandler} fr
 import {contactManagerMethods} from '@sphereon/ssi-sdk.contact-manager'
 import {issuanceBrandingMethods} from '@sphereon/ssi-sdk.issuance-branding'
 import {pdManagerMethods} from '@sphereon/ssi-sdk.pd-manager'
+import {getResolver as getDidWebResolver} from 'web-did-resolver'
 import {oid4vciStateNavigationListener} from '@machines/oid4vci/oid4vciStateNavigation'
 import {AuthorizationRequestOpts, PARMode} from '@sphereon/oid4vci-common'
 import {CLIENT_ID, OID4VCI_CODE_URL_REGEX, OID4VCI_DEFAULT_REDIRECT_URI, SIOP_DEFAULT_REDIRECT_URI} from '@/app'
@@ -29,7 +29,7 @@ import {credentialStoreMethods} from '@sphereon/ssi-sdk.credential-store'
 export const resolver = new Resolver({
   ...getDidKeyResolver(),
   ...getDidJwkResolver(),
-  ...getDidIonResolver(),
+  ...getDidWebResolver(),
 })
 
 export const linkHandlers: LinkHandlers = new LinkHandlers().add(new LogLinkHandler())
@@ -61,6 +61,7 @@ const plugins: IAgentPlugin[] = [
       ...ebsiSupportMethods,
       ...pdManagerMethods,
       ...credentialStoreMethods,
+      'crsGetUniqueCredentials',
       ...contactManagerMethods,
       ...sphereonKeyManagerMethods,
     ],

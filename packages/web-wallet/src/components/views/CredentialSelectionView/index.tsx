@@ -16,6 +16,7 @@ import {SelectableCredential} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 import {toCredentialSummary} from '@sphereon/ui-components.credential-branding'
 import {UniqueDigitalCredential} from '@sphereon/ssi-sdk.credential-store'
 import {VerifiableCredential} from '@veramo/core'
+import {CredentialRole} from '@sphereon/ssi-sdk.data-store'
 
 const debug: Debugger = Debug('sphereon:cloud-wallet:CredentialSelectionView')
 
@@ -25,12 +26,14 @@ type CredentialSelectionViewProps = {
   fallbackPurpose?: string
   index?: number
   onSelect: (credential: UniqueDigitalCredential | undefined) => void
+  credentialRole: CredentialRole
 }
 
 const CredentialSelectionView: React.FC<CredentialSelectionViewProps> = ({
   inputDescriptor,
   selectableCredentials,
   fallbackPurpose,
+  credentialRole,
   index,
   onSelect,
 }): ReactElement => {
@@ -69,13 +72,14 @@ const CredentialSelectionView: React.FC<CredentialSelectionViewProps> = ({
       const summaries = await Promise.all(
         selectableCredentials.map(async selectableCredential => {
           const uniqueDigitalCredential = selectableCredential.credential
-          return await toCredentialSummary(
-            uniqueDigitalCredential.originalCredential as VerifiableCredential,
-            uniqueDigitalCredential.hash,
-            selectableCredential.credentialBranding,
-            selectableCredential.issuerParty,
-            selectableCredential.subjectParty,
-          )
+          return await toCredentialSummary({
+            verifiableCredential: uniqueDigitalCredential.originalVerifiableCredential as VerifiableCredential,
+            hash: uniqueDigitalCredential.hash,
+            credentialRole,
+            branding: selectableCredential.credentialBranding,
+            issuer: selectableCredential.issuerParty,
+            subject: selectableCredential.subjectParty,
+          })
         }),
       )
       setCredentialSummaryItems(summaries)
