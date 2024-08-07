@@ -59,7 +59,7 @@ import {
   DigitalCredentialStore,
   EventLoggerStore,
   IssuanceBrandingStore,
-  PDStore
+  PDStore,
 } from '@sphereon/ssi-sdk.data-store'
 import {IIssuerInstanceArgs, OID4VCIIssuer} from '@sphereon/ssi-sdk.oid4vci-issuer'
 import {IIssuerInstanceOptions, IIssuerOptsPersistArgs, OID4VCIStore} from '@sphereon/ssi-sdk.oid4vci-issuer-store'
@@ -81,9 +81,6 @@ import {OID4VCIHolder} from '@sphereon/ssi-sdk.oid4vci-holder'
 import {addDefaultsToOpts} from './utils/oid4vci'
 import {getCredentialDataSupplier} from './utils/oid4vciCredentialSuppliers'
 import {SIOPv2RP} from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
-import {addDefaultsToOpts} from './utils/oid4vci'
-import {getCredentialDataSupplier} from './utils/oid4vciCredentialSuppliers'
-import {SIOPv2RP} from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import {
   CONTACT_MANAGER_API_FEATURES,
   DID_API_FEATURES,
@@ -93,9 +90,11 @@ import {
   REMOTE_SERVER_API_FEATURES,
   STATUS_LIST_API_FEATURES,
   syncDefinitionsOpts,
-  VC_API_FEATURES
+  VC_API_FEATURES,
 } from './environment-deps'
-import {dbConnection} from "./database";
+import {dbConnection} from './database'
+import {createHash, randomBytes, subtle} from 'crypto'
+import {SDJwtPlugin} from '@sphereon/ssi-sdk.sd-jwt'
 
 /**
  * Lets setup supported DID resolvers first
@@ -110,6 +109,24 @@ const resolver = createDidResolver()
 const privateKeyStore: PrivateKeyStore = new PrivateKeyStore(dbConnection, new SecretBox(DB_ENCRYPTION_KEY))
 
 const cliMode: boolean = process.env.RUN_MODE === 'cli'
+
+
+
+const generateDigest = (data: string, algorithm: string) => {
+  return createHash(algorithm).update(data).digest()
+}
+
+const generateSalt = (): string => {
+  return randomBytes(16).toString('hex')
+}
+
+async function verifySignature<T>(data: string, signature: string, key: JsonWebKey) {
+  let { alg, crv } = key
+  if (alg === 'ES256') alg = 'ECDSA'
+  const publicKey = await subtle.importKey('jwk', key, { name: alg, namedCurve: crv } as EcKeyImportParams, true, ['verify'])
+  return Promise.resolve(subtle.verify({ name: alg as string, hash: 'SHA-256' }, publicKey, Buffer.from(signature, 'base64'), Buffer.from(data)))
+}
+
 
 /**
  * Define Agent plugins being used. The plugins come from Sphereon's SSI-SDK and Veramo.
@@ -160,6 +177,11 @@ const plugins: IAgentPlugin[] = [
   new DidAuthSiopOpAuthenticator(),
   new OID4VCIHolder({}),
   new EbsiSupport(),
+  new SDJwtPlugin({
+    hasher: generateDigest,
+    saltGenerator: generateSalt,
+    verifySignature,
+  }),
 ]
 
 let oid4vpRP: SIOPv2RP | undefined

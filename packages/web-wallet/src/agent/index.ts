@@ -64,6 +64,11 @@ const plugins: IAgentPlugin[] = [
       'crsGetUniqueCredentials',
       ...contactManagerMethods,
       ...sphereonKeyManagerMethods,
+      'createSdJwtVc',  // FIXME missing methods in sd-jwt action-handler.ts
+      'createSdJwtPresentation',
+      'verifySdJwtVc',
+      'verifySdJwtPresentation',
+
     ],
   }),
   new OID4VCIHolder(),

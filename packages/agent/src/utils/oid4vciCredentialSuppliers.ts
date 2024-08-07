@@ -11,7 +11,7 @@ import {CredentialSupplierConfigWithTemplateSupport} from '../types'
 import {normalizeFilePath} from './generic'
 import agent from '../agent'
 import {CredentialRole} from '@sphereon/ssi-sdk.data-store'
-import {CredentialMapper, ICredential} from '@sphereon/ssi-types'
+import {CredentialMapper, ICredential, OriginalVerifiableCredential} from '@sphereon/ssi-types'
 import {CredentialPayload, DIDDocument} from '@veramo/core'
 import {decodeJWT} from 'did-jwt'
 

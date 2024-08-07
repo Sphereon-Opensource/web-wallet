@@ -39,7 +39,10 @@ export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATU
         ...issuanceBrandingMethods,
         ...pdManagerMethods,
         ...credentialStoreMethods,
-        'crsGetUniqueCredentials', // FIXME in SSI_SDK
+        'createSdJwtVc',  // FIXME missing methods in sd-jwt action-handler.ts
+        'createSdJwtPresentation',
+        'verifySdJwtVc',
+        'verifySdJwtPresentation',
     ]
 
 

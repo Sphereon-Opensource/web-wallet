@@ -20,6 +20,7 @@ import { IPEXInstanceOptions } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { ISIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
 import { CredentialSupplierConfig } from '@sphereon/oid4vci-common'
+import {ISDJwtPlugin} from '@sphereon/ssi-sdk.sd-jwt'
 
 export const DID_PREFIX = 'did'
 
@@ -41,6 +42,7 @@ export type TAgentTypes = IDIDManager &
   IPDManager &
   ICredentialStore &
   IPresentationExchange &
+  ISDJwtPlugin &
   ISIOPv2RP
 
 /**
