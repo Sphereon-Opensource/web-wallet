@@ -198,7 +198,12 @@ const navigateReviewCredentials = async (args: OID4VCINavigationArgs): Promise<v
   window.addEventListener(OID4VCINavigationEventListenerType.ACCEPT_CREDENTIAL, onNext, {signal: abortController.signal})
 
   const state: ReviewCredentialsPageState = {
-    credential: await toNonPersistedCredentialSummary(credentialsToAccept[0].uniformVerifiableCredential, localeBranding, contact),
+    credential: await toNonPersistedCredentialSummary({
+      verifiableCredential: credentialsToAccept[0].uniformVerifiableCredential,
+      branding: localeBranding,
+      issuer: contact,
+      credentialRole: CredentialRole.HOLDER,
+    }),
   }
 
   navigationEventEmitter.navigateTo(`${MainRoute.OID4VCI}/${OID4VCIRoute.REVIEW_CREDENTIALS}`, {...state})

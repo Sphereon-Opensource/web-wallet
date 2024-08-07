@@ -3,7 +3,6 @@ import { getDriver } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
 import {
   DB_CONNECTION_NAME,
   DEFAULT_DID,
-  STATUS_LIST_API_FEATURES,
   STATUS_LIST_CORRELATION_ID,
   STATUS_LIST_ID,
   STATUS_LIST_ISSUER,
@@ -11,6 +10,7 @@ import {
   STATUS_LIST_PURPOSE,
 } from '../environment'
 import { context } from '../agent'
+import {STATUS_LIST_API_FEATURES} from "../environment-deps";
 
 export async function getOrCreateConfiguredStatusList(args?: { issuer?: string; keyRef?: string }) {
   if (!STATUS_LIST_API_FEATURES || STATUS_LIST_API_FEATURES.length === 0) {

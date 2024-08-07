@@ -6,6 +6,20 @@ const nextConfig = {
     i18n: i18nNextConfig.i18n,
 
     transpilePackages: ['@sphereon/ui-components.ssi-react', '@sphereon/ssi-sdk.ebsi-support'],
+
+    webpack(config) {
+        config.resolve.fallback = {
+
+            // if you miss it, all the other options in fallback, specified
+            // by next.js will be dropped.
+            ...config.resolve.fallback,
+
+            fs: false, // the solution
+        };
+
+        return config;
+    },
+
     compiler: {
 
         styledComponents: {

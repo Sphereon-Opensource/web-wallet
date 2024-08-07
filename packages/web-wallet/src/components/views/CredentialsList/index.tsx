@@ -77,13 +77,14 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
             const subjectPartyIdentity =
               credential.subjectCorrelationId !== undefined ? getMatchingIdentity(partyData.data, credential.subjectCorrelationId) : undefined
             const originalVerifiableCredential = JSON.parse(credential.uniformDocument ?? credential.rawDocument) as OriginalVerifiableCredential
-            const credentialSummary = await toCredentialSummary(
-              originalVerifiableCredential as VerifiableCredential,
-              credential.hash,
-              filteredCredentialBrandings.length ? filteredCredentialBrandings[0].localeBranding : undefined,
-              issuerPartyIdentity?.party,
-              subjectPartyIdentity?.party,
-            )
+            const credentialSummary = await toCredentialSummary({
+              verifiableCredential: originalVerifiableCredential as VerifiableCredential,
+              hash: credential.hash,
+              credentialRole,
+              branding: filteredCredentialBrandings.length ? filteredCredentialBrandings[0].localeBranding : undefined,
+              issuer: issuerPartyIdentity?.party,
+              subject: subjectPartyIdentity?.party,
+            })
 
             return CredentialTableItem.from(credential, partyData.data, credentialSummary)
           }),

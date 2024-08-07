@@ -3,7 +3,7 @@ import { IIdentifier } from '@veramo/core'
 import agent from '../../../agent'
 import { v4 } from 'uuid'
 import { AddContactArgs } from '@sphereon/ssi-sdk.contact-manager'
-import { IonPublicKeyPurpose } from '@decentralized-identity/ion-sdk'
+// import { IonPublicKeyPurpose } from '@decentralized-identity/ion-sdk'
 import { VC_API_BASE_PATH } from '../../../environment'
 import { DIDMethods } from '../../../types'
 import { IKeyOpts } from '@sphereon/ssi-sdk-ext.did-provider-web'
@@ -194,7 +194,7 @@ function existingDidConfig(
         } as IKeyOpts,
       ],
     }
-  } else if (method === DIDMethods.DID_ION) {
+    /*} else if (method === DIDMethods.DID_ION) {
     options = {
       anchor: true,
       recoveryKey: {
@@ -219,7 +219,7 @@ function existingDidConfig(
         },
       ],
       services,
-    }
+    }*/
   } else if (method === DIDMethods.DID_JWK) {
     options = {
       kid,

@@ -196,6 +196,6 @@ export const identifiersDataProvider = (): DataProvider => ({
   },
   getApiUrl: (): string => {
     // TODO CWALL-244 implement
-    throw Error("Not implemented")
+    throw Error('Not implemented')
   },
 })

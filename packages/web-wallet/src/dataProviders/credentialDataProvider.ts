@@ -148,6 +148,6 @@ export const credentialDataProvider = (): DataProvider => ({
 
   getApiUrl: (): string => {
     // TODO implement
-    throw Error("Not implemented")
+    throw Error('Not implemented')
   },
 })

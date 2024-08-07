@@ -19,7 +19,7 @@ import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { IPEXInstanceOptions } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { ISIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
-import {CredentialSupplierConfig} from '@sphereon/oid4vci-common'
+import { CredentialSupplierConfig } from '@sphereon/oid4vci-common'
 
 export const DID_PREFIX = 'did'
 
@@ -54,7 +54,7 @@ export enum KMS {
  * Predefined DID methods. In case more DID methods should be support, you will also have to import SSI-SDK modules
  */
 export enum DIDMethods {
-  DID_ION = 'ion',
+  // DID_ION = 'ion',
   DID_JWK = 'jwk',
   DID_WEB = 'web',
   DID_KEY = 'key',
@@ -79,7 +79,6 @@ export interface IDIDResult extends IDIDOpts {
 }
 
 export type OID4VPInstanceOpts = Omit<IPEXInstanceOptions, 'definition'>
-
 
 export interface CredentialSupplierConfigWithTemplateSupport extends CredentialSupplierConfig {
   templates_base_dir?: string
