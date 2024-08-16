@@ -491,6 +491,9 @@ importers:
       '@sphereon/did-uni-client':
         specifier: 0.6.3
         version: 0.6.3
+      '@sphereon/oid4vci-client':
+        specifier: 0.15.1-next.9
+        version: 0.15.1-next.9
       '@sphereon/oid4vci-common':
         specifier: 0.15.1-next.9
         version: 0.15.1-next.9
@@ -561,8 +564,8 @@ importers:
         specifier: 0.3.0
         version: 0.3.0(react-dom@18.3.1)(react@18.3.1)(ts-node@10.9.2)
       '@sphereon/ui-components.ssi-react':
-        specifier: 0.3.0
-        version: 0.3.0(@babel/core@7.24.9)(@types/react@18.3.3)(dayjs@1.11.11)(react-dom@18.3.1)(react@18.3.1)
+        specifier: file://C:\Git\Sphereon-Opensource\UI-Components\packages\ssi-react\sphereon-ui-components.ssi-react-0.3.4-bram.tgz
+        version: file:../Sphereon-Opensource/UI-Components/packages/ssi-react/sphereon-ui-components.ssi-react-0.3.4-bram.tgz(@babel/core@7.24.9)(@types/react@18.3.3)(dayjs@1.11.11)(react-dom@18.3.1)(react@18.3.1)(ts-node@10.9.2)
       '@supabase/postgrest-js':
         specifier: 1.15.2
         version: 1.15.2
@@ -7377,46 +7380,6 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ui-components.ssi-react@0.3.0(@babel/core@7.24.9)(@types/react@18.3.3)(dayjs@1.11.11)(react-dom@18.3.1)(react@18.3.1):
-    resolution: {integrity: sha512-DHFLbi6lGovW7ligKQHS+velm6r4HbBTwP2QvBNNI+ebF/L4uIh1GKYko0OedlmEI6caPPTFeJFBtfZ19Z1QEw==}
-    peerDependencies:
-      react: '>= 18'
-    dependencies:
-      '@emotion/react': 11.11.4(@types/react@18.3.3)(react@18.3.1)
-      '@emotion/styled': 11.11.5(@emotion/react@11.11.4)(@types/react@18.3.3)(react@18.3.1)
-      '@jsonforms/core': 3.3.0
-      '@jsonforms/material-renderers': 3.3.0(@emotion/react@11.11.4)(@emotion/styled@11.11.5)(@jsonforms/core@3.3.0)(@jsonforms/react@3.3.0)(@mui/icons-material@5.16.4)(@mui/material@5.16.4)(@mui/x-date-pickers@6.20.2)(react@18.3.1)
-      '@jsonforms/react': 3.3.0(@jsonforms/core@3.3.0)(react@18.3.1)
-      '@jsonforms/vanilla-renderers': 3.3.0(@jsonforms/core@3.3.0)(@jsonforms/react@3.3.0)(react@18.3.1)
-      '@mui/icons-material': 5.16.4(@mui/material@5.16.4)(@types/react@18.3.3)(react@18.3.1)
-      '@mui/material': 5.16.4(@emotion/react@11.11.4)(@emotion/styled@11.11.5)(@types/react@18.3.3)(react-dom@18.3.1)(react@18.3.1)
-      '@mui/styled-engine-sc': 5.14.12(styled-components@6.1.12)
-      '@mui/system': 5.16.4(@emotion/react@11.11.4)(@emotion/styled@11.11.5)(@types/react@18.3.3)(react@18.3.1)
-      '@mui/x-date-pickers': 6.20.2(@emotion/react@11.11.4)(@emotion/styled@11.11.5)(@mui/material@5.16.4)(@mui/system@5.16.4)(@types/react@18.3.3)(dayjs@1.11.11)(react-dom@18.3.1)(react@18.3.1)
-      '@sphereon/ui-components.core': 0.3.0(react-dom@18.3.1)(react@18.3.1)
-      '@tanstack/react-table': 8.19.3(react-dom@18.3.1)(react@18.3.1)
-      react: 18.3.1
-      react-json-tree: 0.18.0(@types/react@18.3.3)(react@18.3.1)
-      react-loader-spinner: 5.4.5(@babel/core@7.24.9)(react-dom@18.3.1)(react@18.3.1)
-      react-select: 5.8.0(@types/react@18.3.3)(react-dom@18.3.1)(react@18.3.1)
-      react-toastify: 9.1.3(react-dom@18.3.1)(react@18.3.1)
-      styled-components: 6.1.12(react-dom@18.3.1)(react@18.3.1)
-      uint8arrays: 3.1.1
-    transitivePeerDependencies:
-      - '@babel/core'
-      - '@types/react'
-      - '@types/styled-components'
-      - date-fns
-      - date-fns-jalali
-      - dayjs
-      - luxon
-      - moment
-      - moment-hijri
-      - moment-jalaali
-      - react-dom
-      - supports-color
-    dev: false
-
   /@sphereon/vc-status-list@7.0.0-next.0(expo@51.0.20)(react-native@0.74.3):
     resolution: {integrity: sha512-4GIZq12SXbEbO4vCh5TwWzWk7tviDUP8aOzRGsEw6UW2344qZ31CLsU+bHurdnG4OlLRyosv4khN1ha6OiJHZQ==}
     engines: {node: '>=16'}
@@ -13010,6 +12973,7 @@ packages:
   /fill-range@7.1.1:
     resolution: {integrity: sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg==}
     engines: {node: '>=8'}
+    requiresBuild: true
     dependencies:
       to-regex-range: 5.0.1
 
@@ -14325,6 +14289,7 @@ packages:
   /is-number@7.0.0:
     resolution: {integrity: sha512-41Cifkg6e8TylSpdtTpeLVMqvSBEVzTttHvERD741+pnZ8ANv0004MRL43QKPDlK9cGvNp6NZWZUBlbGXYxxng==}
     engines: {node: '>=0.12.0'}
+    requiresBuild: true
 
   /is-obj@2.0.0:
     resolution: {integrity: sha512-drqDG3cbczxxEJRoOXcOjtdp1J/lyp1mNn0xaznRs8+muBhgQcrnbspox5X5fOw0HnMnbfDzvnEMEtqDEJEo8w==}
@@ -15504,6 +15469,7 @@ packages:
   /ky-universal@0.8.2(ky@0.25.1):
     resolution: {integrity: sha512-xe0JaOH9QeYxdyGLnzUOVGK4Z6FGvDVzcXFTdrYA1f33MZdEa45sUDaMBy98xQMcsd2XIBrTXRrRYnegcSdgVQ==}
     engines: {node: '>=10.17'}
+    requiresBuild: true
     peerDependencies:
       ky: '>=0.17.0'
       web-streams-polyfill: '>=2.0.0'
@@ -15521,6 +15487,7 @@ packages:
   /ky@0.25.1:
     resolution: {integrity: sha512-PjpCEWlIU7VpiMVrTwssahkYXX1by6NCT0fhTUX34F3DTinARlgMpriuroolugFPcMgpPWrOW4mTb984Qm1RXA==}
     engines: {node: '>=10'}
+    requiresBuild: true
     dev: false
 
   /language-subtag-registry@0.3.23:
@@ -20051,6 +20018,7 @@ packages:
   /to-regex-range@5.0.1:
     resolution: {integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==}
     engines: {node: '>=8.0'}
+    requiresBuild: true
     dependencies:
       is-number: 7.0.0
 
@@ -21353,6 +21321,68 @@ packages:
     resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
     dev: false
     optional: true
+
+  file:../Sphereon-Opensource/UI-Components/packages/ssi-react/sphereon-ui-components.ssi-react-0.3.4-bram.tgz(@babel/core@7.24.9)(@types/react@18.3.3)(dayjs@1.11.11)(react-dom@18.3.1)(react@18.3.1)(ts-node@10.9.2):
+    resolution: {integrity: sha512-tQVBhofV6nA8cfB0C5AyTk683opqpTm/SRMNhzMXhnDjdthfvGNveHygZh5D76IXBOHTIVopmgkXGM33O2dAUg==, tarball: file:../Sphereon-Opensource/UI-Components/packages/ssi-react/sphereon-ui-components.ssi-react-0.3.4-bram.tgz}
+    id: file:../Sphereon-Opensource/UI-Components/packages/ssi-react/sphereon-ui-components.ssi-react-0.3.4-bram.tgz
+    name: '@sphereon/ui-components.ssi-react'
+    version: 0.3.4-bram
+    peerDependencies:
+      react: '>= 18'
+    dependencies:
+      '@emotion/react': 11.11.4(@types/react@18.3.3)(react@18.3.1)
+      '@emotion/styled': 11.11.5(@emotion/react@11.11.4)(@types/react@18.3.3)(react@18.3.1)
+      '@jsonforms/core': 3.3.0
+      '@jsonforms/material-renderers': 3.3.0(@emotion/react@11.11.4)(@emotion/styled@11.11.5)(@jsonforms/core@3.3.0)(@jsonforms/react@3.3.0)(@mui/icons-material@5.16.4)(@mui/material@5.16.4)(@mui/x-date-pickers@6.20.2)(react@18.3.1)
+      '@jsonforms/react': 3.3.0(@jsonforms/core@3.3.0)(react@18.3.1)
+      '@jsonforms/vanilla-renderers': 3.3.0(@jsonforms/core@3.3.0)(@jsonforms/react@3.3.0)(react@18.3.1)
+      '@mui/icons-material': 5.16.4(@mui/material@5.16.4)(@types/react@18.3.3)(react@18.3.1)
+      '@mui/material': 5.16.4(@emotion/react@11.11.4)(@emotion/styled@11.11.5)(@types/react@18.3.3)(react-dom@18.3.1)(react@18.3.1)
+      '@mui/styled-engine-sc': 5.14.12(styled-components@6.1.12)
+      '@mui/system': 5.16.4(@emotion/react@11.11.4)(@emotion/styled@11.11.5)(@types/react@18.3.3)(react@18.3.1)
+      '@mui/x-date-pickers': 6.20.2(@emotion/react@11.11.4)(@emotion/styled@11.11.5)(@mui/material@5.16.4)(@mui/system@5.16.4)(@types/react@18.3.3)(dayjs@1.11.11)(react-dom@18.3.1)(react@18.3.1)
+      '@sphereon/ssi-sdk.data-store': 0.29.1-next.5(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ui-components.core': 0.3.0(react-dom@18.3.1)(react@18.3.1)
+      '@tanstack/react-table': 8.19.3(react-dom@18.3.1)(react@18.3.1)
+      react: 18.3.1
+      react-json-tree: 0.18.0(@types/react@18.3.3)(react@18.3.1)
+      react-loader-spinner: 5.4.5(@babel/core@7.24.9)(react-dom@18.3.1)(react@18.3.1)
+      react-select: 5.8.0(@types/react@18.3.3)(react-dom@18.3.1)(react@18.3.1)
+      react-toastify: 9.1.3(react-dom@18.3.1)(react@18.3.1)
+      styled-components: 6.1.12(react-dom@18.3.1)(react@18.3.1)
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - '@babel/core'
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - '@types/react'
+      - '@types/styled-components'
+      - better-sqlite3
+      - date-fns
+      - date-fns-jalali
+      - dayjs
+      - encoding
+      - hdb-pool
+      - ioredis
+      - luxon
+      - moment
+      - moment-hijri
+      - moment-jalaali
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - react-dom
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
+    dev: false
 
   github.com/uport-project/EcdsaSecp256k1RecoverySignature2020/ab0db52de6f4e6663ef271a48009ba26e688ef9b(expo@51.0.20)(react-native@0.74.3):
     resolution: {tarball: https://codeload.github.com/uport-project/EcdsaSecp256k1RecoverySignature2020/tar.gz/ab0db52de6f4e6663ef271a48009ba26e688ef9b}

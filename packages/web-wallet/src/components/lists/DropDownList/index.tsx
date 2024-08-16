@@ -24,7 +24,7 @@ type InlineOption = {
 }
 
 const DropDownList = <T extends DropDownOption>(props: Props<T>): ReactElement => {
-  const {onChange, noOptionsMessage, placeholder, defaultValue, inlineOption, options = []} = props
+  const {onChange, noOptionsMessage, placeholder, defaultValue, inlineOption, options = [], style} = props
   const creatableProps = inlineOption
     ? {
         allowCreateWhileLoading: true,
@@ -39,6 +39,7 @@ const DropDownList = <T extends DropDownOption>(props: Props<T>): ReactElement =
       styles={{
         control: (provided: CSSObjectWithLabel, state) => ({
           ...provided,
+          ...style,
           maxWidth: 455,
           borderColor: state.isFocused ? '#7276F7' : provided.borderColor,
           '&:hover': {
@@ -50,6 +51,7 @@ const DropDownList = <T extends DropDownOption>(props: Props<T>): ReactElement =
         }),
         menu: (provided: CSSObjectWithLabel) => ({
           ...provided,
+          ...style,
           maxWidth: 455,
         }),
         option: (provided: CSSObjectWithLabel, state) => ({

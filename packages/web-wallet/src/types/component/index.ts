@@ -1,6 +1,7 @@
 import {ComponentType} from 'react'
 import {AccessorFn, DeepKeys} from '@tanstack/react-table'
-import {TableCellType, TableCellOptions} from '@sphereon/ui-components.ssi-react'
+import {TableCellType, TableCellOptions, CredentialMiniCardViewProps} from '@sphereon/ui-components.ssi-react'
+import {CredentialStatus} from "@sphereon/ui-components.core";
 
 export type TabRoute = {
   key: string
@@ -69,4 +70,21 @@ export type SelectionFieldDetail = {
 export type NavigationRoute = {
   target: string
   label: string
+}
+
+export enum CatalogDisplayMode {
+  CARD_VIEW = 'cardView',
+  LIST_VIEW = 'listView'
+}
+
+export type CredentialCatalogItem = {
+  configId: string
+  credential: CredentialMiniCardViewProps & {
+    credentialTitle?: string
+    credentialSubtitle?: string
+    issuerName?: string
+    credentialStatus?: CredentialStatus,
+    textColor?: string
+  }
+  actions: string
 }
