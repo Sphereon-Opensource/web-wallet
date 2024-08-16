@@ -5,6 +5,7 @@ import {CredentialRole, IBasicCredentialLocaleBranding, Party} from '@sphereon/s
 import {OpenID4VCIClient} from '@sphereon/oid4vci-client'
 import {CredentialStatus, TabViewRoute} from '@sphereon/ui-components.core'
 import {ContactViewItem, SSITabView} from '@sphereon/ui-components.ssi-react'
+import {credentialLocaleBrandingFrom} from '@sphereon/ssi-sdk.oid4vci-holder/dist/agent/OIDC4VCIBrandingMapper'
 import PageHeaderBar from '@components/bars/PageHeaderBar'
 import {staticPropsWithSST} from '@/src/i18n/server'
 import {
@@ -13,7 +14,6 @@ import {
   CredentialsSupportedDisplay
 } from '@sphereon/oid4vci-common'
 import agent from "@agent";
-import { credentialLocaleBrandingFrom } from '@/src/OIDC4VCIBrandingMapper'
 import CredentialCatalogView from "@components/views/CredentialCatalogView";
 import style from './index.module.css'
 import {CredentialCatalogItem} from '@typings';
@@ -392,19 +392,9 @@ const ShowContactDetails: FC = (): ReactElement => {
               ),
           )
 
-          // const defaultCredentialType = 'VerifiableCredential'
-          // const credentialTypes: Array<string> = ('types' in credentialsConfigSupported // TODO credentialsConfigSupported.types is deprecated
-          //     ? (credentialsConfigSupported.types as string[])
-          //     : 'credential_definition' in credentialsConfigSupported
-          //         ? credentialsConfigSupported.credential_definition.type
-          //         : [defaultCredentialType]) ?? [configId]
-
-          //const filteredCredentialTypes = credentialTypes.filter((type: string): boolean => type !== defaultCredentialType)
-          credentialBranding[configId] = localeBranding // TODO for now taking the first type
+          credentialBranding[configId] = localeBranding
         }),
     )
-
-    // console.log(`BRANDING: ${JSON.stringify(credentialBranding)}`)
 
     return credentialBranding
   }
