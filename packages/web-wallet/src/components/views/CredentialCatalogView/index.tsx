@@ -12,15 +12,15 @@ type Props = {
     onClick?: (item: CredentialCatalogItem) => Promise<void>
 }
 
-const credentialCatalogDisplayModes: Array<ValueSelection> = [
-    {label: 'Card view', value: CatalogDisplayMode.CARD_VIEW},
-    {label: 'List view', value: CatalogDisplayMode.LIST_VIEW},
-]
-
 const CredentialCatalogView: FC<Props> = (props: Props): ReactElement => {
     const {items, onClick} = props
     const {translate} = useTranslation()
     const [catalogDisplayMode, setCatalogDisplayMode] = useState<string>(CatalogDisplayMode.CARD_VIEW)
+
+    const credentialCatalogDisplayModes: Array<ValueSelection> = [
+        {label: translate('credential_catalog_card_view_display_mode'), value: CatalogDisplayMode.CARD_VIEW},
+        {label: translate('credential_catalog_list_view_display_mode'), value: CatalogDisplayMode.LIST_VIEW},
+    ]
 
     const onCatalogDisplayModeChange = async (selection: ValueSelection): Promise<void> => {
         await setCatalogDisplayMode(selection.value)
