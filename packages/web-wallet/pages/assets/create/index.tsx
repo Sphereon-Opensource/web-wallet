@@ -5,7 +5,7 @@ import DefineProductModal from '@components/modals/DefineProductModal'
 import {useAssetMachine} from '@typings'
 import style from './index.module.css'
 import {Outlet} from 'react-router-dom'
-import {staticPropsWithSST} from '../../../src/i18n/server'
+import {staticPropsWithSST} from '@/src/i18n/server'
 
 const FINISH_STEP = 4
 

@@ -51,10 +51,13 @@ const _app = (props: React.PropsWithChildren<unknown>) => {
 
   const resources: Array<ResourceProps> = [
     {
-      name: DataResource.PERSON_CONTACTS,
+      name: DataResource.CONTACTS,
       list: MainRoute.CONTACTS,
-      create: `${MainRoute.CONTACTS}/${ContactRoute.NATURAL_PERSON}/${MainRoute.SUB_CREATE}`,
       show: `${MainRoute.CONTACTS}/${MainRoute.SUB_ID}`,
+    },
+    {
+      name: DataResource.PERSON_CONTACTS,
+      create: `${MainRoute.CONTACTS}/${ContactRoute.NATURAL_PERSON}/${MainRoute.SUB_CREATE}`,
     },
     {
       name: DataResource.ORGANIZATION_CONTACTS,
