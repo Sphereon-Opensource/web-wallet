@@ -9,14 +9,14 @@ import {issuanceBrandingMethods} from "@sphereon/ssi-sdk.issuance-branding";
 import {pdManagerMethods} from "@sphereon/ssi-sdk.pd-manager";
 import {credentialStoreMethods} from "@sphereon/ssi-sdk.credential-store";
 import {
-    DID_OPTIONS_PATH,
+    IDENTIFIER_OPTIONS_PATH,
     ENV_VAR_PREFIX,
     OID4VCI_ISSUER_METADATA_PATH,
     OID4VCI_ISSUER_OPTIONS_PATH, OID4VP_PRESENTATION_DEFINITION_PATH,
     OID4VP_RP_OPTIONS_PATH
 } from "./environment";
 import {loadJsonFiles} from "./utils";
-import {IDIDOpts, OID4VPInstanceOpts} from "./types";
+import {IIdentifierConfigOpts, OID4VPInstanceOpts} from "./types";
 import {IIssuerOptsImportArgs, IMetadataImportArgs} from "@sphereon/ssi-sdk.oid4vci-issuer-store";
 import {IPresentationDefinition} from "@sphereon/pex";
 import {vcApiFeatures} from "@sphereon/ssi-sdk.w3c-vc-api";
@@ -40,6 +40,25 @@ export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATU
         ...pdManagerMethods,
         ...credentialStoreMethods,
         'crsGetUniqueCredentials', // FIXME in SSI_SDK
+        // fixme: import from respective modules
+        'createSdJwtVc',
+        'createSdJwtPresentation',
+        'verifySdJwtVc',
+        'verifySdJwtPresentation',
+        'identifierManagedGet',
+        'identifierManagedGetByDid',
+        'identifierManagedGetByKid',
+        'identifierManagedGetByJwk',
+        'identifierManagedGetByX5c',
+        'identifierManagedGetByKey',
+        'identifierExternalResolve',
+        'identifierExternalResolveByDid',
+        'identifierExternalResolveByX5c',
+        'jwtPrepareJws',
+        'jwtCreateJwsJsonGeneralSignature',
+        'jwtCreateJwsJsonFlattenedSignature',
+        'jwtCreateJwsCompactSignature',
+        'jwtVerifyJwsCompactSignature',
     ]
 
 
@@ -69,6 +88,6 @@ export const DID_WEB_SERVICE_FEATURES: DidWebServiceFeatures[] = env('DID_WEB_SE
     ? (env('DID_WEB_SERVICE_FEATURES', ENV_VAR_PREFIX)?.split(',') as DidWebServiceFeatures[])
     : ['did-web-global-resolution']
 
-export const didOptConfigs = loadJsonFiles<IDIDOpts>({
-    path: DID_OPTIONS_PATH,
+export const identifierOptConfigs = loadJsonFiles<IIdentifierConfigOpts>({
+    path: IDENTIFIER_OPTIONS_PATH,
 })
