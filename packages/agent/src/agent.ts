@@ -210,27 +210,29 @@ const agent = createAgent<TAgentTypes>({
 export default agent
 export const context: IAgentContext<TAgentTypes> = { agent }
 
-/**
- * Import/creates DIDs from configurations files and environment. They then get stored in the database.
- * Also assign default DID and Key Identifier values. Whenever a DID or KID is not explicitly defined,
- * the defaults will be used
- */
-await getOrCreateDIDWebFromEnv().catch((e) => console.log(`ERROR env: ${e}`))
-await getOrCreateIdentifiersFromFS().catch((e) => console.log(`ERROR dids: ${e}`))
+if(!cliMode) {
+  /**
+   * Import/creates DIDs from configurations files and environment. They then get stored in the database.
+   * Also assign default DID and Key Identifier values. Whenever a DID or KID is not explicitly defined,
+   * the defaults will be used
+   */
+  await getOrCreateDIDWebFromEnv().catch((e) => console.log(`ERROR env: ${e}`))
+  await getOrCreateIdentifiersFromFS().catch((e) => console.log(`ERROR dids: ${e}`))
 
-const defaultDID = await getDefaultDID()
-if (defaultDID) {
-  console.log(`[DID] default DID: ${defaultDID}`)
-}
-const defaultKid = await getDefaultKeyRef({ did: defaultDID })
-console.log(`[DID] default key identifier: ${defaultKid}`)
-if (DEFAULT_MODE.toLowerCase() === 'did' && !defaultDID || !defaultKid) {
-  console.warn('[DID] Agent has no default DID and Key Identifier!')
-}
+  const defaultDID = await getDefaultDID()
+  if (defaultDID) {
+    console.log(`[DID] default DID: ${defaultDID}`)
+  }
+  const defaultKid = await getDefaultKeyRef({did: defaultDID})
+  console.log(`[DID] default key identifier: ${defaultKid}`)
+  if (DEFAULT_MODE.toLowerCase() === 'did' && !defaultDID || !defaultKid) {
+    console.warn('[DID] Agent has no default DID and Key Identifier!')
+  }
 
-const oid4vpOpts = IS_OID4VP_ENABLED ? await getDefaultOID4VPRPOptions({ did: defaultDID, x5c: DEFAULT_X5C, resolver }) : undefined
-if (oid4vpOpts && oid4vpRP) {
-  oid4vpRP.setDefaultOpts(oid4vpOpts, context)
+  const oid4vpOpts = IS_OID4VP_ENABLED ? await getDefaultOID4VPRPOptions({ did: defaultDID, x5c: DEFAULT_X5C, resolver }) : undefined
+  if (oid4vpOpts && oid4vpRP) {
+    oid4vpRP.setDefaultOpts(oid4vpOpts, context)
+  }
 }
 
 /**
