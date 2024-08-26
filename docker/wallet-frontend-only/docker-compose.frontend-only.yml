@@ -9,8 +9,8 @@ services:
       - .env
     tty: true
     build:
-      context: ../../packages/web-wallet
-      dockerfile: ../../docker/wallet-frontend-only/Dockerfile
+      context: ../..
+      dockerfile: ./docker/wallet-frontend-only/Dockerfile
       args:
         progress: plain
         no-cache: true
