@@ -1,0 +1,67 @@
+{
+  "definitionId": "default",
+  "rpOpts": {
+    "supportedVersions": [
+      180,
+      110
+    ],
+    "responseMode": "direct_post",
+    "clientMetadataOpts": {
+      "idTokenSigningAlgValuesSupported": [
+        "ES256"
+      ],
+      "requestObjectSigningAlgValuesSupported": [
+        "ES256"
+      ],
+      "responseTypesSupported": [
+        "id_token",
+        "vp_token"
+      ],
+      "client_name": "Visma Yuki",
+      "vpFormatsSupported": {
+        "jwt_vc_json": {
+          "alg": [
+            "ES256"
+          ]
+        },
+        "jwt_vp_json": {
+          "alg": [
+            "ES256"
+          ]
+        },
+        "jwt_vc": {
+          "alg": [
+            "ES256"
+          ]
+        },
+        "jwt_vp": {
+          "alg": [
+            "ES256"
+          ]
+        }
+      },
+      "scopesSupported": [
+        "openid did_authn"
+      ],
+      "subjectTypesSupported": [
+        "pairwise"
+      ],
+      "subject_syntax_types_supported": [
+        "did:jwk"
+      ],
+      "passBy": "VALUE"
+    },
+    "identifierOpts": {
+      "idOpts": {
+        "issuer": "funke.demo.sphereon.com",
+        "method": "x5c",
+        "kmsKeyRef": "0310f4fcef373b063b09e8613bdc852d15c3243c204ac1b2c7d02805eafd017f65",
+        "identifier": [
+          "MIIDSDCCAu+gAwIBAgITALNg7Lw33N6EYvmXZF4k3mvZRTAKBggqhkjOPQQDAjBaMQswCQYDVQQGEwJOTDEkMCIGA1UECgwbU3BoZXJlb24gSW50ZXJuYXRpb25hbCBCLlYuMQswCQYDVQQLDAJJVDEYMBYGA1UEAwwPY2Euc3BoZXJlb24uY29tMB4XDTI0MDgyNjIwMzE1MloXDTI0MTEyNDIyMzE1MlowgY4xCzAJBgNVBAYTAk5MMRYwFAYDVQQIDA1Ob29yZC1Ib2xsYW5kMRIwEAYDVQQHDAlBbXN0ZXJkYW0xJDAiBgNVBAoMG1NwaGVyZW9uIEludGVybmF0aW9uYWwgQi5WLjELMAkGA1UECwwCSVQxIDAeBgNVBAMMF2Z1bmtlLmRlbW8uc3BoZXJlb24uY29tMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEEPT87zc7BjsJ6GE73IUtFcMkPCBKwbLH0CgF6v0Bf2UQ9nsP5DSsdzMLadm8EbTQkvZbhsrzV8xscFpGy7JRZaOCAV0wggFZMB0GA1UdDgQWBBQ2nI1rFNjf865H00mjJ3f1LCk7GjAfBgNVHSMEGDAWgBTnB8pdlVz5yKD+zuNkRR6AsywywTBhBggrBgEFBQcBAQRVMFMwUQYIKwYBBQUHMAKGRWh0dHA6Ly9ldS5jZXJ0LmV6Y2EuaW8vY2VydHMvZGFhMWI0YjQtODVmZC00YmE0LWI5NmItMzMyYWRkODk5Y2U5LmNlcjAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwEwIgYDVR0RBBswGYIXZnVua2UuZGVtby5zcGhlcmVvbi5jb20wDgYDVR0PAQH/BAQDAgWgMGEGA1UdHwRaMFgwVqBUoFKGUGh0dHA6Ly9ldS5jcmwuZXpjYS5pby9jcmwvMmNkZjdjNWUtYjljZC00MzE3LWJiNTYtMzg2ZDI0NDM4MGUyL2Nhc3BoZXJlb25jb20uY3JsMAoGCCqGSM49BAMCA0cAMEQCICo+ah8GRYi7xhBRiwhPE0wPNVSXKLR/vJwZjtchSE1nAiAj430W5C8Wai5XDBxyYis5srRipE/swyekE+tmMIPIuw==",
+          "MIICCDCCAa6gAwIBAgITAPMgqwtYzWPBXaobHhxG9iSydTAKBggqhkjOPQQDAjBaMQswCQYDVQQGEwJOTDEkMCIGA1UECgwbU3BoZXJlb24gSW50ZXJuYXRpb25hbCBCLlYuMQswCQYDVQQLDAJJVDEYMBYGA1UEAwwPY2Euc3BoZXJlb24uY29tMB4XDTI0MDcyODIxMjY0OVoXDTM0MDcyODIxMjY0OVowWjELMAkGA1UEBhMCTkwxJDAiBgNVBAoMG1NwaGVyZW9uIEludGVybmF0aW9uYWwgQi5WLjELMAkGA1UECwwCSVQxGDAWBgNVBAMMD2NhLnNwaGVyZW9uLmNvbTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABEiA0KeESSNrOcmCDga8YsBkUTgowZGwqvL2n91JUpAMdRSwvlVFdqdiLXnk2pQqT1vZnDG0I+x+iz2EbdsG0aajUzBRMB0GA1UdDgQWBBTnB8pdlVz5yKD+zuNkRR6AsywywTAOBgNVHQ8BAf8EBAMCAaYwDwYDVR0lBAgwBgYEVR0lADAPBgNVHRMBAf8EBTADAQH/MAoGCCqGSM49BAMCA0gAMEUCIHH7ie1OAAbff5262rzZVQa8J9zENG8AQlHHFydMdgaXAiEA1Ib82mhHIYDziE0DDbHEAXOs98al+7dpo8fPGVGTeKI="
+        ]
+      }
+    }
+  }
+}
+
