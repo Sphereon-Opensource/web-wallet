@@ -27,7 +27,7 @@ export const getCryptoDigestAlgorithm = (algorithm: string): string => {
 
 export const verifySDJWTSignature = async <T>(data: string, signature: string, key: JsonWebKey): Promise<Awaited<Promise<boolean>>> => {
   let {alg, crv} = key;
-  if (alg === 'ES256') alg = 'ECDSA';
+  if (alg === 'ES256' || (alg === undefined && crv === 'P-256')) alg = 'ECDSA'; // FIXME Funke
   const publicKey = await crypto.subtle.importKey('jwk', key, {name: alg, namedCurve: crv} as EcKeyImportParams, true, ['verify']);
 
   return Promise.resolve(
