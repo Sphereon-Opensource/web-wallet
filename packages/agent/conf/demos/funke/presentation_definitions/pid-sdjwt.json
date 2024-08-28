@@ -1,0 +1,21 @@
+{
+  "id": "pid-sdjwt",
+  "name": "Age verification",
+  "purpose": "We need to determine your age.",
+  "input_descriptors": [
+    {
+      "id": "6aa0ac61-6535-46c2-924d-65fccfe65f4f",
+      "constraints": {
+        "fields": [
+          {
+            "path": [
+              "$.issuing_country"
+            ]
+          }
+        ]
+      },
+      "name": "Name and age",
+      "purpose": "We need your age."
+    }
+  ]
+}

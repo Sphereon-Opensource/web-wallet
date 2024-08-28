@@ -2,8 +2,7 @@
   "definitionId": "default",
   "rpOpts": {
     "supportedVersions": [
-      180,
-      110
+      200
     ],
     "responseMode": "direct_post",
     "clientMetadataOpts": {
@@ -14,27 +13,34 @@
         "ES256"
       ],
       "responseTypesSupported": [
-        "id_token",
         "vp_token"
       ],
-      "client_name": "Visma Yuki",
+      "client_name": "Funke demo",
       "vpFormatsSupported": {
-        "jwt_vc_json": {
-          "alg": [
+        "vc+sd-jwt": {
+          "sd-jwt_alg_values": [
+            "ES256"
+          ],
+          "kb-jwt_alg_values": [
             "ES256"
           ]
         },
-        "jwt_vp_json": {
+        "mso_mdoc": {
           "alg": [
             "ES256"
           ]
-        },
-        "jwt_vc": {
-          "alg": [
+        }
+      },
+      "vp_formats": {
+        "vc+sd-jwt": {
+          "sd-jwt_alg_values": [
+            "ES256"
+          ],
+          "kb-jwt_alg_values": [
             "ES256"
           ]
         },
-        "jwt_vp": {
+        "mso_mdoc": {
           "alg": [
             "ES256"
           ]
