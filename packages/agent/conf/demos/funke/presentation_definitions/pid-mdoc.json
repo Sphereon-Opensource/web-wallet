@@ -1,0 +1,65 @@
+{
+  "id": "PID-mdoc-req",
+  "input_descriptors": [
+    {
+      "id": "eu.europa.ec.eudi.pid.1",
+      "format": {
+        "mso_mdoc": {
+          "alg": [
+            "ES256",
+            "ES384",
+            "ES512",
+            "EdDSA"
+          ]
+        }
+      },
+      "constraints": {
+        "fields": [
+          {
+            "path": [
+              "$['eu.europa.ec.eudi.pid.1']['resident_country']"
+            ],
+            "intent_to_retain": false
+          },
+          {
+            "path": [
+              "$['eu.europa.ec.eudi.pid.1']['age_over_65']"
+            ],
+            "intent_to_retain": false
+          },
+          {
+            "path": [
+              "$['eu.europa.ec.eudi.pid.1']['given_name']"
+            ],
+            "intent_to_retain": true
+          },
+          {
+            "path": [
+              "$['eu.europa.ec.eudi.pid.1']['nationality']"
+            ],
+            "intent_to_retain": true
+          },
+          {
+            "path": [
+              "$['eu.europa.ec.eudi.pid.1']['issuing_country']"
+            ],
+            "intent_to_retain": false
+          },
+          {
+            "path": [
+              "$['eu.europa.ec.eudi.pid.1']['issuance_date']"
+            ],
+            "intent_to_retain": false
+          },
+          {
+            "path": [
+              "$['eu.europa.ec.eudi.pid.1']['birth_date']"
+            ],
+            "intent_to_retain": false
+          }
+        ],
+        "limit_disclosure": "required"
+      }
+    }
+  ]
+}
