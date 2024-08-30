@@ -779,6 +779,9 @@ importers:
       '@types/react-dom':
         specifier: ^18.3.0
         version: 18.3.0
+      '@types/sha.js':
+        specifier: ^2.4.4
+        version: 2.4.4
       '@types/uuid':
         specifier: ^9.0.8
         version: 9.0.8
@@ -6017,6 +6020,7 @@ packages:
       '@js-joda/core': 5.6.3
       '@js-joda/timezone': 2.3.0(@js-joda/core@5.6.3)
       format-util: 1.0.5
+    bundledDependencies: []
 
   /@sphereon/oid4vc-common@0.16.1-unstable.16:
     resolution: {integrity: sha512-7waqOxJqf9mXTFApnF0kCnvORyCNzRaGdROefvwcIhNnT9JPmX3Bt1cSoVXTjvQGaTzMOodg9Xa+61fHJYrO4w==}
@@ -9167,6 +9171,12 @@ packages:
       '@types/http-errors': 2.0.4
       '@types/node': 18.19.39
       '@types/send': 0.17.4
+    dev: true
+
+  /@types/sha.js@2.4.4:
+    resolution: {integrity: sha512-Qukd+D6S2Hm0wLVt2Vh+/eWBIoUt+wF8jWjBsG4F8EFQRwKtYvtXCPcNl2OEUQ1R+eTr3xuSaBYUyM3WD1x/Qw==}
+    dependencies:
+      '@types/node': 18.19.39
     dev: true
 
   /@types/stack-utils@2.0.3:
@@ -18838,7 +18848,7 @@ packages:
       react-native: '*'
     dependencies:
       base64-js: 1.5.1
-      react-native: 0.74.3(@babel/core@7.24.9)(@babel/preset-env@7.24.8)(react@18.2.0)
+      react-native: 0.74.3(@babel/core@7.24.9)(@babel/preset-env@7.24.8)(@types/react@18.3.3)(react@18.3.1)
     dev: false
     optional: true
 
