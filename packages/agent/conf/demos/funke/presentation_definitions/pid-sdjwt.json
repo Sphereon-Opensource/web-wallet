@@ -1,6 +1,6 @@
 {
   "id": "pid-sdjwt",
-  "name": "Age verification",
+  "name": "Identity verification",
   "purpose": "We need to verify your identity information.",
   "format": {
     "vc+sd-jwt": {
@@ -30,18 +30,13 @@
           },
           {
             "path": [
-              "$.age_equal_or_over.21"
-            ],
-            "filter": {
-              "type": "boolean",
-              "const": true
-            }
-
+              "$.address.street_address"
+            ]
           }
         ]
       },
-      "name": "Name and age",
-      "purpose": "We need your name and to confirm whether you are over 21."
+      "name": "Identity",
+      "purpose": "We need your identity information."
     }
   ]
 }
