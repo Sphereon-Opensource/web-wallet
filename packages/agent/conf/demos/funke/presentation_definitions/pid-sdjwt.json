@@ -20,13 +20,23 @@
         "fields": [
           {
             "path": [
-              "$.address.street_address"
+              "$.given_name"
             ]
           },
           {
             "path": [
-              "$.issuing_country"
+              "$.family_name"
             ]
+          },
+          {
+            "path": [
+              "$.age_equal_or_over.21"
+            ],
+            "filter": {
+              "type": "boolean",
+              "const": true
+            }
+
           }
         ]
       },
