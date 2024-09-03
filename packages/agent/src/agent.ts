@@ -98,7 +98,7 @@ import {JwtService} from "@sphereon/ssi-sdk-ext.jwt-service";
 import {SDJwtPlugin} from "@sphereon/ssi-sdk.sd-jwt";
 import {generateDigest, generateSalt, verifySDJWTSignature} from "./utils/CryptoUtils";
 import {animoFunkeCert, funkeTestCA, sphereonCA} from "./trustanchors";
-import {MDLMdoc} from "@sphereon/ssi-sdk.mdl-mdoc";
+import {ImDLMdoc, MDLMdoc} from '@sphereon/ssi-sdk.mdl-mdoc'
 
 /**
  * Lets setup supported DID resolvers first
