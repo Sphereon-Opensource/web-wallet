@@ -197,7 +197,7 @@ export async function getOrCreateIdentifiersFromFS(): Promise<IIdentifierConfigR
                 }
             }
             identifier = await context.agent.identifierManagedGetByX5c({identifier: identifierConfig.x5c, kmsKeyRef})
-        } else if (identifierConfig.did){
+        } else if (identifierConfig.did || identifierConfig.createArgs?.provider?.startsWith('did:')){
             console.log(`DID config found for: ${identifierConfig.did}`)
             const did = identifierConfig.did
             try {
