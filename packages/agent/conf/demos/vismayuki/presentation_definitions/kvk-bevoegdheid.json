@@ -1,0 +1,35 @@
+{
+  "id": "7a2ae5de-ec86-4bdf-b657-d8745bf37a6a",
+  "input_descriptors": [
+    {
+      "id": "BevoegdheidUittreksel",
+      "schema":[
+        {
+          "uri":"KVKRegistration_jwt_vc_json"
+        }
+      ],
+      "format": {
+        "jwt_vc_json": {
+          "alg": [
+            "EdDSA",
+            "ES256"
+          ]
+        }
+      },
+      "constraints": {
+        "fields": [
+          {
+            "path": [
+              "$.type"
+            ],
+            "filter": {
+              "type": "string",
+              "pattern": "BevoegdheidUittreksel"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "purpose": "We need to ensure you are the authorized representative of your company"
+}
