@@ -70,6 +70,10 @@ const nextConfig = {
                     {
                         type: 'query',
                         key: 'credential_offer',
+                    },
+                    {
+                        type: 'query',
+                        key: 'credential_offer_uri',
                     }
                 ],
                 locale: false,
@@ -82,6 +86,10 @@ const nextConfig = {
                     {
                         type: 'query',
                         key: 'credential_offer',
+                    },
+                    {
+                        type: 'query',
+                        key: 'credential_offer_uri',
                     }
                 ],
                 locale: false,
@@ -94,6 +102,10 @@ const nextConfig = {
                     {
                         type: 'query',
                         key: 'credential_offer',
+                    },
+                    {
+                        type: 'query',
+                        key: 'credential_offer_uri',
                     }
                 ],
                 locale: false,
