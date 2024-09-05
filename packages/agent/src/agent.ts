@@ -21,7 +21,7 @@ import {
   expressBuilder,
   getDefaultDID,
   getDefaultKeyRef,
-  getOrCreateDIDsFromFS,
+  getOrCreateIdentifiersFromFS,
   getOrCreateDIDWebFromEnv,
 } from './utils'
 import {
@@ -31,7 +31,7 @@ import {
   AUTHORIZATION_ENABLED,
   AUTHORIZATION_GLOBAL_REQUIRE_USER_IN_ROLES,
   DB_CONNECTION_NAME,
-  DB_ENCRYPTION_KEY,
+  DB_ENCRYPTION_KEY, DEFAULT_MODE, DEFAULT_X5C,
   DID_API_BASE_PATH,
   DID_API_RESOLVE_MODE,
   INTERNAL_PORT,
@@ -59,7 +59,7 @@ import {
   DigitalCredentialStore,
   EventLoggerStore,
   IssuanceBrandingStore,
-  PDStore,
+  PDStore
 } from '@sphereon/ssi-sdk.data-store'
 import {IIssuerInstanceArgs, OID4VCIIssuer} from '@sphereon/ssi-sdk.oid4vci-issuer'
 import {IIssuerInstanceOptions, IIssuerOptsPersistArgs, OID4VCIStore} from '@sphereon/ssi-sdk.oid4vci-issuer-store'
@@ -90,11 +90,15 @@ import {
   REMOTE_SERVER_API_FEATURES,
   STATUS_LIST_API_FEATURES,
   syncDefinitionsOpts,
-  VC_API_FEATURES,
+  VC_API_FEATURES
 } from './environment-deps'
-import {dbConnection} from './database'
-import {createHash, randomBytes, subtle} from 'crypto'
-import {SDJwtPlugin} from '@sphereon/ssi-sdk.sd-jwt'
+import {dbConnection} from "./database";
+import {IdentifierResolution} from "@sphereon/ssi-sdk-ext.identifier-resolution";
+import {JwtService} from "@sphereon/ssi-sdk-ext.jwt-service";
+import {SDJwtPlugin} from "@sphereon/ssi-sdk.sd-jwt";
+import {generateDigest, generateSalt, verifySDJWTSignature} from "./utils/CryptoUtils";
+import {animoFunkeCert, funkeTestCA, sphereonCA} from "./trustanchors";
+import {ImDLMdoc, MDLMdoc} from '@sphereon/ssi-sdk.mdl-mdoc'
 
 /**
  * Lets setup supported DID resolvers first
@@ -109,24 +113,6 @@ const resolver = createDidResolver()
 const privateKeyStore: PrivateKeyStore = new PrivateKeyStore(dbConnection, new SecretBox(DB_ENCRYPTION_KEY))
 
 const cliMode: boolean = process.env.RUN_MODE === 'cli'
-
-
-
-const generateDigest = (data: string, algorithm: string) => {
-  return createHash(algorithm).update(data).digest()
-}
-
-const generateSalt = (): string => {
-  return randomBytes(16).toString('hex')
-}
-
-async function verifySignature<T>(data: string, signature: string, key: JsonWebKey) {
-  let { alg, crv } = key
-  if (alg === 'ES256') alg = 'ECDSA'
-  const publicKey = await subtle.importKey('jwk', key, { name: alg, namedCurve: crv } as EcKeyImportParams, true, ['verify'])
-  return Promise.resolve(subtle.verify({ name: alg as string, hash: 'SHA-256' }, publicKey, Buffer.from(signature, 'base64'), Buffer.from(data)))
-}
-
 
 /**
  * Define Agent plugins being used. The plugins come from Sphereon's SSI-SDK and Veramo.
@@ -175,13 +161,18 @@ const plugins: IAgentPlugin[] = [
   }),
   new CredentialStore({ store: new DigitalCredentialStore(dbConnection) }),
   new DidAuthSiopOpAuthenticator(),
-  new OID4VCIHolder({}),
+  new OID4VCIHolder({hasher: generateDigest}),
   new EbsiSupport(),
+  // The Animo funke cert is self-signed and not issued by a CA. Since we perform strict checks on certs, we blindly trust if for the Funke
+  new MDLMdoc({trustAnchors: [sphereonCA, funkeTestCA], opts: {blindlyTrustedAnchors: [animoFunkeCert]}}),
+  new IdentifierResolution(),
+  new JwtService(),
   new SDJwtPlugin({
-    hasher: generateDigest,
-    saltGenerator: generateSalt,
-    verifySignature,
-  }),
+        hasher: generateDigest,
+        saltGenerator: generateSalt,
+        verifySignature: verifySDJWTSignature,
+      }
+  )
 ]
 
 let oid4vpRP: SIOPv2RP | undefined
@@ -219,25 +210,29 @@ const agent = createAgent<TAgentTypes>({
 export default agent
 export const context: IAgentContext<TAgentTypes> = { agent }
 
-/**
- * Import/creates DIDs from configurations files and environment. They then get stored in the database.
- * Also assign default DID and Key Identifier values. Whenever a DID or KID is not explicitly defined,
- * the defaults will be used
- */
-await getOrCreateDIDWebFromEnv().catch((e) => console.log(`ERROR env: ${e}`))
-await getOrCreateDIDsFromFS().catch((e) => console.log(`ERROR dids: ${e}`))
+if(!cliMode) {
+  /**
+   * Import/creates DIDs from configurations files and environment. They then get stored in the database.
+   * Also assign default DID and Key Identifier values. Whenever a DID or KID is not explicitly defined,
+   * the defaults will be used
+   */
+  await getOrCreateDIDWebFromEnv().catch((e) => console.log(`ERROR env: ${e}`))
+  await getOrCreateIdentifiersFromFS().catch((e) => console.log(`ERROR dids: ${e}`))
 
-const defaultDID = await getDefaultDID()
-console.log(`[DID] default DID: ${defaultDID}`)
-const defaultKid = await getDefaultKeyRef({ did: defaultDID })
-console.log(`[DID] default key identifier: ${defaultKid}`)
-if (!defaultDID || !defaultKid) {
-  console.log('[DID] Agent has no default DID and Key Identifier!')
-}
+  const defaultDID = await getDefaultDID()
+  if (defaultDID) {
+    console.log(`[DID] default DID: ${defaultDID}`)
+  }
+  const defaultKid = await getDefaultKeyRef({did: defaultDID})
+  console.log(`[DID] default key identifier: ${defaultKid}`)
+  if (DEFAULT_MODE.toLowerCase() === 'did' && !defaultDID || !defaultKid) {
+    console.warn('[DID] Agent has no default DID and Key Identifier!')
+  }
 
-const oid4vpOpts = IS_OID4VP_ENABLED ? await getDefaultOID4VPRPOptions({ did: defaultDID, resolver }) : undefined
-if (oid4vpOpts && oid4vpRP) {
-  oid4vpRP.setDefaultOpts(oid4vpOpts, context)
+  const oid4vpOpts = IS_OID4VP_ENABLED ? await getDefaultOID4VPRPOptions({ did: defaultDID, x5c: DEFAULT_X5C, resolver }) : undefined
+  if (oid4vpOpts && oid4vpRP) {
+    oid4vpRP.setDefaultOpts(oid4vpOpts, context)
+  }
 }
 
 /**
