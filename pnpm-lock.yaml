@@ -53,9 +53,6 @@ overrides:
   '@veramo/url-handler': 4.2.0
 
 patchedDependencies:
-  '@sphereon/ssi-sdk.oid4vci-holder@0.29.1-next.5':
-    hash: xghtn2da657hlv2bre35cgrfsm
-    path: patches/@sphereon__ssi-sdk.oid4vci-holder@0.29.1-next.5.patch
   '@veramo/core@4.2.0':
     hash: c5oempznsz4br5w3tcuk2i2mau
     path: patches/@veramo__core@4.2.0.patch
@@ -180,7 +177,7 @@ importers:
         version: 0.29.1-next.5(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.oid4vci-holder':
         specifier: 0.29.1-next.5
-        version: 0.29.1-next.5(patch_hash=xghtn2da657hlv2bre35cgrfsm)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.29.1-next.5(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.oid4vci-issuer':
         specifier: 0.29.1-next.5
         version: 0.29.1-next.5(awesome-qr@2.1.5-rc.0)(expo@51.0.24)(pg@8.12.0)(react-native@0.74.4)(sqlite3@5.1.7)(ts-node@10.9.2)
@@ -541,7 +538,7 @@ importers:
         version: 0.29.1-next.5(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.oid4vci-holder':
         specifier: 0.29.1-next.5
-        version: 0.29.1-next.5(patch_hash=xghtn2da657hlv2bre35cgrfsm)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.29.1-next.5(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.oid4vci-issuer-rest-client':
         specifier: 0.29.1-next.5
         version: 0.29.1-next.5
@@ -6565,7 +6562,7 @@ packages:
       '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-next.3
       '@sphereon/ssi-sdk.contact-manager': 0.29.1-next.5(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.core': 0.29.1-next.5
-      '@sphereon/ssi-sdk.oid4vci-holder': 0.29.1-next.5(patch_hash=xghtn2da657hlv2bre35cgrfsm)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.oid4vci-holder': 0.29.1-next.5(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.presentation-exchange': 0.29.1-next.5(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth': 0.29.1-next.5(expo@51.0.24)(pg@8.12.0)(react-native@0.74.4)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-types': 0.29.1-next.5
@@ -6697,7 +6694,7 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.oid4vci-holder@0.29.1-next.5(patch_hash=xghtn2da657hlv2bre35cgrfsm)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
+  /@sphereon/ssi-sdk.oid4vci-holder@0.29.1-next.5(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
     resolution: {integrity: sha512-9e9qza/FJ2sO+MHbOptJymn698GYy8bqVbD7EhvZ+8DaFM87esZ75KpjRITqNMKscEFG/5a6IPpxWROxE33I/Q==}
     dependencies:
       '@sphereon/oid4vci-client': 0.15.1-next.9
@@ -6738,7 +6735,6 @@ packages:
       - ts-node
       - typeorm-aurora-data-api-driver
     dev: false
-    patched: true
 
   /@sphereon/ssi-sdk.oid4vci-issuer-rest-api@0.29.1-next.5(expo@51.0.24)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.4)(sqlite3@5.1.7)(ts-node@10.9.2):
     resolution: {integrity: sha512-ifNkcFhQVZgSQ5uonI94TALat4aLub1d+p3nzRTliCCECrmCu6Q6kEIBizE7SFrf2pNH9QK2i7sT45yaLQtuqg==}
