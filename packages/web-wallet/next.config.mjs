@@ -45,18 +45,6 @@ const nextConfig = {
     async redirects() {
         /*FIXME: Most of these redirects should not be here. The OID4VCI link handler should simply listen everywhere*/
         return [
-            // Handle credential_offer_uri on any path
-            {
-                source: '/:path*',
-                has: [
-                    {
-                        type: 'query',
-                        key: 'credential_offer_uri'
-                    }
-                ],
-                destination: '/oid4vci',
-                permanent: false
-            },
             // Existing rules
             {
                 source: '/',
