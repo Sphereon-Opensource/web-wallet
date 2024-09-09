@@ -211,15 +211,63 @@ export async function getOrCreateDIDsFromFS(): Promise<IDIDResult[]> {
           args.options.key['privateKeyHex'] = privateKeyHex
         }
       }
-      identifier = await agent.didManagerCreate(args)
-      if (!did) {
-        console.error('TODO: write did config object to did folder')
-        console.error('Please adjust your did config file and add the "did" value to it: "did": "' + identifier.did + '"')
-        console.error(JSON.stringify(identifier, null, 2))
-        throw Error('Exit. Please see instructions')
+      if(args.options && ('did' in args.options) && args.options.did && typeof args.options.did === 'string') {
+        if(!args.provider) {
+          return Promise.reject(Error(`Can't import DID ${args.options.did}, provider is missing in createArgs`))
+        }
+        const options = args.options
+        if(!('type' in options)) {
+          return Promise.reject(Error(`Can't import DID ${args.options.did}, provider is missing in createArgs.options.type`))
+        }
+        const kid = 'kid' in options ? options.kid as string: undefined  
+        const alias = 'alias' in options ? options.alias as string : undefined  
+        const type:TKeyType = options.type as TKeyType // FIXME check input to match TKeyType
+        try {
+          identifier = await agent.didManagerImport({
+            provider: args.provider,
+            did: options.did as string,
+            controllerKeyId: kid,
+            alias: alias,
+            keys: [
+              {
+                privateKeyHex: privateKeyHex!,
+                kid: kid,
+                type: type,
+                kms: KMS.LOCAL,
+              }],
+          })
+        } catch (e) {
+          console.error(e)
+        }
+        /*
+         await agent.didManagerImport({
+        provider: 'did:lto',
+        did: LTO_DID,
+        controllerKeyId: `${LTO_DID}#sign`,
+        keys: [
+          {
+            privateKeyHex:
+              '078c0f0eaa6510fab9f4f2cf8657b32811c53d7d98869fd0d5bd08a7ba34376b8adfdd44784dea407e088ff2437d5e2123e685a26dca91efceb7a9f4dfd81848',
+            publicKeyHex: '8adfdd44784dea407e088ff2437d5e2123e685a26dca91efceb7a9f4dfd81848',
+            kms: 'local',
+            kid: `${LTO_DID}#sign`,
+            type: 'Ed25519',
+          },
+        ],
+      })
+    })
+         */
+      } else {
+        identifier = await agent.didManagerCreate(args)
+        if (!did) {
+          console.error('TODO: write did config object to did folder')
+          console.error('Please adjust your did config file and add the "did" value to it: "did": "' + identifier.did + '"')
+          console.error(JSON.stringify(identifier, null, 2))
+          throw Error('Exit. Please see instructions')
+        }
+        identifier.keys.map((key) => console.log(`kid: ${key.kid}:\r\n ` + JSON.stringify(toJwk(key.publicKeyHex, key.type), null, 2)))
+        console.log(`Identifier created for DID ${did}`)
       }
-      identifier.keys.map((key) => console.log(`kid: ${key.kid}:\r\n ` + JSON.stringify(toJwk(key.publicKeyHex, key.type), null, 2)))
-      console.log(`Identifier created for DID ${did}`)
     }
 
     console.log(`${JSON.stringify(identifier, null, 2)}`)
