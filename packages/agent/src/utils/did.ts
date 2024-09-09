@@ -222,41 +222,19 @@ export async function getOrCreateDIDsFromFS(): Promise<IDIDResult[]> {
         const kid = 'kid' in options ? options.kid as string: undefined  
         const alias = 'alias' in options ? options.alias as string : undefined  
         const type:TKeyType = options.type as TKeyType // FIXME check input to match TKeyType
-        try {
-          identifier = await agent.didManagerImport({
-            provider: args.provider,
-            did: options.did as string,
-            controllerKeyId: kid,
-            alias: alias,
-            keys: [
-              {
-                privateKeyHex: privateKeyHex!,
-                kid: kid,
-                type: type,
-                kms: KMS.LOCAL,
-              }],
-          })
-        } catch (e) {
-          console.error(e)
-        }
-        /*
-         await agent.didManagerImport({
-        provider: 'did:lto',
-        did: LTO_DID,
-        controllerKeyId: `${LTO_DID}#sign`,
-        keys: [
-          {
-            privateKeyHex:
-              '078c0f0eaa6510fab9f4f2cf8657b32811c53d7d98869fd0d5bd08a7ba34376b8adfdd44784dea407e088ff2437d5e2123e685a26dca91efceb7a9f4dfd81848',
-            publicKeyHex: '8adfdd44784dea407e088ff2437d5e2123e685a26dca91efceb7a9f4dfd81848',
-            kms: 'local',
-            kid: `${LTO_DID}#sign`,
-            type: 'Ed25519',
-          },
-        ],
-      })
-    })
-         */
+        identifier = await agent.didManagerImport({
+          provider: args.provider,
+          did: options.did as string,
+          controllerKeyId: kid,
+          alias: alias,
+          keys: [
+            {
+              privateKeyHex: privateKeyHex!,
+              kid: kid,
+              type: type,
+              kms: KMS.LOCAL,
+            }],
+        })
       } else {
         identifier = await agent.didManagerCreate(args)
         if (!did) {
