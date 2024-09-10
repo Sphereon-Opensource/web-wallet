@@ -23,6 +23,7 @@ import {vcApiFeatures} from "@sphereon/ssi-sdk.w3c-vc-api";
 import {ContactManagerMRestApiFeatures} from "@sphereon/ssi-sdk.contact-manager-rest-api";
 import {statusListFeatures} from "@sphereon/ssi-sdk.vc-status-list-issuer-rest-api";
 import {DidApiFeatures, DidWebServiceFeatures} from "@sphereon/ssi-sdk.uni-resolver-registrar-api";
+import {identifierResolutionContextMethods} from '@sphereon/ssi-sdk-ext.identifier-resolution'
 
 export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATURES', ENV_VAR_PREFIX)
     ? (env('REMOTE_SERVER_API_FEATURES', ENV_VAR_PREFIX)?.split(',') as string[])
@@ -39,21 +40,13 @@ export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATU
         ...issuanceBrandingMethods,
         ...pdManagerMethods,
         ...credentialStoreMethods,
+        ...identifierResolutionContextMethods,
         'crsGetUniqueCredentials', // FIXME in SSI_SDK
         // fixme: import from respective modules
         'createSdJwtVc',
         'createSdJwtPresentation',
         'verifySdJwtVc',
         'verifySdJwtPresentation',
-        'identifierManagedGet',
-        'identifierManagedGetByDid',
-        'identifierManagedGetByKid',
-        'identifierManagedGetByJwk',
-        'identifierManagedGetByX5c',
-        'identifierManagedGetByKey',
-        'identifierExternalResolve',
-        'identifierExternalResolveByDid',
-        'identifierExternalResolveByX5c',
         'jwtPrepareJws',
         'jwtCreateJwsJsonGeneralSignature',
         'jwtCreateJwsJsonFlattenedSignature',
