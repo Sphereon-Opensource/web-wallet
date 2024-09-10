@@ -6,8 +6,8 @@ import PageHeaderBar from '@components/bars/PageHeaderBar'
 import {Outlet} from 'react-router-dom'
 import {useCredentialsCreateMachine} from '@machines/credentials/credentialsCreateStateNavigation'
 import QRCodeModal, {QRValueResult} from 'src/components/modals/QRCodeModal'
-import {createCredentialPayloadWithSchema, qrValueGenerator} from '../../../src/services/credentials/CredentialService'
-import {staticPropsWithSST} from '../../../src/i18n/server'
+import {createCredentialPayloadWithSchema, qrValueGenerator} from '@/src/services/credentials/CredentialService'
+import {staticPropsWithSST} from '@/src/i18n/server'
 
 const CredentialsCreatePage: FC = () => {
   const translate = useTranslate()
