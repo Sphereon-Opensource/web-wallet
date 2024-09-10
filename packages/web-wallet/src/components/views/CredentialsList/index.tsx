@@ -94,7 +94,7 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
             const issuerPartyIdentity =
               credential.issuerCorrelationId !== undefined ? getMatchingIdentity(partyData.data, credential.issuerCorrelationId) : undefined
             const subjectPartyIdentity =
-                (credential.subjectCorrelationId !== undefined && credential.subjectCorrelationId !== null) ? getMatchingIdentity(partyData.data, credential.subjectCorrelationId) : undefined
+                (credential.subjectCorrelationId !== undefined && credential.subjectCorrelationId !== null) ? getMatchingIdentity(partyData.data, credential.subjectCorrelationId) : undefined // FIXME null check https://sphereon.atlassian.net/browse/SDK-31
             const originalVerifiableCredential = JSON.parse(credential.uniformDocument ?? credential.rawDocument) as OriginalVerifiableCredential
 
             const credentialSummary = await toCredentialSummary({
