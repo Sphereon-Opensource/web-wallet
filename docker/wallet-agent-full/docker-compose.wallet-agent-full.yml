@@ -9,14 +9,16 @@ services:
       - .env
     tty: true
     build:
-      context: ../../packages/agent
-      dockerfile: ../../docker/wallet-agent-full/Dockerfile
+      context: ../..
+      dockerfile: docker/wallet-agent-full/Dockerfile
     ports:
       - "5010:5010"
     depends_on:
       db:
         # Disable this if you are using an external Postgres database
         condition: service_healthy
+    volumes:
+     - ../../packages/agent/conf/demos:/opt/wallet/agent/conf/demos
 
   studio:
     container_name: supabase-studio
