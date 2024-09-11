@@ -1,0 +1,37 @@
+{
+  "id": "nb-loyalty",
+  "name": "IATA Loyalty SD-JWT",
+  "purpose": "We need to verify your loyalty program credentials.",
+  "format": {
+    "vc+sd-jwt": {
+      "sd-jwt_alg_values": [
+        "ES256",
+        "ES384",
+        "ES512",
+        "EdDSA"
+      ]
+    }
+  },
+  "input_descriptors": [
+    {
+      "id": "8ff0ac61-6535-46c2-924d-65fccfe65f4f",
+      "constraints": {
+        "limit_disclosure": "required",
+        "fields": [
+          {
+            "path": [
+              "$.loyaltyProgramName"
+            ]
+          },
+          {
+            "path": [
+              "$.loyaltyProgramAccountIdentifier"
+            ]
+          }
+        ]
+      },
+      "name": "IATA Loyalty Program",
+      "purpose": "We need your loyalty program credentials."
+    }
+  ]
+}

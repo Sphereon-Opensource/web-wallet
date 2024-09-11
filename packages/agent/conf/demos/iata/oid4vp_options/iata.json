@@ -1,0 +1,68 @@
+{
+  "definitionId": "default",
+  "rpOpts": {
+    "supportedVersions": [
+      200,
+      180,
+      110
+    ],
+    "responseMode": "direct_post",
+    "clientMetadataOpts": {
+      "idTokenSigningAlgValuesSupported": [
+        "ES256"
+      ],
+      "requestObjectSigningAlgValuesSupported": [
+        "ES256"
+      ],
+      "responseTypesSupported": [
+        "id_token",
+        "vp_token"
+      ],
+      "client_name": "IATA",
+      "vpFormatsSupported": {
+        "jwt_vc_json": {
+          "alg": [
+            "ES256"
+          ]
+        },
+        "jwt_vp_json": {
+          "alg": [
+            "ES256"
+          ]
+        },
+        "jwt_vc": {
+          "alg": [
+            "ES256"
+          ]
+        },
+        "jwt_vp": {
+          "alg": [
+            "ES256"
+          ]
+        }
+      },
+      "scopesSupported": [
+        "openid did_authn"
+      ],
+      "subjectTypesSupported": [
+        "pairwise"
+      ],
+      "subject_syntax_types_supported": [
+        "did:web"
+      ],
+      "passBy": "VALUE"
+    },
+    "didOpts": {
+      "checkLinkedDomains": "if_present"
+    },
+    "identifierOpts": {
+      "idOpts": {
+        "clientIdScheme": "did",
+        "method": "did",
+        "identifier": "did:web:agent.nb.dev.sphereon.com",
+        "kid": "038473979857cbcb3d1b8e43a7f978c406a6b1fff0470779f1c14c99f4e3d562a1",
+        "kmsKeyRef": "038473979857cbcb3d1b8e43a7f978c406a6b1fff0470779f1c14c99f4e3d562a1"
+      }
+    }
+  }
+}
