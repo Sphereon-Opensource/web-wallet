@@ -558,14 +558,14 @@ importers:
         specifier: 0.29.1-next.82
         version: 0.29.1-next.82
       '@sphereon/ui-components.core':
-        specifier: 0.3.1-next.6
-        version: 0.3.1-next.6(react-dom@18.3.1)(react@18.3.1)
+        specifier: 0.3.1-next.16
+        version: 0.3.1-next.16(react-dom@18.3.1)(react@18.3.1)
       '@sphereon/ui-components.credential-branding':
-        specifier: 0.3.1-next.6
-        version: 0.3.1-next.6(react-dom@18.3.1)(react@18.3.1)(ts-node@10.9.2)
+        specifier: 0.3.1-next.16
+        version: 0.3.1-next.16(react-dom@18.3.1)(react@18.3.1)(ts-node@10.9.2)
       '@sphereon/ui-components.ssi-react':
-        specifier: 0.3.1-next.6
-        version: 0.3.1-next.6(@babel/core@7.24.9)(@types/react@18.3.3)(dayjs@1.11.11)(react-dom@18.3.1)(react@18.3.1)(ts-node@10.9.2)
+        specifier: 0.3.1-next.16
+        version: 0.3.1-next.16(@babel/core@7.24.9)(@types/react@18.3.3)(dayjs@1.11.11)(react-dom@18.3.1)(react@18.3.1)(ts-node@10.9.2)
       '@supabase/postgrest-js':
         specifier: 1.15.2
         version: 1.15.2
@@ -591,6 +591,9 @@ importers:
         specifier: 4.2.0
         version: 4.2.0
       '@veramo/remote-client':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/utils':
         specifier: 4.2.0
         version: 4.2.0
       '@xstate/react':
@@ -6614,7 +6617,7 @@ packages:
       jsonpointer: 5.0.1
       oas-resolver: 2.5.6
       openapi-types: 12.1.3
-      ts-json-schema-generator: 2.4.0-next.3
+      ts-json-schema-generator: 2.4.0-next.4
       url-parse: 1.5.10
       yaml: 2.4.5
     transitivePeerDependencies:
@@ -7649,8 +7652,8 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /@sphereon/ui-components.core@0.3.1-next.6(react-dom@18.3.1)(react@18.3.1):
-    resolution: {integrity: sha512-15NOs0nWAgdDMF+79ye2iKP9t4+4/KvdlMO3ooG2ILKnQ67rSZ1I6bUtoQbLKa3qO23aIN34F0AugFUcdPCsYg==}
+  /@sphereon/ui-components.core@0.3.1-next.16(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-bWFnWt9ShczTDOMnjLI8w57G83hMMUpNky1OdLr3CY92LUqsaJ3k0YBfW9xC5nr+ORlklZB9bPeFh8v7THyFJw==}
     peerDependencies:
       react: '>= 18'
     dependencies:
@@ -7662,15 +7665,15 @@ packages:
       - react-dom
     dev: false
 
-  /@sphereon/ui-components.credential-branding@0.3.1-next.6(react-dom@18.3.1)(react@18.3.1)(ts-node@10.9.2):
-    resolution: {integrity: sha512-T0ntkFO1PGpuAva2nVUuxh+o8QALz/3qkvX0bK9olYQwt17hqvEI1hp0oyxT4MyE4BIA5F6HG40jCYH7NrNv6Q==}
+  /@sphereon/ui-components.credential-branding@0.3.1-next.16(react-dom@18.3.1)(react@18.3.1)(ts-node@10.9.2):
+    resolution: {integrity: sha512-GX93SgDMZ+xb5Faem7W+m36RrT7/76WIS5J3kKftzfkuO0zvbnR17zmPjRFe6X2lVpDw3BlG1bwcOy5dK06aWg==}
     peerDependencies:
       react: '>= 18'
     dependencies:
       '@sphereon/ssi-sdk.core': 0.29.1-next.82
       '@sphereon/ssi-sdk.data-store': 0.29.1-next.82(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-types': 0.29.1-next.82
-      '@sphereon/ui-components.core': 0.3.1-next.6(react-dom@18.3.1)(react@18.3.1)
+      '@sphereon/ui-components.core': 0.3.1-next.16(react-dom@18.3.1)(react@18.3.1)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/utils': 4.2.0
       i18n-js: 3.9.2
@@ -7699,8 +7702,8 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ui-components.ssi-react@0.3.1-next.6(@babel/core@7.24.9)(@types/react@18.3.3)(dayjs@1.11.11)(react-dom@18.3.1)(react@18.3.1)(ts-node@10.9.2):
-    resolution: {integrity: sha512-Fmlp3kSUr58DGwm36mY+fgSvwg3H/vouEgoP5VirsJOw8ZWnnXtaHv9Ft6D7eFLsMgPljARpMWd2JU4ndGmwoA==}
+  /@sphereon/ui-components.ssi-react@0.3.1-next.16(@babel/core@7.24.9)(@types/react@18.3.3)(dayjs@1.11.11)(react-dom@18.3.1)(react@18.3.1)(ts-node@10.9.2):
+    resolution: {integrity: sha512-lRMgwGFd4N31JcwjXqTeqqPIV4c4y8k44JlHDI69MOC4E7HASKXFePfIHnrlZj8iVxBcu7AdPO36zULWU6uuvw==}
     peerDependencies:
       react: '>= 18'
     dependencies:
@@ -7716,7 +7719,7 @@ packages:
       '@mui/system': 5.16.4(@emotion/react@11.11.4)(@emotion/styled@11.11.5)(@types/react@18.3.3)(react@18.3.1)
       '@mui/x-date-pickers': 6.20.2(@emotion/react@11.11.4)(@emotion/styled@11.11.5)(@mui/material@5.16.4)(@mui/system@5.16.4)(@types/react@18.3.3)(dayjs@1.11.11)(react-dom@18.3.1)(react@18.3.1)
       '@sphereon/ssi-sdk.data-store': 0.29.1-next.82(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ui-components.core': 0.3.1-next.6(react-dom@18.3.1)(react@18.3.1)
+      '@sphereon/ui-components.core': 0.3.1-next.16(react-dom@18.3.1)(react@18.3.1)
       '@tanstack/react-table': 8.19.3(react-dom@18.3.1)(react@18.3.1)
       react: 18.3.1
       react-json-tree: 0.18.0(@types/react@18.3.3)(react@18.3.1)
@@ -20516,8 +20519,8 @@ packages:
       yargs-parser: 21.1.1
     dev: true
 
-  /ts-json-schema-generator@2.4.0-next.3:
-    resolution: {integrity: sha512-l8YVt9dSYCD7CGB5hX4hkoA3BYDC6nVph+QJrmiC2eP+CriNdGCwk/O+EI7NJ86cRFgr8g/ZHfs8vs74T3B3ow==}
+  /ts-json-schema-generator@2.4.0-next.4:
+    resolution: {integrity: sha512-URJ5qpD0jHF+R7d4pogr29VbpJ11aqyLNNaI78tpEWBcHRl0rmqLCKPIQvWtLPqprsBQJSDxLJcAgt5Aoz5K6Q==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     dependencies:
@@ -20528,7 +20531,7 @@ packages:
       normalize-path: 3.0.0
       safe-stable-stringify: 2.4.3
       tslib: 2.6.3
-      typescript: 5.5.4
+      typescript: 5.6.2
     dev: false
 
   /ts-node@10.9.2(@types/node@18.19.39)(typescript@4.9.5):
@@ -20839,8 +20842,8 @@ packages:
     hasBin: true
     dev: false
 
-  /typescript@5.5.4:
-    resolution: {integrity: sha512-Mtq29sKDAEYP7aljRgtPOpTvOfbwRWlS6dPRzwjdE+C0R4brX/GUyhHSecbHMFLNBLcJIPt9nl9yG5TZ1weH+Q==}
+  /typescript@5.6.2:
+    resolution: {integrity: sha512-NW8ByodCSNCwZeghjN3o+JX5OFH0Ojg6sadjEKY4huZ52TqbJTJnDo5+Tw98lSy63NZvi4n+ez5m2u5d4PkZyw==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: false
