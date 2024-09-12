@@ -52,6 +52,48 @@
             "Employee"
           ]
         }
+      },
+      "Loyalty": {
+        "format": "vc+sd-jwt",
+        "cryptographic_binding_methods_supported": [
+          "did:web",
+          "did:jwk"
+        ],
+        "cryptographic_suites_supported": [
+          "ES256"
+        ],
+        "display": [
+          {
+            "name": "Loyalty",
+            "description": "Verifiable Credential for our loyalty program.",
+            "background_color": "rgba(0, 0, 0, 0.2)",
+            "text_color": "#FBFBFB",
+            "logo": {
+              "url": "https://i.ibb.co/pyZpF8m/Belastingdienst.png",
+              "alt_text": "Belastingdienst logo"
+            },
+            "background_image": {
+              "url": "https://i.ibb.co/jWF45Xw/grant-ritchie.png",
+              "alt_text": "Skyscrapers background"
+            }
+          },
+          {
+            "locale": "en-US",
+            "name": "Employee",
+            "description": "Verifiable Credential for our loyalty program.",
+            "background_color": "rgba(0, 0, 0, 0.2)",
+            "text_color": "#FBFBFB",
+            "background_image": {
+              "url": "https://i.ibb.co/jWF45Xw/grant-ritchie.png",
+              "alt_text": "Card background"
+            }
+          }
+        ],
+        "credential_definition": {
+          "type": [
+            "Loyalty"
+          ]
+        }
       }
     },
     "credential_supplier_config": {
@@ -62,6 +104,13 @@
             "Employee"
           ],
           "template_path": "Employee.hbs",
+          "format": "vc+sd-jwt"
+        },
+        {
+          "credential_types": [
+            "Loyalty"
+          ],
+          "template_path": "Loyalty.hbs",
           "format": "vc+sd-jwt"
         }
       ]
