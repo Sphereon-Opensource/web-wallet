@@ -27,6 +27,15 @@
             "path": [
               "$.loyaltyProgramAccountIdentifier"
             ]
+          },
+          {
+            "path": [
+              "$.vct"
+            ],
+            "filter": {
+              "type": "string",
+              "pattern": "Loyalty"
+            }
           }
         ]
       },

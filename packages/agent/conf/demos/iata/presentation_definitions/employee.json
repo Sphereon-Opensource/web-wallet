@@ -32,6 +32,15 @@
             "path": [
               "$.surname"
             ]
+          },
+          {
+            "path": [
+              "$.vct"
+            ],
+            "filter": {
+              "type": "string",
+              "pattern": "Employee"
+            }
           }
         ]
       },
