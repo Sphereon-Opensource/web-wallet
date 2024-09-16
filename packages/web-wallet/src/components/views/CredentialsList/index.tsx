@@ -23,7 +23,6 @@ import {AddContactArgs} from "@sphereon/ssi-sdk.contact-manager";
 import {IdentityOrigin} from "@sphereon/ssi-sdk.data-store/dist/types/contact/contact";
 import {addContact} from "@/src/services/contactService";
 import {registerDidEbsiOnLedger} from "@/src/services/ebsiService";
-import {IVerifiableCredential} from "@sphereon/ssi-types/src/types";
 
 type Props = {
   credentialRole: CredentialRole
@@ -96,7 +95,7 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
             const issuerPartyIdentity =
               credential.issuerCorrelationId !== undefined ? getMatchingIdentity(partyData.data, credential.issuerCorrelationId) : undefined
             const subjectPartyIdentity =
-                (credential.subjectCorrelationId !== undefined && credential.subjectCorrelationId !== null) ? getMatchingIdentity(partyData.data, credential.subjectCorrelationId) : undefined // FIXME null check https://sphereon.atlassian.net/browse/SDK-31
+              credential.subjectCorrelationId !== undefined ? getMatchingIdentity(partyData.data, credential.subjectCorrelationId) : undefined
             const originalVerifiableCredential = JSON.parse(credential.uniformDocument ?? credential.rawDocument) as OriginalVerifiableCredential
 
             const credentialSummary = await toCredentialSummary({
