@@ -1,0 +1,118 @@
+{
+  "id": "Order and ePassport",
+  "submission_requirements": [
+    {
+      "name": "Order and epass",
+      "rule": "all",
+      "count": 2,
+      "from": "A"
+    }
+  ],
+  "input_descriptors": [
+    {
+      "id": "order",
+      "group": [
+        "A"
+      ],
+      "format": {
+        "vc+sd-jwt": {
+          "sd-jwt_alg_values": [
+            "ES256",
+            "ES384",
+            "ES512",
+            "EdDSA"
+          ]
+        }
+      },
+      "constraints": {
+        "fields": [
+          {
+            "path": [
+              "$.type"
+            ],
+            "filter": {
+              "type": "string",
+              "pattern": "Order"
+            }
+          },
+          {
+            "path": [
+              "$.operatingCarrierFlightNumber"
+            ]
+          },
+          {
+            "path": [
+              "$.scheduledArrivalTime"
+            ]
+          },
+          {
+            "path": [
+              "$.scheduledDepartureTime"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "passport credential",
+      "group": [
+        "A"
+      ],
+      "format": {
+        "jwt_vc_json": {
+          "alg": [
+            "RS256"
+          ]
+        }
+      },
+      "constraints": {
+        "fields": [
+          {
+            "path": [
+              "$.vc.type"
+            ],
+            "filter": {
+              "type": "string",
+              "pattern": "ePassport"
+            }
+          },
+          {
+            "path": [
+              "$.vc.credentialSubject.holdersName"
+            ]
+          },
+          {
+            "path": [
+              "$.vc.credentialSubject.SexCode"
+            ]
+          },
+          {
+            "path": [
+              "$.vc.credentialSubject.birthdate"
+            ]
+          },
+          {
+            "path": [
+              "$.vc.credentialSubject.NatlCode"
+            ]
+          },
+          {
+            "path": [
+              "$.vc.credentialSubject.passportNumberIdentifier"
+            ]
+          },
+          {
+            "path": [
+              "$.vc.credentialSubject.IssuerCode"
+            ]
+          },
+          {
+            "path": [
+              "$.vc.credentialSubject.expirydate"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
