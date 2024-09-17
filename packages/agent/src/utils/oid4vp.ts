@@ -1,13 +1,13 @@
-import {IPEXInstanceOptions, IRPDefaultOpts, SIOPv2RP} from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
-import {IS_OID4VP_ENABLED} from '../environment'
+import { IPEXInstanceOptions, IRPDefaultOpts, SIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
+import { IS_OID4VP_ENABLED } from '../environment'
 
-import {CheckLinkedDomain} from '@sphereon/did-auth-siop-adapter'
-import {SupportedVersion} from '@sphereon/did-auth-siop'
-import {Resolvable} from 'did-resolver'
-import {OID4VPInstanceOpts} from '../types'
-import {createDidResolver, getDefaultDID, getDefaultKeyRef, getIdentifier} from './did'
-import {oid4vpInstanceOpts} from "../environment-deps";
-import {ManagedIdentifierDidOpts, ManagedIdentifierX5cOpts} from "@sphereon/ssi-sdk-ext.identifier-resolution";
+import { CheckLinkedDomain } from '@sphereon/did-auth-siop-adapter'
+import { SupportedVersion } from '@sphereon/did-auth-siop'
+import { Resolvable } from 'did-resolver'
+import { OID4VPInstanceOpts } from '../types'
+import { createDidResolver, getDefaultDID, getDefaultKeyRef, getIdentifier } from './did'
+import { oid4vpInstanceOpts } from '../environment-deps'
+import { ManagedIdentifierDidOpts, ManagedIdentifierX5cOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 
 function toPexInstanceOptions(
   oid4vpInstanceOpts: OID4VPInstanceOpts[],
@@ -34,7 +34,7 @@ function toPexInstanceOptions(
   return result
 }
 
-export async function getDefaultOID4VPRPOptions(args?: { did?: string; x5c?: string[], resolver?: Resolvable }): Promise<IRPDefaultOpts | undefined> {
+export async function getDefaultOID4VPRPOptions(args?: { did?: string; x5c?: string[]; resolver?: Resolvable }): Promise<IRPDefaultOpts | undefined> {
   if (!IS_OID4VP_ENABLED) {
     return
   }
@@ -43,7 +43,7 @@ export async function getDefaultOID4VPRPOptions(args?: { did?: string; x5c?: str
   if (args?.x5c) {
     idOpts = {
       method: 'x5c',
-      identifier: args.x5c
+      identifier: args.x5c,
     } satisfies ManagedIdentifierX5cOpts
   } else if (args?.did) {
     const did = args?.did ?? (await getDefaultDID())
@@ -58,7 +58,7 @@ export async function getDefaultOID4VPRPOptions(args?: { did?: string; x5c?: str
     idOpts = {
       method: 'did',
       identifier,
-      kmsKeyRef: await getDefaultKeyRef({ did })
+      kmsKeyRef: await getDefaultKeyRef({ did }),
     } satisfies ManagedIdentifierDidOpts
   }
   return {

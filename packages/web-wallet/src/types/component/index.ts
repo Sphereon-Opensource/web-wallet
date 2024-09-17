@@ -1,7 +1,7 @@
 import {ComponentType} from 'react'
 import {AccessorFn, DeepKeys} from '@tanstack/react-table'
 import {TableCellType, TableCellOptions, CredentialMiniCardViewProps} from '@sphereon/ui-components.ssi-react'
-import {CredentialStatus} from "@sphereon/ui-components.core";
+import {CredentialStatus} from '@sphereon/ui-components.core'
 
 export type TabRoute = {
   key: string
@@ -74,7 +74,7 @@ export type NavigationRoute = {
 
 export enum CatalogDisplayMode {
   CARD_VIEW = 'cardView',
-  LIST_VIEW = 'listView'
+  LIST_VIEW = 'listView',
 }
 
 export type CredentialCatalogItem = {
@@ -83,7 +83,7 @@ export type CredentialCatalogItem = {
     credentialTitle?: string
     credentialSubtitle?: string
     issuerName?: string
-    credentialStatus?: CredentialStatus,
+    credentialStatus?: CredentialStatus
     textColor?: string
   }
   actions: string

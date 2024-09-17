@@ -124,5 +124,3 @@ export async function createOID4VCIOffer(
   debug(`VCI offer input for agent: `, uriData)
   return uriData
 }
-
-

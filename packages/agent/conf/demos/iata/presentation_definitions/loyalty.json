@@ -4,12 +4,7 @@
   "purpose": "We need to verify your loyalty program credentials.",
   "format": {
     "vc+sd-jwt": {
-      "sd-jwt_alg_values": [
-        "ES256",
-        "ES384",
-        "ES512",
-        "EdDSA"
-      ]
+      "sd-jwt_alg_values": ["ES256", "ES384", "ES512", "EdDSA"]
     }
   },
   "input_descriptors": [
@@ -19,19 +14,13 @@
         "limit_disclosure": "required",
         "fields": [
           {
-            "path": [
-              "$.loyaltyProgramName"
-            ]
+            "path": ["$.loyaltyProgramName"]
           },
           {
-            "path": [
-              "$.loyaltyProgramAccountIdentifier"
-            ]
+            "path": ["$.loyaltyProgramAccountIdentifier"]
           },
           {
-            "path": [
-              "$.vct"
-            ],
+            "path": ["$.vct"],
             "filter": {
               "type": "string",
               "pattern": "Loyalty"

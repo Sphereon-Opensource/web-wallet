@@ -1,4 +1,4 @@
-import {createAgent, IAgentContext, IAgentPlugin, ProofFormat, TAgent} from '@veramo/core'
+import { createAgent, IAgentContext, IAgentPlugin, ProofFormat, TAgent } from '@veramo/core'
 import {
   CredentialHandlerLDLocal,
   LdDefaultContexts,
@@ -8,13 +8,13 @@ import {
   SphereonEd25519Signature2020,
   SphereonJsonWebSignature2020,
 } from '@sphereon/ssi-sdk.vc-handler-ld-local'
-import {CredentialPlugin} from '@veramo/credential-w3c'
-import {DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore} from '@veramo/data-store'
-import {DIDManager} from '@veramo/did-manager'
-import {DIDResolverPlugin} from '@veramo/did-resolver'
-import {SphereonKeyManager} from '@sphereon/ssi-sdk-ext.key-manager'
-import {SecretBox} from '@veramo/kms-local'
-import {SphereonKeyManagementSystem} from '@sphereon/ssi-sdk-ext.kms-local'
+import { CredentialPlugin } from '@veramo/credential-w3c'
+import { DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore } from '@veramo/data-store'
+import { DIDManager } from '@veramo/did-manager'
+import { DIDResolverPlugin } from '@veramo/did-resolver'
+import { SphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
+import { SecretBox } from '@veramo/kms-local'
+import { SphereonKeyManagementSystem } from '@sphereon/ssi-sdk-ext.kms-local'
 import {
   createDidProviders,
   createDidResolver,
@@ -31,7 +31,9 @@ import {
   AUTHORIZATION_ENABLED,
   AUTHORIZATION_GLOBAL_REQUIRE_USER_IN_ROLES,
   DB_CONNECTION_NAME,
-  DB_ENCRYPTION_KEY, DEFAULT_MODE, DEFAULT_X5C,
+  DB_ENCRYPTION_KEY,
+  DEFAULT_MODE,
+  DEFAULT_X5C,
   DID_API_BASE_PATH,
   DID_API_RESOLVE_MODE,
   INTERNAL_PORT,
@@ -47,40 +49,34 @@ import {
   VC_API_BASE_PATH,
   VC_API_DEFAULT_PROOF_FORMAT,
 } from './environment'
-import {VcApiServer} from '@sphereon/ssi-sdk.w3c-vc-api'
-import {UniResolverApiServer} from '@sphereon/ssi-sdk.uni-resolver-registrar-api'
-import {DID_PREFIX, DIDMethods, TAgentTypes} from './types'
-import {DidWebServer} from '@sphereon/ssi-sdk.uni-resolver-registrar-api/dist/did-web-server'
-import {StatuslistManagementApiServer} from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
-import {ContactManagerApiServer} from '@sphereon/ssi-sdk.contact-manager-rest-api'
-import {ContactManager} from '@sphereon/ssi-sdk.contact-manager'
-import {
-  ContactStore,
-  DigitalCredentialStore,
-  EventLoggerStore,
-  IssuanceBrandingStore,
-  PDStore
-} from '@sphereon/ssi-sdk.data-store'
-import {IIssuerInstanceArgs, OID4VCIIssuer} from '@sphereon/ssi-sdk.oid4vci-issuer'
-import {IIssuerInstanceOptions, IIssuerOptsPersistArgs, OID4VCIStore} from '@sphereon/ssi-sdk.oid4vci-issuer-store'
-import {IOID4VCIRestAPIOpts, IRequiredContext, OID4VCIRestAPI} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
-import {EventLogger} from '@sphereon/ssi-sdk.event-logger'
-import {RemoteServerApiServer} from '@sphereon/ssi-sdk.remote-server-rest-api'
-import {IssuanceBranding} from '@sphereon/ssi-sdk.issuance-branding'
-import {PDManager} from '@sphereon/ssi-sdk.pd-manager'
-import {LoggingEventType} from '@sphereon/ssi-types'
-import {createOID4VPRP, getDefaultOID4VPRPOptions} from './utils/oid4vp'
-import {IPresentationDefinition} from '@sphereon/pex'
-import {PresentationExchange} from '@sphereon/ssi-sdk.presentation-exchange'
-import {ISIOPv2RPRestAPIOpts, SIOPv2RPApiServer} from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-api'
-import {DidAuthSiopOpAuthenticator} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
-import {PublicKeyHosting} from '@sphereon/ssi-sdk.public-key-hosting'
-import {CredentialStore} from '@sphereon/ssi-sdk.credential-store'
-import {EbsiSupport} from '@sphereon/ssi-sdk.ebsi-support'
-import {OID4VCIHolder} from '@sphereon/ssi-sdk.oid4vci-holder'
-import {addDefaultsToOpts} from './utils/oid4vci'
-import {getCredentialDataSupplier} from './utils/oid4vciCredentialSuppliers'
-import {SIOPv2RP} from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
+import { VcApiServer } from '@sphereon/ssi-sdk.w3c-vc-api'
+import { UniResolverApiServer } from '@sphereon/ssi-sdk.uni-resolver-registrar-api'
+import { DID_PREFIX, DIDMethods, TAgentTypes } from './types'
+import { DidWebServer } from '@sphereon/ssi-sdk.uni-resolver-registrar-api/dist/did-web-server'
+import { StatuslistManagementApiServer } from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
+import { ContactManagerApiServer } from '@sphereon/ssi-sdk.contact-manager-rest-api'
+import { ContactManager } from '@sphereon/ssi-sdk.contact-manager'
+import { ContactStore, DigitalCredentialStore, EventLoggerStore, IssuanceBrandingStore, PDStore } from '@sphereon/ssi-sdk.data-store'
+import { IIssuerInstanceArgs, OID4VCIIssuer } from '@sphereon/ssi-sdk.oid4vci-issuer'
+import { IIssuerInstanceOptions, IIssuerOptsPersistArgs, OID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
+import { IOID4VCIRestAPIOpts, IRequiredContext, OID4VCIRestAPI } from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
+import { EventLogger } from '@sphereon/ssi-sdk.event-logger'
+import { RemoteServerApiServer } from '@sphereon/ssi-sdk.remote-server-rest-api'
+import { IssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
+import { PDManager } from '@sphereon/ssi-sdk.pd-manager'
+import { LoggingEventType } from '@sphereon/ssi-types'
+import { createOID4VPRP, getDefaultOID4VPRPOptions } from './utils/oid4vp'
+import { IPresentationDefinition } from '@sphereon/pex'
+import { PresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
+import { ISIOPv2RPRestAPIOpts, SIOPv2RPApiServer } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-api'
+import { DidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
+import { PublicKeyHosting } from '@sphereon/ssi-sdk.public-key-hosting'
+import { CredentialStore } from '@sphereon/ssi-sdk.credential-store'
+import { EbsiSupport } from '@sphereon/ssi-sdk.ebsi-support'
+import { OID4VCIHolder } from '@sphereon/ssi-sdk.oid4vci-holder'
+import { addDefaultsToOpts } from './utils/oid4vci'
+import { getCredentialDataSupplier } from './utils/oid4vciCredentialSuppliers'
+import { SIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import {
   CONTACT_MANAGER_API_FEATURES,
   DID_API_FEATURES,
@@ -90,22 +86,20 @@ import {
   REMOTE_SERVER_API_FEATURES,
   STATUS_LIST_API_FEATURES,
   syncDefinitionsOpts,
-  VC_API_FEATURES
+  VC_API_FEATURES,
 } from './environment-deps'
-import {dbConnection} from "./database";
-import {IdentifierResolution} from "@sphereon/ssi-sdk-ext.identifier-resolution";
-import {JwtService} from "@sphereon/ssi-sdk-ext.jwt-service";
-import {SDJwtPlugin} from "@sphereon/ssi-sdk.sd-jwt";
-import {generateDigest, generateSalt, verifySDJWTSignature} from "./utils/CryptoUtils";
-import {animoFunkeCert, funkeTestCA, sphereonCA} from "./trustanchors";
-import {ImDLMdoc, MDLMdoc} from '@sphereon/ssi-sdk.mdl-mdoc'
+import { dbConnection } from './database'
+import { IdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { JwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
+import { SDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
+import { generateDigest, generateSalt, verifySDJWTSignature } from './utils/CryptoUtils'
+import { animoFunkeCert, funkeTestCA, sphereonCA } from './trustanchors'
+import { ImDLMdoc, MDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
 
 /**
  * Lets setup supported DID resolvers first
  */
 const resolver = createDidResolver()
-
-
 
 /**
  * Private key store, responsible for storing private keys in the database using encryption
@@ -161,18 +155,17 @@ const plugins: IAgentPlugin[] = [
   }),
   new CredentialStore({ store: new DigitalCredentialStore(dbConnection) }),
   new DidAuthSiopOpAuthenticator(),
-  new OID4VCIHolder({hasher: generateDigest}),
+  new OID4VCIHolder({ hasher: generateDigest }),
   new EbsiSupport(),
   // The Animo funke cert is self-signed and not issued by a CA. Since we perform strict checks on certs, we blindly trust if for the Funke
-  new MDLMdoc({trustAnchors: [sphereonCA, funkeTestCA], opts: {blindlyTrustedAnchors: [animoFunkeCert]}}),
+  new MDLMdoc({ trustAnchors: [sphereonCA, funkeTestCA], opts: { blindlyTrustedAnchors: [animoFunkeCert] } }),
   new IdentifierResolution(),
   new JwtService(),
   new SDJwtPlugin({
-        hasher: generateDigest,
-        saltGenerator: generateSalt,
-        verifySignature: verifySDJWTSignature,
-      }
-  )
+    hasher: generateDigest,
+    saltGenerator: generateSalt,
+    verifySignature: verifySDJWTSignature,
+  }),
 ]
 
 let oid4vpRP: SIOPv2RP | undefined
@@ -210,7 +203,7 @@ const agent = createAgent<TAgentTypes>({
 export default agent
 export const context: IAgentContext<TAgentTypes> = { agent }
 
-if(!cliMode) {
+if (!cliMode) {
   /**
    * Import/creates DIDs from configurations files and environment. They then get stored in the database.
    * Also assign default DID and Key Identifier values. Whenever a DID or KID is not explicitly defined,
@@ -223,9 +216,9 @@ if(!cliMode) {
   if (defaultDID) {
     console.log(`[DID] default DID: ${defaultDID}`)
   }
-  const defaultKid = await getDefaultKeyRef({did: defaultDID})
+  const defaultKid = await getDefaultKeyRef({ did: defaultDID })
   console.log(`[DID] default key identifier: ${defaultKid}`)
-  if (DEFAULT_MODE.toLowerCase() === 'did' && !defaultDID || !defaultKid) {
+  if ((DEFAULT_MODE.toLowerCase() === 'did' && !defaultDID) || !defaultKid) {
     console.warn('[DID] Agent has no default DID and Key Identifier!')
   }
 

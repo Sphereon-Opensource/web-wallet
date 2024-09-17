@@ -5,9 +5,9 @@
  * Reason is that we want to load this file early on. The more deps the bigger the chance that we would load files that depend on the env vars!
  * *******************************************************************************************************************
  */
-import {config as dotenvConfig} from 'dotenv-flow'
-import {resolve} from 'path'
-import {env} from '@sphereon/ssi-express-support'
+import { config as dotenvConfig } from 'dotenv-flow'
+import { resolve } from 'path'
+import { env } from '@sphereon/ssi-express-support'
 await dotenvConfig()
 
 /*********************************************************************************************************************
@@ -63,7 +63,6 @@ export const IS_VC_API_ENABLED = toBoolean(process.env.VC_API_ENABLED, true)
 export const VC_API_BASE_PATH = env('VC_API_BASE_PATH', ENV_VAR_PREFIX) ?? '/vc'
 export const VC_API_DEFAULT_PROOF_FORMAT = env('VC_API_DEFAULT_PROOF_FORMAT', ENV_VAR_PREFIX) ?? 'jwt' // 'lds' for json-ld
 
-
 export const IS_CONTACT_MANAGER_ENABLED = toBoolean(process.env.CONTACT_MANAGER_ENABLED, true)
 
 export const IS_JWKS_HOSTING_ENABLED = toBoolean(process.env.JWKS_HOSTING_ENABLED, true)
@@ -79,11 +78,13 @@ export const DID_API_BASE_PATH = env('DID_API_BASE_PATH', ENV_VAR_PREFIX) ?? '/d
 export const ASSET_DEFAULT_DID_METHOD = env('ASSET_DEFAULT_DID_METHOD', ENV_VAR_PREFIX) ?? 'jwk'
 
 export const DID_API_RESOLVE_MODE = env('DID_API_RESOLVE_MODE', ENV_VAR_PREFIX) ?? 'hybrid'
-                                                                                                // DID_OPTIONS is legacy
-export const IDENTIFIER_OPTIONS_PATH = env('IDENTIFIER_OPTIONS_PATH', ENV_VAR_PREFIX) ?? env('DID_OPTIONS_PATH', ENV_VAR_PREFIX) ?? `${CONF_PATH}/dids`
+// DID_OPTIONS is legacy
+export const IDENTIFIER_OPTIONS_PATH =
+  env('IDENTIFIER_OPTIONS_PATH', ENV_VAR_PREFIX) ?? env('DID_OPTIONS_PATH', ENV_VAR_PREFIX) ?? `${CONF_PATH}/dids`
 
-                                                                                                // DID_IMPORT is legacy
-export const IDENTIFIER_IMPORT_MODE = env('IDENTIFIER_IMPORT_MODE', ENV_VAR_PREFIX) ?? env('DID_IMPORT_MODE', ENV_VAR_PREFIX) ?? 'filesystem,environment'
+// DID_IMPORT is legacy
+export const IDENTIFIER_IMPORT_MODE =
+  env('IDENTIFIER_IMPORT_MODE', ENV_VAR_PREFIX) ?? env('DID_IMPORT_MODE', ENV_VAR_PREFIX) ?? 'filesystem,environment'
 export const DID_WEB_DID = env('DID_WEB_DID', ENV_VAR_PREFIX)
 export const DID_WEB_KID = env('DID_WEB_KID', ENV_VAR_PREFIX)
 export const DID_WEB_CERT_PEM = env('DID_WEB_CERT_PEM', ENV_VAR_PREFIX)

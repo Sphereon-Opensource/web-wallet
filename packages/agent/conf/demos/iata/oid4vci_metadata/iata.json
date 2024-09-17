@@ -13,13 +13,8 @@
     "credential_configurations_supported": {
       "Employee": {
         "format": "vc+sd-jwt",
-        "cryptographic_binding_methods_supported": [
-          "did:web",
-          "did:jwk"
-        ],
-        "cryptographic_suites_supported": [
-          "ES256"
-        ],
+        "cryptographic_binding_methods_supported": ["did:web", "did:jwk"],
+        "cryptographic_suites_supported": ["ES256"],
         "display": [
           {
             "name": "Employee",
@@ -48,20 +43,13 @@
           }
         ],
         "credential_definition": {
-          "type": [
-            "Employee"
-          ]
+          "type": ["Employee"]
         }
       },
       "Loyalty": {
         "format": "vc+sd-jwt",
-        "cryptographic_binding_methods_supported": [
-          "did:web",
-          "did:jwk"
-        ],
-        "cryptographic_suites_supported": [
-          "ES256"
-        ],
+        "cryptographic_binding_methods_supported": ["did:web", "did:jwk"],
+        "cryptographic_suites_supported": ["ES256"],
         "display": [
           {
             "name": "Loyalty",
@@ -90,9 +78,7 @@
           }
         ],
         "credential_definition": {
-          "type": [
-            "Loyalty"
-          ]
+          "type": ["Loyalty"]
         }
       }
     },
@@ -100,16 +86,12 @@
       "templates_base_dir": "templates",
       "template_mappings": [
         {
-          "credential_types": [
-            "Employee"
-          ],
+          "credential_types": ["Employee"],
           "template_path": "Employee.hbs",
           "format": "vc+sd-jwt"
         },
         {
-          "credential_types": [
-            "Loyalty"
-          ],
+          "credential_types": ["Loyalty"],
           "template_path": "Loyalty.hbs",
           "format": "vc+sd-jwt"
         }

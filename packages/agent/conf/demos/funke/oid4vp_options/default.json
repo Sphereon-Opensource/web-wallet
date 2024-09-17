@@ -1,61 +1,34 @@
 {
   "definitionId": "default",
   "rpOpts": {
-    "supportedVersions": [
-      200
-    ],
+    "supportedVersions": [200],
     "responseMode": "direct_post",
     "clientMetadataOpts": {
-      "idTokenSigningAlgValuesSupported": [
-        "ES256"
-      ],
-      "requestObjectSigningAlgValuesSupported": [
-        "ES256"
-      ],
-      "responseTypesSupported": [
-        "vp_token"
-      ],
+      "idTokenSigningAlgValuesSupported": ["ES256"],
+      "requestObjectSigningAlgValuesSupported": ["ES256"],
+      "responseTypesSupported": ["vp_token"],
       "client_name": "Funke demo",
       "vpFormatsSupported": {
         "vc+sd-jwt": {
-          "sd-jwt_alg_values": [
-            "ES256"
-          ],
-          "kb-jwt_alg_values": [
-            "ES256"
-          ]
+          "sd-jwt_alg_values": ["ES256"],
+          "kb-jwt_alg_values": ["ES256"]
         },
         "mso_mdoc": {
-          "alg": [
-            "ES256"
-          ]
+          "alg": ["ES256"]
         }
       },
       "vp_formats": {
         "vc+sd-jwt": {
-          "sd-jwt_alg_values": [
-            "ES256"
-          ],
-          "kb-jwt_alg_values": [
-            "ES256"
-          ]
+          "sd-jwt_alg_values": ["ES256"],
+          "kb-jwt_alg_values": ["ES256"]
         },
         "mso_mdoc": {
-          "alg": [
-            "ES256"
-          ]
+          "alg": ["ES256"]
         }
       },
-      "scopesSupported": [
-        "openid did_authn"
-      ],
-      "subjectTypesSupported": [
-        "pairwise"
-      ],
-      "subject_syntax_types_supported": [
-        "jwk",
-        "urn:ietf:params:oauth:jwk-thumbprint"
-      ],
+      "scopesSupported": ["openid did_authn"],
+      "subjectTypesSupported": ["pairwise"],
+      "subject_syntax_types_supported": ["jwk", "urn:ietf:params:oauth:jwk-thumbprint"],
       "passBy": "VALUE"
     },
     "identifierOpts": {
@@ -72,4 +45,3 @@
     }
   }
 }
-

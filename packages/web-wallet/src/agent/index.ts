@@ -25,125 +25,122 @@ import {DidAuthSiopOpAuthenticator, OID4VPCallbackStateListener, Siopv2OID4VPLin
 import {vpStateCallbacks} from '@machines/siopv2/siopv2StateNavigation'
 import {didAuthSiopOpAuthenticatorMethods} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 import {credentialStoreMethods} from '@sphereon/ssi-sdk.credential-store'
-import {IdentifierResolution, identifierResolutionContextMethods} from "@sphereon/ssi-sdk-ext.identifier-resolution";
-import {SDJwtPlugin, sdJwtPluginContextMethods} from "@sphereon/ssi-sdk.sd-jwt";
-import {JwtService, jwtServiceContextMethods} from "@sphereon/ssi-sdk-ext.jwt-service";
-import {generateDigest, generateSalt, verifySDJWTSignature} from "@helpers/CryptoUtils";
+import {IdentifierResolution, identifierResolutionContextMethods} from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import {SDJwtPlugin, sdJwtPluginContextMethods} from '@sphereon/ssi-sdk.sd-jwt'
+import {JwtService, jwtServiceContextMethods} from '@sphereon/ssi-sdk-ext.jwt-service'
+import {generateDigest, generateSalt, verifySDJWTSignature} from '@helpers/CryptoUtils'
 
 export const resolver = new Resolver({
-    ...getDidKeyResolver(),
-    ...getDidJwkResolver(),
-    ...getDidWebResolver(),
+  ...getDidKeyResolver(),
+  ...getDidJwkResolver(),
+  ...getDidWebResolver(),
 })
 
 export const linkHandlers: LinkHandlers = new LinkHandlers().add(new LogLinkHandler())
 
 const plugins: IAgentPlugin[] = [
-    new DIDResolverPlugin({
-        resolver,
-    }),
-    new VcApiIssuerClient({
-        issueUrl: VC_API_GET_CREDENTIAL_ISSUE_URL,
-        authorizationToken: 'test',
-    }),
-    new OID4VCIRestClient({
-        baseUrl: OID4VCI_API_URL,
-        authentication: {
-            enabled: false,
-        },
-    }),
-    new DidAuthSiopOpAuthenticator(),
-    new QrCodeProvider(),
-    new AgentRestClient({
-        url: AGENT_BASE_URL,
-        enabledMethods: [
-            ...issuanceBrandingMethods,
-            ...eventLoggerAuditMethods,
-            ...oid4vciHolderContextMethods,
-            ...didAuthSiopOpAuthenticatorMethods,
-            'didManagerCreate',
-            ...ebsiSupportMethods,
-            ...pdManagerMethods,
-            ...credentialStoreMethods,
-            'crsGetUniqueCredentials',
-            ...contactManagerMethods,
-            ...sphereonKeyManagerMethods,
-            // fixme: import from respective modules
-            ...sdJwtPluginContextMethods,
-            ...jwtServiceContextMethods,
-            ...identifierResolutionContextMethods,
+  new DIDResolverPlugin({
+    resolver,
+  }),
+  new VcApiIssuerClient({
+    issueUrl: VC_API_GET_CREDENTIAL_ISSUE_URL,
+    authorizationToken: 'test',
+  }),
+  new OID4VCIRestClient({
+    baseUrl: OID4VCI_API_URL,
+    authentication: {
+      enabled: false,
+    },
+  }),
+  new DidAuthSiopOpAuthenticator(),
+  new QrCodeProvider(),
+  new AgentRestClient({
+    url: AGENT_BASE_URL,
+    enabledMethods: [
+      ...issuanceBrandingMethods,
+      ...eventLoggerAuditMethods,
+      ...oid4vciHolderContextMethods,
+      ...didAuthSiopOpAuthenticatorMethods,
+      'didManagerCreate',
+      ...ebsiSupportMethods,
+      ...pdManagerMethods,
+      ...credentialStoreMethods,
+      'crsGetUniqueCredentials',
+      ...contactManagerMethods,
+      ...sphereonKeyManagerMethods,
+      // fixme: import from respective modules
+      ...sdJwtPluginContextMethods,
+      ...jwtServiceContextMethods,
+      ...identifierResolutionContextMethods,
 
-
-            'createSdJwtVc',
-            'createSdJwtPresentation',
-            'verifySdJwtVc',
-            'verifySdJwtPresentation',
-            'identifierManagedGet',
-            'identifierManagedGetByDid',
-            'identifierManagedGetByKid',
-            'identifierManagedGetByJwk',
-            'identifierManagedGetByX5c',
-            'identifierManagedGetByKey',
-            'identifierExternalResolve',
-            'identifierExternalResolveByDid',
-            'identifierExternalResolveByX5c',
-            'jwtPrepareJws',
-            'jwtCreateJwsJsonGeneralSignature',
-            'jwtCreateJwsJsonFlattenedSignature',
-            'jwtCreateJwsCompactSignature',
-            'jwtVerifyJwsCompactSignature',
-        ],
-    }),
-    new OID4VCIHolder({
-        hasher: generateDigest,
-    }),
-    new LinkHandlerPlugin({
-        eventTypes: [LinkHandlerEventType.LINK_HANDLER_URL],
-        handlers: linkHandlers,
-    }),
-    new IdentifierResolution(),
-    new JwtService(),
-    new SDJwtPlugin({
-            hasher: generateDigest,
-            saltGenerator: generateSalt,
-            verifySignature: verifySDJWTSignature,
-        }
-    )
-
+      'createSdJwtVc',
+      'createSdJwtPresentation',
+      'verifySdJwtVc',
+      'verifySdJwtPresentation',
+      'identifierManagedGet',
+      'identifierManagedGetByDid',
+      'identifierManagedGetByKid',
+      'identifierManagedGetByJwk',
+      'identifierManagedGetByX5c',
+      'identifierManagedGetByKey',
+      'identifierExternalResolve',
+      'identifierExternalResolveByDid',
+      'identifierExternalResolveByX5c',
+      'jwtPrepareJws',
+      'jwtCreateJwsJsonGeneralSignature',
+      'jwtCreateJwsJsonFlattenedSignature',
+      'jwtCreateJwsCompactSignature',
+      'jwtVerifyJwsCompactSignature',
+    ],
+  }),
+  new OID4VCIHolder({
+    hasher: generateDigest,
+  }),
+  new LinkHandlerPlugin({
+    eventTypes: [LinkHandlerEventType.LINK_HANDLER_URL],
+    handlers: linkHandlers,
+  }),
+  new IdentifierResolution(),
+  new JwtService(),
+  new SDJwtPlugin({
+    hasher: generateDigest,
+    saltGenerator: generateSalt,
+    verifySignature: verifySDJWTSignature,
+  }),
 ]
 
 const agent = createAgent<TAgentTypes>({
-    plugins,
+  plugins,
 })
 
 export default agent
 export const agentContext = {...agent.context, agent}
 
 const addLinkListeners = (linkHandlers: LinkHandlers, context: IAgentContext<any>): void => {
-    const vciAuthorizationRequestOpts = {
-        redirectUri: OID4VCI_DEFAULT_REDIRECT_URI,
-        clientId: CLIENT_ID,
-        // fixme: Set back to auto. We only do this because of a bug in PAR handling Walt.id
-        parMode: PARMode.NEVER,
-    } satisfies AuthorizationRequestOpts
-    linkHandlers.add([
-        new OID4VCIHolderLinkHandler({
-            protocols: [
-                OID4VCI_CODE_URL_REGEX, // Only scoped to /oid4vci, as we pass in redirect URIs, and we could have other codes in the future
-                new RegExp('https?:\\/\\/.*\\?.*credential_offer=.+'),
-                new RegExp('https?:\\/\\/.*\\?.*credential_offer_uri=.+'),
-            ],
-            authorizationRequestOpts: vciAuthorizationRequestOpts,
-            stateNavigationListener: oid4vciStateNavigationListener,
-            context,
-        }),
-        new Siopv2OID4VPLinkHandler({
-            protocols: [new RegExp('http:\\/\\/.*\\?.*request_uri=.+'), new RegExp('https:\\/\\/.*\\?.*request_uri=.+')],
-            stateNavigationListener: OID4VPCallbackStateListener(vpStateCallbacks),
-            noStateMachinePersistence: true,
-            context,
-        }),
-    ])
+  const vciAuthorizationRequestOpts = {
+    redirectUri: OID4VCI_DEFAULT_REDIRECT_URI,
+    clientId: CLIENT_ID,
+    // fixme: Set back to auto. We only do this because of a bug in PAR handling Walt.id
+    parMode: PARMode.NEVER,
+  } satisfies AuthorizationRequestOpts
+  linkHandlers.add([
+    new OID4VCIHolderLinkHandler({
+      protocols: [
+        OID4VCI_CODE_URL_REGEX, // Only scoped to /oid4vci, as we pass in redirect URIs, and we could have other codes in the future
+        new RegExp('https?:\\/\\/.*\\?.*credential_offer=.+'),
+        new RegExp('https?:\\/\\/.*\\?.*credential_offer_uri=.+'),
+      ],
+      authorizationRequestOpts: vciAuthorizationRequestOpts,
+      stateNavigationListener: oid4vciStateNavigationListener,
+      context,
+    }),
+    new Siopv2OID4VPLinkHandler({
+      protocols: [new RegExp('http:\\/\\/.*\\?.*request_uri=.+'), new RegExp('https:\\/\\/.*\\?.*request_uri=.+')],
+      stateNavigationListener: OID4VPCallbackStateListener(vpStateCallbacks),
+      noStateMachinePersistence: true,
+      context,
+    }),
+  ])
 }
 
 addLinkListeners(linkHandlers, agentContext)

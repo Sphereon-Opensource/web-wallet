@@ -1,55 +1,30 @@
 {
   "definitionId": "default",
   "rpOpts": {
-    "supportedVersions": [
-      200,
-      180,
-      110
-    ],
+    "supportedVersions": [200, 180, 110],
     "responseMode": "direct_post",
     "clientMetadataOpts": {
-      "idTokenSigningAlgValuesSupported": [
-        "ES256"
-      ],
-      "requestObjectSigningAlgValuesSupported": [
-        "ES256"
-      ],
-      "responseTypesSupported": [
-        "id_token",
-        "vp_token"
-      ],
+      "idTokenSigningAlgValuesSupported": ["ES256"],
+      "requestObjectSigningAlgValuesSupported": ["ES256"],
+      "responseTypesSupported": ["id_token", "vp_token"],
       "client_name": "IATA",
       "vpFormatsSupported": {
         "jwt_vc_json": {
-          "alg": [
-            "ES256"
-          ]
+          "alg": ["ES256"]
         },
         "jwt_vp_json": {
-          "alg": [
-            "ES256"
-          ]
+          "alg": ["ES256"]
         },
         "jwt_vc": {
-          "alg": [
-            "ES256"
-          ]
+          "alg": ["ES256"]
         },
         "jwt_vp": {
-          "alg": [
-            "ES256"
-          ]
+          "alg": ["ES256"]
         }
       },
-      "scopesSupported": [
-        "openid did_authn"
-      ],
-      "subjectTypesSupported": [
-        "pairwise"
-      ],
-      "subject_syntax_types_supported": [
-        "did:web"
-      ],
+      "scopesSupported": ["openid did_authn"],
+      "subjectTypesSupported": ["pairwise"],
+      "subject_syntax_types_supported": ["did:web"],
       "passBy": "VALUE"
     },
     "didOpts": {

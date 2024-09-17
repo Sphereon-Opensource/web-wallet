@@ -11,105 +11,70 @@
   "input_descriptors": [
     {
       "id": "order",
-      "group": [
-        "A"
-      ],
+      "group": ["A"],
       "format": {
         "vc+sd-jwt": {
-          "sd-jwt_alg_values": [
-            "ES256",
-            "ES384",
-            "ES512",
-            "EdDSA"
-          ]
+          "sd-jwt_alg_values": ["ES256", "ES384", "ES512", "EdDSA"]
         }
       },
       "constraints": {
         "fields": [
           {
-            "path": [
-              "$.type"
-            ],
+            "path": ["$.type"],
             "filter": {
               "type": "string",
               "pattern": "Order"
             }
           },
           {
-            "path": [
-              "$.operatingCarrierFlightNumber"
-            ]
+            "path": ["$.operatingCarrierFlightNumber"]
           },
           {
-            "path": [
-              "$.scheduledArrivalTime"
-            ]
+            "path": ["$.scheduledArrivalTime"]
           },
           {
-            "path": [
-              "$.scheduledDepartureTime"
-            ]
+            "path": ["$.scheduledDepartureTime"]
           }
         ]
       }
     },
     {
       "id": "passport credential",
-      "group": [
-        "A"
-      ],
+      "group": ["A"],
       "format": {
         "jwt_vc_json": {
-          "alg": [
-            "RS256"
-          ]
+          "alg": ["RS256"]
         }
       },
       "constraints": {
         "fields": [
           {
-            "path": [
-              "$.vc.type"
-            ],
+            "path": ["$.vc.type"],
             "filter": {
               "type": "string",
               "pattern": "ePassport"
             }
           },
           {
-            "path": [
-              "$.vc.credentialSubject.holdersName"
-            ]
+            "path": ["$.vc.credentialSubject.holdersName"]
           },
           {
-            "path": [
-              "$.vc.credentialSubject.SexCode"
-            ]
+            "path": ["$.vc.credentialSubject.SexCode"]
           },
           {
-            "path": [
-              "$.vc.credentialSubject.birthdate"
-            ]
+            "path": ["$.vc.credentialSubject.birthdate"]
           },
           {
-            "path": [
-              "$.vc.credentialSubject.NatlCode"
-            ]
+            "path": ["$.vc.credentialSubject.NatlCode"]
           },
           {
-            "path": [
-              "$.vc.credentialSubject.passportNumberIdentifier"
-            ]
+            "path": ["$.vc.credentialSubject.passportNumberIdentifier"]
           },
           {
-            "path": [
-              "$.vc.credentialSubject.IssuerCode"
-            ]
+            "path": ["$.vc.credentialSubject.IssuerCode"]
           },
           {
-            "path": [
-              "$.vc.credentialSubject.expirydate"
-            ]
+            "path": ["$.vc.credentialSubject.expirydate"]
           }
         ]
       }
