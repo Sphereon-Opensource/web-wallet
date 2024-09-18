@@ -1,0 +1,25 @@
+{
+  "iss": "{{issuer}}",
+  "iat": "{{issuedAt}}",
+  "vct": "Order",
+  "exp": "{{{ dateTimeAfterDays 360 }}}",
+  "order": {
+    "givenName": "{{givenName}}",
+    "surname": "{{surname}}",
+    "titleName": "{{titleName}}",
+    "orderIdentifier": "{{orderIdentifier}}",
+    "paxSegments": [
+      {
+        "destStationIATALocationCode": "{{destStationIATALocationCode}}",
+        "flightIdentifierDate": "{{flightIdentifierDate}}",
+        "operatingCarrierAirlineDesigCode": "{{operatingCarrierAirlineDesigCode}}",
+        "operatingCarrierFlightNumber": "{{operatingCarrierFlightNumber}}",
+        "originStationIATALocationCode": "{{originStationIATALocationCode}}",
+        "bookingStatusCode": "{{bookingStatusCode}}",
+        "scheduledArrivalTime": "{{scheduledArrivalTime}}",
+        "scheduledDepartureTime": "{{scheduledDepartureTime}}"
+      }
+    ]
+  },
+  "_sd": ["givenName", "surname", "titleName", "orderIdentifier", "paxSegments", "type"]
+}
