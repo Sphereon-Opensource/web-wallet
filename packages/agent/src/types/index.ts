@@ -24,6 +24,7 @@ import { ISDJwtPlugin, SDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 import { IIdentifierResolution, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
+import {IStatusListPlugin} from '@sphereon/ssi-sdk.vc-status-list'
 
 export const DID_PREFIX = 'did'
 
@@ -49,7 +50,8 @@ export type TAgentTypes = IDIDManager &
   IIdentifierResolution &
   IJwtService &
   ISIOPv2RP &
-  ImDLMdoc
+  ImDLMdoc & 
+  IStatusListPlugin
 
 /**
  * The Key Management System (name) to use. Currently, there is only one KMS
