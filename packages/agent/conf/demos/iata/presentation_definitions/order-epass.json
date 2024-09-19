@@ -1,5 +1,7 @@
 {
   "id": "Order and ePassport",
+  "name": "IATA Order / ePassport SD-JWT",
+  "purpose": "Multi-presentation test for order & ePassport SD-JWT",
   "submission_requirements": [
     {
       "name": "Order and epass",
@@ -20,20 +22,20 @@
       "constraints": {
         "fields": [
           {
-            "path": ["$.type"],
+            "path": ["$.vct"],
             "filter": {
               "type": "string",
               "pattern": "Order"
             }
           },
           {
-            "path": ["$.operatingCarrierFlightNumber"]
+            "path": ["$.paxSegments.operatingCarrierFlightNumber"]
           },
           {
-            "path": ["$.scheduledArrivalTime"]
+            "path": ["$.paxSegments.scheduledArrivalTime"]
           },
           {
-            "path": ["$.scheduledDepartureTime"]
+            "path": ["$.paxSegments.scheduledDepartureTime"]
           }
         ]
       }
@@ -49,32 +51,32 @@
       "constraints": {
         "fields": [
           {
-            "path": ["$.vc.type"],
+            "path": ["$.vct"],
             "filter": {
               "type": "string",
               "pattern": "ePassport"
             }
           },
           {
-            "path": ["$.vc.credentialSubject.holdersName"]
+            "path": ["$.electronicPassport.dataGroup1.holdersName"]
           },
           {
-            "path": ["$.vc.credentialSubject.SexCode"]
+            "path": ["$.electronicPassport.dataGroup1.sexCode"]
           },
           {
-            "path": ["$.vc.credentialSubject.birthdate"]
+            "path": ["$.electronicPassport.dataGroup1.birthdate"]
           },
           {
-            "path": ["$.vc.credentialSubject.NatlCode"]
+            "path": ["$.electronicPassport.dataGroup1.natlCode"]
           },
           {
-            "path": ["$.vc.credentialSubject.passportNumberIdentifier"]
+            "path": ["$.electronicPassport.dataGroup1.passportNumberIdentifier"]
           },
           {
-            "path": ["$.vc.credentialSubject.IssuerCode"]
+            "path": ["$.electronicPassport.dataGroup1.issuerCode"]
           },
           {
-            "path": ["$.vc.credentialSubject.expirydate"]
+            "path": ["$.electronicPassport.dataGroup1.expiryDate"]
           }
         ]
       }
