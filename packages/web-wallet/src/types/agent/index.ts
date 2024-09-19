@@ -11,7 +11,6 @@ import {IPDManager} from '@sphereon/ssi-sdk.pd-manager'
 import {IDidAuthSiopOpAuthenticator} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 import {ICredentialStore} from '@sphereon/ssi-sdk.credential-store'
 import {IEbsiSupport} from '@sphereon/ssi-sdk.ebsi-support'
-import {ISDJwtPlugin} from '@sphereon/ssi-sdk.sd-jwt'
 
 export type TAgentTypes = IResolver &
   IVcApiIssuerClient &
@@ -29,5 +28,4 @@ export type TAgentTypes = IResolver &
   IDidAuthSiopOpAuthenticator &
   IEbsiSupport &
   IKeyManager &
-  ISDJwtPlugin &
   ICredentialIssuer

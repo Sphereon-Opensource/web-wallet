@@ -20,7 +20,11 @@ import { IPEXInstanceOptions } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { ISIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
 import { CredentialSupplierConfig } from '@sphereon/oid4vci-common'
-import {ISDJwtPlugin} from '@sphereon/ssi-sdk.sd-jwt'
+import { ISDJwtPlugin, SDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
+import { IIdentifierResolution, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
+import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
+import {IStatusListPlugin} from '@sphereon/ssi-sdk.vc-status-list'
 
 export const DID_PREFIX = 'did'
 
@@ -43,7 +47,11 @@ export type TAgentTypes = IDIDManager &
   ICredentialStore &
   IPresentationExchange &
   ISDJwtPlugin &
-  ISIOPv2RP
+  IIdentifierResolution &
+  IJwtService &
+  ISIOPv2RP &
+  ImDLMdoc & 
+  IStatusListPlugin
 
 /**
  * The Key Management System (name) to use. Currently, there is only one KMS
@@ -66,18 +74,20 @@ export enum DIDMethods {
 /**
  * Options for creating DIDs from configuration files. These files are imported into the agent database during startup
  */
-export interface IDIDOpts {
+export interface IIdentifierConfigOpts {
   did?: string // The DID to import
   createArgs?: IDIDManagerCreateArgs
   // importArgs?: IImportX509DIDArg
+  x5c?: string[]
+  kmsKeyRef?: string
   privateKeyHex?: string // The private key. Can be removed once the DID is created in the agent DB
 }
 
 /**
  * DID creation result, which contains an identifier
  */
-export interface IDIDResult extends IDIDOpts {
-  identifier?: IIdentifier // The identifier that was created
+export interface IIdentifierConfigResult extends IIdentifierConfigOpts {
+  identifier?: ManagedIdentifierOptsOrResult // The identifier that was created
 }
 
 export type OID4VPInstanceOpts = Omit<IPEXInstanceOptions, 'definition'>

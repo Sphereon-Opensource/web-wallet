@@ -1,5 +1,5 @@
 import React, {FC, ReactElement} from 'react'
-import {ColumnHeader, SSITableView, SSITabView, TableCellType} from '@sphereon/ui-components.ssi-react'
+import {ColumnHeader, Row, SSITableView, SSITabView, TableCellType} from '@sphereon/ui-components.ssi-react'
 import {HttpError, useDelete, useList, useNavigation, useTranslate} from '@refinedev/core'
 import short from 'short-uuid'
 import {WorkflowEntity, WorkflowStepEntity, DataResource} from '@typings'
@@ -40,7 +40,7 @@ const ContactsList: FC<Props> = (props: Props): ReactElement => {
   const {allowAddNewContact = true, assetIdFilter} = props
   const truncationLength: number = process.env.NEXT_PUBLIC_TRUNCATION_LENGTH ? Number(process.env.NEXT_PUBLIC_TRUNCATION_LENGTH) : 8
   const translate = useTranslate()
-  const {create} = useNavigation()
+  const {create, show} = useNavigation()
   const {mutateAsync: deleteContact} = useDelete<Party, HttpError>()
   const partiesData = useList<Party, HttpError>({resource: 'parties'})
 
@@ -127,6 +127,10 @@ const ContactsList: FC<Props> = (props: Props): ReactElement => {
     }
   }
 
+  const onShowContact = async (row: Row<Party>): Promise<void> => {
+    show(DataResource.CONTACTS, row.original.id)
+  }
+
   const createTabViewRoutes = (parties: Party[]) => {
     return Object.values(PartyTypeType)
       .reverse()
@@ -177,6 +181,7 @@ const ContactsList: FC<Props> = (props: Props): ReactElement => {
                 )
                 await partiesData.refetch()
               }}
+              onRowClick={onShowContact}
             />
           ),
         }

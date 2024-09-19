@@ -66,6 +66,7 @@ import InformationRequestPage from '../../pages/siopv2/informationRequest'
 import Siopv2ErrorPage from '@/pages/siopv2/error'
 import {NavigationProvider} from './NavigationContext'
 import {CredentialRole} from '@sphereon/ssi-sdk.data-store'
+import ShowContactDetails from '@/pages/contacts/show'
 
 const KeycloakLoginPage = (props: PropsWithChildren<any>) => {
   const {mutate: login} = useLogin()
@@ -135,7 +136,7 @@ const AppRouter: React.FC = () => {
               <Route path={OrganizationContactCreationRoute.PHYSICAL_ADDRESS} element={<CreateOrganizationContactPhysicalAddressContent />} />
               <Route path={OrganizationContactCreationRoute.REVIEW} element={<CreateOrganizationContactReviewContactContent />} />
             </Route>
-            <Route path={MainRoute.SUB_ID} element={<div>NOT IMPLEMENTED</div>} />
+            <Route path={MainRoute.SUB_ID} element={<ShowContactDetails />} />
           </Route>
           <Route path={MainRoute.CREDENTIALS}>
             <Route index element={<CredentialsListPage />} />

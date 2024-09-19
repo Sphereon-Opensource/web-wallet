@@ -25,6 +25,10 @@ import {DidAuthSiopOpAuthenticator, OID4VPCallbackStateListener, Siopv2OID4VPLin
 import {vpStateCallbacks} from '@machines/siopv2/siopv2StateNavigation'
 import {didAuthSiopOpAuthenticatorMethods} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 import {credentialStoreMethods} from '@sphereon/ssi-sdk.credential-store'
+import {IdentifierResolution, identifierResolutionContextMethods} from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import {SDJwtPlugin, sdJwtPluginContextMethods} from '@sphereon/ssi-sdk.sd-jwt'
+import {JwtService, jwtServiceContextMethods} from '@sphereon/ssi-sdk-ext.jwt-service'
+import {generateDigest, generateSalt, verifySDJWTSignature} from '@helpers/CryptoUtils'
 
 export const resolver = new Resolver({
   ...getDidKeyResolver(),
@@ -64,17 +68,44 @@ const plugins: IAgentPlugin[] = [
       'crsGetUniqueCredentials',
       ...contactManagerMethods,
       ...sphereonKeyManagerMethods,
-      'createSdJwtVc',  // FIXME missing methods in sd-jwt action-handler.ts
+      // fixme: import from respective modules
+      ...sdJwtPluginContextMethods,
+      ...jwtServiceContextMethods,
+      ...identifierResolutionContextMethods,
+
+      'createSdJwtVc',
       'createSdJwtPresentation',
       'verifySdJwtVc',
       'verifySdJwtPresentation',
-
+      'identifierManagedGet',
+      'identifierManagedGetByDid',
+      'identifierManagedGetByKid',
+      'identifierManagedGetByJwk',
+      'identifierManagedGetByX5c',
+      'identifierManagedGetByKey',
+      'identifierExternalResolve',
+      'identifierExternalResolveByDid',
+      'identifierExternalResolveByX5c',
+      'jwtPrepareJws',
+      'jwtCreateJwsJsonGeneralSignature',
+      'jwtCreateJwsJsonFlattenedSignature',
+      'jwtCreateJwsCompactSignature',
+      'jwtVerifyJwsCompactSignature',
     ],
   }),
-  new OID4VCIHolder(),
+  new OID4VCIHolder({
+    hasher: generateDigest,
+  }),
   new LinkHandlerPlugin({
     eventTypes: [LinkHandlerEventType.LINK_HANDLER_URL],
     handlers: linkHandlers,
+  }),
+  new IdentifierResolution(),
+  new JwtService(),
+  new SDJwtPlugin({
+    hasher: generateDigest,
+    saltGenerator: generateSalt,
+    verifySignature: verifySDJWTSignature,
   }),
 ]
 

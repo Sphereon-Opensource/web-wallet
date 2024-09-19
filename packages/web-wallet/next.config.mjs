@@ -60,7 +60,7 @@ const nextConfig = {
           {
             type: 'query',
             key: 'request_uri',
-          },{
+          }, {
             type: 'query',
             key: 'response_type',
           },
