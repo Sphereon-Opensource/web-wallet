@@ -23,7 +23,8 @@
         "fields": [
           {
             "path": [
-              "$.type"
+              "$.type",
+              "$.vc.type[*]"
             ],
             "filter": {
               "type": "string",
