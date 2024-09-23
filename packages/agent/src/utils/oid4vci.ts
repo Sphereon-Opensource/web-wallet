@@ -44,6 +44,7 @@ export async function addDefaultsToOpts(issuerOpts: IIssuerOptions) {
   let identifierOpts = issuerOpts?.didOpts
     ? legacyKeyRefsToIdentifierOpts({
         didOpts: issuerOpts.didOpts,
+        idOpts: issuerOpts.idOpts,
         // @ts-ignore
         keyRef: issuerOpts.didOpts.kid ?? issuerOpts.didOpts.keyRef ?? issuerOpts.didOpts.kmsKeyRef,
       })

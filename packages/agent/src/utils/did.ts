@@ -205,7 +205,7 @@ export async function getOrCreateIdentifiersFromFS(): Promise<IIdentifierConfigR
       console.log(`DID config found for: ${identifierConfig.did}`)
       const did = identifierConfig.did
       try {
-        identifier = did ? await context.agent.identifierManagedGetByDid({ identifier: did }) : undefined
+        identifier = did ? await context.agent.identifierManagedGetByDid({ identifier: did, offlineWhenNoDIDRegistered: true }) : undefined
       } catch (error) {}
 
       if (identifier) {
@@ -238,7 +238,6 @@ export async function getOrCreateIdentifiersFromFS(): Promise<IIdentifierConfigR
           if (args.options && !('key' in args.options)) {
             // @ts-ignore
             args.options['key'] = { privateKeyHex }
-            // @ts-ignore
           } else if (
             args.options &&
             'key' in args.options &&
