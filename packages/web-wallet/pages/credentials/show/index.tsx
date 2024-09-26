@@ -22,6 +22,7 @@ import agent from '@agent'
 import {CredentialSummary, toCredentialSummary} from '@sphereon/ui-components.credential-branding'
 import {DigitalCredential} from '@sphereon/ssi-sdk.credential-store'
 import {VerifiableCredential} from '@veramo/core'
+import {CredentialMapper} from '@sphereon/ssi-types'
 
 enum CredentialDetailsTabRoute {
   INFO = 'info',
@@ -102,7 +103,7 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
           ],
         })
 
-        const originalVerifiyableDocument = JSON.parse(rawDocument) as VerifiableCredential
+        const originalVerifiyableDocument = CredentialMapper.toWrappedVerifiableCredential(rawDocument).original as VerifiableCredential // FIXME
         const credentialSummary: CredentialSummary = await toCredentialSummary({
           verifiableCredential: originalVerifiyableDocument,
           hash,
