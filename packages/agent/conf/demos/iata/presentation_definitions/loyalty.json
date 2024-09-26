@@ -14,16 +14,16 @@
         "limit_disclosure": "required",
         "fields": [
           {
-            "path": ["$.loyaltyProgramName"]
+            "path": ["$.loyaltyProgramAccount.loyaltyProgramName"]
           },
           {
-            "path": ["$.loyaltyProgramAccountIdentifier"]
+            "path": ["$.loyaltyProgramAccount.loyaltyProgramAccountIdentifier"]
           },
           {
             "path": ["$.vct"],
             "filter": {
               "type": "string",
-              "pattern": "cathay2"
+              "pattern": "Loyalty"
             }
           }
         ]

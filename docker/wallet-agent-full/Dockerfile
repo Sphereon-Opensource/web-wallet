@@ -10,6 +10,7 @@ COPY *.json .
 COPY *.yaml .
 RUN pnpm install -r
 WORKDIR /opt/wallet/agent/packages/agent
+RUN rm -rf /opt/wallet/agent/packages/agent/conf/demos
 RUN pnpm build
 
 ENTRYPOINT ["pnpm", "start:dev"]

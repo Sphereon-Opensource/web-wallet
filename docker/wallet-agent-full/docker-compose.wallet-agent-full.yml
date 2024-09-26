@@ -18,7 +18,8 @@ services:
         # Disable this if you are using an external Postgres database
         condition: service_healthy
     volumes:
-     - ../../packages/agent/conf/demos:/opt/wallet/agent/conf/demos
+     - ../../packages/agent/conf/demos:/opt/wallet/agent/packages/agent/conf/demos
+#    entrypoint: ["tail", "-f", "/dev/null"]
 
   studio:
     container_name: supabase-studio

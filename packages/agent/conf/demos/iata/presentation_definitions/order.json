@@ -1,0 +1,37 @@
+{
+  "id": "order",
+  "name": "IATA Order SD-JWT",
+  "purpose": "We need to verify your order credentials.",
+  "format": {
+    "vc+sd-jwt": {
+      "sd-jwt_alg_values": ["ES256", "ES384", "ES512", "EdDSA"]
+    }
+  },
+  "input_descriptors": [
+    {
+      "id": "a999ba0a-021a-4aca-a389-137e75f526c0",
+      "constraints": {
+        "fields": [
+          {
+            "path": ["$.vct"],
+            "filter": {
+              "type": "string",
+              "pattern": "Order"
+            }
+          },
+          {
+            "path": ["$.paxSegments.operatingCarrierFlightNumber"]
+          },
+          {
+            "path": ["$.paxSegments.scheduledArrivalTime"]
+          },
+          {
+            "path": ["$.paxSegments.scheduledDepartureTime"]
+          }
+        ]
+      },
+      "name": "IATA Order",
+      "purpose": "We need your order credentials."
+    }
+  ]
+}
