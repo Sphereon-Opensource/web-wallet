@@ -1,0 +1,51 @@
+{
+    "id": "boarding_pass",
+    "name": "IATA Boarding Pass SD-JWT",
+    "purpose": "We need to verify your Boarding Pass credentials.",
+    "format": {
+        "vc+sd-jwt": {
+            "sd-jwt_alg_values": [
+                "ES256",
+                "ES384",
+                "ES512",
+                "EdDSA"
+            ]
+        }
+    },
+    "input_descriptors": [
+        {
+            "id": "6913a46a-3e9e-45fb-9871-bd9c85473591",
+            "constraints": {
+                "limit_disclosure": "required",
+                "fields": [
+                    {
+                        "path": [
+                            "$.boardingPass.paxName"
+                        ]
+                    },
+                    {
+                        "path": [
+                            "$.boardingPass.paxSegments"
+                        ]
+                    },
+                    {
+                        "path": [
+                            "$.boardingPass.barcodeString"
+                        ]
+                    },
+                    {
+                        "path": [
+                            "$.vct"
+                        ],
+                        "filter": {
+                            "type": "string",
+                            "pattern": "boarding_pass_vc"
+                        }
+                    }
+                ]
+            },
+            "name": "IATA Boarding Pass",
+            "purpose": "We need your Boarding Pass credentials."
+        }
+    ]
+}

@@ -150,6 +150,41 @@
         "credential_definition": {
           "type": ["Order"]
         }
+      },
+      "boarding_pass_vc": {
+        "format": "vc+sd-jwt",
+        "cryptographic_binding_methods_supported": ["did:web", "did:jwk"],
+        "cryptographic_suites_supported": ["ES256"],
+        "display": [
+          {
+            "name": "boarding_pass_vc",
+            "description": "Verifiable Credential for boarding pass.",
+            "background_color": "rgba(0, 0, 0, 0.2)",
+            "text_color": "#FBFBFB",
+            "logo": {
+              "url": "https://i.ibb.co/pyZpF8m/Belastingdienst.png",
+              "alt_text": "Belastingdienst logo"
+            },
+            "background_image": {
+              "url": "https://i.ibb.co/jWF45Xw/grant-ritchie.png",
+              "alt_text": "Skyscrapers background"
+            }
+          },
+          {
+            "locale": "en-US",
+            "name": "boarding_pass_vc",
+            "description": "Verifiable Credential for boarding pass.",
+            "background_color": "rgba(0, 0, 0, 0.2)",
+            "text_color": "#FBFBFB",
+            "background_image": {
+              "url": "https://i.ibb.co/jWF45Xw/grant-ritchie.png",
+              "alt_text": "Card background"
+            }
+          }
+        ],
+        "credential_definition": {
+          "type": ["boarding_pass_vc"]
+        }
       }
     },
     "credential_supplier_config": {
@@ -173,6 +208,11 @@
         {
           "credential_types": ["Order"],
           "template_path": "Order.hbs",
+          "format": "vc+sd-jwt"
+        },
+        {
+          "credential_types": ["boarding_pass_vc"],
+          "template_path": "boarding_pass_vc.hbs",
           "format": "vc+sd-jwt"
         }
       ]
