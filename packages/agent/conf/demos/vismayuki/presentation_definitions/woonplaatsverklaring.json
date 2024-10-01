@@ -29,8 +29,11 @@
                      "$.vc.type[*]"
                   ],
                   "filter": {
-                     "type": "string",
-                     "pattern": "Woonplaatsverklaring"
+                     "type": "array",
+                     "contains": {
+                        "type": "string",
+                        "const": "Woonplaatsverklaring"
+                     }
                   }
                }
             ]

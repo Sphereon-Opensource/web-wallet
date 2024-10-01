@@ -29,8 +29,11 @@
               "$.vc.type[*]"
             ],
             "filter": {
-              "type": "string",
-              "pattern": "Omzetbelasting"
+              "type": "array",
+              "contains": {
+                "type": "string",
+                "const": "Omzetbelasting"
+              }
             }
           }
         ]
