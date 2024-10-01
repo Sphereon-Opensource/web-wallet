@@ -21,23 +21,11 @@
           ]
         }
       },
-      "constraints": {
-        "fields": [
-          {
-            "path": [
-              "$.type",
-              "$.vc.type[*]"
-            ],
-            "filter": {
-              "type": "array",
-              "contains": {
-                "type": "string",
-                "const": "Omzetbelasting"
-              }
-            }
-          }
-        ]
-      }
+      "schema":[
+        {
+          "uri":"Omzetbelasting"
+        }
+      ]
     }
   ]
 }
