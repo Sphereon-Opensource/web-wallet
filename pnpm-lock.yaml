@@ -7,26 +7,26 @@ settings:
 overrides:
   did-jwt: 6.11.6
   did-jwt-vc: 3.1.3
-  '@sphereon/pex': 5.0.0-unstable.7
-  '@sphereon/ssi-types': 0.30.1-unstable.4
-  '@sphereon/ssi-sdk.core': 0.30.1-unstable.4
-  '@sphereon/ssi-sdk.data-store': 0.30.1-unstable.4
-  '@sphereon/ssi-sdk.oid4vci-issuer': 0.30.1-unstable.4
-  '@sphereon/ssi-sdk.oid4vci-issuer-rest-api': 0.30.1-unstable.4
-  '@sphereon/ssi-express-support': 0.30.1-unstable.4
-  '@sphereon/ssi-sdk.issuance-branding': 0.30.1-unstable.4
-  '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth': 0.30.1-unstable.4
-  '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth': 0.30.1-unstable.4
-  '@sphereon/ssi-sdk.ebsi-support': 0.30.1-unstable.4
-  '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.115
-  '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.115
-  '@sphereon/oid4vci-issuer': 0.16.1-unstable.68
-  '@sphereon/oid4vc-common': 0.16.1-unstable.68
-  '@sphereon/oid4vci-issuer-server': 0.16.1-unstable.68
-  '@sphereon/oid4vci-client': 0.16.1-unstable.68
-  '@sphereon/oid4vci-common': 0.16.1-unstable.68
-  '@sphereon/did-auth-siop': 0.16.1-unstable.68
-  '@sphereon/did-auth-siop-did-adapter': 0.16.1-unstable.68
+  '@sphereon/pex': 5.0.0-unstable.10
+  '@sphereon/ssi-types': 0.30.1
+  '@sphereon/ssi-sdk.core': 0.30.1
+  '@sphereon/ssi-sdk.data-store': 0.30.1
+  '@sphereon/ssi-sdk.oid4vci-issuer': 0.30.1
+  '@sphereon/ssi-sdk.oid4vci-issuer-rest-api': 0.30.1
+  '@sphereon/ssi-express-support': 0.30.1
+  '@sphereon/ssi-sdk.issuance-branding': 0.30.1
+  '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth': 0.30.1
+  '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth': 0.30.1
+  '@sphereon/ssi-sdk.ebsi-support': 0.30.1
+  '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.130
+  '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.130
+  '@sphereon/oid4vci-issuer': 0.16.1-unstable.91
+  '@sphereon/oid4vc-common': 0.16.1-unstable.91
+  '@sphereon/oid4vci-issuer-server': 0.16.1-unstable.91
+  '@sphereon/oid4vci-client': 0.16.1-unstable.91
+  '@sphereon/oid4vci-common': 0.16.1-unstable.91
+  '@sphereon/did-auth-siop': 0.16.1-unstable.91
+  '@sphereon/did-auth-siop-did-adapter': 0.16.1-unstable.91
   '@codemirror/view': 6.28.4
   '@codemirror/state': 6.4.1
   '@codemirror/search': 6.5.6
@@ -56,6 +56,12 @@ overrides:
   '@veramo/remote-server': 4.2.0
   '@veramo/selective-disclosure': 4.2.0
   '@veramo/url-handler': 4.2.0
+  '@sd-jwt/core': ^0.7.2
+  '@sd-jwt/decode': ^0.7.2
+  '@sd-jwt/sd-jwt-vc': ^0.7.2
+  '@sd-jwt/types': ^0.7.2
+  '@sd-jwt/utils': ^0.7.2
+  '@sd-jwt/present': ^0.7.2
 
 patchedDependencies:
   '@veramo/core@4.2.0':
@@ -103,164 +109,164 @@ importers:
         specifier: ^5.7.0
         version: 5.7.0
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-unstable.68
-        version: 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.16.1-unstable.91
+        version: 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.16.1-unstable.68
-        version: 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.16.1-unstable.91
+        version: 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/did-uni-client':
         specifier: ^0.6.3
         version: 0.6.3
       '@sphereon/oid4vc-common':
-        specifier: 0.16.1-unstable.68
-        version: 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.16.1-unstable.91
+        version: 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/oid4vci-client':
-        specifier: 0.16.1-unstable.68
-        version: 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.16.1-unstable.91
+        version: 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-unstable.68
-        version: 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.16.1-unstable.91
+        version: 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/oid4vci-issuer':
-        specifier: 0.16.1-unstable.68
-        version: 0.16.1-unstable.68(awesome-qr@2.1.5-rc.0)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.16.1-unstable.91
+        version: 0.16.1-unstable.91(awesome-qr@2.1.5-rc.0)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/pex':
-        specifier: 5.0.0-unstable.7
-        version: 5.0.0-unstable.7
+        specifier: 5.0.0-unstable.10
+        version: 5.0.0-unstable.10
       '@sphereon/pex-models':
         specifier: ^2.2.4
         version: 2.2.4
       '@sphereon/ssi-express-support':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(passport-azure-ad@4.3.5)
+        specifier: 0.30.1
+        version: 0.30.1(passport-azure-ad@4.3.5)
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.24.1-unstable.115
-        version: 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.24.1-unstable.130
+        version: 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.did-provider-key':
-        specifier: 0.24.1-unstable.115
-        version: 0.24.1-unstable.115(expo@51.0.20)(react-native@0.74.3)
+        specifier: 0.24.1-unstable.130
+        version: 0.24.1-unstable.130(expo@51.0.20)(react-native@0.74.3)
       '@sphereon/ssi-sdk-ext.did-provider-web':
-        specifier: 0.24.1-unstable.115
-        version: 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.24.1-unstable.130
+        version: 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.did-resolver-ebsi':
-        specifier: 0.24.1-unstable.115
-        version: 0.24.1-unstable.115
+        specifier: 0.24.1-unstable.130
+        version: 0.24.1-unstable.130
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.24.1-unstable.115
-        version: 0.24.1-unstable.115
+        specifier: 0.24.1-unstable.130
+        version: 0.24.1-unstable.130
       '@sphereon/ssi-sdk-ext.did-resolver-key':
-        specifier: 0.24.1-unstable.115
-        version: 0.24.1-unstable.115
+        specifier: 0.24.1-unstable.130
+        version: 0.24.1-unstable.130
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.24.1-unstable.115
-        version: 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.24.1-unstable.130
+        version: 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.24.1-unstable.115
-        version: 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.24.1-unstable.130
+        version: 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.jwt-service':
-        specifier: 0.24.1-unstable.115
-        version: 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.24.1-unstable.130
+        version: 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.24.1-unstable.115
-        version: 0.24.1-unstable.115
+        specifier: 0.24.1-unstable.130
+        version: 0.24.1-unstable.130
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.24.1-unstable.115
-        version: 0.24.1-unstable.115
+        specifier: 0.24.1-unstable.130
+        version: 0.24.1-unstable.130
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.24.1-unstable.115
-        version: 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.24.1-unstable.130
+        version: 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.agent-config':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.contact-manager':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.contact-manager-rest-api':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(passport-azure-ad@4.3.5)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(passport-azure-ad@4.3.5)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.core':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4
+        specifier: 0.30.1
+        version: 0.30.1
       '@sphereon/ssi-sdk.credential-store':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.data-store':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.ebsi-support':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.event-logger':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.issuance-branding':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.mdl-mdoc':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.oid4vci-holder':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.oid4vci-issuer':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(awesome-qr@2.1.5-rc.0)(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(awesome-qr@2.1.5-rc.0)(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.oid4vci-issuer-rest-api':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.oid4vci-issuer-store':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.pd-manager':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.presentation-exchange':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.public-key-hosting':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(passport-azure-ad@4.3.5)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(passport-azure-ad@4.3.5)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.remote-server-rest-api':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(passport-azure-ad@4.3.5)
+        specifier: 0.30.1
+        version: 0.30.1(passport-azure-ad@4.3.5)
       '@sphereon/ssi-sdk.sd-jwt':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.siopv2-oid4vp-common':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-api':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.uni-resolver-registrar-api':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(passport-azure-ad@4.3.5)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(passport-azure-ad@4.3.5)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.vc-handler-ld-local':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(expo@51.0.20)(pg@8.12.0)(react-native-securerandom@1.0.1)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(expo@51.0.20)(pg@8.12.0)(react-native-securerandom@1.0.1)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.vc-status-list':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.vc-status-list-issuer':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.vc-status-list-issuer-drivers':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.w3c-vc-api':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-types':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@transmute/lds-ecdsa-secp256k1-recovery2020':
         specifier: ^0.0.7
         version: 0.0.7(expo@51.0.20)(react-native@0.74.3)
@@ -515,98 +521,98 @@ importers:
         specifier: 5.9.0
         version: 5.9.0(@refinedev/core@4.51.0)(@supabase/supabase-js@2.44.4)
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-unstable.68
-        version: 0.16.1-unstable.68(ts-node@10.9.2)
+        specifier: 0.16.1-unstable.91
+        version: 0.16.1-unstable.91(ts-node@10.9.2)
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.16.1-unstable.68
-        version: 0.16.1-unstable.68(ts-node@10.9.2)
+        specifier: 0.16.1-unstable.91
+        version: 0.16.1-unstable.91(ts-node@10.9.2)
       '@sphereon/did-uni-client':
         specifier: 0.6.3
         version: 0.6.3
       '@sphereon/oid4vc-common':
-        specifier: 0.16.1-unstable.68
-        version: 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.16.1-unstable.91
+        version: 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/oid4vci-client':
-        specifier: 0.16.1-unstable.68
-        version: 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.16.1-unstable.91
+        version: 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-unstable.68
-        version: 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.16.1-unstable.91
+        version: 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/oid4vci-issuer':
-        specifier: 0.16.1-unstable.68
-        version: 0.16.1-unstable.68
+        specifier: 0.16.1-unstable.91
+        version: 0.16.1-unstable.91
       '@sphereon/ssi-sdk-ext.did-resolver-ebsi':
-        specifier: 0.24.1-unstable.115
-        version: 0.24.1-unstable.115
+        specifier: 0.24.1-unstable.130
+        version: 0.24.1-unstable.130
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.24.1-unstable.115
-        version: 0.24.1-unstable.115
+        specifier: 0.24.1-unstable.130
+        version: 0.24.1-unstable.130
       '@sphereon/ssi-sdk-ext.did-resolver-key':
-        specifier: 0.24.1-unstable.115
-        version: 0.24.1-unstable.115
+        specifier: 0.24.1-unstable.130
+        version: 0.24.1-unstable.130
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.24.1-unstable.115
-        version: 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.24.1-unstable.130
+        version: 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.24.1-unstable.115
-        version: 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.24.1-unstable.130
+        version: 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.jwt-service':
-        specifier: 0.24.1-unstable.115
-        version: 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.24.1-unstable.130
+        version: 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.24.1-unstable.115
-        version: 0.24.1-unstable.115
+        specifier: 0.24.1-unstable.130
+        version: 0.24.1-unstable.130
       '@sphereon/ssi-sdk.contact-manager':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(ts-node@10.9.2)
       '@sphereon/ssi-sdk.core':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4
+        specifier: 0.30.1
+        version: 0.30.1
       '@sphereon/ssi-sdk.credential-store':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(ts-node@10.9.2)
       '@sphereon/ssi-sdk.data-store':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(ts-node@10.9.2)
       '@sphereon/ssi-sdk.ebsi-support':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(expo@51.0.20)(react-native@0.74.3)(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(expo@51.0.20)(react-native@0.74.3)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.event-logger':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(ts-node@10.9.2)
       '@sphereon/ssi-sdk.issuance-branding':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(ts-node@10.9.2)
       '@sphereon/ssi-sdk.kv-store-temp':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.mdl-mdoc':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(ts-node@10.9.2)
       '@sphereon/ssi-sdk.oid4vci-holder':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(ts-node@10.9.2)
       '@sphereon/ssi-sdk.oid4vci-issuer-rest-client':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4
+        specifier: 0.30.1
+        version: 0.30.1
       '@sphereon/ssi-sdk.pd-manager':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(ts-node@10.9.2)
       '@sphereon/ssi-sdk.qr-code-generator':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4
+        specifier: 0.30.1
+        version: 0.30.1
       '@sphereon/ssi-sdk.sd-jwt':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(ts-node@10.9.2)
       '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(expo@51.0.20)(react-native@0.74.3)(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(expo@51.0.20)(react-native@0.74.3)(ts-node@10.9.2)
       '@sphereon/ssi-sdk.w3c-vc-api-issuer-rest-client':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(@types/node@18.19.39)
+        specifier: 0.30.1
+        version: 0.30.1(@types/node@18.19.39)
       '@sphereon/ssi-types':
-        specifier: 0.30.1-unstable.4
-        version: 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.30.1
+        version: 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ui-components.core':
         specifier: 0.3.1-next.6
         version: 0.3.1-next.6(react-dom@18.3.1)(react@18.3.1)
@@ -750,8 +756,8 @@ importers:
         specifier: ^5.16.1
         version: 5.16.4(@types/react@18.3.3)(react@18.3.1)
       '@sphereon/pex':
-        specifier: 5.0.0-unstable.7
-        version: 5.0.0-unstable.7(ts-node@10.9.2)
+        specifier: 5.0.0-unstable.10
+        version: 5.0.0-unstable.10(ts-node@10.9.2)
       '@sphereon/pex-models':
         specifier: ^2.2.4
         version: 2.2.4
@@ -5854,47 +5860,58 @@ packages:
       - '@types/node'
     dev: false
 
-  /@sd-jwt/core@0.6.1:
-    resolution: {integrity: sha512-egFTb23o6BGWF93vnjopN02rSiC1HOOnkk9BI8Kao3jz9ipZAHdO6wF7gwfZm5Nlol/Kd1/KSLhbOUPYt++FjA==}
-    engines: {node: '>=16'}
+  /@sd-jwt/core@0.7.2:
+    resolution: {integrity: sha512-vix1GplUFc1A9H42r/yXkg7cKYthggyqZEwlFdsBbn4xdZNE+AHVF4N7kPa1pPxipwN3UIHd4XnQ5MJV15mhsQ==}
+    engines: {node: '>=18'}
     dependencies:
-      '@sd-jwt/decode': 0.6.1
-      '@sd-jwt/present': 0.6.1
-      '@sd-jwt/types': 0.6.1
-      '@sd-jwt/utils': 0.6.1
+      '@sd-jwt/decode': 0.7.2
+      '@sd-jwt/present': 0.7.2
+      '@sd-jwt/types': 0.7.2
+      '@sd-jwt/utils': 0.7.2
     dev: false
 
-  /@sd-jwt/decode@0.6.1:
-    resolution: {integrity: sha512-QgTIoYd5zyKKLgXB4xEYJTrvumVwtsj5Dog0v0L9UH9ZvHekDaeexS247X7A4iSdzTvmZzUpGskgABOa4D8NmQ==}
-    engines: {node: '>=16'}
+  /@sd-jwt/decode@0.7.2:
+    resolution: {integrity: sha512-dan2LSvK63SKwb62031G4r7TE4TaiI0EK1KbPXqS+LCXNkNDUHqhtYp9uOpj+grXceCsMtMa2f8VnUfsjmwHHg==}
+    engines: {node: '>=18'}
     dependencies:
-      '@sd-jwt/types': 0.6.1
-      '@sd-jwt/utils': 0.6.1
+      '@sd-jwt/types': 0.7.2
+      '@sd-jwt/utils': 0.7.2
 
-  /@sd-jwt/present@0.6.1:
-    resolution: {integrity: sha512-QRD3TUDLj4PqQNZ70bBxh8FLLrOE9mY8V9qiZrJSsaDOLFs2p1CtZG+v9ig62fxFYJZMf4bWKwYjz+qqGAtxCg==}
-    engines: {node: '>=16'}
+  /@sd-jwt/jwt-status-list@0.7.2:
+    resolution: {integrity: sha512-o/Mg/Zg21poFsPXuxtPD9sdXq2b/0L+rb9gxU2k1rp1aT+DWmqD0k8v0Ttr2tlMc8l1xXQNA8FLXbL1AdLRmbQ==}
+    engines: {node: '>=18'}
     dependencies:
-      '@sd-jwt/decode': 0.6.1
-      '@sd-jwt/types': 0.6.1
-      '@sd-jwt/utils': 0.6.1
-
-  /@sd-jwt/sd-jwt-vc@0.6.1:
-    resolution: {integrity: sha512-eF7NAFvedBCx+vrw4TVY3evUz5rAG8/FtB/CUudYEigKcpanLgfuNGhk93D45k+lLDG0b24w+qorqbpLZzHA2g==}
-    engines: {node: '>=16'}
-    dependencies:
-      '@sd-jwt/core': 0.6.1
+      '@sd-jwt/types': 0.7.2
+      base64url: 3.0.1
+      pako: 2.1.0
     dev: false
 
-  /@sd-jwt/types@0.6.1:
-    resolution: {integrity: sha512-LKpABZJGT77jNhOLvAHIkNNmGqXzyfwBT+6r+DN9zNzMx1CzuNR0qXk1GMUbast9iCfPkGbnEpUv/jHTBvlIvg==}
-    engines: {node: '>=16'}
-
-  /@sd-jwt/utils@0.6.1:
-    resolution: {integrity: sha512-1NHZ//+GecGQJb+gSdDicnrHG0DvACUk9jTnXA5yLZhlRjgkjyfJLNsCZesYeCyVp/SiyvIC9B+JwoY4kI0TwQ==}
-    engines: {node: '>=16'}
+  /@sd-jwt/present@0.7.2:
+    resolution: {integrity: sha512-mQV85u2+mLLy2VZ9Wx2zpaB6yTDnbhCfWkP7eeCrzJQHBKAAHko8GrylEFmLKewFIcajS/r4lT/zHOsCkp5pZw==}
+    engines: {node: '>=18'}
     dependencies:
-      '@sd-jwt/types': 0.6.1
+      '@sd-jwt/decode': 0.7.2
+      '@sd-jwt/types': 0.7.2
+      '@sd-jwt/utils': 0.7.2
+
+  /@sd-jwt/sd-jwt-vc@0.7.2:
+    resolution: {integrity: sha512-rryYmnoJHRSNqHcrs0Atta+bfJzU2yT7mYumR2D4lTfxJKWZd0OHHFq57uZSEm/wXPI6uytUJXYbEboCqLUAtw==}
+    engines: {node: '>=18'}
+    dependencies:
+      '@sd-jwt/core': 0.7.2
+      '@sd-jwt/jwt-status-list': 0.7.2
+      '@sd-jwt/utils': 0.7.2
+    dev: false
+
+  /@sd-jwt/types@0.7.2:
+    resolution: {integrity: sha512-1NRKowiW0ZiB9SGLApLPBH4Xk8gDQJ+nA9NdZ+uy6MmJKLEwjuJxO7yTvRIv/jX/0/Ebh339S7Kq4RD2AiFuRg==}
+    engines: {node: '>=18'}
+
+  /@sd-jwt/utils@0.7.2:
+    resolution: {integrity: sha512-aMPY7uHRMgyI5PlDvEiIc+eBFGC1EM8OCQRiEjJ8HGN0pajWMYj0qwSw7pS90A49/DsYU1a5Zpvb7nyjgGH0Yg==}
+    engines: {node: '>=18'}
+    dependencies:
+      '@sd-jwt/types': 0.7.2
       js-base64: 3.7.7
 
   /@segment/loosely-validate-event@2.0.0:
@@ -5937,13 +5954,13 @@ packages:
     dependencies:
       '@sinonjs/commons': 3.0.1
 
-  /@sphereon/did-auth-siop-adapter@0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-PLfRr0Kfn08nn0LTH+9wxWkral+rrFiOaDHC8NvKsPfHM6zKEckx2tyGODRWKFvwRTe39K6LtyM+OHEXrYV+Yw==}
+  /@sphereon/did-auth-siop-adapter@0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-LeO4HUbCQq60auAjJIKZrdtpgCjKCvWX/79BVczw3I8kEsXhIILf2GuT72lNjNPSAVvkjk7ApItwLlZY4OehQw==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/did-auth-siop': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/did-auth-siop': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/did-uni-client': 0.6.3
-      '@sphereon/oid4vc-common': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/oid4vc-common': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/wellknown-dids-client': 0.1.3
       did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
       did-resolver: 4.1.0
@@ -5969,13 +5986,13 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/did-auth-siop-adapter@0.16.1-unstable.68(ts-node@10.9.2):
-    resolution: {integrity: sha512-PLfRr0Kfn08nn0LTH+9wxWkral+rrFiOaDHC8NvKsPfHM6zKEckx2tyGODRWKFvwRTe39K6LtyM+OHEXrYV+Yw==}
+  /@sphereon/did-auth-siop-adapter@0.16.1-unstable.91(ts-node@10.9.2):
+    resolution: {integrity: sha512-LeO4HUbCQq60auAjJIKZrdtpgCjKCvWX/79BVczw3I8kEsXhIILf2GuT72lNjNPSAVvkjk7ApItwLlZY4OehQw==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/did-auth-siop': 0.16.1-unstable.68(ts-node@10.9.2)
+      '@sphereon/did-auth-siop': 0.16.1-unstable.91(ts-node@10.9.2)
       '@sphereon/did-uni-client': 0.6.3
-      '@sphereon/oid4vc-common': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/oid4vc-common': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/wellknown-dids-client': 0.1.3
       did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
       did-resolver: 4.1.0
@@ -6001,17 +6018,17 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/did-auth-siop@0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-u+wPut7LZ51/4PLlQarspsacSqt09NmaLSU5YnRgRbw5LXbno7SjZYmKvkgHpOz+xv5NGXCWlzAQPaZY1/4Oyg==}
+  /@sphereon/did-auth-siop@0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-Qyc3FfNORG0AGdSRa7B5Lp7SVJEuPIdY11MQuUY4TOixfFKrGhG++jeAP4BOcKKV3nMqwvZK1HqBQb2JgFfWsQ==}
     engines: {node: '>=18'}
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
       '@sphereon/did-uni-client': 0.6.3
       '@sphereon/kmp-mdl-mdoc': 0.2.0-SNAPSHOT.22
-      '@sphereon/oid4vc-common': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/pex': 5.0.0-unstable.7
+      '@sphereon/oid4vc-common': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/pex': 5.0.0-unstable.10
       '@sphereon/pex-models': 2.3.1
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/wellknown-dids-client': 0.1.3
       cross-fetch: 4.0.0
       debug: 4.3.5(supports-color@5.5.0)
@@ -6043,17 +6060,17 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/did-auth-siop@0.16.1-unstable.68(ts-node@10.9.2):
-    resolution: {integrity: sha512-u+wPut7LZ51/4PLlQarspsacSqt09NmaLSU5YnRgRbw5LXbno7SjZYmKvkgHpOz+xv5NGXCWlzAQPaZY1/4Oyg==}
+  /@sphereon/did-auth-siop@0.16.1-unstable.91(ts-node@10.9.2):
+    resolution: {integrity: sha512-Qyc3FfNORG0AGdSRa7B5Lp7SVJEuPIdY11MQuUY4TOixfFKrGhG++jeAP4BOcKKV3nMqwvZK1HqBQb2JgFfWsQ==}
     engines: {node: '>=18'}
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
       '@sphereon/did-uni-client': 0.6.3
       '@sphereon/kmp-mdl-mdoc': 0.2.0-SNAPSHOT.22
-      '@sphereon/oid4vc-common': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/pex': 5.0.0-unstable.7(ts-node@10.9.2)
+      '@sphereon/oid4vc-common': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/pex': 5.0.0-unstable.10(ts-node@10.9.2)
       '@sphereon/pex-models': 2.3.1
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/wellknown-dids-client': 0.1.3
       cross-fetch: 4.0.0
       debug: 4.3.5(supports-color@5.5.0)
@@ -6099,12 +6116,13 @@ packages:
       '@js-joda/core': 5.6.3
       '@js-joda/timezone': 2.3.0(@js-joda/core@5.6.3)
       format-util: 1.0.5
+    bundledDependencies: []
 
-  /@sphereon/oid4vc-common@0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-njQWU12rMoJLpqC249QrhkZDykGA4KdLBvYvIRcfQaEWnIRsOzQFu9knOJ7ETlzE56V5K8JSw0+jSM9hE1A4wg==}
+  /@sphereon/oid4vc-common@0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-F8gLIT7l0FmpfBrJAjcrSOgNsdd7IsGZWWH5PGwVMMSYksg367oxeDjrtzCnfgArlJ61+SpRcb/Meq3VRSPqTQ==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       jwt-decode: 4.0.0
       sha.js: 2.4.11
       uint8arrays: 3.1.1
@@ -6131,13 +6149,13 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/oid4vci-client@0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-2WW460D0sajI3l5OCN8XhD3xuiHIn9MujLZ1vMZI7hlHKSS7vu/FFEzlGVPjjL63Jbvfdcq+vHRRnI79xRuhuQ==}
+  /@sphereon/oid4vci-client@0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-8fvr4WadoFKDKE8Q/SYus+nKst34/zYmQkaRtNEywN80aZ00YZLIuHeif6ChZJ751Cwin+e6oEvMbBD5ETBGxA==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/oid4vci-common': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/oid4vc-common': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/oid4vci-common': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       cross-fetch: 3.1.8
       debug: 4.3.5(supports-color@5.5.0)
     transitivePeerDependencies:
@@ -6162,12 +6180,12 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/oid4vci-common@0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-TGzp7KxEnVh29u9S0MTQT+z/rOwL6R62wwTB4bywkVFj5AcbF08ois4FaUa7k6uistdeEbOJzS6Lni99rz6i8w==}
+  /@sphereon/oid4vci-common@0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-Q+4zezFlgvhnj7d3gNuTGUz09sLSEFOng4d71vMKCsflqBg5UBIkNVM7SSJLzX98DrYMOwc+KE3TG/hY3PNESw==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/oid4vc-common': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       cross-fetch: 3.1.8
       debug: 4.3.5(supports-color@5.5.0)
       jwt-decode: 4.0.0
@@ -6195,8 +6213,8 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/oid4vci-issuer-server@0.16.1-unstable.68(awesome-qr@2.1.5-rc.0)(passport-azure-ad@4.3.5)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-nX4VKV1Vbscg7dbDmPFZkU+Sv3Fr5FivJCWClLhTWahjvB2JDUlW/qw0XGU568vAHlyiitbO7HZ0jL9kHZ1mrQ==}
+  /@sphereon/oid4vci-issuer-server@0.16.1-unstable.91(awesome-qr@2.1.5-rc.0)(passport-azure-ad@4.3.5)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-GXS8UGr4fhfgi0SFNeIrKf6Ep6vj0E0N0hjegqjS2XpFCpMpsunnVDYDR38/iT/7/a3S8Qcmzmdvgqg6WuWQfA==}
     engines: {node: '>=18'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -6204,11 +6222,11 @@ packages:
       awesome-qr:
         optional: true
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/oid4vci-common': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/oid4vci-issuer': 0.16.1-unstable.68(awesome-qr@2.1.5-rc.0)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-express-support': 0.30.1-unstable.4(passport-azure-ad@4.3.5)
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/oid4vc-common': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/oid4vci-common': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/oid4vci-issuer': 0.16.1-unstable.91(awesome-qr@2.1.5-rc.0)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-express-support': 0.30.1(passport-azure-ad@4.3.5)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       awesome-qr: 2.1.5-rc.0
       body-parser: 1.20.2
       cookie-parser: 1.4.6
@@ -6242,8 +6260,8 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/oid4vci-issuer@0.16.1-unstable.68:
-    resolution: {integrity: sha512-atv0LccJxm64p7Y5AE13gVVoHcszJNpXU3X67u4o4g9iJnk3MfYwnPRfYusy1eJ4hbtirfzOBNCVQfuyAp6cCQ==}
+  /@sphereon/oid4vci-issuer@0.16.1-unstable.91:
+    resolution: {integrity: sha512-HY6p1xGhufy3G6QdAdm7QJ9JnGZbG7n/PEqQKSVH4J1m4WsSfgHxq7HpnSTWrbXKwm4IFnJR8XUogDjXB+6itg==}
     engines: {node: '>=18'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -6251,17 +6269,17 @@ packages:
       awesome-qr:
         optional: true
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/oid4vci-common': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/oid4vc-common': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/oid4vci-common': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       uuid: 9.0.1
     transitivePeerDependencies:
       - encoding
       - supports-color
     dev: false
 
-  /@sphereon/oid4vci-issuer@0.16.1-unstable.68(awesome-qr@2.1.5-rc.0)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-atv0LccJxm64p7Y5AE13gVVoHcszJNpXU3X67u4o4g9iJnk3MfYwnPRfYusy1eJ4hbtirfzOBNCVQfuyAp6cCQ==}
+  /@sphereon/oid4vci-issuer@0.16.1-unstable.91(awesome-qr@2.1.5-rc.0)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-HY6p1xGhufy3G6QdAdm7QJ9JnGZbG7n/PEqQKSVH4J1m4WsSfgHxq7HpnSTWrbXKwm4IFnJR8XUogDjXB+6itg==}
     engines: {node: '>=18'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -6269,9 +6287,9 @@ packages:
       awesome-qr:
         optional: true
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/oid4vci-common': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/oid4vc-common': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/oid4vci-common': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       awesome-qr: 2.1.5-rc.0
       uuid: 9.0.1
     transitivePeerDependencies:
@@ -6302,17 +6320,17 @@ packages:
   /@sphereon/pex-models@2.3.1:
     resolution: {integrity: sha512-SByU4cJ0XYA6VZQ/L6lsSiRcFtBPHbFioCeQ4GP7/W/jQ+PSBD7uK2oTnKQ9/0iEiMK/6JYqhKgLs4a9UX3UTQ==}
 
-  /@sphereon/pex@5.0.0-unstable.7:
-    resolution: {integrity: sha512-E+pehf6E6JN/vSELZbnIvnNQqXEKjbijCCzov2mXqFWb3WyBn7B5RY7I3v9cCFnN+8r3W3E/Hb9jAJej1DIRCg==}
+  /@sphereon/pex@5.0.0-unstable.10:
+    resolution: {integrity: sha512-YP/+fBgUtUVlMyHvKAswuCLC8dKLU55OzC8O6LtKUYnJoPoIB95emtUWnDgLFSWV+TpXnIKGkANQ/3Y8Rj9BsQ==}
     engines: {node: '>=18'}
     requiresBuild: true
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
-      '@sd-jwt/decode': 0.6.1
-      '@sd-jwt/present': 0.6.1
-      '@sd-jwt/types': 0.6.1
+      '@sd-jwt/decode': 0.7.2
+      '@sd-jwt/present': 0.7.2
+      '@sd-jwt/types': 0.7.2
       '@sphereon/pex-models': 2.3.1
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       ajv: 8.17.1
       ajv-formats: 2.1.1(ajv@8.17.1)
       jwt-decode: 3.1.2
@@ -6323,17 +6341,17 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/pex@5.0.0-unstable.7(ts-node@10.9.2):
-    resolution: {integrity: sha512-E+pehf6E6JN/vSELZbnIvnNQqXEKjbijCCzov2mXqFWb3WyBn7B5RY7I3v9cCFnN+8r3W3E/Hb9jAJej1DIRCg==}
+  /@sphereon/pex@5.0.0-unstable.10(ts-node@10.9.2):
+    resolution: {integrity: sha512-YP/+fBgUtUVlMyHvKAswuCLC8dKLU55OzC8O6LtKUYnJoPoIB95emtUWnDgLFSWV+TpXnIKGkANQ/3Y8Rj9BsQ==}
     engines: {node: '>=18'}
     requiresBuild: true
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
-      '@sd-jwt/decode': 0.6.1
-      '@sd-jwt/present': 0.6.1
-      '@sd-jwt/types': 0.6.1
+      '@sd-jwt/decode': 0.7.2
+      '@sd-jwt/present': 0.7.2
+      '@sd-jwt/types': 0.7.2
       '@sphereon/pex-models': 2.3.1
-      '@sphereon/ssi-types': 0.30.1-unstable.4(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(ts-node@10.9.2)
       ajv: 8.17.1
       ajv-formats: 2.1.1(ajv@8.17.1)
       jwt-decode: 3.1.2
@@ -6361,8 +6379,8 @@ packages:
       - ts-node
       - typeorm-aurora-data-api-driver
 
-  /@sphereon/ssi-express-support@0.30.1-unstable.4(passport-azure-ad@4.3.5):
-    resolution: {integrity: sha512-kVfIp3h0OXF/pYrqkE68H2L/QyGnG13pvMxKEgcEYo+hCPhZuDA/abc6fW935qM+KCBR7plbBOD4zhd3ntpopQ==}
+  /@sphereon/ssi-express-support@0.30.1(passport-azure-ad@4.3.5):
+    resolution: {integrity: sha512-eZMq3V6lZ3qVCO+ymRjLOmDrfIqPsAf/KHwxtK4yoZyVjsDC4f/mbLIovyv1SdK/Uf7raF7QXdTjLi+f/XeS2Q==}
     peerDependencies:
       '@noble/hashes': 1.2.0
       passport-azure-ad: ^4.3.5
@@ -6393,13 +6411,13 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/ssi-sdk-ext.did-provider-jwk@0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-hsqoiR6OFsDFQ+4aemQ4zwaODwUGNqhr6EFP27igaY8VuHPz9rcIw8b1AYE1EUAh/Th9LRdTNOEQQzrdgJlKag==}
+  /@sphereon/ssi-sdk-ext.did-provider-jwk@0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-4SQ0D0gjihejx/aKMnX37l5uRRzDCRmq3BYLHPQkqE5g8x+HtEavLqXAv6FKCqxqWGxewlhNtWF6oRu2Ru3wqg==}
     dependencies:
       '@ethersproject/random': 5.7.0
-      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.115
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.130
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@stablelib/ed25519': 1.0.3
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/did-manager': 4.2.0
@@ -6429,11 +6447,11 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk-ext.did-provider-key@0.24.1-unstable.115(expo@51.0.20)(react-native@0.74.3):
-    resolution: {integrity: sha512-bURoZBfAF+m9RWuKDCea+TwZDIdyz6+Q59EuNydLaosqdRiN4PShgmevNunRxuqSfEaSGYskL2qimlIIlBCHWA==}
+  /@sphereon/ssi-sdk-ext.did-provider-key@0.24.1-unstable.130(expo@51.0.20)(react-native@0.74.3):
+    resolution: {integrity: sha512-vzYkMYPAKe0T8s0b9PtGmPvH/GvP8vnM9teFyW3TDSfPzefZXWj6RKmVlJqBiQHN3poVbIQOhzOJ0isZU9Dkng==}
     dependencies:
-      '@sphereon/ssi-sdk-ext.did-resolver-key': 0.24.1-unstable.115
-      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.115
+      '@sphereon/ssi-sdk-ext.did-resolver-key': 0.24.1-unstable.130
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.130
       '@transmute/did-key-bls12381': 0.3.0-unstable.10(expo@51.0.20)(react-native@0.74.3)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/did-manager': 4.2.0
@@ -6452,11 +6470,11 @@ packages:
       - web-streams-polyfill
     dev: false
 
-  /@sphereon/ssi-sdk-ext.did-provider-web@0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-930H4E+CdxEtAxxcGObtEEZo1fli5p27tAkwAlQGspBsE5A6/pbalKMZzjyFJ1aAXc3VsKJkMwF8GWwm6XiP1Q==}
+  /@sphereon/ssi-sdk-ext.did-provider-web@0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-Q0opxTMkPeu15Z35kCnxigVRKN+WfIQnjiD7PwbmV7zGSaKophsEdV0y2b42J9Vhvj82LKACgdKP3apDAUmFdw==}
     dependencies:
-      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.115
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.130
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/did-manager': 4.2.0
       debug: 4.3.5(supports-color@5.5.0)
@@ -6482,8 +6500,8 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk-ext.did-resolver-ebsi@0.24.1-unstable.115:
-    resolution: {integrity: sha512-YJ5/T297z0rdHnjIXAyu1c/z2Zn5wN6zv2pR/q3T+LU5YzWzAcBY+k+qENmhO7CnfBUDyKxwUnf+h73Jvfa1gA==}
+  /@sphereon/ssi-sdk-ext.did-resolver-ebsi@0.24.1-unstable.130:
+    resolution: {integrity: sha512-u6CgYIuEOWcrCXyaIuYybpotxMBbBIiq4Co/ku9WLFPf+o5IhMqHu/qr6wTOgVarPpPgWOsEL2IPYrhjcOcusQ==}
     dependencies:
       cross-fetch: 3.1.8
       did-resolver: 4.1.0
@@ -6492,10 +6510,10 @@ packages:
       - encoding
     dev: false
 
-  /@sphereon/ssi-sdk-ext.did-resolver-jwk@0.24.1-unstable.115:
-    resolution: {integrity: sha512-Xel2C2RVlBjYw11SyShA9FrGU81EZCko1j07x7BBwPEueGjbdHdn9DJjqx4lu9bo5gYqlPXLvEEBvbE76Zmgnw==}
+  /@sphereon/ssi-sdk-ext.did-resolver-jwk@0.24.1-unstable.130:
+    resolution: {integrity: sha512-+lnWn+6MPs+1ocCKMvPovzDB892aeFeAKO85YHHR9kL2FnaC9dUDohgxvhldy3ZzHld2/+B7+l7UVwEcyqQ36Q==}
     dependencies:
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       base64url: 3.0.1
       debug: 4.3.5(supports-color@5.5.0)
       did-resolver: 4.1.0
@@ -6504,10 +6522,10 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/ssi-sdk-ext.did-resolver-key@0.24.1-unstable.115:
-    resolution: {integrity: sha512-47iH7Qwrp/Opo4v/4GiwI8Vkuhj7mni+jKSrQgPM1tPPQLK8yNi0X9ILj+Ep1ccj8g1hSmLg5WPPQkl0xjkUbg==}
+  /@sphereon/ssi-sdk-ext.did-resolver-key@0.24.1-unstable.130:
+    resolution: {integrity: sha512-RlPv7nO07FrQL+M9p9ow4v913QfZZdN/IwjLsDgVmgmoR+tOWfj0+/SDNQZqYRY0Mkx1ovGaBhmDamPc2HGBQw==}
     dependencies:
-      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.115
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.130
       '@stablelib/ed25519': 1.0.3
       bigint-mod-arith: 3.3.1
       did-resolver: 4.1.0
@@ -6522,17 +6540,17 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/ssi-sdk-ext.did-utils@0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-kPpEm+wP4NzdhQ5lRnYz7ixZRz6xjk4XNUyDJFb0R7NoTQaAklFwIcY1xtdPGTQGG/nLw7tFqcrbA7rn8XtF2Q==}
+  /@sphereon/ssi-sdk-ext.did-utils@0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-I+0VjitRjisABWm8RtTPQG57tFwfUS13Wud30OvBoADRxnaA0guUrkS82AYtV6YD0TBHdrd0D6a0RCJwK9SvDg==}
     dependencies:
       '@ethersproject/networks': 5.7.1
       '@ethersproject/transactions': 5.7.0
       '@sphereon/did-uni-client': 0.6.3
-      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.115
-      '@sphereon/ssi-sdk-ext.x509-utils': 0.24.1-unstable.115
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.130
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.24.1-unstable.130
       '@sphereon/ssi-sdk.agent-config': 0.29.1-unstable.161(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.core': 0.30.1-unstable.4
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.core': 0.30.1
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@stablelib/ed25519': 1.0.3
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/utils': 4.2.0
@@ -6564,11 +6582,11 @@ packages:
   /@sphereon/ssi-sdk-ext.identifier-resolution@0.24.1-next.96(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
     resolution: {integrity: sha512-24Uc2ZiLp+vLlNuWD+pbjueaXC031mq6mfpUnn6HxShL5/epausBtZ7qSQyxJW0tHJ6ytB33JpB6tQXQ/ts1TA==}
     dependencies:
-      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.115
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.130
       '@sphereon/ssi-sdk-ext.x509-utils': 0.24.1-next.96
       '@sphereon/ssi-sdk.agent-config': 0.29.1-unstable.75(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/utils': 4.2.0
       debug: 4.3.5(supports-color@5.5.0)
@@ -6596,14 +6614,14 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk-ext.identifier-resolution@0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-6OMQPhLKvt3MR8CEdx9NoNDHczuoUNz2lHHGxC7POlkL1ZN5XcbNJFSpj8IvGxpyvQltt6Q70aOlB9taPejU2w==}
+  /@sphereon/ssi-sdk-ext.identifier-resolution@0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-9mY+qgXmbZCC8aic99R7B3vKBHBakDiC6Sktgd7Q9AknR8cCmvdrmTgnOETrLng9L43uNOJnNTMG/4T6LqmtsA==}
     dependencies:
-      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.115
-      '@sphereon/ssi-sdk-ext.x509-utils': 0.24.1-unstable.115
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.130
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.24.1-unstable.130
       '@sphereon/ssi-sdk.agent-config': 0.29.1-unstable.161(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/utils': 4.2.0
       debug: 4.3.5(supports-color@5.5.0)
@@ -6630,16 +6648,16 @@ packages:
       - ts-node
       - typeorm-aurora-data-api-driver
 
-  /@sphereon/ssi-sdk-ext.jwt-service@0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-uy0evAY5o5H6rbK3Li3HHxbcm74kxKsIspBQJVtOh098WDK65zIBgMEkW1xhfg9cExkqMoB5y7TdhC0wL4OFBg==}
+  /@sphereon/ssi-sdk-ext.jwt-service@0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-MHLGRmJODEYJyFoXKwlKMYzf48vS5JcUkGk0W4sqmrY1wwcw+ro3l8adIprG37mNuknXBs9Mv0x/tvibE9wwCQ==}
     dependencies:
-      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.key-manager': 0.24.1-unstable.115
-      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.115
-      '@sphereon/ssi-sdk-ext.x509-utils': 0.24.1-unstable.115
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.key-manager': 0.24.1-unstable.130
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.130
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.24.1-unstable.130
       '@sphereon/ssi-sdk.agent-config': 0.29.1-unstable.161(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/utils': 4.2.0
       debug: 4.3.5(supports-color@5.5.0)
@@ -6666,8 +6684,8 @@ packages:
       - ts-node
       - typeorm-aurora-data-api-driver
 
-  /@sphereon/ssi-sdk-ext.key-manager@0.24.1-unstable.115:
-    resolution: {integrity: sha512-1w28V1OG3Ai/Urh2zD26FQ9oGhRAmciX0xF2Tep5gkq5McWU4XLgsCj8ayEuTGQPoCVi86Cv1YcieMSDE+0//w==}
+  /@sphereon/ssi-sdk-ext.key-manager@0.24.1-unstable.130:
+    resolution: {integrity: sha512-O/6NlKmlYRnEyP/mAI2Diu0qptMSqZfVwqog8KAOG/G8JUmktfSQmclBW8RoJ6AD9uY65BGzNk1oAVuuMv4Dog==}
     dependencies:
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/key-manager': 4.2.0
@@ -6675,12 +6693,12 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /@sphereon/ssi-sdk-ext.key-utils@0.24.1-unstable.115:
-    resolution: {integrity: sha512-Er9p684WpwMyQxadiohJTn/tPFcAJOTzIraKmFiUFEtVDaJWBrjduHkTv7YuT8WAS2h5UD0zzGCDo1bSTNGLNA==}
+  /@sphereon/ssi-sdk-ext.key-utils@0.24.1-unstable.130:
+    resolution: {integrity: sha512-DCyXW18g1OAuZ+aFHzQGrbZSx793DX94LSFnrWlOTMnYeILmrizuFksUlWSb3lTqQGAqWBC48NoR3I1H6lSMEQ==}
     dependencies:
       '@ethersproject/random': 5.7.0
-      '@sphereon/ssi-sdk-ext.x509-utils': 0.24.1-unstable.115
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.24.1-unstable.130
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@stablelib/ed25519': 1.0.3
       '@stablelib/sha256': 1.0.1
       '@stablelib/sha512': 1.0.1
@@ -6698,12 +6716,12 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /@sphereon/ssi-sdk-ext.kms-local@0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-9x9DYR2LXOCjawUMY4ddRsZDKHucWBmbCV655yY1SdueZex0tMJR6+1dbIDG943Y6Bt7x3CCTH72UQi3z5NYOA==}
+  /@sphereon/ssi-sdk-ext.kms-local@0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-DsBl12ugguHSF6nN7XSf2+W/Ns8767FYpKRzfbFr0Yp3xT8YzIcCDh+RYeREU3CIyXWcLkMnpUIoTWClDm+D8Q==}
     dependencies:
-      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.115
-      '@sphereon/ssi-sdk-ext.x509-utils': 0.24.1-unstable.115
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.130
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.24.1-unstable.130
       '@trust/keyto': 2.0.0-alpha1
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/key-manager': 4.2.0
@@ -6743,8 +6761,8 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/ssi-sdk-ext.x509-utils@0.24.1-unstable.115:
-    resolution: {integrity: sha512-K5Jwafm3KlmhSJfiel5p6gffDx69ESQllbzPhIQ2ribxfltHRc3ZTzZRAFZEeFlRU+bEox5mN7atHTN+7E8BGQ==}
+  /@sphereon/ssi-sdk-ext.x509-utils@0.24.1-unstable.130:
+    resolution: {integrity: sha512-JDX8i0WrwONaOivZXB+OxJQGkln7vuSLS61tOYl7M1RyPGixdBYuEuACsdvWf6egYOpaWmhmXZzaAOj18eDddw==}
     dependencies:
       '@trust/keyto': 1.0.1
       debug: 4.3.5(supports-color@5.5.0)
@@ -6813,8 +6831,8 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.agent-config@0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-45zBNPHTkIIcB+nIB17MgPPwpybBlIZ4n+r4abMoYKatnCRH63BsZJp1UZp33O7xVs6Tb3Rwa3jIB66aEhjj3Q==}
+  /@sphereon/ssi-sdk.agent-config@0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-8IRct+v8l9T+NACJzm78fH9LzoLiU7q+nHj8keOjFcLrV4CmdpyfuMYdRwrbFXTrLqV1rndAJQ7GGxX+UEq4JA==}
     dependencies:
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       debug: 4.3.5(supports-color@5.5.0)
@@ -6843,17 +6861,17 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.contact-manager-rest-api@0.30.1-unstable.4(passport-azure-ad@4.3.5)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-tZQ2s/L7aoNLJWgnt5bok+tpKULD2QU/LUZ+feYezSKH1vyaN1h5awL3CfnQNAELdEieA7dj+lLe4Da5L3fcpQ==}
+  /@sphereon/ssi-sdk.contact-manager-rest-api@0.30.1(passport-azure-ad@4.3.5)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-HgyiZ5lYULs31WuWfhXlTgzrOMY/JkAAJL6IuQZAD2lExVaGWy0uETHloIo0kE1IKzH/FgZHR9z/v8dKKy8jGg==}
     dependencies:
-      '@sphereon/ssi-express-support': 0.30.1-unstable.4(passport-azure-ad@4.3.5)
-      '@sphereon/ssi-sdk-ext.key-manager': 0.24.1-unstable.115
-      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.115
-      '@sphereon/ssi-sdk.contact-manager': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.core': 0.30.1-unstable.4
-      '@sphereon/ssi-sdk.data-store': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.kv-store-temp': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-express-support': 0.30.1(passport-azure-ad@4.3.5)
+      '@sphereon/ssi-sdk-ext.key-manager': 0.24.1-unstable.130
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.130
+      '@sphereon/ssi-sdk.contact-manager': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.core': 0.30.1
+      '@sphereon/ssi-sdk.data-store': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.kv-store-temp': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       body-parser: 1.20.2
       casbin: 5.30.0
@@ -6890,10 +6908,10 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.contact-manager@0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-BPA8urJQ8azf5ZCgQkYXzfWd+LtW2qaztdW60p5tQmC/gAiet/4kZ/SBUzAoqHRDUMgakkAlKhuqZAZ5aj803A==}
+  /@sphereon/ssi-sdk.contact-manager@0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-MwVdZsmYqCpRRwjG85gGNyM02ukQfahnhO5AKaIMXuEt/5D6ScJN+Uf+aPrLR4UmrGT6LUv2N7dE124yUDko/w==}
     dependencies:
-      '@sphereon/ssi-sdk.data-store': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.data-store': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       cross-fetch: 3.1.8
       debug: 4.3.5(supports-color@5.5.0)
       typeorm: 0.3.20(patch_hash=2ab6ifjhrjmslc3c6tsipqkncm)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
@@ -6919,10 +6937,10 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.contact-manager@0.30.1-unstable.4(ts-node@10.9.2):
-    resolution: {integrity: sha512-BPA8urJQ8azf5ZCgQkYXzfWd+LtW2qaztdW60p5tQmC/gAiet/4kZ/SBUzAoqHRDUMgakkAlKhuqZAZ5aj803A==}
+  /@sphereon/ssi-sdk.contact-manager@0.30.1(ts-node@10.9.2):
+    resolution: {integrity: sha512-MwVdZsmYqCpRRwjG85gGNyM02ukQfahnhO5AKaIMXuEt/5D6ScJN+Uf+aPrLR4UmrGT6LUv2N7dE124yUDko/w==}
     dependencies:
-      '@sphereon/ssi-sdk.data-store': 0.30.1-unstable.4(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.data-store': 0.30.1(ts-node@10.9.2)
       cross-fetch: 3.1.8
       debug: 4.3.5(supports-color@5.5.0)
       typeorm: 0.3.20(patch_hash=2ab6ifjhrjmslc3c6tsipqkncm)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
@@ -6948,10 +6966,10 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.core@0.30.1-unstable.4:
-    resolution: {integrity: sha512-7QLpdr5pUlIp9DWOBo5kIUM+/eyQsHxUIbVZIXmiXXPJNEMcOP2u73G0yD79ScUkRnIgNY9aUngA4RGj9HteEg==}
+  /@sphereon/ssi-sdk.core@0.30.1:
+    resolution: {integrity: sha512-RoA6S2N0qpi8SK1R/sr7glG5wKlI0iFbFv/dn/NXEV2ISAWb0tMluuPVoE8PgVsn+jCIgpRwUZqIQpo3SHGzCg==}
     dependencies:
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       cross-fetch: 3.1.8
       debug: 4.3.5(supports-color@5.5.0)
@@ -6961,12 +6979,12 @@ packages:
       - encoding
       - supports-color
 
-  /@sphereon/ssi-sdk.credential-store@0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-VeD9gNUbtWAv6eZ7X0OPq/uQ9bd+A8zu4o4ITzO1sKBIn2AGyxwr3A979DOiOPB7qH7xn4bzN96v/o+S75BS4Q==}
+  /@sphereon/ssi-sdk.credential-store@0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-Vjz3l5yAunatbqdVra8wvphLvlZ1PW+z5h4UDIcxAg7HlZEqY8tjZWXzDYgtjlVWS2W2HaT+nDyxWgv+rPjF3w==}
     dependencies:
-      '@sphereon/pex': 5.0.0-unstable.7
+      '@sphereon/pex': 5.0.0-unstable.10
       '@sphereon/pex-models': 2.3.1
-      '@sphereon/ssi-sdk.data-store': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.data-store': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       cross-fetch: 3.1.8
       debug: 4.3.5(supports-color@5.5.0)
       typeorm: 0.3.20(patch_hash=2ab6ifjhrjmslc3c6tsipqkncm)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
@@ -6993,12 +7011,12 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.credential-store@0.30.1-unstable.4(ts-node@10.9.2):
-    resolution: {integrity: sha512-VeD9gNUbtWAv6eZ7X0OPq/uQ9bd+A8zu4o4ITzO1sKBIn2AGyxwr3A979DOiOPB7qH7xn4bzN96v/o+S75BS4Q==}
+  /@sphereon/ssi-sdk.credential-store@0.30.1(ts-node@10.9.2):
+    resolution: {integrity: sha512-Vjz3l5yAunatbqdVra8wvphLvlZ1PW+z5h4UDIcxAg7HlZEqY8tjZWXzDYgtjlVWS2W2HaT+nDyxWgv+rPjF3w==}
     dependencies:
-      '@sphereon/pex': 5.0.0-unstable.7(ts-node@10.9.2)
+      '@sphereon/pex': 5.0.0-unstable.10(ts-node@10.9.2)
       '@sphereon/pex-models': 2.3.1
-      '@sphereon/ssi-sdk.data-store': 0.30.1-unstable.4(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.data-store': 0.30.1(ts-node@10.9.2)
       cross-fetch: 3.1.8
       debug: 4.3.5(supports-color@5.5.0)
       typeorm: 0.3.20(patch_hash=2ab6ifjhrjmslc3c6tsipqkncm)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
@@ -7025,16 +7043,16 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.data-store@0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-T4l7QOUApVU2cWIa6on86XaMYlcrYcYsDyJ8AtTrQnVJ3u4RgN1pfZbhdGwXEZBGJKnaoZBfG3FfRmABk6Y4eA==}
+  /@sphereon/ssi-sdk.data-store@0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-JeEpC4b0jsTOpeeHbWZMFh0j8fnxyCQC/wma/qJIVEQKDtkly4jCOm41NMt+VSsx53MvBiN8Kjqz5KUtVHHSzg==}
     dependencies:
       '@sphereon/kmp-mdl-mdoc': 0.2.0-SNAPSHOT.22
-      '@sphereon/pex': 5.0.0-unstable.7
-      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.agent-config': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.core': 0.30.1-unstable.4
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/pex': 5.0.0-unstable.10
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.agent-config': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.core': 0.30.1
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/utils': 4.2.0
       blakejs: 1.2.1
@@ -7064,16 +7082,16 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.data-store@0.30.1-unstable.4(ts-node@10.9.2):
-    resolution: {integrity: sha512-T4l7QOUApVU2cWIa6on86XaMYlcrYcYsDyJ8AtTrQnVJ3u4RgN1pfZbhdGwXEZBGJKnaoZBfG3FfRmABk6Y4eA==}
+  /@sphereon/ssi-sdk.data-store@0.30.1(ts-node@10.9.2):
+    resolution: {integrity: sha512-JeEpC4b0jsTOpeeHbWZMFh0j8fnxyCQC/wma/qJIVEQKDtkly4jCOm41NMt+VSsx53MvBiN8Kjqz5KUtVHHSzg==}
     dependencies:
       '@sphereon/kmp-mdl-mdoc': 0.2.0-SNAPSHOT.22
-      '@sphereon/pex': 5.0.0-unstable.7(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.agent-config': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.core': 0.30.1-unstable.4
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/pex': 5.0.0-unstable.10(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.agent-config': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.core': 0.30.1
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/utils': 4.2.0
       blakejs: 1.2.1
@@ -7103,8 +7121,8 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.dev@0.30.1-unstable.4(@types/node@18.19.39):
-    resolution: {integrity: sha512-OvSgyWveE7le18YXbPsFoQPR7aNG8P5MjU2TJldnljF2Qot0N1hbvfcyFCYzDIEBbE7r87TgA2CfG1nydoVxTA==}
+  /@sphereon/ssi-sdk.dev@0.30.1(@types/node@18.19.39):
+    resolution: {integrity: sha512-gQnFKkIgmi7B+2UuVhtB0vvqQfs/itCVI2EWyWgWyRFgqTUMj5SJaBud45Z/3HPkQivNKLFy5qEB4zrp4vQVvQ==}
     hasBin: true
     dependencies:
       '@microsoft/api-extractor': 7.47.2(@types/node@18.19.39)
@@ -7125,25 +7143,25 @@ packages:
       - '@types/node'
     dev: false
 
-  /@sphereon/ssi-sdk.ebsi-support@0.30.1-unstable.4(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-IYaPuw92FJGMrpu3gAeWTu1Vsxbxe9s7yYHBJ8Jde6G2jXgW7/p70W8P1RTLW1KGnc/TUCANJln5o9d/bNJFOQ==}
+  /@sphereon/ssi-sdk.ebsi-support@0.30.1(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-51PLlP0zRpbFKKpKBf75gCt0ffd914Gx0HWfYQDEXx79K3eS2PbTzT+G222NUgazm0fGtrif+iPlrMmBzkc8QQ==}
     dependencies:
       '@ethersproject/random': 5.7.0
-      '@sphereon/did-auth-siop': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/did-auth-siop-adapter': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/pex': 5.0.0-unstable.7
+      '@sphereon/did-auth-siop': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/did-auth-siop-adapter': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/pex': 5.0.0-unstable.10
       '@sphereon/pex-models': 2.3.1
-      '@sphereon/ssi-sdk-ext.did-resolver-ebsi': 0.24.1-unstable.115
-      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.jwt-service': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.115
-      '@sphereon/ssi-sdk.contact-manager': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.core': 0.30.1-unstable.4
-      '@sphereon/ssi-sdk.oid4vci-holder': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.presentation-exchange': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth': 0.30.1-unstable.4(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.did-resolver-ebsi': 0.24.1-unstable.130
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.jwt-service': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.130
+      '@sphereon/ssi-sdk.contact-manager': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.core': 0.30.1
+      '@sphereon/ssi-sdk.oid4vci-holder': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.presentation-exchange': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth': 0.30.1(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/did-manager': 4.2.0
       '@veramo/utils': 4.2.0
@@ -7184,25 +7202,25 @@ packages:
       - web-streams-polyfill
     dev: false
 
-  /@sphereon/ssi-sdk.ebsi-support@0.30.1-unstable.4(expo@51.0.20)(react-native@0.74.3)(ts-node@10.9.2):
-    resolution: {integrity: sha512-IYaPuw92FJGMrpu3gAeWTu1Vsxbxe9s7yYHBJ8Jde6G2jXgW7/p70W8P1RTLW1KGnc/TUCANJln5o9d/bNJFOQ==}
+  /@sphereon/ssi-sdk.ebsi-support@0.30.1(expo@51.0.20)(react-native@0.74.3)(ts-node@10.9.2):
+    resolution: {integrity: sha512-51PLlP0zRpbFKKpKBf75gCt0ffd914Gx0HWfYQDEXx79K3eS2PbTzT+G222NUgazm0fGtrif+iPlrMmBzkc8QQ==}
     dependencies:
       '@ethersproject/random': 5.7.0
-      '@sphereon/did-auth-siop': 0.16.1-unstable.68(ts-node@10.9.2)
-      '@sphereon/did-auth-siop-adapter': 0.16.1-unstable.68(ts-node@10.9.2)
-      '@sphereon/pex': 5.0.0-unstable.7(ts-node@10.9.2)
+      '@sphereon/did-auth-siop': 0.16.1-unstable.91(ts-node@10.9.2)
+      '@sphereon/did-auth-siop-adapter': 0.16.1-unstable.91(ts-node@10.9.2)
+      '@sphereon/pex': 5.0.0-unstable.10(ts-node@10.9.2)
       '@sphereon/pex-models': 2.3.1
-      '@sphereon/ssi-sdk-ext.did-resolver-ebsi': 0.24.1-unstable.115
-      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.jwt-service': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.115
-      '@sphereon/ssi-sdk.contact-manager': 0.30.1-unstable.4(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.core': 0.30.1-unstable.4
-      '@sphereon/ssi-sdk.oid4vci-holder': 0.30.1-unstable.4(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.presentation-exchange': 0.30.1-unstable.4(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth': 0.30.1-unstable.4(expo@51.0.20)(react-native@0.74.3)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.did-resolver-ebsi': 0.24.1-unstable.130
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.jwt-service': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.130
+      '@sphereon/ssi-sdk.contact-manager': 0.30.1(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.core': 0.30.1
+      '@sphereon/ssi-sdk.oid4vci-holder': 0.30.1(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.presentation-exchange': 0.30.1(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth': 0.30.1(expo@51.0.20)(react-native@0.74.3)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/did-manager': 4.2.0
       '@veramo/utils': 4.2.0
@@ -7243,11 +7261,11 @@ packages:
       - web-streams-polyfill
     dev: false
 
-  /@sphereon/ssi-sdk.event-logger@0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-mMU/NuXfyPTEZPxcvxn2xm5NWSGZ7u12aOxdAaAYkBH6IYMkgedYISq4yxeq2IrDzthRVNS6NZIpsanIrZ2wrA==}
+  /@sphereon/ssi-sdk.event-logger@0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-T4RmsgR6u9HhordwGOtijMKFL3YCUdWhzbbPzERwxGEpdhvE6wfxP+Y984dS3saLjBTgpJu1Q5Vjk2d6YAEVsw==}
     dependencies:
-      '@sphereon/ssi-sdk.data-store': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.data-store': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       uuid: 9.0.1
     transitivePeerDependencies:
       - '@google-cloud/spanner'
@@ -7271,11 +7289,11 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.event-logger@0.30.1-unstable.4(ts-node@10.9.2):
-    resolution: {integrity: sha512-mMU/NuXfyPTEZPxcvxn2xm5NWSGZ7u12aOxdAaAYkBH6IYMkgedYISq4yxeq2IrDzthRVNS6NZIpsanIrZ2wrA==}
+  /@sphereon/ssi-sdk.event-logger@0.30.1(ts-node@10.9.2):
+    resolution: {integrity: sha512-T4RmsgR6u9HhordwGOtijMKFL3YCUdWhzbbPzERwxGEpdhvE6wfxP+Y984dS3saLjBTgpJu1Q5Vjk2d6YAEVsw==}
     dependencies:
-      '@sphereon/ssi-sdk.data-store': 0.30.1-unstable.4(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.data-store': 0.30.1(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       uuid: 9.0.1
     transitivePeerDependencies:
       - '@google-cloud/spanner'
@@ -7299,11 +7317,11 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.issuance-branding@0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-hnFdNZfL3MIQmfDfiQYO5600BUKNYqbXb3Pb41EggodG329YYDnAGF/Dt/aofxU+MSMTqvEVB0q7tj0vpfzDig==}
+  /@sphereon/ssi-sdk.issuance-branding@0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-DlfnQNIZ2pHMHLZ7XvfW+LDWx6OzRgDDbpo5EaJ2LpCQUDagEfB6pwph0Gus7JYDUOwDQYqwvpksUoV1y592/A==}
     dependencies:
-      '@sphereon/ssi-sdk.core': 0.30.1-unstable.4
-      '@sphereon/ssi-sdk.data-store': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.core': 0.30.1
+      '@sphereon/ssi-sdk.data-store': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       debug: 4.3.5(supports-color@5.5.0)
       typeorm: 0.3.20(patch_hash=2ab6ifjhrjmslc3c6tsipqkncm)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
     transitivePeerDependencies:
@@ -7328,11 +7346,11 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.issuance-branding@0.30.1-unstable.4(ts-node@10.9.2):
-    resolution: {integrity: sha512-hnFdNZfL3MIQmfDfiQYO5600BUKNYqbXb3Pb41EggodG329YYDnAGF/Dt/aofxU+MSMTqvEVB0q7tj0vpfzDig==}
+  /@sphereon/ssi-sdk.issuance-branding@0.30.1(ts-node@10.9.2):
+    resolution: {integrity: sha512-DlfnQNIZ2pHMHLZ7XvfW+LDWx6OzRgDDbpo5EaJ2LpCQUDagEfB6pwph0Gus7JYDUOwDQYqwvpksUoV1y592/A==}
     dependencies:
-      '@sphereon/ssi-sdk.core': 0.30.1-unstable.4
-      '@sphereon/ssi-sdk.data-store': 0.30.1-unstable.4(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.core': 0.30.1
+      '@sphereon/ssi-sdk.data-store': 0.30.1(ts-node@10.9.2)
       debug: 4.3.5(supports-color@5.5.0)
       typeorm: 0.3.20(patch_hash=2ab6ifjhrjmslc3c6tsipqkncm)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
     transitivePeerDependencies:
@@ -7357,8 +7375,8 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.kv-store-temp@0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-GXI27yKoiMwnewsnkxeuvbRLV7ckK27SpNL4c/TBqaqWIwM6+g3CSM+GB4sPhkZhRQfwmlyVGkkXQcCErjcgig==}
+  /@sphereon/ssi-sdk.kv-store-temp@0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-IeXqgl7PnoTWA1Y9h0ssMjOx6tRn1TtbWdNKTytx26tslyOcT77ptDxDWHHHgFYR/ARlBaJz2Di5RH9ihahJrA==}
     dependencies:
       '@veramo/utils': 4.2.0
       debug: 4.3.5(supports-color@5.5.0)
@@ -7388,18 +7406,18 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.mdl-mdoc@0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-6Mq5IpX/P4Z96dzRowOLmTo/kmOpDG6HlNDm4eDq8A/92oFvVrk8GymMZVmaw/R8lASla25R/ioBD1yv10ZqYQ==}
+  /@sphereon/ssi-sdk.mdl-mdoc@0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-+yPc786+PRJA85XaQRnLJpvijNLh0gwbcTUL3yM5Y7TyJUERRDmBxA5JQATakiObkdvgpfVwvRiojQP9hbn/ZQ==}
     dependencies:
-      '@sphereon/did-auth-siop': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/did-auth-siop': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/kmp-mdl-mdoc': 0.2.0-SNAPSHOT.22
-      '@sphereon/pex': 5.0.0-unstable.7
+      '@sphereon/pex': 5.0.0-unstable.10
       '@sphereon/pex-models': 2.3.1
-      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.115
-      '@sphereon/ssi-sdk-ext.x509-utils': 0.24.1-unstable.115
-      '@sphereon/ssi-sdk.core': 0.30.1-unstable.4
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.130
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.24.1-unstable.130
+      '@sphereon/ssi-sdk.core': 0.30.1
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/did-manager': 4.2.0
       '@veramo/utils': 4.2.0
@@ -7432,18 +7450,18 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.mdl-mdoc@0.30.1-unstable.4(ts-node@10.9.2):
-    resolution: {integrity: sha512-6Mq5IpX/P4Z96dzRowOLmTo/kmOpDG6HlNDm4eDq8A/92oFvVrk8GymMZVmaw/R8lASla25R/ioBD1yv10ZqYQ==}
+  /@sphereon/ssi-sdk.mdl-mdoc@0.30.1(ts-node@10.9.2):
+    resolution: {integrity: sha512-+yPc786+PRJA85XaQRnLJpvijNLh0gwbcTUL3yM5Y7TyJUERRDmBxA5JQATakiObkdvgpfVwvRiojQP9hbn/ZQ==}
     dependencies:
-      '@sphereon/did-auth-siop': 0.16.1-unstable.68(ts-node@10.9.2)
+      '@sphereon/did-auth-siop': 0.16.1-unstable.91(ts-node@10.9.2)
       '@sphereon/kmp-mdl-mdoc': 0.2.0-SNAPSHOT.22
-      '@sphereon/pex': 5.0.0-unstable.7(ts-node@10.9.2)
+      '@sphereon/pex': 5.0.0-unstable.10(ts-node@10.9.2)
       '@sphereon/pex-models': 2.3.1
-      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.115
-      '@sphereon/ssi-sdk-ext.x509-utils': 0.24.1-unstable.115
-      '@sphereon/ssi-sdk.core': 0.30.1-unstable.4
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.130
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.24.1-unstable.130
+      '@sphereon/ssi-sdk.core': 0.30.1
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/did-manager': 4.2.0
       '@veramo/utils': 4.2.0
@@ -7476,25 +7494,25 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.oid4vci-holder@0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-orNWeFBpWLKYVYPcTiKd095jDG+6NUyXO/tEf0avSe7V0S3s24lWsMYuokvEfFmgIVYpRZdAYDv6YQKedSDW6w==}
+  /@sphereon/ssi-sdk.oid4vci-holder@0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-FCAsr0z3l860o4gTCW3ZUMIKLyt36KjivcEdsx4VNn27P451R3TAE17EeM/1xHbWdyPpbV/LtRg16mmLTOkx9w==}
     dependencies:
       '@sphereon/kmp-mdl-mdoc': 0.2.0-SNAPSHOT.22
-      '@sphereon/oid4vci-client': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/oid4vci-common': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.jwt-service': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.115
-      '@sphereon/ssi-sdk.contact-manager': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.core': 0.30.1-unstable.4
-      '@sphereon/ssi-sdk.credential-store': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.data-store': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.issuance-branding': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.mdl-mdoc': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.sd-jwt': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.xstate-machine-persistence': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/oid4vci-client': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/oid4vci-common': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.jwt-service': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.130
+      '@sphereon/ssi-sdk.contact-manager': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.core': 0.30.1
+      '@sphereon/ssi-sdk.credential-store': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.data-store': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.issuance-branding': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.mdl-mdoc': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.sd-jwt': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.xstate-machine-persistence': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/data-store': 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@veramo/utils': 4.2.0
@@ -7524,25 +7542,25 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.oid4vci-holder@0.30.1-unstable.4(ts-node@10.9.2):
-    resolution: {integrity: sha512-orNWeFBpWLKYVYPcTiKd095jDG+6NUyXO/tEf0avSe7V0S3s24lWsMYuokvEfFmgIVYpRZdAYDv6YQKedSDW6w==}
+  /@sphereon/ssi-sdk.oid4vci-holder@0.30.1(ts-node@10.9.2):
+    resolution: {integrity: sha512-FCAsr0z3l860o4gTCW3ZUMIKLyt36KjivcEdsx4VNn27P451R3TAE17EeM/1xHbWdyPpbV/LtRg16mmLTOkx9w==}
     dependencies:
       '@sphereon/kmp-mdl-mdoc': 0.2.0-SNAPSHOT.22
-      '@sphereon/oid4vci-client': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/oid4vci-common': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.jwt-service': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.115
-      '@sphereon/ssi-sdk.contact-manager': 0.30.1-unstable.4(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.core': 0.30.1-unstable.4
-      '@sphereon/ssi-sdk.credential-store': 0.30.1-unstable.4(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.data-store': 0.30.1-unstable.4(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.issuance-branding': 0.30.1-unstable.4(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.mdl-mdoc': 0.30.1-unstable.4(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.sd-jwt': 0.30.1-unstable.4(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.xstate-machine-persistence': 0.30.1-unstable.4(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/oid4vci-client': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/oid4vci-common': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.jwt-service': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.130
+      '@sphereon/ssi-sdk.contact-manager': 0.30.1(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.core': 0.30.1
+      '@sphereon/ssi-sdk.credential-store': 0.30.1(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.data-store': 0.30.1(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.issuance-branding': 0.30.1(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.mdl-mdoc': 0.30.1(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.sd-jwt': 0.30.1(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.xstate-machine-persistence': 0.30.1(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/data-store': 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@veramo/utils': 4.2.0
@@ -7572,18 +7590,18 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.oid4vci-issuer-rest-api@0.30.1-unstable.4(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-zGqSPi/dB85J/KxgedyWt1cY0V8Oxemvu/uslHi7yi/mxdqOyVKX+tS/II/Vxdw7mZMiH3wNhVC1+Z8Ss1fG+w==}
+  /@sphereon/ssi-sdk.oid4vci-issuer-rest-api@0.30.1(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-z+k1OIta41eANNkSEzA0LjSRLsTOsVgHh0Caw/UCatnqhGTWc3OF8goaALv6SWZPYYyD+nI4ZpJOBG6gCXUm+w==}
     dependencies:
-      '@sphereon/oid4vci-common': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/oid4vci-issuer': 0.16.1-unstable.68(awesome-qr@2.1.5-rc.0)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/oid4vci-issuer-server': 0.16.1-unstable.68(awesome-qr@2.1.5-rc.0)(passport-azure-ad@4.3.5)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-express-support': 0.30.1-unstable.4(passport-azure-ad@4.3.5)
-      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.kv-store-temp': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.oid4vci-issuer': 0.30.1-unstable.4(awesome-qr@2.1.5-rc.0)(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.oid4vci-issuer-store': 0.30.1-unstable.4(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/oid4vci-common': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/oid4vci-issuer': 0.16.1-unstable.91(awesome-qr@2.1.5-rc.0)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/oid4vci-issuer-server': 0.16.1-unstable.91(awesome-qr@2.1.5-rc.0)(passport-azure-ad@4.3.5)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-express-support': 0.30.1(passport-azure-ad@4.3.5)
+      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.kv-store-temp': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.oid4vci-issuer': 0.30.1(awesome-qr@2.1.5-rc.0)(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.oid4vci-issuer-store': 0.30.1(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/credential-w3c': 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)(expo@51.0.20)(react-native@0.74.3)
       awesome-qr: 2.1.5-rc.0
@@ -7624,11 +7642,11 @@ packages:
       - web-streams-polyfill
     dev: false
 
-  /@sphereon/ssi-sdk.oid4vci-issuer-rest-client@0.30.1-unstable.4:
-    resolution: {integrity: sha512-eVLeN7Lu5MeOQJsPwqv14TDmTS2lGnzHeneuyupzZGnZ3BUEh6O1RqDhEZSonIF8yLMiEaLniBxtSehJKQCnNw==}
+  /@sphereon/ssi-sdk.oid4vci-issuer-rest-client@0.30.1:
+    resolution: {integrity: sha512-xwfMr2x5J821zTbdzy1otEuz0wKF9krkY69yl84gATMCTg1dH7RmsiEZS3tMEqodQPX4i0Mgwb4xvL6r6YNlUQ==}
     dependencies:
-      '@sphereon/oid4vci-common': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/oid4vci-common': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       cross-fetch: 3.1.8
     transitivePeerDependencies:
@@ -7636,13 +7654,13 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/ssi-sdk.oid4vci-issuer-store@0.30.1-unstable.4(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-K5feqvhygPIMJgZYhens5qIfW2YkFgle4R9bAsVKmbow6DZ5Enno79iLa2vH3Vh0fgvLYrSxq4VrDB5ye6ueAA==}
+  /@sphereon/ssi-sdk.oid4vci-issuer-store@0.30.1(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-aXFWGKFh+/cfL+vw2JEts8MNxSfz4505xDJo2YVha+pd6mXhGI4vw1QQZbz7NFovidrgBZSaqQmuV9cZ25Pllw==}
     dependencies:
-      '@sphereon/oid4vci-common': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.kv-store-temp': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/oid4vci-common': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.kv-store-temp': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/credential-w3c': 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)(expo@51.0.20)(react-native@0.74.3)
       cross-fetch: 3.1.8
@@ -7673,22 +7691,22 @@ packages:
       - web-streams-polyfill
     dev: false
 
-  /@sphereon/ssi-sdk.oid4vci-issuer@0.30.1-unstable.4(awesome-qr@2.1.5-rc.0)(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-Bwvwff5TTmAgSEOEcBovKfy9ZE1ji1uLaNficPkHCz3QJovf7zCL0r2Rp7zorTwz1a/iR6qD133YFwVlt09zrA==}
+  /@sphereon/ssi-sdk.oid4vci-issuer@0.30.1(awesome-qr@2.1.5-rc.0)(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-tQo3KgdJ42wQHq/xLxhezXl1khixtew+FvMWTBuxeOnFu6RvujnvpSt+t0Tfxb8hhnB7OjQcnTE6dkImNTqQgA==}
     dependencies:
-      '@sphereon/oid4vci-common': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/oid4vci-issuer': 0.16.1-unstable.68(awesome-qr@2.1.5-rc.0)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.agent-config': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.core': 0.30.1-unstable.4
-      '@sphereon/ssi-sdk.kv-store-temp': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.mdl-mdoc': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.oid4vci-issuer-store': 0.30.1-unstable.4(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.sd-jwt': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.vc-status-list': 0.30.1-unstable.4(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.vc-status-list-issuer': 0.30.1-unstable.4(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/oid4vci-common': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/oid4vci-issuer': 0.16.1-unstable.91(awesome-qr@2.1.5-rc.0)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.agent-config': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.core': 0.30.1
+      '@sphereon/ssi-sdk.kv-store-temp': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.mdl-mdoc': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.oid4vci-issuer-store': 0.30.1(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.sd-jwt': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.vc-status-list': 0.30.1(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.vc-status-list-issuer': 0.30.1(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@types/uuid': 9.0.8
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/credential-w3c': 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)(expo@51.0.20)(react-native@0.74.3)
@@ -7724,12 +7742,12 @@ packages:
       - web-streams-polyfill
     dev: false
 
-  /@sphereon/ssi-sdk.pd-manager@0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-ClL+Y6QXlibF1wWBCjTHTfgZR/tQd6rMUlB8ZxcLw3b6DDZnbH6gemcS9eNJV5SxSA52Xv+aa/Sw53H9XsQUpQ==}
+  /@sphereon/ssi-sdk.pd-manager@0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-8WRqd9mC1VGSDB3Y6dAPNcsu7ps+z7hOjAnXE65gsWXTgelSUfm55TlZ3q+3rO+6iomIuXsu08gdT3QaD5klGw==}
     dependencies:
-      '@sphereon/pex': 5.0.0-unstable.7
+      '@sphereon/pex': 5.0.0-unstable.10
       '@sphereon/pex-models': 2.3.1
-      '@sphereon/ssi-sdk.data-store': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.data-store': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       cross-fetch: 3.1.8
       debug: 4.3.5(supports-color@5.5.0)
       semver: 7.6.3
@@ -7756,12 +7774,12 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.pd-manager@0.30.1-unstable.4(ts-node@10.9.2):
-    resolution: {integrity: sha512-ClL+Y6QXlibF1wWBCjTHTfgZR/tQd6rMUlB8ZxcLw3b6DDZnbH6gemcS9eNJV5SxSA52Xv+aa/Sw53H9XsQUpQ==}
+  /@sphereon/ssi-sdk.pd-manager@0.30.1(ts-node@10.9.2):
+    resolution: {integrity: sha512-8WRqd9mC1VGSDB3Y6dAPNcsu7ps+z7hOjAnXE65gsWXTgelSUfm55TlZ3q+3rO+6iomIuXsu08gdT3QaD5klGw==}
     dependencies:
-      '@sphereon/pex': 5.0.0-unstable.7(ts-node@10.9.2)
+      '@sphereon/pex': 5.0.0-unstable.10(ts-node@10.9.2)
       '@sphereon/pex-models': 2.3.1
-      '@sphereon/ssi-sdk.data-store': 0.30.1-unstable.4(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.data-store': 0.30.1(ts-node@10.9.2)
       cross-fetch: 3.1.8
       debug: 4.3.5(supports-color@5.5.0)
       semver: 7.6.3
@@ -7788,17 +7806,17 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.presentation-exchange@0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-ym6v1ExoR9PNHFyWIONilFvbLHO4Fd3HrmqI/wJzC9kVTkPiFqUf31aTWZJwGVrrvupPDyV/R5lk1RjbcYVvPw==}
+  /@sphereon/ssi-sdk.presentation-exchange@0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-c1P2iY74tAzyhUjwH4IBdkesjkOBE4ETp7BcUWuzuVmQPQf1GkG9+clB+neFC3+UZMcQU7IfAvOG6YtSFSknAg==}
     dependencies:
-      '@sphereon/pex': 5.0.0-unstable.7
+      '@sphereon/pex': 5.0.0-unstable.10
       '@sphereon/pex-models': 2.3.1
-      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.credential-store': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.data-store': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.sd-jwt': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.credential-store': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.data-store': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.sd-jwt': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
     transitivePeerDependencies:
       - '@google-cloud/spanner'
@@ -7822,17 +7840,17 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.presentation-exchange@0.30.1-unstable.4(ts-node@10.9.2):
-    resolution: {integrity: sha512-ym6v1ExoR9PNHFyWIONilFvbLHO4Fd3HrmqI/wJzC9kVTkPiFqUf31aTWZJwGVrrvupPDyV/R5lk1RjbcYVvPw==}
+  /@sphereon/ssi-sdk.presentation-exchange@0.30.1(ts-node@10.9.2):
+    resolution: {integrity: sha512-c1P2iY74tAzyhUjwH4IBdkesjkOBE4ETp7BcUWuzuVmQPQf1GkG9+clB+neFC3+UZMcQU7IfAvOG6YtSFSknAg==}
     dependencies:
-      '@sphereon/pex': 5.0.0-unstable.7(ts-node@10.9.2)
+      '@sphereon/pex': 5.0.0-unstable.10(ts-node@10.9.2)
       '@sphereon/pex-models': 2.3.1
-      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.credential-store': 0.30.1-unstable.4(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.data-store': 0.30.1-unstable.4(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.sd-jwt': 0.30.1-unstable.4(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.credential-store': 0.30.1(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.data-store': 0.30.1(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.sd-jwt': 0.30.1(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
     transitivePeerDependencies:
       - '@google-cloud/spanner'
@@ -7856,16 +7874,16 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.public-key-hosting@0.30.1-unstable.4(passport-azure-ad@4.3.5)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-T5WF0xpcRt9RqpTOsLKiBiGm1kbucOiWDJkMZKj+HVfC4wf8syaKHn047UBofeFhN7ki20atljkuR9cdDWS4HA==}
+  /@sphereon/ssi-sdk.public-key-hosting@0.30.1(passport-azure-ad@4.3.5)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-q/726JU7cQrYtluVpGJ7vdt/Y6JAti697gstxcoGQjDyBZuCzGw59JlsjRWdKCNBxCSkH3YBWKDZLhubyGYFfQ==}
     dependencies:
-      '@sphereon/ssi-express-support': 0.30.1-unstable.4(passport-azure-ad@4.3.5)
-      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.key-manager': 0.24.1-unstable.115
-      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.115
-      '@sphereon/ssi-sdk-ext.kms-local': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.core': 0.30.1-unstable.4
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-express-support': 0.30.1(passport-azure-ad@4.3.5)
+      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.key-manager': 0.24.1-unstable.130
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.130
+      '@sphereon/ssi-sdk-ext.kms-local': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.core': 0.30.1
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/key-manager': 4.2.0
       '@veramo/kms-local': 4.2.0
@@ -7904,8 +7922,8 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.qr-code-generator@0.30.1-unstable.4:
-    resolution: {integrity: sha512-ijIVLpTdWCcRwpeVapCLBDMMuZEM5aLv6W2wi4m6y4C+Lf8NvTaFnJdEoRSHDEn7b47xYN1wNxwoF8CPj34nYw==}
+  /@sphereon/ssi-sdk.qr-code-generator@0.30.1:
+    resolution: {integrity: sha512-MZUhW81BGZSk5vSmTf06S/dFjhTslWDBVO9Yjitug67SXb0F0fgo8c8bltrxtChCAgmv/QSph8wGn+hc6hu2dA==}
     dependencies:
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       base64url: 3.0.1
@@ -7915,10 +7933,10 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/ssi-sdk.remote-server-rest-api@0.30.1-unstable.4(passport-azure-ad@4.3.5):
-    resolution: {integrity: sha512-nxltsdlYMmTUga0JNyF9YVuoLcCqbXJwuXrl2UAOeRVE0vKK8F2Ur782/arLLjxsPE5Pilh1VaRGDwvZEPn1lA==}
+  /@sphereon/ssi-sdk.remote-server-rest-api@0.30.1(passport-azure-ad@4.3.5):
+    resolution: {integrity: sha512-bypa0VAWb/kuS7YZeEN30pDx/vZCg2n2GpoMiQa3xbC7Mds15tkTegTcTvKUIXAXNmzPnejjIDpsoTc+8JXQxg==}
     dependencies:
-      '@sphereon/ssi-express-support': 0.30.1-unstable.4(passport-azure-ad@4.3.5)
+      '@sphereon/ssi-express-support': 0.30.1(passport-azure-ad@4.3.5)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/remote-server': 4.2.0(express@4.19.2)
       express: 4.19.2
@@ -7930,18 +7948,18 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/ssi-sdk.sd-jwt@0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-rNNIdICKZSpS6zYAKSLf993HU+MvG4Bt6/QBhcxFlK1MGxZpAJRCcOsFyJgg+yW1dtcgHZyRdw4Qy23tOoYFyg==}
+  /@sphereon/ssi-sdk.sd-jwt@0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-g+WSdDatme/kMENOHa1SpB7gKgjChKGxuYv3r+BwX6ZsB/VEUQFVL5fF+7q76rQbAtKZRWFbBweftcru5+U/9g==}
     dependencies:
-      '@sd-jwt/core': 0.6.1
-      '@sd-jwt/sd-jwt-vc': 0.6.1
-      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.jwt-service': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.115
-      '@sphereon/ssi-sdk.agent-config': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.mdl-mdoc': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sd-jwt/core': 0.7.2
+      '@sd-jwt/sd-jwt-vc': 0.7.2
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.jwt-service': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.130
+      '@sphereon/ssi-sdk.agent-config': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.mdl-mdoc': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@veramo/utils': 4.2.0
       debug: 4.3.5(supports-color@5.5.0)
       uint8arrays: 3.1.1
@@ -7968,18 +7986,18 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.sd-jwt@0.30.1-unstable.4(ts-node@10.9.2):
-    resolution: {integrity: sha512-rNNIdICKZSpS6zYAKSLf993HU+MvG4Bt6/QBhcxFlK1MGxZpAJRCcOsFyJgg+yW1dtcgHZyRdw4Qy23tOoYFyg==}
+  /@sphereon/ssi-sdk.sd-jwt@0.30.1(ts-node@10.9.2):
+    resolution: {integrity: sha512-g+WSdDatme/kMENOHa1SpB7gKgjChKGxuYv3r+BwX6ZsB/VEUQFVL5fF+7q76rQbAtKZRWFbBweftcru5+U/9g==}
     dependencies:
-      '@sd-jwt/core': 0.6.1
-      '@sd-jwt/sd-jwt-vc': 0.6.1
-      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.jwt-service': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.115
-      '@sphereon/ssi-sdk.agent-config': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.mdl-mdoc': 0.30.1-unstable.4(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sd-jwt/core': 0.7.2
+      '@sd-jwt/sd-jwt-vc': 0.7.2
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.jwt-service': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.130
+      '@sphereon/ssi-sdk.agent-config': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.mdl-mdoc': 0.30.1(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@veramo/utils': 4.2.0
       debug: 4.3.5(supports-color@5.5.0)
       uint8arrays: 3.1.1
@@ -8006,12 +8024,12 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.siopv2-oid4vp-common@0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-QkWlG9AU92eRbhD/5ohKzGypMgMaw5fqzgGZ4eSp3MBm80sJtQp6M2ceRlFzktMK7yXunOGhvewkeo1mZr7JYQ==}
+  /@sphereon/ssi-sdk.siopv2-oid4vp-common@0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-Bd3oraKlRj0KEjtyD7fMsShCbXWTq07ONTk4bH75nN1HbYx2VSH2dxSU2BpmUZfmNRL3ALNQXyP7guQa3DOOTA==}
     dependencies:
-      '@sphereon/did-auth-siop': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.core': 0.30.1-unstable.4
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/did-auth-siop': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.core': 0.30.1
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       uint8arrays: 3.1.1
     transitivePeerDependencies:
       - '@google-cloud/spanner'
@@ -8035,12 +8053,12 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.siopv2-oid4vp-common@0.30.1-unstable.4(ts-node@10.9.2):
-    resolution: {integrity: sha512-QkWlG9AU92eRbhD/5ohKzGypMgMaw5fqzgGZ4eSp3MBm80sJtQp6M2ceRlFzktMK7yXunOGhvewkeo1mZr7JYQ==}
+  /@sphereon/ssi-sdk.siopv2-oid4vp-common@0.30.1(ts-node@10.9.2):
+    resolution: {integrity: sha512-Bd3oraKlRj0KEjtyD7fMsShCbXWTq07ONTk4bH75nN1HbYx2VSH2dxSU2BpmUZfmNRL3ALNQXyP7guQa3DOOTA==}
     dependencies:
-      '@sphereon/did-auth-siop': 0.16.1-unstable.68(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.core': 0.30.1-unstable.4
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/did-auth-siop': 0.16.1-unstable.91(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.core': 0.30.1
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       uint8arrays: 3.1.1
     transitivePeerDependencies:
       - '@google-cloud/spanner'
@@ -8064,28 +8082,28 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.siopv2-oid4vp-op-auth@0.30.1-unstable.4(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-DtFjDFjoawUufxbZI3S9SafQuig7uMwM8/RS3naYK7se+agF6l8F4SHuDbmI/XVZFEX/Ft3A+Il2hvN1z/ktRw==}
+  /@sphereon/ssi-sdk.siopv2-oid4vp-op-auth@0.30.1(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-Fs1+aUf4p5tPOJ8hqiq6JTAX3QM1sSlwXp2o4Fx0MisDEODBtVbtKOw1KLlB1KGPxj7nKscOoc1MR+moYVckyA==}
     dependencies:
-      '@sphereon/did-auth-siop': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/did-auth-siop-adapter': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/oid4vc-common': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/pex': 5.0.0-unstable.7
+      '@sphereon/did-auth-siop': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/did-auth-siop-adapter': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/oid4vc-common': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/pex': 5.0.0-unstable.10
       '@sphereon/pex-models': 2.3.1
-      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.jwt-service': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.contact-manager': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.core': 0.30.1-unstable.4
-      '@sphereon/ssi-sdk.credential-store': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.data-store': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.issuance-branding': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.pd-manager': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.presentation-exchange': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.sd-jwt': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.siopv2-oid4vp-common': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.xstate-machine-persistence': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.jwt-service': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.contact-manager': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.core': 0.30.1
+      '@sphereon/ssi-sdk.credential-store': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.data-store': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.issuance-branding': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.pd-manager': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.presentation-exchange': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.sd-jwt': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.siopv2-oid4vp-common': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.xstate-machine-persistence': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/wellknown-dids-client': 0.1.3
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/credential-w3c': 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)(expo@51.0.20)(react-native@0.74.3)
@@ -8121,28 +8139,28 @@ packages:
       - web-streams-polyfill
     dev: false
 
-  /@sphereon/ssi-sdk.siopv2-oid4vp-op-auth@0.30.1-unstable.4(expo@51.0.20)(react-native@0.74.3)(ts-node@10.9.2):
-    resolution: {integrity: sha512-DtFjDFjoawUufxbZI3S9SafQuig7uMwM8/RS3naYK7se+agF6l8F4SHuDbmI/XVZFEX/Ft3A+Il2hvN1z/ktRw==}
+  /@sphereon/ssi-sdk.siopv2-oid4vp-op-auth@0.30.1(expo@51.0.20)(react-native@0.74.3)(ts-node@10.9.2):
+    resolution: {integrity: sha512-Fs1+aUf4p5tPOJ8hqiq6JTAX3QM1sSlwXp2o4Fx0MisDEODBtVbtKOw1KLlB1KGPxj7nKscOoc1MR+moYVckyA==}
     dependencies:
-      '@sphereon/did-auth-siop': 0.16.1-unstable.68(ts-node@10.9.2)
-      '@sphereon/did-auth-siop-adapter': 0.16.1-unstable.68(ts-node@10.9.2)
-      '@sphereon/oid4vc-common': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/pex': 5.0.0-unstable.7(ts-node@10.9.2)
+      '@sphereon/did-auth-siop': 0.16.1-unstable.91(ts-node@10.9.2)
+      '@sphereon/did-auth-siop-adapter': 0.16.1-unstable.91(ts-node@10.9.2)
+      '@sphereon/oid4vc-common': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/pex': 5.0.0-unstable.10(ts-node@10.9.2)
       '@sphereon/pex-models': 2.3.1
-      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.jwt-service': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.contact-manager': 0.30.1-unstable.4(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.core': 0.30.1-unstable.4
-      '@sphereon/ssi-sdk.credential-store': 0.30.1-unstable.4(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.data-store': 0.30.1-unstable.4(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.issuance-branding': 0.30.1-unstable.4(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.pd-manager': 0.30.1-unstable.4(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.presentation-exchange': 0.30.1-unstable.4(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.sd-jwt': 0.30.1-unstable.4(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.siopv2-oid4vp-common': 0.30.1-unstable.4(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.xstate-machine-persistence': 0.30.1-unstable.4(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.jwt-service': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.contact-manager': 0.30.1(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.core': 0.30.1
+      '@sphereon/ssi-sdk.credential-store': 0.30.1(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.data-store': 0.30.1(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.issuance-branding': 0.30.1(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.pd-manager': 0.30.1(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.presentation-exchange': 0.30.1(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.sd-jwt': 0.30.1(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.siopv2-oid4vp-common': 0.30.1(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.xstate-machine-persistence': 0.30.1(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/wellknown-dids-client': 0.1.3
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/credential-w3c': 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)(expo@51.0.20)(react-native@0.74.3)
@@ -8178,24 +8196,24 @@ packages:
       - web-streams-polyfill
     dev: false
 
-  /@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth@0.30.1-unstable.4(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-D1AZKz9fuqLl1pcYLWYveRxx4NwzzaDj/jRojgKhzX9O0MPfatU3ZG9wEiNXDsWNcJ3rLBDDxZL6WFo3n39xig==}
+  /@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth@0.30.1(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-UoPctAZMd0Ry7CY9QK4RaN7SGstNWUDXLc2CfDElVuPRfLo/tN9nwB+fyAjrli1Vxzr6MLwmqzB1hICmWura5w==}
     dependencies:
-      '@sphereon/did-auth-siop': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/did-auth-siop-adapter': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/oid4vc-common': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/pex': 5.0.0-unstable.7
-      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.jwt-service': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.core': 0.30.1-unstable.4
-      '@sphereon/ssi-sdk.kv-store-temp': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.mdl-mdoc': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.pd-manager': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.presentation-exchange': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.sd-jwt': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.siopv2-oid4vp-common': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/did-auth-siop': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/did-auth-siop-adapter': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/oid4vc-common': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/pex': 5.0.0-unstable.10
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.jwt-service': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.core': 0.30.1
+      '@sphereon/ssi-sdk.kv-store-temp': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.mdl-mdoc': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.pd-manager': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.presentation-exchange': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.sd-jwt': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.siopv2-oid4vp-common': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/wellknown-dids-client': 0.1.3
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/credential-w3c': 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)(expo@51.0.20)(react-native@0.74.3)
@@ -8227,18 +8245,18 @@ packages:
       - web-streams-polyfill
     dev: false
 
-  /@sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-api@0.30.1-unstable.4(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-IsOmOf9ejMmbq4VAQwhM2kGIPungn38dyC9lNPvGO1Joq859xl/kIAxvjFXiFyqHguC3onXdcRxVCDHGDBwn9g==}
+  /@sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-api@0.30.1(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-rZwF5gu7SIPfRFPqbu5CTyRjIYt2Jt/GciJBluyKQbe3d4/jaRlHulWKI7JgUH1h2P4NqAuRS+Y5xUOJKvaRwQ==}
     dependencies:
-      '@sphereon/did-auth-siop': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-express-support': 0.30.1-unstable.4(passport-azure-ad@4.3.5)
-      '@sphereon/ssi-sdk.core': 0.30.1-unstable.4
-      '@sphereon/ssi-sdk.kv-store-temp': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.pd-manager': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.presentation-exchange': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.siopv2-oid4vp-common': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth': 0.30.1-unstable.4(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/did-auth-siop': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-express-support': 0.30.1(passport-azure-ad@4.3.5)
+      '@sphereon/ssi-sdk.core': 0.30.1
+      '@sphereon/ssi-sdk.kv-store-temp': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.pd-manager': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.presentation-exchange': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.siopv2-oid4vp-common': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth': 0.30.1(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/credential-w3c': 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)(expo@51.0.20)(react-native@0.74.3)
       body-parser: 1.20.2
@@ -8278,15 +8296,15 @@ packages:
       - web-streams-polyfill
     dev: false
 
-  /@sphereon/ssi-sdk.uni-resolver-registrar-api@0.30.1-unstable.4(passport-azure-ad@4.3.5)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-yk5oU+SKrTOw2gTP66sX4ChOESkUnMAoyPYOidXfi51A1Y4PkJN7nOFeQU5nm7BkfDt06vtD94oyOkMbC663ew==}
+  /@sphereon/ssi-sdk.uni-resolver-registrar-api@0.30.1(passport-azure-ad@4.3.5)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-1uaUOTiAu/EC6hACmVqalJ1o6aMQXCgS3vOu3fHx1ijP68OOCglmX3EE7tXV1C7sV850HOZZS1rHV1uPlGh71Q==}
     dependencies:
-      '@sphereon/ssi-express-support': 0.30.1-unstable.4(passport-azure-ad@4.3.5)
-      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.key-manager': 0.24.1-unstable.115
-      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.115
-      '@sphereon/ssi-sdk.core': 0.30.1-unstable.4
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-express-support': 0.30.1(passport-azure-ad@4.3.5)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.key-manager': 0.24.1-unstable.130
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.130
+      '@sphereon/ssi-sdk.core': 0.30.1
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       body-parser: 1.20.2
       casbin: 5.30.0
@@ -8323,8 +8341,8 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.vc-handler-ld-local@0.30.1-unstable.4(expo@51.0.20)(pg@8.12.0)(react-native-securerandom@1.0.1)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-/KQpdUPBbPpx7yAz4VH1rjUihz/uzKxXer6a4hFGwlZk/ZzmjVyNELRR6PgcQUYfK2baVdCX+WmhjXBwGE7cMg==}
+  /@sphereon/ssi-sdk.vc-handler-ld-local@0.30.1(expo@51.0.20)(pg@8.12.0)(react-native-securerandom@1.0.1)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-x3+DnQ3r4xAj+E0VJapcAL4qmwXLS3bRmSD+9Y51rJKVhN4q8UrgBkh/celutKWSIPo1ZFss4VJWWuP1pug10w==}
     peerDependencies:
       react-native-securerandom: ^1.0.1
     dependencies:
@@ -8336,13 +8354,13 @@ packages:
       '@digitalcredentials/vc': 6.0.1(expo@51.0.20)(react-native@0.74.3)
       '@digitalcredentials/x25519-key-agreement-2020-context': 1.0.0
       '@noble/hashes': 1.2.0
-      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.115
-      '@sphereon/ssi-sdk.agent-config': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.core': 0.30.1-unstable.4
-      '@sphereon/ssi-sdk.data-store': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.vc-status-list': 0.30.1-unstable.4(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.130
+      '@sphereon/ssi-sdk.agent-config': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.core': 0.30.1
+      '@sphereon/ssi-sdk.data-store': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.vc-status-list': 0.30.1(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@transmute/credentials-context': 0.7.0-unstable.82
       '@transmute/ed25519-key-pair': 0.7.0-unstable.81
       '@transmute/ed25519-signature-2018': 0.7.0-unstable.82(expo@51.0.20)(react-native@0.74.3)
@@ -8392,17 +8410,17 @@ packages:
       - web-streams-polyfill
     dev: false
 
-  /@sphereon/ssi-sdk.vc-status-list-issuer-drivers@0.30.1-unstable.4(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-3LSuvuRZxKB6yG0DwRlql+UQFnprjNMp50Ct52MmVYJVOoi2tzyMj3QmNAd/J9jxVIwzuukav6/XKYmMQjTIfg==}
+  /@sphereon/ssi-sdk.vc-status-list-issuer-drivers@0.30.1(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-DBvZJsKZd8i6jGjeQijeefb97+L24dsYQ6fU8TExThlOQLVabrmlZiRHhSSrJox6bcoGTx7F1hDwV7NAL+TlRg==}
     dependencies:
-      '@sphereon/ssi-express-support': 0.30.1-unstable.4(passport-azure-ad@4.3.5)
-      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.agent-config': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.core': 0.30.1-unstable.4
-      '@sphereon/ssi-sdk.data-store': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.vc-status-list': 0.30.1-unstable.4(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-express-support': 0.30.1(passport-azure-ad@4.3.5)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.agent-config': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.core': 0.30.1
+      '@sphereon/ssi-sdk.data-store': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.vc-status-list': 0.30.1(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/vc-status-list': 7.0.0-next.0(expo@51.0.20)(react-native@0.74.3)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       debug: 4.3.5(supports-color@5.5.0)
@@ -8437,17 +8455,17 @@ packages:
       - web-streams-polyfill
     dev: false
 
-  /@sphereon/ssi-sdk.vc-status-list-issuer-rest-api@0.30.1-unstable.4(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-EwzFLDfKd6z4STV8vwymtzW5EYeHwG+fZeqU2WCIu9P9ZT17aiCvqm0FrQEtAGux182KDzwwrg/gv04H6esUdQ==}
+  /@sphereon/ssi-sdk.vc-status-list-issuer-rest-api@0.30.1(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-IJEpK4KFK7Bknvcc3Jwl0O9FibaBHnu7BvyflOg+JsacvsZrApqW+hkqwmaMN+qZLte2cRvRBQGSrJLcHpXYtw==}
     dependencies:
-      '@sphereon/ssi-express-support': 0.30.1-unstable.4(passport-azure-ad@4.3.5)
-      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.core': 0.30.1-unstable.4
-      '@sphereon/ssi-sdk.data-store': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.vc-status-list': 0.30.1-unstable.4(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.vc-status-list-issuer-drivers': 0.30.1-unstable.4(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-express-support': 0.30.1(passport-azure-ad@4.3.5)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.core': 0.30.1
+      '@sphereon/ssi-sdk.data-store': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.vc-status-list': 0.30.1(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.vc-status-list-issuer-drivers': 0.30.1(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/vc-status-list': 7.0.0-next.0(expo@51.0.20)(react-native@0.74.3)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       debug: 4.3.5(supports-color@5.5.0)
@@ -8485,15 +8503,15 @@ packages:
       - web-streams-polyfill
     dev: false
 
-  /@sphereon/ssi-sdk.vc-status-list-issuer@0.30.1-unstable.4(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-o5ljpBMI5FN7HoHg60xKL+QLiibik2vpcZW0xrwFiHuDN0cMQMdA8XStsQIb8J7iIAQHNztZcAvZzbtZZ00R0g==}
+  /@sphereon/ssi-sdk.vc-status-list-issuer@0.30.1(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-x2sxiUym902Z4pAho22ZZ5hep1H8VUZP2L/fyc6TOA6w7LTCfFzaqZfTNBNq/6K1nK6k2JUJOuOU/FeTxf4uTg==}
     dependencies:
-      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-next.96(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.core': 0.30.1-unstable.4
-      '@sphereon/ssi-sdk.vc-status-list': 0.30.1-unstable.4(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.vc-status-list-issuer-drivers': 0.30.1-unstable.4(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.core': 0.30.1
+      '@sphereon/ssi-sdk.vc-status-list': 0.30.1(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.vc-status-list-issuer-drivers': 0.30.1(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/vc-status-list': 7.0.0-next.0(expo@51.0.20)(react-native@0.74.3)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       debug: 4.3.5(supports-color@5.5.0)
@@ -8531,12 +8549,12 @@ packages:
       - web-streams-polyfill
     dev: false
 
-  /@sphereon/ssi-sdk.vc-status-list@0.30.1-unstable.4(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-KzxlGTUUQbjehOlcEneQZPQkPZVRMOSnejj8Sz5pFvYP+wqesoPN+yzNzBhe2KDXOFiqMYYf18VM/6WDxbJHLA==}
+  /@sphereon/ssi-sdk.vc-status-list@0.30.1(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-zch/v7fg+tQgTqVsa++XKps76O8W6HmSiODdoJ8loYKwZF3BbOxV9d0Q3sfP5CxZBVyZXGW8Q7e+ShMmBZAcUw==}
     dependencies:
-      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/vc-status-list': 7.0.0-next.0(expo@51.0.20)(react-native@0.74.3)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/credential-status': 4.2.0
@@ -8570,11 +8588,11 @@ packages:
       - web-streams-polyfill
     dev: false
 
-  /@sphereon/ssi-sdk.w3c-vc-api-issuer-rest-client@0.30.1-unstable.4(@types/node@18.19.39):
-    resolution: {integrity: sha512-cggN9Ayp7o71mD/H67uqUcwLsKoNclHxVNoSY2eCX7P08cztSKra52NhZgbtvvJmsW8i8cErz7zhsAWzczz6Cw==}
+  /@sphereon/ssi-sdk.w3c-vc-api-issuer-rest-client@0.30.1(@types/node@18.19.39):
+    resolution: {integrity: sha512-lfTnCIDt2bclfGHR6JOJRJPMqFV9to065Khci1YtOefG+YuvYbCX1b/hK3QR//uDKch072hDRfZ+KYeIietqjQ==}
     dependencies:
-      '@sphereon/ssi-sdk.core': 0.30.1-unstable.4
-      '@sphereon/ssi-sdk.dev': 0.30.1-unstable.4(@types/node@18.19.39)
+      '@sphereon/ssi-sdk.core': 0.30.1
+      '@sphereon/ssi-sdk.dev': 0.30.1(@types/node@18.19.39)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       cross-fetch: 3.1.8
     transitivePeerDependencies:
@@ -8583,19 +8601,19 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/ssi-sdk.w3c-vc-api@0.30.1-unstable.4(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-hSjvsAq9tuJ8gn1qi9rPLaVLYB37U1EMMwlq6fNp0GARfEbRoJAual3YZNx/vSxJNH4MadzDu/5jBklp6OYaNQ==}
+  /@sphereon/ssi-sdk.w3c-vc-api@0.30.1(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-FgMd3e48vweIajuvrLztjkrtHDsepDFhzozsgsO4gZbKGMrA6D8ARHDzf7iCRYkJgFCTJF/jwMI1I55YA9KWrw==}
     dependencies:
-      '@sphereon/did-auth-siop': 0.16.1-unstable.68(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-express-support': 0.30.1-unstable.4(passport-azure-ad@4.3.5)
-      '@sphereon/ssi-sdk.agent-config': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.core': 0.30.1-unstable.4
-      '@sphereon/ssi-sdk.credential-store': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.kv-store-temp': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.presentation-exchange': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.vc-status-list': 0.30.1-unstable.4(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.vc-status-list-issuer': 0.30.1-unstable.4(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/did-auth-siop': 0.16.1-unstable.91(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-express-support': 0.30.1(passport-azure-ad@4.3.5)
+      '@sphereon/ssi-sdk.agent-config': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.core': 0.30.1
+      '@sphereon/ssi-sdk.credential-store': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.kv-store-temp': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.presentation-exchange': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.vc-status-list': 0.30.1(expo@51.0.20)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.vc-status-list-issuer': 0.30.1(expo@51.0.20)(passport-azure-ad@4.3.5)(pg@8.12.0)(react-native@0.74.3)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/credential-w3c': 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)(expo@51.0.20)(react-native@0.74.3)
       body-parser: 1.20.2
@@ -8637,10 +8655,10 @@ packages:
       - web-streams-polyfill
     dev: false
 
-  /@sphereon/ssi-sdk.xstate-machine-persistence@0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-af72BRPTy0cuxoS2ivFINJltLJk8OVRdHX8vU9AqkNHEYnPYpQb97gG0syA+dCWXpVyU1JV/UA6j8LaJ0Xsglg==}
+  /@sphereon/ssi-sdk.xstate-machine-persistence@0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-dZGWXK4P1htslX3R9lgyhQCxNSZAKGxem5ajufXsZB8+IuBq8Y+3acny2OvphLKFB5OGpwi9ZwOJ1EOgE7ZbMA==}
     dependencies:
-      '@sphereon/ssi-sdk.data-store': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.data-store': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       debug: 4.3.5(supports-color@5.5.0)
       uuid: 9.0.1
@@ -8667,10 +8685,10 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-sdk.xstate-machine-persistence@0.30.1-unstable.4(ts-node@10.9.2):
-    resolution: {integrity: sha512-af72BRPTy0cuxoS2ivFINJltLJk8OVRdHX8vU9AqkNHEYnPYpQb97gG0syA+dCWXpVyU1JV/UA6j8LaJ0Xsglg==}
+  /@sphereon/ssi-sdk.xstate-machine-persistence@0.30.1(ts-node@10.9.2):
+    resolution: {integrity: sha512-dZGWXK4P1htslX3R9lgyhQCxNSZAKGxem5ajufXsZB8+IuBq8Y+3acny2OvphLKFB5OGpwi9ZwOJ1EOgE7ZbMA==}
     dependencies:
-      '@sphereon/ssi-sdk.data-store': 0.30.1-unstable.4(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.data-store': 0.30.1(ts-node@10.9.2)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       debug: 4.3.5(supports-color@5.5.0)
       uuid: 9.0.1
@@ -8697,12 +8715,12 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
-  /@sphereon/ssi-types@0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
-    resolution: {integrity: sha512-r/8UtkPHlFmHxlHuJMMthuWt9F6lYzmtWr2V86MqBOCeqcNe9JDbvLun5yVM4COMh2qmx5OVaE8MGuwII1Nzlw==}
+  /@sphereon/ssi-types@0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
+    resolution: {integrity: sha512-vbYaxQXb71sOPwDj7TRDlUGfIHKVVs8PiHfImPBgSBshrD7VpEHOrB+EwwavMm5MAQvWK/yblGmzk7FHds7SHA==}
     dependencies:
-      '@sd-jwt/decode': 0.6.1
+      '@sd-jwt/decode': 0.7.2
       '@sphereon/kmp-mdl-mdoc': 0.2.0-SNAPSHOT.22
-      '@sphereon/ssi-sdk-ext.jwt-service': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.jwt-service': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       debug: 4.3.5(supports-color@5.5.0)
       events: 3.3.0
       jwt-decode: 3.1.2
@@ -8727,12 +8745,12 @@ packages:
       - ts-node
       - typeorm-aurora-data-api-driver
 
-  /@sphereon/ssi-types@0.30.1-unstable.4(ts-node@10.9.2):
-    resolution: {integrity: sha512-r/8UtkPHlFmHxlHuJMMthuWt9F6lYzmtWr2V86MqBOCeqcNe9JDbvLun5yVM4COMh2qmx5OVaE8MGuwII1Nzlw==}
+  /@sphereon/ssi-types@0.30.1(ts-node@10.9.2):
+    resolution: {integrity: sha512-vbYaxQXb71sOPwDj7TRDlUGfIHKVVs8PiHfImPBgSBshrD7VpEHOrB+EwwavMm5MAQvWK/yblGmzk7FHds7SHA==}
     dependencies:
-      '@sd-jwt/decode': 0.6.1
+      '@sd-jwt/decode': 0.7.2
       '@sphereon/kmp-mdl-mdoc': 0.2.0-SNAPSHOT.22
-      '@sphereon/ssi-sdk-ext.jwt-service': 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.jwt-service': 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       debug: 4.3.5(supports-color@5.5.0)
       events: 3.3.0
       jwt-decode: 3.1.2
@@ -8775,9 +8793,9 @@ packages:
     peerDependencies:
       react: '>= 18'
     dependencies:
-      '@sphereon/ssi-sdk.core': 0.30.1-unstable.4
-      '@sphereon/ssi-sdk.data-store': 0.30.1-unstable.4(ts-node@10.9.2)
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.core': 0.30.1
+      '@sphereon/ssi-sdk.data-store': 0.30.1(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ui-components.core': 0.3.1-next.6(react-dom@18.3.1)(react@18.3.1)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/utils': 4.2.0
@@ -8823,7 +8841,7 @@ packages:
       '@mui/styled-engine-sc': 5.14.12(styled-components@6.1.12)
       '@mui/system': 5.16.4(@emotion/react@11.11.4)(@emotion/styled@11.11.5)(@types/react@18.3.3)(react@18.3.1)
       '@mui/x-date-pickers': 6.20.2(@emotion/react@11.11.4)(@emotion/styled@11.11.5)(@mui/material@5.16.4)(@mui/system@5.16.4)(@types/react@18.3.3)(dayjs@1.11.11)(react-dom@18.3.1)(react@18.3.1)
-      '@sphereon/ssi-sdk.data-store': 0.30.1-unstable.4(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.data-store': 0.30.1(ts-node@10.9.2)
       '@sphereon/ui-components.core': 0.3.1-next.6(react-dom@18.3.1)(react@18.3.1)
       '@tanstack/react-table': 8.19.3(react-dom@18.3.1)(react@18.3.1)
       react: 18.3.1
@@ -8884,7 +8902,7 @@ packages:
   /@sphereon/wellknown-dids-client@0.1.3:
     resolution: {integrity: sha512-TAT24L3RoXD8ocrkTcsz7HuJmgjNjdoV6IXP1p3DdaI/GqkynytXE3J1+F7vUFMRYwY5nW2RaXSgDQhrFJemaA==}
     dependencies:
-      '@sphereon/ssi-types': 0.30.1-unstable.4(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-types': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       cross-fetch: 3.1.8
       jwt-decode: 3.1.2
     transitivePeerDependencies:
@@ -11515,6 +11533,7 @@ packages:
 
   /base-64@0.1.0:
     resolution: {integrity: sha512-Y5gU45svrR5tI2Vt/X9GPd3L0HNIKzGu202EjxrXMpuc2V2CiKgemAbUUsqYmZJvPtCXoUKjNZwBJzsNScUbXA==}
+    requiresBuild: true
     dev: false
 
   /base-x@3.0.10:
