@@ -5,27 +5,14 @@
    "input_descriptors":[
       {
          "id":"badbebd5-c59c-4537-a0a6-28b6f054e18a",
-         "name":"Woonplaatsverklaring verificatie",
+         "name":"Omzetbelasting verificatie",
          "purpose":"We moeten uw verblijfsplaats verifieren",
-         "format": {
-            "jwt_vc_json": {
-               "alg": [
-                  "EdDSA",
-                  "ES256"
-               ]
-            },
-            "jwt_vc": {
-               "alg": [
-                  "EdDSA",
-                  "ES256"
-               ]
-            }
-         },
          "schema":[
             {
                "uri":"Woonplaatsverklaring"
             }
          ]
+
       }
    ]
 }
