@@ -102,9 +102,9 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
           ],
         })
 
-        const originalVerifiyableDocument = JSON.parse(rawDocument) as VerifiableCredential
+        const wrappedCredential = CredentialMapper.toWrappedVerifiableCredential(rawDocument)  // FIXME
         const credentialSummary: CredentialSummary = await toCredentialSummary({
-          verifiableCredential: originalVerifiyableDocument,
+          verifiableCredential: wrappedCredential.decoded as VerifiableCredential,   // FIXME
           hash,
           credentialRole,
           branding: credentialBrandings.length ? credentialBrandings[0].localeBranding : undefined,
@@ -141,7 +141,8 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
     ...(credentialSummary?.branding?.background?.color && {backgroundColor: credentialSummary?.branding?.background?.color}),
   }
   const getVerifiedInformationContent = (): ReactElement => {
-    const credentialSubject = JSON.parse(credentialResult.data.data.rawDocument).credentialSubject
+    const wrappedCredential = CredentialMapper.toWrappedVerifiableCredential(credentialResult.data.data.rawDocument)
+    const credentialSubject = wrappedCredential.decoded.credentialSubject
     if ('id' in credentialSubject && credentialSubject.id.startsWith('did:')) {
       delete credentialSubject.id
     }
