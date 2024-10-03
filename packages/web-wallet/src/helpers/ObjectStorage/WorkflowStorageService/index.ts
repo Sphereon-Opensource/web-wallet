@@ -12,7 +12,7 @@ import {FileBody} from '@objectstorage/types'
 import {FileOptions, TransformOptions} from '@supabase/storage-js'
 import {supabaseServiceClient} from '../../SupabaseClient'
 import {uuid} from 'short-uuid'
-import {PostgrestError, PostgrestResponseFailure, PostgrestResponseSuccess} from '@supabase/postgrest-js'
+import {PostgrestError, PostgrestResponseFailure, PostgrestResponseSuccess} from '@supabase/postgrest-js/dist/cjs/types' // Package has two PostgrestError types exported...
 import {IWorkflowStepData} from '@/src/workflows/simpleWorkflowRouter'
 import {WF_BUCKET_STORAGE_ID} from '@components/views/WorkflowApproveDocuments'
 
@@ -48,7 +48,7 @@ export class WorkflowStorageService {
     workflowState: IWorkflowStepData,
   ): Promise<{
     data: WorkflowDocumentStorageInfo | null
-    error: null | PostgrestError
+    error: PostgrestError | null
   }> {
     if (!selectedFile?.file) {
       throw Error('No file provided')
