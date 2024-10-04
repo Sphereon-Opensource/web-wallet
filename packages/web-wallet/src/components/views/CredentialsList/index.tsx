@@ -22,6 +22,8 @@ import {computeEntryHash} from '@veramo/utils';
 import {AddContactArgs} from "@sphereon/ssi-sdk.contact-manager";
 import {IdentityOrigin} from "@sphereon/ssi-sdk.data-store/dist/types/contact/contact";
 import {addContact} from "@/src/services/contactService";
+import {registerDidEbsiOnLedger} from "@/src/services/ebsiService";
+import {IVerifiableCredential} from "@sphereon/ssi-types/src/types";
 
 type Props = {
   credentialRole: CredentialRole
@@ -277,14 +279,6 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
     return actions
   }
 
-  if (credentialsError || partiesError) {
-    return <div>{translate('data_provider_error_message')}</div>
-  }
-
-  if (credentialsLoading || partiesLoading) {
-    return <div>{translate('data_provider_loading_message')}</div>
-  }
-
   const onImportCredential = async (file: File): Promise<void> => {
     const rawCredential = await file.text()
     const uniformCredential = CredentialMapper.toUniformCredential(rawCredential)
@@ -343,7 +337,17 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
           },
         },
         {
-          onSuccess: () => refetchParties().then(() => onCloseImportCredentialModal())
+          onSuccess: async () => {
+            if (correlationId.toLowerCase().startsWith('did:ebsi') && uniformCredential.type.includes('VerifiableAuthorisationToOnboard')) {
+              // We want to call the register in the background, so for now we are not dealing with the result, we just execute the register function
+              void registerDidEbsiOnLedger({
+                did: correlationId,
+                credentialIssuer: issuerName
+              }).catch(() => console.log(`Unable to register ebsi did ${correlationId} for issuer ${issuerName}`))
+            }
+
+            refetchParties().then(() => onCloseImportCredentialModal())
+          }
         },
     )
   }
@@ -375,6 +379,14 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
     setShowImportCredentialModal(false)
   }
 
+  if (credentialsError || partiesError) {
+    return <div>{translate('data_provider_error_message')}</div>
+  }
+
+  if (credentialsLoading || partiesLoading) {
+    return <div>{translate('data_provider_loading_message')}</div>
+  }
+
   return <div>
     {showImportCredentialModal && (
         <ImportFileModal
@@ -382,6 +394,7 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
             headerSubTitle={translate('import_credential_modal_header_subtitle')}
             dragBoxCaption={translate('import_credential_modal_dragbox_caption')}
             dragBoxDescription={translate('import_credential_modal_dragbox_description')}
+            validationMessage={translate('import_credential_modal_validation_message')}
             onImportFile={onImportCredential}
             onValidateFile={onValidateCredential}
             onClose={onCloseImportCredentialModal}

@@ -1,4 +1,4 @@
-import React, {FC, ReactElement, useState} from 'react';
+import React, {FC, ReactElement, useEffect, useState} from 'react';
 import {useTranslate} from '@refinedev/core';
 import {PrimaryButton} from '@sphereon/ui-components.ssi-react';
 import CrossIcon from '@components/assets/icons/CrossIcon';
@@ -13,6 +13,7 @@ type Props = {
     dragBoxDescription?: string
     onImportFile: (file: File) => Promise<void>
     onValidateFile?: (file: File) => Promise<boolean>
+    validationMessage?: string
     onClose: () => Promise<void>
     fileMask?: RegExp
 }
@@ -25,23 +26,27 @@ const ImportFileModal: FC<Props> = (props: Props): ReactElement => {
         dragBoxDescription,
         onImportFile,
         onValidateFile,
+        validationMessage,
         onClose
     } = props
     const translate = useTranslate()
     const [file, setFile] = useState<File | undefined>()
+    const [isValid, setIsValid] = useState<boolean>(true)
 
-    const onChangeFile = async (file: File): Promise<void> => {
-        if (onValidateFile) {
-            const validationResult = await onValidateFile(file).then(
-                (result) => result,
-                () => false
-            );
-
-            if (!validationResult) {
-                return
-            }
+    useEffect(() => {
+        if (!file) {
+            return
         }
 
+        if (onValidateFile) {
+            onValidateFile(file).then(
+                (result) => setIsValid(result),
+                () => setIsValid(false)
+            )
+        }
+    }, [file])
+
+    const onChangeFile = async (file: File): Promise<void> => {
         setFile(file)
     }
 
@@ -78,11 +83,12 @@ const ImportFileModal: FC<Props> = (props: Props): ReactElement => {
                         description={dragBoxDescription}
                         onChangeFile={onChangeFile}
                     />
-                    {file && <FileSelectionField file={file} />}
+                    {!isValid && <div className={style.validationCaption}>{validationMessage}</div>}
+                    {(file && isValid) && <FileSelectionField file={file} />}
                     <PrimaryButton
                         style={{width: 180, marginLeft: 'auto'}}
                         caption={translate('action_import_label')}
-                        disabled={!file}
+                        disabled={!file || !isValid}
                         onClick={onImport}
                     />
                 </div>
