@@ -137,7 +137,7 @@ export const identifiersDataProvider = (): DataProvider => ({
         clientId,
         credentialIssuer: ebsi?.tao?.url!,
         jwksUri,
-        environment: network as EbsiEnvironment,
+        environment: network as EbsiEnvironment, //FIXME this is casting a possible undefined where environment is mandatory
         attestationToOnboardCredentialRole: CredentialRole.HOLDER,
       }
     }
