@@ -74,7 +74,11 @@ export const CredentialsCreateContextProvider = (props: any): JSX.Element => {
 
   useEffect((): void => {
     if (step === 1) {
-      setDisabled(credentialFormData?.errors !== undefined && credentialFormData?.errors.length !== 0)
+      const disabled = credentialFormData?.errors !== undefined && credentialFormData?.errors.length !== 0
+      setDisabled(disabled)
+      if(disabled) {
+        console.warn(credentialFormData?.errors)
+      }
     } else if (step === 2) {
       setDisabled(issueMethod === undefined)
     } else {
