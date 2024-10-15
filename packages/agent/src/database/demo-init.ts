@@ -133,6 +133,13 @@ async function fileExistsAsync(filePath: string): Promise<boolean> {
   }
 }
 
+function examples() {
+  console.log('Examples:')
+  console.log('  pnpm demo:init contacts konkuk')
+  console.log('  pnpm demo:init formdefs konkuk')
+  console.log('  pnpm demo:init formdefs /path/to/agent/fixtures/forms')
+}
+
 /**
  * Parses command-line arguments to extract fixture type and demo.
  * @param args - Array of command-line arguments.
@@ -148,10 +155,7 @@ function parseArgs(args?: string[]): {fixture: FixtureType; demo: Demo} {
         '", "',
       )}" or a directory path.`,
     )
-    console.log('Examples:')
-    console.log('  pnpm demo:init contacts konkuk')
-    console.log('  pnpm demo:init formdefs konkuk')
-    console.log('  pnpm demo:init formdefs /path/to/custom-directory')
+    examples()
     process.exit(1)
   }
 
@@ -170,10 +174,7 @@ function parseArgs(args?: string[]): {fixture: FixtureType; demo: Demo} {
         '", "',
       )}" or a valid directory path.`,
     )
-    console.log('Examples:')
-    console.log('  pnpm demo:init contacts konkuk')
-    console.log('  pnpm demo:init formdefs konkuk')
-    console.log('  pnpm demo:init formdefs /path/to/agent/fixtures/forms')
+    examples()
     process.exit(1)
   }
 
