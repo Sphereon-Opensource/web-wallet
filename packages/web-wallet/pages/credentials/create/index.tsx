@@ -42,7 +42,7 @@ const CredentialsCreatePage: FC = () => {
       schemaOpts: {schema: credentialType?.schema},
       payload: {
         type: credentialType.credentialType,
-        credentialSubject: {...credentialFormData.data},
+        ...credentialFormData.data
       },
     })
     return qrValueGenerator({credentialPayload: payloadWithSchema.payload}, {credentials: credentialType.credentialType})
