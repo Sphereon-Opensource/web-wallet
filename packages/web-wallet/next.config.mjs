@@ -5,7 +5,8 @@ process.env.I18NEXT_DEFAULT_CONFIG_PATH = `./next-i18next.config.mjs`
 const nextConfig = {
   i18n: i18nNextConfig.i18n,
 
-  transpilePackages: ['@sphereon/ui-components.ssi-react', '@sphereon/ssi-sdk.ebsi-support'],
+  transpilePackages: ['@sphereon/ui-components.ssi-react', '@sphereon/ssi-sdk.ebsi-support', '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'],
+  swcMinify: false,
 
   webpack(config) {
     config.resolve.fallback = {
@@ -17,6 +18,8 @@ const nextConfig = {
       fs: false, // the solution
     }
 
+    config.optimization.minimize = false
+    config.optimization.minimizer = []
     return config
   },
 
