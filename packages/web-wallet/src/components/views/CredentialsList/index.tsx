@@ -1,15 +1,28 @@
 import React, {FC, ReactElement, useEffect, useState} from 'react'
-import {HttpError, useDelete, useList, useNavigation, useTranslate} from '@refinedev/core'
+import {HttpError, useCreate, useDelete, useList, useNavigation, useTranslate} from '@refinedev/core'
 import {ColumnHeader, Row, SSITableView, TableCellType} from '@sphereon/ui-components.ssi-react'
 import {ButtonIcon} from '@sphereon/ui-components.core'
-import {Credential, CredentialReference, CredentialTableItem, DataResource} from '@typings'
-import {toCredentialSummary} from '@sphereon/ui-components.credential-branding'
+import {Button, Credential, CredentialReference, CredentialTableItem, DataResource} from '@typings'
+import {getCredentialIssuerNameAndAlias, toCredentialSummary} from '@sphereon/ui-components.credential-branding'
 import agent from '@agent'
-import {Party} from '@sphereon/ssi-sdk.data-store'
+import {
+  CorrelationIdentifierType,
+  CredentialCorrelationType,
+  FindPartyArgs,
+  Party,
+  PartyOrigin,
+  PartyTypeType
+} from '@sphereon/ssi-sdk.data-store'
 import {CredentialRole, DigitalCredential} from '@sphereon/ssi-sdk.credential-store'
 import {getMatchingIdentity} from '@helpers/IdentityFilters'
 import {CredentialMapper, OriginalVerifiableCredential} from '@sphereon/ssi-types'
-import {VerifiableCredential} from '@veramo/core'
+import {VerifiableCredential, W3CVerifiableCredential} from '@veramo/core'
+import ImportFileModal from "@components/modals/ImportFileModal";
+import {computeEntryHash} from '@veramo/utils';
+import {AddContactArgs} from "@sphereon/ssi-sdk.contact-manager";
+import {IdentityOrigin} from "@sphereon/ssi-sdk.data-store/dist/types/contact/contact";
+import {addContact} from "@/src/services/contactService";
+import {registerDidEbsiOnLedger} from "@/src/services/ebsiService";
 
 type Props = {
   credentialRole: CredentialRole
@@ -21,8 +34,10 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
   const translate = useTranslate()
   const {mutateAsync: deleteCredential} = useDelete<Credential, HttpError>()
   const {mutateAsync: deleteCredentialReference} = useDelete<CredentialReference, HttpError>()
+  const {mutate: mutateOne} = useCreate()
   const {create, show} = useNavigation()
   const [credentialTableItems, setCredentialTableItems] = useState<CredentialTableItem[]>([])
+  const [showImportCredentialModal, setShowImportCredentialModal] = useState<boolean>(false)
 
   const {
     data: credentialData,
@@ -58,7 +73,12 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
     ],
   })
 
-  const {data: partyData, isLoading: partiesLoading, isError: partiesError} = useList<Party, HttpError>({resource: 'parties'})
+  const {
+    data: partyData,
+    isLoading: partiesLoading,
+    isError: partiesError,
+    refetch: refetchParties
+  } = useList<Party, HttpError>({resource: 'parties'})
 
   useEffect(() => {
     const fetchCredentialTableItems = async () => {
@@ -77,6 +97,7 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
             const subjectPartyIdentity =
               credential.subjectCorrelationId !== undefined ? getMatchingIdentity(partyData.data, credential.subjectCorrelationId) : undefined
             const originalVerifiableCredential = JSON.parse(credential.uniformDocument ?? credential.rawDocument) as OriginalVerifiableCredential
+
             const credentialSummary = await toCredentialSummary({
               verifiableCredential: originalVerifiableCredential as VerifiableCredential,
               hash: credential.hash,
@@ -96,7 +117,7 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
       }
     }
 
-    fetchCredentialTableItems()
+    void fetchCredentialTableItems()
   }, [credentialData, partyData])
 
   const onCredentialItemDelete = async (opts: Row<CredentialTableItem>): Promise<void> => {
@@ -227,7 +248,7 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
     )
 
     if (refetchCredentials) {
-      refetchCredentials()
+      void refetchCredentials()
     }
   }
 
@@ -239,8 +260,8 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
     show(DataResource.CREDENTIALS, row.original.hash, undefined, {variables: {credentialRole: credentialRole}})
   }
 
-  const buildActionList = () => {
-    const actions = []
+  const buildActionList = (): Array<Button> => {
+    const actions: Array<Button> = []
     if (allowIssueCredential) {
       actions.push({
         caption: translate('credentials_overview_action_add_credential'),
@@ -248,7 +269,113 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
         onClick: onIssueCredential,
       })
     }
+    actions.push({
+      caption: translate('credentials_overview_action_import_credential'),
+      icon: ButtonIcon.ADD,
+      onClick: async () => setShowImportCredentialModal(true),
+    })
+
     return actions
+  }
+
+  const onImportCredential = async (file: File): Promise<void> => {
+    const rawCredential = await file.text()
+    const uniformCredential = CredentialMapper.toUniformCredential(rawCredential)
+    const { issuerName, issuerAlias} = getCredentialIssuerNameAndAlias({ verifiableCredential: uniformCredential as VerifiableCredential })
+    const correlationId = CredentialMapper.issuerCorrelationIdFromIssuerType(uniformCredential.issuer)
+    const filter: FindPartyArgs = [
+      {
+        identities: {
+          identifier: {
+            correlationId,
+          },
+        },
+      },
+    ]
+
+    const parties: Array<Party> = await agent.cmGetContacts({
+      filter,
+    })
+
+    if (parties.length === 0) {
+      const contact: AddContactArgs = {
+        legalName: issuerName,
+        displayName: issuerAlias,
+        contactType: {
+          id: '3875c12e-fdaa-4ef6-a340-c936e054b627',
+          origin: PartyOrigin.EXTERNAL,
+          type: PartyTypeType.ORGANIZATION,
+          name: 'Sphereon_default_type',
+          tenantId: '95e09cfc-c974-4174-86aa-7bf1d5251fb4',
+        },
+        identities: [
+          {
+            alias: correlationId,
+            roles: [CredentialRole.ISSUER],
+            origin: IdentityOrigin.EXTERNAL,
+            identifier: {
+              type: CorrelationIdentifierType.DID,
+              correlationId,
+            }
+          }
+        ]
+      }
+
+      await addContact(contact)
+    }
+
+    mutateOne(
+        {
+          resource: DataResource.CREDENTIALS,
+          values: {
+            rawDocument: rawCredential,
+            credentialRole: CredentialRole.HOLDER,
+            credentialId: uniformCredential.id ?? computeEntryHash(rawCredential),
+            issuerCorrelationId: correlationId,
+            issuerCorrelationType: CredentialCorrelationType.DID,
+          },
+        },
+        {
+          onSuccess: async () => {
+            if (correlationId.toLowerCase().startsWith('did:ebsi') && uniformCredential.type.includes('VerifiableAuthorisationToOnboard')) {
+              // We want to call the register in the background, so for now we are not dealing with the result, we just execute the register function
+              void registerDidEbsiOnLedger({
+                did: correlationId,
+                credentialIssuer: issuerName
+              }).catch(() => console.log(`Unable to register ebsi did ${correlationId} for issuer ${issuerName}`))
+            }
+
+            refetchParties().then(() => onCloseImportCredentialModal())
+          }
+        },
+    )
+  }
+
+  const onValidateCredential = async (file: File): Promise<boolean> => {
+    const filePattern = /\.(json|txt)$/i;
+
+    if (!filePattern.test(file.name)) {
+      return false
+    }
+
+    const rawCredential = await file.text()
+    const uniformCredential = CredentialMapper.toUniformCredential(rawCredential)
+
+    const verificationResult = await agent.verifyCredential({
+      credential: uniformCredential as W3CVerifiableCredential,
+      fetchRemoteContexts: true,
+      policies: {
+        credentialStatus: false,
+        expirationDate: false,
+        issuanceDate: false,
+      }
+    })
+
+    return verificationResult.verified
+  }
+
+  const onCloseImportCredentialModal = async (): Promise<void> => {
+    setShowImportCredentialModal(false)
   }
 
   if (credentialsError || partiesError) {
@@ -258,7 +385,28 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
   if (credentialsLoading || partiesLoading) {
     return <div>{translate('data_provider_loading_message')}</div>
   }
-  return <SSITableView data={credentialTableItems} columns={columns} actions={buildActionList()} onRowClick={onShowCredentialDetails} />
+
+  return <div>
+    {showImportCredentialModal && (
+        <ImportFileModal
+            headerTitle={translate('import_credential_modal_header_title')}
+            headerSubTitle={translate('import_credential_modal_header_subtitle')}
+            dragBoxCaption={translate('import_credential_modal_dragbox_caption')}
+            dragBoxDescription={translate('import_credential_modal_dragbox_description')}
+            validationMessage={translate('import_credential_modal_validation_message')}
+            onImportFile={onImportCredential}
+            onValidateFile={onValidateCredential}
+            onClose={onCloseImportCredentialModal}
+        />
+    )}
+
+    <SSITableView
+        data={credentialTableItems}
+        columns={columns}
+        actions={buildActionList()}
+        onRowClick={onShowCredentialDetails}
+    />
+  </div>
 }
 
 export default CredentialsList

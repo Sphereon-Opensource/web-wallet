@@ -74,6 +74,14 @@ const CredentialCatalogView: FC<Props> = (props: Props): ReactElement => {
 
   const getCredentialCardElements = (): Array<ReactElement> => {
     return items.map((item, index) => (
+      <div
+        key={index}
+        className={style.cardItem}
+      >
+        <div
+          className={style.cardContainer}
+          onClick={() => onClick?.(item)}
+        >
       <div key={index} className={style.cardItem}>
         <div className={style.cardContainer} onClick={() => onClick?.(item)}>
           <SSICredentialCardView
@@ -113,7 +121,8 @@ const CredentialCatalogView: FC<Props> = (props: Props): ReactElement => {
           defaultValue={credentialCatalogDisplayModes[0]}
         />
       </div>
-      {catalogDisplayMode === CatalogDisplayMode.CARD_VIEW && <div className={style.cardViewContainer}>{getCredentialCardElements()}</div>}
+      {catalogDisplayMode === CatalogDisplayMode.CARD_VIEW &&
+        <div className={style.cardViewContainer}>{getCredentialCardElements()}</div>}
       {catalogDisplayMode === CatalogDisplayMode.LIST_VIEW && (
         <div className={style.listViewContainer}>
           <SSITableView<CredentialCatalogItem>

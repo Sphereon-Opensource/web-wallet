@@ -144,7 +144,7 @@ const ContactsList: FC<Props> = (props: Props): ReactElement => {
               )),
         )
         const columns = generateHeader({
-          type: orderAndOmitContactProperties(partiesOfType[0]?.contact || createEmptyContactOfType(key), ['createdAt', 'lastUpdatedAt']),
+          type: orderAndOmitContactProperties(partiesOfType[0]?.contact || createEmptyContactOfType(key), ['createdAt', 'lastUpdatedAt', 'metadata', 'ownerId', 'tenantId']),
           truncationLength,
           labelPrefix: `${key}_fields`,
         })
