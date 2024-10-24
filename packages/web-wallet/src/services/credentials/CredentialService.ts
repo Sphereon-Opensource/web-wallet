@@ -4,7 +4,7 @@ import {QRValueResult} from '@components/modals/QRCodeModal'
 import {IOID4VCIClientCreateOfferUriResponse, IOID4VCIClientCreateOfferUriRequestArgs} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-client'
 import agent from '@agent'
 import Debug, {Debugger} from 'debug'
-import {CredentialOfferFormat} from '@sphereon/oid4vci-common'
+import {CommonCredentialOfferFormat} from '@sphereon/oid4vci-common'
 import {v4 as uuidv4} from 'uuid'
 
 const debug: Debugger = Debug('sphereon:cloud-wallet:credentialService')
@@ -56,7 +56,7 @@ export async function qrValueGenerator(
   opts: {
     preAuthorizedCode?: string
     userPinRequired?: boolean
-    credentials?: (CredentialOfferFormat | string)[]
+    credentials?: (CommonCredentialOfferFormat | string)[]
   },
 ): Promise<QRValueResult> {
   let id: string
@@ -82,12 +82,12 @@ export async function createOID4VCIOffer(
   opts: {
     preAuthorizedCode?: string
     userPinRequired?: boolean
-    credentials?: (CredentialOfferFormat | string)[]
+    credentials?: (CommonCredentialOfferFormat | string)[]
   },
 ): Promise<IOID4VCIClientCreateOfferUriResponse> {
   debug(`VCI offer credential data supplier input: `, credentialDataSupplierInput, opts)
   const preAuthorizedCode = opts.preAuthorizedCode ?? uuidv4()
-  let credentialTypes: (CredentialOfferFormat | string)[] = opts.credentials ?? []
+  let credentialTypes: (CommonCredentialOfferFormat | string)[] = opts.credentials ?? []
   if (!credentialTypes || credentialTypes.length === 0) {
     if (isHashOrId(credentialDataSupplierInput)) {
       throw Error(`Cannot create an offer for id ${credentialDataSupplierInput.hashOrId} given no type or credential formats have been supplied`)

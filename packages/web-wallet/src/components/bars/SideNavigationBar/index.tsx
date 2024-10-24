@@ -29,7 +29,7 @@ const SideNavigationBar: React.FC = (): ReactElement => {
             },
           ].filter((route): route is NavigationRoute => route !== undefined)}
         />
-        <SideNavigationCategory target={MainRoute.DOCUMENTS} label={translate('navigation_side_menu_documents_label')} />
+{/*        <SideNavigationCategory target={MainRoute.DOCUMENTS} label={translate('navigation_side_menu_documents_label')} />*/}
         <SideNavigationCategory
           target={MainRoute.KEY_MANAGEMENT}
           label={translate('navigation_side_menu_key_management_label')}

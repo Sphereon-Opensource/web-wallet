@@ -7,14 +7,15 @@ import { WebDIDProvider } from '@sphereon/ssi-sdk-ext.did-provider-web'
 import { JwkDIDProvider } from '@sphereon/ssi-sdk-ext.did-provider-jwk'
 import agent, { context } from '../agent'
 import { DIDDocumentSection, IIdentifier } from '@veramo/core'
-import { DID_PREFIX, DIDMethods, IDIDResult, KMS } from '../index'
+import { DID_PREFIX, DIDMethods, IIdentifierConfigResult, KMS } from '../index'
 import { getAgentResolver, mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-ext.did-utils'
 import { generatePrivateKeyHex, TKeyType, toJwk } from '@sphereon/ssi-sdk-ext.key-utils'
 
 import {
   DEFAULT_DID,
   DEFAULT_KID,
-  DID_IMPORT_MODE,
+  DEFAULT_MODE,
+  IDENTIFIER_IMPORT_MODE,
   DID_WEB_CERT_CHAIN_PEM,
   DID_WEB_CERT_PEM,
   DID_WEB_DID,
@@ -23,7 +24,8 @@ import {
 } from '../environment'
 import { EbsiDidProvider } from '@sphereon/ssi-sdk.ebsi-support'
 import { SphereonKeyDidProvider } from '@sphereon/ssi-sdk-ext.did-provider-key'
-import {didOptConfigs} from "../environment-deps";
+import { identifierOptConfigs } from '../environment-deps'
+import { ensureManagedIdentifierResult, ManagedIdentifierResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 
 export function createDidResolver() {
   return new Resolver({
@@ -59,17 +61,24 @@ export async function getIdentifier(did: string): Promise<IIdentifier | undefine
 }
 
 export async function getDefaultDID(): Promise<string | undefined> {
-  if (DEFAULT_DID) {
+  if (DEFAULT_MODE.toLowerCase() !== 'did') {
+    return
+  } else if (DEFAULT_DID) {
     return DEFAULT_DID
   }
+
   return agent.didManagerFind().then((ids) => {
     if (!ids || ids.length === 0) {
-      return
+      return Promise.reject(
+        Error('Could not find a suitable default did identifier. (did:web:localhost is not suitable because RSA keys are not supported)'),
+      )
     }
 
     const id: IIdentifier | undefined = ids.find((value: IIdentifier) => value.did !== 'did:web:localhost') // FIXME how to select which credential when there are multiple?
     if (id === undefined) {
-      throw new Error('Could not find a suitable default did identifier. (did:web:localhost is not suitable because RSA keys are not supported)')
+      return Promise.reject(
+        Error('Could not find a suitable default did identifier. (did:web:localhost is not suitable because RSA keys are not supported)'),
+      )
     }
     return id.did
   })
@@ -84,8 +93,11 @@ export async function getDefaultKeyRef({
   verificationMethodName?: DIDDocumentSection
   verificationMethodFallback?: boolean
 }): Promise<string | undefined> {
-  if (!did && DEFAULT_KID) {
+  if (DEFAULT_KID) {
     return DEFAULT_KID
+  }
+  if (DEFAULT_MODE.toLowerCase() !== 'x5c') {
+    return Promise.reject(Error(`Mode ${DEFAULT_MODE}, requires a DEFAULT_KID to be set`))
   }
   const targetDid = did ?? (await getDefaultDID())
   if (!targetDid) {
@@ -119,8 +131,8 @@ export async function getDefaultKeyRef({
   return keys[0].kid
 }
 
-export async function getOrCreateDIDWebFromEnv(): Promise<IDIDResult[]> {
-  if (!DID_IMPORT_MODE.toLowerCase().includes('env')) {
+export async function getOrCreateDIDWebFromEnv(): Promise<IIdentifierConfigResult[]> {
+  if (!IDENTIFIER_IMPORT_MODE.toLowerCase().includes('env') || DEFAULT_MODE !== 'did') {
     return []
   }
   const did = DID_WEB_DID
@@ -158,73 +170,102 @@ export async function getOrCreateDIDWebFromEnv(): Promise<IDIDResult[]> {
   }
   console.log(`${JSON.stringify(identifier, null, 2)}`)
 
-  return [{ did, identifier }] as IDIDResult[]
+  return [{ identifier: { identifier } }] as IIdentifierConfigResult[]
 }
 
-export async function getOrCreateDIDsFromFS(): Promise<IDIDResult[]> {
-  if (!DID_IMPORT_MODE.toLowerCase().includes('file')) {
+export async function getOrCreateIdentifiersFromFS(): Promise<IIdentifierConfigResult[]> {
+  if (!IDENTIFIER_IMPORT_MODE.toLowerCase().includes('file')) {
     return []
   }
-  const result = didOptConfigs.asArray.map(async (opts: IDIDResult) => {
-    console.log(`DID config found for: ${opts.did}`)
-    const did = opts.did
-    let identifier = did ? await getIdentifier(did) : undefined
-    let privateKeyHex = opts.privateKeyHex
-    if (identifier) {
-      console.log(`Identifier exists for DID ${did}`)
-      console.log(`${JSON.stringify(identifier)}`)
-      identifier.keys.map((key: { kid: any; publicKeyHex: any; type: any }) =>
-        console.log(`kid: ${key.kid}:\r\n ` + JSON.stringify(toJwk(key.publicKeyHex, key.type), null, 2)),
-      )
-    } else {
-      console.log(`No identifier for DID ${did} exists yet. Will create the DID...`)
-      let args = opts.createArgs
-      if (!args) {
-        args = { options: {} }
+
+  const result = identifierOptConfigs.asArray.map(async (identifierConfig: IIdentifierConfigResult) => {
+    let identifier: ManagedIdentifierResult | undefined
+    let { privateKeyHex, kmsKeyRef } = identifierConfig
+    if (identifierConfig.identifier) {
+      identifier = await ensureManagedIdentifierResult(identifierConfig.identifier, context)
+    } else if (identifierConfig.x5c) {
+      if (!privateKeyHex && !kmsKeyRef) {
+        return Promise.reject(Error(`When using x5c mode a private key or kmsKeyRef needs to be provided when configuring the RP from config files`))
+      }
+      if (privateKeyHex && !kmsKeyRef) {
+        try {
+          const key = await context.agent.keyManagerImport({
+            type: 'Secp256r1', // TODO: Derive key from x5c
+            kms: 'local',
+            privateKeyHex,
+            meta: { x509: { x5c: identifierConfig.x5c } },
+          })
+          kmsKeyRef = key.kid
+        } catch (error: any) {
+          console.log(error)
+        }
+      }
+      identifier = await context.agent.identifierManagedGetByX5c({ identifier: identifierConfig.x5c, kmsKeyRef })
+    } else if (identifierConfig.did || identifierConfig.createArgs?.provider?.startsWith('did:')) {
+      console.log(`DID config found for: ${identifierConfig.did}`)
+      const did = identifierConfig.did
+      try {
+        identifier = did ? await context.agent.identifierManagedGetByDid({ identifier: did, offlineWhenNoDIDRegistered: true }) : undefined
+      } catch (error) {
+        console.log(error)
       }
 
-      if (!privateKeyHex && !did?.startsWith('did:web')) {
-        let type: TKeyType = 'Secp256r1'
-        if (args.options) {
-          if ('type' in args.options && args.options.type) {
-            type = args.options.type as TKeyType
-          } else if ('keyType' in args.options && args.options.keyType) {
-            type = args.options.keyType as TKeyType
+      if (identifier) {
+        console.log(`Identifier exists for DID ${did}`)
+        console.log(`${JSON.stringify(identifier.identifier)}`)
+
+        void (identifier.identifier as IIdentifier).keys.map((key: { kid: any; publicKeyHex: any; type: any }) =>
+          console.log(`kid: ${key.kid}:\r\n ` + JSON.stringify(toJwk(key.publicKeyHex, key.type), null, 2)),
+        )
+      } else {
+        console.log(`No identifier for DID ${did} exists yet. Will create the DID...`)
+        let args = identifierConfig.createArgs
+        if (!args) {
+          args = { options: {} }
+        }
+
+        if (!privateKeyHex && !did?.startsWith('did:web')) {
+          let type: TKeyType = 'Secp256r1'
+          if (args.options) {
+            if ('type' in args.options && args.options.type) {
+              type = args.options.type as TKeyType
+            } else if ('keyType' in args.options && args.options.keyType) {
+              type = args.options.keyType as TKeyType
+            }
+          }
+          privateKeyHex = await generatePrivateKeyHex(type)
+        }
+
+        if (privateKeyHex) {
+          if (args.options && !('key' in args.options)) {
+            // @ts-ignore
+            args.options['key'] = { privateKeyHex }
+          } else if (
+            args.options &&
+            'key' in args.options &&
+            args.options.key &&
+            typeof args.options?.key === 'object' &&
+            !('privateKeyHex' in args.options.key)
+          ) {
+            // @ts-ignore
+            args.options.key['privateKeyHex'] = privateKeyHex
           }
         }
-        privateKeyHex = await generatePrivateKeyHex(type)
-      }
-
-      if (privateKeyHex) {
-        if (args.options && !('key' in args.options)) {
-          // @ts-ignore
-          args.options['key'] = { privateKeyHex }
-          // @ts-ignore
-        } else if (
-          args.options &&
-          'key' in args.options &&
-          args.options.key &&
-          typeof args.options?.key === 'object' &&
-          !('privateKeyHex' in args.options.key)
-        ) {
-          // @ts-ignore
-          args.options.key['privateKeyHex'] = privateKeyHex
+        const didIdentifier = await agent.didManagerCreate(args)
+        if (!did) {
+          console.error('TODO: write did config object to did folder')
+          console.error('Please adjust your did config file and add the "did" value to it: "did": "' + didIdentifier.did + '"')
+          console.error(JSON.stringify(identifier, null, 2))
+          throw Error('Exit. Please see instructions')
         }
+        didIdentifier.keys.map((key) => console.log(`kid: ${key.kid}:\r\n ` + JSON.stringify(toJwk(key.publicKeyHex, key.type), null, 2)))
+        console.log(`Identifier created for DID ${did}`)
       }
-      identifier = await agent.didManagerCreate(args)
-      if (!did) {
-        console.error('TODO: write did config object to did folder')
-        console.error('Please adjust your did config file and add the "did" value to it: "did": "' + identifier.did + '"')
-        console.error(JSON.stringify(identifier, null, 2))
-        throw Error('Exit. Please see instructions')
-      }
-      identifier.keys.map((key) => console.log(`kid: ${key.kid}:\r\n ` + JSON.stringify(toJwk(key.publicKeyHex, key.type), null, 2)))
-      console.log(`Identifier created for DID ${did}`)
     }
 
     console.log(`${JSON.stringify(identifier, null, 2)}`)
 
-    return { ...opts, did, identifier } as IDIDResult
+    return { ...identifierConfig, identifier } as IIdentifierConfigResult
   })
   return Promise.all(result)
 }

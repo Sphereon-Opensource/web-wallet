@@ -1,11 +1,13 @@
-import { IRPDefaultOpts, SIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
-import { IPEXInstanceOptions } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
+import { IPEXInstanceOptions, IRPDefaultOpts, SIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { IS_OID4VP_ENABLED } from '../environment'
-import { CheckLinkedDomain, SupportedVersion } from '@sphereon/did-auth-siop'
+
+import { CheckLinkedDomain } from '@sphereon/did-auth-siop-adapter'
+import { SupportedVersion } from '@sphereon/did-auth-siop'
 import { Resolvable } from 'did-resolver'
 import { OID4VPInstanceOpts } from '../types'
 import { createDidResolver, getDefaultDID, getDefaultKeyRef, getIdentifier } from './did'
-import {oid4vpInstanceOpts} from "../environment-deps";
+import { oid4vpInstanceOpts } from '../environment-deps'
+import { ManagedIdentifierDidOpts, ManagedIdentifierX5cOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 
 function toPexInstanceOptions(
   oid4vpInstanceOpts: OID4VPInstanceOpts[],
@@ -15,14 +17,14 @@ function toPexInstanceOptions(
 ): IPEXInstanceOptions[] {
   const result: IPEXInstanceOptions[] = []
   oid4vpInstanceOpts.map((opt) => {
-    if (opt.rpOpts && !opt.rpOpts.didOpts?.resolveOpts) {
-      if (!opt.rpOpts.didOpts) {
+    if (opt.rpOpts && !opt.rpOpts.identifierOpts.resolveOpts) {
+      if (!opt.rpOpts.identifierOpts) {
         // @ts-ignore
-        opt.rpOpts.didOpts = { resolveOpts: { resolver: opts?.resolver ?? createDidResolver() } }
+        opt.rpOpts.identifierOpts = { resolveOpts: { resolver: opts?.resolver ?? createDidResolver() } }
       }
-      opt.rpOpts.didOpts.resolveOpts = { ...opt.rpOpts.didOpts.resolveOpts }
-      if (!opt.rpOpts.didOpts.resolveOpts.resolver) {
-        opt.rpOpts.didOpts.resolveOpts.resolver = opts?.resolver ?? createDidResolver()
+      opt.rpOpts.identifierOpts.resolveOpts = { ...opt.rpOpts.identifierOpts.resolveOpts }
+      if (!opt.rpOpts.identifierOpts.resolveOpts.resolver) {
+        opt.rpOpts.identifierOpts.resolveOpts.resolver = opts?.resolver ?? createDidResolver()
       }
       const rpOpts = opt.rpOpts
       // we handle rpOpts separately, because it contains a resolver function of which the prototype would get lost
@@ -32,30 +34,43 @@ function toPexInstanceOptions(
   return result
 }
 
-export async function getDefaultOID4VPRPOptions(args?: { did?: string; resolver?: Resolvable }): Promise<IRPDefaultOpts | undefined> {
+export async function getDefaultOID4VPRPOptions(args?: { did?: string; x5c?: string[]; resolver?: Resolvable }): Promise<IRPDefaultOpts | undefined> {
   if (!IS_OID4VP_ENABLED) {
     return
   }
-  const did = args?.did ?? (await getDefaultDID())
-  if (!did) {
-    return
+  let idOpts: ManagedIdentifierX5cOpts | ManagedIdentifierDidOpts
+  let resolver: Resolvable | undefined
+  if (args?.x5c) {
+    idOpts = {
+      method: 'x5c',
+      identifier: args.x5c,
+    } satisfies ManagedIdentifierX5cOpts
+  } else if (args?.did) {
+    const did = args?.did ?? (await getDefaultDID())
+    if (!did) {
+      return
+    }
+    const identifier = await getIdentifier(did)
+    if (!identifier) {
+      return
+    }
+    resolver = args?.resolver ?? createDidResolver()
+    idOpts = {
+      method: 'did',
+      identifier,
+      kmsKeyRef: await getDefaultKeyRef({ did }),
+    } satisfies ManagedIdentifierDidOpts
   }
-  const identifier = await getIdentifier(did)
-  if (!identifier) {
-    return
-  }
-  const resolver = args?.resolver ?? createDidResolver()
   return {
     supportedVersions: [SupportedVersion.SIOPv2_D12_OID4VP_D18, SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1],
-    didOpts: {
-      resolveOpts: {
-        resolver,
-      },
+    identifierOpts: {
+      idOpts: idOpts!,
+      ...(resolver && {
+        resolveOpts: {
+          resolver,
+        },
+      }),
       checkLinkedDomains: CheckLinkedDomain.IF_PRESENT,
-      identifierOpts: {
-        identifier,
-        kmsKeyRef: await getDefaultKeyRef({ did }),
-      },
     },
   }
 }

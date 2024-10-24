@@ -1,22 +1,23 @@
 import React, {FC, ReactElement, useEffect, useState} from 'react'
 import {useParams} from 'react-router-dom'
-import {HttpError, useOne, useTranslation} from '@refinedev/core'
-import {CredentialRole, IBasicCredentialLocaleBranding, Party} from '@sphereon/ssi-sdk.data-store'
+import {useOne, useTranslation} from '@refinedev/core'
+import {CredentialRole, IBasicCredentialLocaleBranding} from '@sphereon/ssi-sdk.data-store'
 import {OpenID4VCIClient} from '@sphereon/oid4vci-client'
 import {CredentialStatus, TabViewRoute} from '@sphereon/ui-components.core'
-import {ContactViewItem, SSITabView} from '@sphereon/ui-components.ssi-react'
+import {SSITabView} from '@sphereon/ui-components.ssi-react'
 import {credentialLocaleBrandingFrom} from '@sphereon/ssi-sdk.oid4vci-holder/dist/agent/OIDC4VCIBrandingMapper'
 import PageHeaderBar from '@components/bars/PageHeaderBar'
 import {staticPropsWithSST} from '@/src/i18n/server'
 import {
   CredentialConfigurationSupported,
   CredentialConfigurationSupportedV1_0_13,
-  CredentialsSupportedDisplay
+  CredentialsSupportedDisplay,
 } from '@sphereon/oid4vci-common'
-import agent from "@agent";
-import CredentialCatalogView from "@components/views/CredentialCatalogView";
+import agent from '@agent'
 import style from './index.module.css'
-import {CredentialCatalogItem} from '@typings';
+import {CredentialCatalogItem} from '@typings'
+
+import {CredentialRole, IBasicCredentialLocaleBranding, Party} from '@sphereon/ssi-sdk.data-store'
 
 enum ContactDetailsTabRoute {
   INFO = 'info',
@@ -43,9 +44,13 @@ const ShowContactDetails: FC = (): ReactElement => {
   const [credentialCatalogItems, setCredentialCatalogItems] = useState<Array<CredentialCatalogItem>>([])
   const [openID4VCIClient, setOpenID4VCIClient] = useState<OpenID4VCIClient>()
 
-  const { isLoading, isError, data: partyData } = useOne<Party, HttpError>({
+  const {
+    isLoading,
+    isError,
+    data: partyData,
+  } = useOne<Party, HttpError>({
     resource: 'parties',
-    id
+    id,
   })
 
   const getSupportedCredentials = (): Record<string, CredentialConfigurationSupportedV1_0_13> => {
@@ -86,9 +91,8 @@ const ShowContactDetails: FC = (): ReactElement => {
 
   const selectCredentialLocaleBranding = (args: SelectCredentialLocaleBrandingArgs): IBasicCredentialLocaleBranding | undefined => {
     const { locale, localeBranding } = args
-    return localeBranding?.find((branding: IBasicCredentialLocaleBranding) => locale
-        ? branding.locale?.startsWith(locale) || branding.locale === undefined
-        : branding.locale === undefined
+    return localeBranding?.find((branding: IBasicCredentialLocaleBranding) =>
+      locale ? branding.locale?.startsWith(locale) || branding.locale === undefined : branding.locale === undefined,
     )
   }
 
@@ -97,13 +101,13 @@ const ShowContactDetails: FC = (): ReactElement => {
       return
     }
 
-    const credentialIssuer= partyData?.data.identities.find((identity) => identity.roles.includes(CredentialRole.ISSUER))?.identifier.correlationId
+    const credentialIssuer = partyData?.data.identities.find(identity => identity.roles.includes(CredentialRole.ISSUER))?.identifier.correlationId
     if (!credentialIssuer) {
       return
     }
 
     OpenID4VCIClient.fromCredentialIssuer({
-      credentialIssuer
+      credentialIssuer,
     }).then(setOpenID4VCIClient)
   }, [id, isLoading])
 
@@ -121,10 +125,8 @@ const ShowContactDetails: FC = (): ReactElement => {
       return
     }
 
-    getCredentialBranding({ credentialsSupported })
-        .then((credentialBranding) => {
-          const credentialCatalogItems: Array<CredentialCatalogItem> = Object.entries(credentialBranding)
-              .map(([configId, branding]) => {
+    getCredentialBranding({credentialsSupported}).then(credentialBranding => {
+      const credentialCatalogItems: Array<CredentialCatalogItem> = Object.entries(credentialBranding).map(([configId, branding]) => {
                 const localeBranding = selectCredentialLocaleBranding({ locale: getLocale(), localeBranding: branding })
                 return {
                   configId,
@@ -136,9 +138,9 @@ const ShowContactDetails: FC = (): ReactElement => {
                     credentialSubtitle: localeBranding?.description,
                     issuerName: partyData?.data.contact.displayName,
                     credentialStatus: CredentialStatus.VALID,
-                    textColor: localeBranding?.text?.color
+            textColor: localeBranding?.text?.color,
                   },
-                  actions: 'actions'
+          actions: 'actions',
                 }
               })
           setCredentialCatalogItems(credentialCatalogItems)
@@ -168,10 +170,7 @@ const ShowContactDetails: FC = (): ReactElement => {
   }
 
   const getCredentialCatalogContent = (): ReactElement => {
-    return <CredentialCatalogView
-      items={credentialCatalogItems}
-      onClick={onGetCredentialItem}
-    />
+    return <CredentialCatalogView items={credentialCatalogItems} onClick={onGetCredentialItem} />
   }
 
   const getRelationsContent = (): ReactElement => {
@@ -194,13 +193,14 @@ const ShowContactDetails: FC = (): ReactElement => {
       content: getActivityContent,
     },
     ...(!party.roles.includes(CredentialRole.ISSUER)
-            ? [{
+      ? [
+          {
               key: ContactDetailsTabRoute.CREDENTIAL_CATALOG,
               title: translate('contact_details_credential_catalog_tab_label'),
               content: getCredentialCatalogContent,
-            }]
-            : []
-    ),
+          },
+        ]
+      : []),
     {
       key: ContactDetailsTabRoute.RELATIONS,
       title: translate('contact_details_relations_tab_label'),
@@ -216,12 +216,7 @@ const ShowContactDetails: FC = (): ReactElement => {
   return (
     <div className={style.container}>
       <PageHeaderBar path={translate('contact_details_path_label')} />
-      <ContactViewItem
-          name={party.contact.displayName}
-          uri={party.uri}
-          roles={party.roles}
-          logo={party.branding?.logo}
-      />
+      <ContactViewItem name={party.contact.displayName} uri={party.uri} roles={party.roles} logo={party.branding?.logo} />
       <SSITabView routes={routes} />
     </div>
   )

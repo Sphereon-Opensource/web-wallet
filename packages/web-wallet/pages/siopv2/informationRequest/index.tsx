@@ -30,11 +30,11 @@ const InformationRequestPage: React.FC = (): ReactElement => {
   const [isSendDisabled, setIsSendDisabled] = useState<boolean>(true)
 
   const emitSelectedCredentialsEvent = (eventType: Siopv2NavigationEventListenerType): void => {
-    const detail: Array<OriginalVerifiableCredential> = []
+    const detail: Array<UniqueDigitalCredential> = []
     if (selectedCredential !== undefined) {
-      detail.push(selectedCredential.originalVerifiableCredential as OriginalVerifiableCredential)
+      detail.push(selectedCredential)
     }
-    const event: CustomEvent<Array<OriginalVerifiableCredential>> = new CustomEvent(eventType, {detail: detail})
+    const event: CustomEvent<Array<UniqueDigitalCredential>> = new CustomEvent(eventType, {detail: detail})
     window.dispatchEvent(event)
   }
 

@@ -21,8 +21,8 @@ import {
   expressBuilder,
   getDefaultDID,
   getDefaultKeyRef,
-  getOrCreateDIDsFromFS,
   getOrCreateDIDWebFromEnv,
+  getOrCreateIdentifiersFromFS,
 } from './utils'
 import {
   ASSET_DEFAULT_DID_METHOD,
@@ -30,20 +30,25 @@ import {
   AUTHENTICATION_STRATEGY,
   AUTHORIZATION_ENABLED,
   AUTHORIZATION_GLOBAL_REQUIRE_USER_IN_ROLES,
-  DB_CONNECTION_NAME, DB_DATABASE_NAME,
+  DB_CONNECTION_NAME, 
+  DB_DATABASE_NAME,
   DB_ENCRYPTION_KEY,
+  DEFAULT_MODE,
+  DEFAULT_X5C,
   DID_API_BASE_PATH,
   DID_API_RESOLVE_MODE,
   INTERNAL_PORT,
   IS_CONTACT_MANAGER_ENABLED,
   IS_JWKS_HOSTING_ENABLED,
   IS_OID4VCI_ENABLED,
-  IS_OID4VP_ENABLED, IS_STATUS_LIST_ENABLED,
+  IS_OID4VP_ENABLED,
+  IS_STATUS_LIST_ENABLED,
   IS_VC_API_ENABLED,
   OID4VCI_API_BASE_URL,
   OID4VP_DEFINITIONS,
   STATUS_LIST_API_BASE_PATH,
   STATUS_LIST_CORRELATION_ID,
+  STATUS_LIST_ID,
   VC_API_BASE_PATH,
   VC_API_DEFAULT_PROOF_FORMAT,
 } from './environment'
@@ -59,7 +64,7 @@ import {
   DigitalCredentialStore,
   EventLoggerStore,
   IssuanceBrandingStore,
-  PDStore
+  PDStore,
 } from '@sphereon/ssi-sdk.data-store'
 import {IIssuerInstanceArgs, OID4VCIIssuer} from '@sphereon/ssi-sdk.oid4vci-issuer'
 import {IIssuerInstanceOptions, IIssuerOptsPersistArgs, OID4VCIStore} from '@sphereon/ssi-sdk.oid4vci-issuer-store'
@@ -68,7 +73,7 @@ import {EventLogger} from '@sphereon/ssi-sdk.event-logger'
 import {RemoteServerApiServer} from '@sphereon/ssi-sdk.remote-server-rest-api'
 import {IssuanceBranding} from '@sphereon/ssi-sdk.issuance-branding'
 import {PDManager} from '@sphereon/ssi-sdk.pd-manager'
-import {LoggingEventType} from '@sphereon/ssi-types'
+import {LoggingEventType, StatusListDriverType} from '@sphereon/ssi-types'
 import {createOID4VPRP, getDefaultOID4VPRPOptions} from './utils/oid4vp'
 import {IPresentationDefinition} from '@sphereon/pex'
 import {PresentationExchange} from '@sphereon/ssi-sdk.presentation-exchange'
@@ -90,17 +95,23 @@ import {
   REMOTE_SERVER_API_FEATURES,
   STATUS_LIST_API_FEATURES,
   syncDefinitionsOpts,
-  VC_API_FEATURES
+  VC_API_FEATURES,
 } from './environment-deps'
-import {dbConnection} from "./database";
-import {getOrCreateConfiguredStatusList} from "./utils/statuslist";
+import {dbConnection} from './database'
+import {IdentifierResolution} from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import {JwtService} from '@sphereon/ssi-sdk-ext.jwt-service'
+import {SDJwtPlugin} from '@sphereon/ssi-sdk.sd-jwt'
+import {generateDigest, generateSalt, verifySDJWTSignature} from './utils/CryptoUtils'
+import {animoFunkeCert, funkeTestCA, sphereonCA} from './trustanchors'
+import {MDLMdoc} from '@sphereon/ssi-sdk.mdl-mdoc'
+import {DataSources} from '@sphereon/ssi-sdk.agent-config'
+import {StatusListPlugin} from '@sphereon/ssi-sdk.vc-status-list-issuer/dist/agent/StatusListPlugin'
+import {getOrCreateConfiguredStatusList} from './utils/statuslist'
 
 /**
  * Lets setup supported DID resolvers first
  */
 const resolver = createDidResolver()
-
-
 
 /**
  * Private key store, responsible for storing private keys in the database using encryption
@@ -156,8 +167,24 @@ const plugins: IAgentPlugin[] = [
   }),
   new CredentialStore({ store: new DigitalCredentialStore(dbConnection) }),
   new DidAuthSiopOpAuthenticator(),
-  new OID4VCIHolder({}),
+  new OID4VCIHolder({ hasher: generateDigest }),
   new EbsiSupport(),
+  // The Animo funke cert is self-signed and not issued by a CA. Since we perform strict checks on certs, we blindly trust if for the Funke
+  new MDLMdoc({ trustAnchors: [sphereonCA, funkeTestCA], opts: { blindlyTrustedAnchors: [animoFunkeCert] } }),
+  new IdentifierResolution(),
+  new JwtService(),
+  new SDJwtPlugin({
+    hasher: generateDigest,
+    saltGenerator: generateSalt,
+    verifySignature: verifySDJWTSignature,
+  }),
+  new StatusListPlugin({
+    instances: [{
+      id: STATUS_LIST_ID,
+      driverType: StatusListDriverType.AGENT_TYPEORM,
+      dataSource: dbConnection,
+    }], defaultInstanceId: STATUS_LIST_ID, allDataSources: DataSources.singleInstance(),
+  }),
 ]
 
 let oid4vpRP: SIOPv2RP | undefined
@@ -195,25 +222,34 @@ const agent = createAgent<TAgentTypes>({
 export default agent
 export const context: IAgentContext<TAgentTypes> = { agent }
 
-/**
- * Import/creates DIDs from configurations files and environment. They then get stored in the database.
- * Also assign default DID and Key Identifier values. Whenever a DID or KID is not explicitly defined,
- * the defaults will be used
- */
-await getOrCreateDIDWebFromEnv().catch((e) => console.log(`ERROR env: ${e}`))
-await getOrCreateDIDsFromFS().catch((e) => console.log(`ERROR dids: ${e}`))
+let defaultDID: string | undefined
+let defaultKid: string | undefined
+if (!cliMode) {
+  /**
+   * Import/creates DIDs from configurations files and environment. They then get stored in the database.
+   * Also assign default DID and Key Identifier values. Whenever a DID or KID is not explicitly defined,
+   * the defaults will be used
+   */
+  await getOrCreateDIDWebFromEnv().catch((e) => console.log(`ERROR env: ${e}`))
+  await getOrCreateIdentifiersFromFS().catch((e) => console.log(`ERROR dids: ${e}`))
 
-const defaultDID = await getDefaultDID()
-console.log(`[DID] default DID: ${defaultDID}`)
-const defaultKid = await getDefaultKeyRef({ did: defaultDID })
-console.log(`[DID] default key identifier: ${defaultKid}`)
-if (!defaultDID || !defaultKid) {
-  console.log('[DID] Agent has no default DID and Key Identifier!')
-}
+  defaultDID = await getDefaultDID()
+  if (defaultDID) {
+    console.log(`[DID] default DID: ${defaultDID}`)
+  }
+  defaultKid = await getDefaultKeyRef({ did: defaultDID })
+  console.log(`[DID] default key identifier: ${defaultKid}`)
+  if ((DEFAULT_MODE.toLowerCase() === 'did' && !defaultDID) || !defaultKid) {
+    console.warn('[DID] Agent has no default DID and Key Identifier!')
+  }
 
-const oid4vpOpts = IS_OID4VP_ENABLED ? await getDefaultOID4VPRPOptions({ did: defaultDID, resolver }) : undefined
-if (oid4vpOpts && oid4vpRP) {
-  oid4vpRP.setDefaultOpts(oid4vpOpts, context)
+  const oid4vpOpts = IS_OID4VP_ENABLED ? await getDefaultOID4VPRPOptions({ did: defaultDID, x5c: DEFAULT_X5C, resolver }) : undefined
+  if (oid4vpOpts && oid4vpRP) {
+    oid4vpRP.setDefaultOpts(oid4vpOpts, context)
+  }
+} else {
+  defaultDID = undefined
+  defaultKid = undefined
 }
 
 /**
@@ -467,7 +503,6 @@ if (!cliMode) {
     })
 
     await getOrCreateConfiguredStatusList({issuer: defaultDID, keyRef: defaultKid}).catch(e => console.log(`ERROR statuslist`, e))
-
   }
 
 
