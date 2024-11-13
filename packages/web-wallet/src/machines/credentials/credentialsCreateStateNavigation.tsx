@@ -3,7 +3,6 @@ import {CredentialFormData, CredentialFormSelectionType, ValueSelection} from '@
 import {useNavigate, useOutletContext} from 'react-router-dom'
 import {IssueCredentialRoute, IssueMethod, UIContextType} from '@typings'
 import {useTranslate} from '@refinedev/core'
-import {JsonSchema} from '@jsonforms/core'
 
 export type CredentialsCreateContextType = UIContextType & {
   credentialType?: CredentialFormSelectionType
@@ -35,39 +34,6 @@ const issueCredentialNavigationListener = async (step: number, navigate: any): P
     default:
       return Promise.reject('issue credential step exceeds maximum steps')
   }
-}
-
-const syncConstValues = (credentialFormData: CredentialFormData) => {
-  if(!credentialFormData.errors || credentialFormData.errors.length === 0) {
-    return
-  }
-  
-  const parentSchema = credentialFormData.errors[0].parentSchema as JsonSchema
-  if (parentSchema.properties) {
-    updateProperties(parentSchema.properties, credentialFormData.data)
-  }
-}
-
-const updateProperties = (
-  properties: Record<string, JsonSchema>,
-  data: Record<string, any>,
-) => {
-  if (!data) {
-    return
-  }
-  
-  Object.entries(properties).forEach(([key, property]) => {
-    if (property.const && (!(key in data) || !data[key])) {
-      data[key] = property.const
-    }
-
-    if (property.properties) {
-      if (!data[key]) {
-        data[key] = {}
-      }
-      updateProperties(property.properties, data[key])
-    }
-  })
 }
 
 export const CredentialsCreateContextProvider = (props: any): JSX.Element => {
@@ -167,9 +133,6 @@ export const CredentialsCreateContextProvider = (props: any): JSX.Element => {
   }
 
   const onCredentialFormDataChange = async (credentialFormData: CredentialFormData): Promise<void> => {
-    if (credentialFormData?.errors) {
-      syncConstValues(credentialFormData)
-    }
     setCredentialFormData(credentialFormData)
   }
 
@@ -191,7 +154,7 @@ export const CredentialsCreateContextProvider = (props: any): JSX.Element => {
   const onIssueMethodChange = async (issueMethod: ValueSelection): Promise<void> => {
     setIssueMethod(issueMethod)
   }
-
+console.log('=== credentialFormData', credentialFormData)
   return (
     <CredentialsCreateContext.Provider
       value={{
