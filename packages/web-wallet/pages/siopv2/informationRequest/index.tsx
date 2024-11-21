@@ -8,7 +8,6 @@ import {Siopv2NavigationEventListenerType} from '@typings'
 import style from './index.module.css'
 import {IPresentationDefinition} from '@sphereon/pex'
 import CredentialSelectionView from '@components/views/CredentialSelectionView'
-import {OriginalVerifiableCredential} from '@sphereon/ssi-types'
 import {SelectableCredentialsMap} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 
 import {staticPropsWithSST} from '@/src/i18n/server'

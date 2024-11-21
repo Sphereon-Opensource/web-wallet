@@ -12,7 +12,9 @@ export type CredentialsCreateContextType = UIContextType & {
   onCredentialFormDataChange: (credentialFormData: CredentialFormData) => Promise<void>
   onIssueCredential: () => Promise<void>
   showCredentialQRCodeModal: boolean
+  showCredentialWalletUrlModal: boolean
   onCloseCredentialQRCodeModal: () => Promise<void>
+  onCloseCredentialWalletUrlModal: () => Promise<void>
   onIssueMethodChange: (issueMethod: ValueSelection) => Promise<void>
   issueMethod: ValueSelection
   issueMethods: Array<ValueSelection>
@@ -77,10 +79,15 @@ export const CredentialsCreateContextProvider = (props: any): JSX.Element => {
   const [credentialType, setCredentialType] = useState<CredentialFormSelectionType | undefined>()
   const [credentialFormData, setCredentialFormData] = useState<CredentialFormData | undefined>()
   const [showCredentialQRCodeModal, setShowCredentialQRCodeModal] = useState<boolean>(false)
+  const [showCredentialWalletUrlModal, setShowCredentialWalletUrlModal] = useState<boolean>(false)
   const issueMethods: Array<ValueSelection> = [
     {
       label: translate('credential_issuance_method_qr_code_label'),
       value: IssueMethod.QR_CODE,
+    },
+    {
+      label: translate('credential_issuance_method_wallet_url_label'),
+      value: IssueMethod.WALLET_URL,
     },
   ]
   const [issueMethod, setIssueMethod] = useState<ValueSelection>(issueMethods[0])
@@ -126,7 +133,7 @@ export const CredentialsCreateContextProvider = (props: any): JSX.Element => {
     } else {
       void onIssueCredential()
     }
-  }, [step])
+  }, [step, issueMethod])
 
   const onBack = useCallback(async (): Promise<void> => {
     const nextStep: number = step - maxAutoSteps
@@ -140,8 +147,19 @@ export const CredentialsCreateContextProvider = (props: any): JSX.Element => {
     setStep(1)
   }
 
+  const onCloseCredentialWalletUrlModal = async (): Promise<void> => {
+    setShowCredentialWalletUrlModal(false)
+    setStep(1)
+  }
+
   const onOpenCredentialQRCodeModal = async (): Promise<void> => {
     setShowCredentialQRCodeModal(true)
+    setShowCredentialWalletUrlModal(false)
+  }
+
+  const onOpenCredentialWalletUrlModal = async (): Promise<void> => {
+    setShowCredentialQRCodeModal(false)
+    setShowCredentialWalletUrlModal(true)
   }
 
   const onSelectCredentialTypeChange = async (credentialType: CredentialFormSelectionType): Promise<void> => {
@@ -163,6 +181,8 @@ export const CredentialsCreateContextProvider = (props: any): JSX.Element => {
     switch (issueMethod.value) {
       case IssueMethod.QR_CODE:
         return onOpenCredentialQRCodeModal()
+      case IssueMethod.WALLET_URL:
+        return onOpenCredentialWalletUrlModal()
       default:
         return Promise.reject(Error(`Issuance type ${issueMethod.value} not supported`))
     }
@@ -186,7 +206,9 @@ export const CredentialsCreateContextProvider = (props: any): JSX.Element => {
         onCredentialFormDataChange,
         onIssueCredential,
         onCloseCredentialQRCodeModal,
+        onCloseCredentialWalletUrlModal,
         showCredentialQRCodeModal,
+        showCredentialWalletUrlModal,
         onIssueMethodChange,
         issueMethod,
         issueMethods,

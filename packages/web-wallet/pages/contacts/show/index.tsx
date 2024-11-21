@@ -1,10 +1,10 @@
 import React, {FC, ReactElement, useEffect, useState} from 'react'
 import {useParams} from 'react-router-dom'
-import {useOne, useTranslation} from '@refinedev/core'
-import {CredentialRole, IBasicCredentialLocaleBranding} from '@sphereon/ssi-sdk.data-store'
+import {HttpError, useOne, useTranslation} from '@refinedev/core'
+import {CredentialRole, IBasicCredentialLocaleBranding, Party} from '@sphereon/ssi-sdk.data-store'
 import {OpenID4VCIClient} from '@sphereon/oid4vci-client'
 import {CredentialStatus, TabViewRoute} from '@sphereon/ui-components.core'
-import {SSITabView} from '@sphereon/ui-components.ssi-react'
+import {ContactViewItem, SSITabView} from '@sphereon/ui-components.ssi-react'
 import {credentialLocaleBrandingFrom} from '@sphereon/ssi-sdk.oid4vci-holder/dist/agent/OIDC4VCIBrandingMapper'
 import PageHeaderBar from '@components/bars/PageHeaderBar'
 import {staticPropsWithSST} from '@/src/i18n/server'
@@ -16,8 +16,7 @@ import {
 import agent from '@agent'
 import style from './index.module.css'
 import {CredentialCatalogItem} from '@typings'
-
-import {CredentialRole, IBasicCredentialLocaleBranding, Party} from '@sphereon/ssi-sdk.data-store'
+import CredentialCatalogView from '@components/views/CredentialCatalogView'
 
 enum ContactDetailsTabRoute {
   INFO = 'info',

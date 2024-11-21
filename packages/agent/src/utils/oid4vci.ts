@@ -29,7 +29,7 @@ export async function getDefaultOID4VCIIssuerOptions(args?: { idOpts?: ManagedId
   const identifier = await ensureManagedIdentifierResult(idOpts, agentContext(agent))
 
   return {
-    userPinRequired: process.env.OID4VCI_DEFAULTS_USER_PIN_REQUIRED?.toLowerCase() !== 'false' ?? false,
+    userPinRequired: process.env.OID4VCI_DEFAULTS_USER_PIN_REQUIRED?.toLowerCase() !== 'false',
     didOpts: {
       resolveOpts: {
         resolver: args?.resolver ?? createDidResolver(),

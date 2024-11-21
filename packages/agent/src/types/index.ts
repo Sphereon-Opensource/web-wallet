@@ -25,6 +25,7 @@ import { IIdentifierResolution, ManagedIdentifierOptsOrResult } from '@sphereon/
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
 import {IStatusListPlugin} from '@sphereon/ssi-sdk.vc-status-list'
+import {ICredentialValidation} from '@sphereon/ssi-sdk.credential-validation'
 
 export const DID_PREFIX = 'did'
 
@@ -50,7 +51,8 @@ export type TAgentTypes = IDIDManager &
   IIdentifierResolution &
   IJwtService &
   ISIOPv2RP &
-  ImDLMdoc & 
+  ImDLMdoc &
+  ICredentialValidation &
   IStatusListPlugin
 
 /**

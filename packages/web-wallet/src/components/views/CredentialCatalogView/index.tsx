@@ -2,20 +2,18 @@ import React, {FC, ReactElement, useState} from 'react'
 import {useTranslation} from '@refinedev/core'
 import {Row} from '@tanstack/react-table'
 import {ColumnHeader, SSICredentialCardView, SSITableView, TableCellType} from '@sphereon/ui-components.ssi-react'
-import {staticPropsWithSST} from '@/src/i18n/server'
 import DropDownList from '@components/lists/DropDownList'
 import {CatalogDisplayMode, CredentialCatalogItem, ValueSelection} from '@typings'
 import style from './index.module.css'
 
 type Props = {
-  items: Array<any>
+  items: Array<CredentialCatalogItem>
   onClick?: (item: CredentialCatalogItem) => Promise<void>
 }
 
-const CredentialCatalogView: FC<Props> = (props: Props): ReactElement => {
-  const {items, onClick} = props
+const CredentialCatalogView: FC<Props> = ({items = [], onClick}): ReactElement => {
   const {translate} = useTranslation()
-  const [catalogDisplayMode, setCatalogDisplayMode] = useState<string>(CatalogDisplayMode.CARD_VIEW)
+  const [catalogDisplayMode, setCatalogDisplayMode] = useState<CatalogDisplayMode>(CatalogDisplayMode.CARD_VIEW)
 
   const credentialCatalogDisplayModes: Array<ValueSelection> = [
     {label: translate('credential_catalog_card_view_display_mode'), value: CatalogDisplayMode.CARD_VIEW},
@@ -23,7 +21,15 @@ const CredentialCatalogView: FC<Props> = (props: Props): ReactElement => {
   ]
 
   const onCatalogDisplayModeChange = async (selection: ValueSelection): Promise<void> => {
-    await setCatalogDisplayMode(selection.value)
+    setCatalogDisplayMode(selection.value as CatalogDisplayMode)
+  }
+  
+  const handleItemClick = async (item: CredentialCatalogItem): Promise<void> => {
+    try {
+      await onClick?.(item)
+    } catch (error) {
+      console.error('Error handling item click:', error)
+    }
   }
 
   const columns: Array<ColumnHeader<CredentialCatalogItem>> = [
@@ -74,16 +80,8 @@ const CredentialCatalogView: FC<Props> = (props: Props): ReactElement => {
 
   const getCredentialCardElements = (): Array<ReactElement> => {
     return items.map((item, index) => (
-      <div
-        key={index}
-        className={style.cardItem}
-      >
-        <div
-          className={style.cardContainer}
-          onClick={() => onClick?.(item)}
-        >
       <div key={index} className={style.cardItem}>
-        <div className={style.cardContainer} onClick={() => onClick?.(item)}>
+        <div className={style.cardContainer} onClick={() => handleItemClick(item)}>
           <SSICredentialCardView
             header={{
               credentialTitle: item.credential.credentialTitle,
@@ -112,6 +110,14 @@ const CredentialCatalogView: FC<Props> = (props: Props): ReactElement => {
     ))
   }
 
+  if (!items?.length) {
+    return (
+      <div className={style.container}>
+        <div>{translate('no_credentials_available')}</div>
+      </div>
+    )
+  }
+
   return (
     <div className={style.container}>
       <div className={style.menuContainer}>
@@ -121,21 +127,20 @@ const CredentialCatalogView: FC<Props> = (props: Props): ReactElement => {
           defaultValue={credentialCatalogDisplayModes[0]}
         />
       </div>
-      {catalogDisplayMode === CatalogDisplayMode.CARD_VIEW &&
-        <div className={style.cardViewContainer}>{getCredentialCardElements()}</div>}
+      {catalogDisplayMode === CatalogDisplayMode.CARD_VIEW && (
+        <div className={style.cardViewContainer}>{getCredentialCardElements()}</div>
+      )}
       {catalogDisplayMode === CatalogDisplayMode.LIST_VIEW && (
         <div className={style.listViewContainer}>
           <SSITableView<CredentialCatalogItem>
             data={items}
             columns={columns}
-            onRowClick={async (data: Row<CredentialCatalogItem>): Promise<void> => onClick?.(data.original)}
+            onRowClick={async (data: Row<CredentialCatalogItem>): Promise<void> => handleItemClick(data.original)}
           />
         </div>
       )}
     </div>
   )
 }
-
-export const getStaticProps = staticPropsWithSST
 
 export default CredentialCatalogView

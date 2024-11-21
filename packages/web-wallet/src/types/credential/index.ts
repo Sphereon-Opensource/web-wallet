@@ -30,6 +30,7 @@ export type CredentialReference = {
 
 export enum IssueMethod {
   QR_CODE = 'qrCode',
+  WALLET_URL = 'walletUrl',
 }
 export class CredentialTableItem {
   id?: string

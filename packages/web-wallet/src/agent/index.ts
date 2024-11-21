@@ -29,6 +29,7 @@ import {IdentifierResolution, identifierResolutionContextMethods} from '@sphereo
 import {SDJwtPlugin, sdJwtPluginContextMethods} from '@sphereon/ssi-sdk.sd-jwt'
 import {JwtService, jwtServiceContextMethods} from '@sphereon/ssi-sdk-ext.jwt-service'
 import {generateDigest, generateSalt, verifySDJWTSignature} from '@helpers/CryptoUtils'
+import {credentialValidationMethods} from '@sphereon/ssi-sdk.credential-validation'
 
 export const resolver = new Resolver({
   ...getDidKeyResolver(),
@@ -72,6 +73,7 @@ const plugins: IAgentPlugin[] = [
       ...sdJwtPluginContextMethods,
       ...jwtServiceContextMethods,
       ...identifierResolutionContextMethods,
+      ...credentialValidationMethods,
 
       'createSdJwtVc',
       'createSdJwtPresentation',

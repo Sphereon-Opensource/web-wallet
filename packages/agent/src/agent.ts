@@ -107,6 +107,7 @@ import {MDLMdoc} from '@sphereon/ssi-sdk.mdl-mdoc'
 import {DataSources} from '@sphereon/ssi-sdk.agent-config'
 import {StatusListPlugin} from '@sphereon/ssi-sdk.vc-status-list-issuer/dist/agent/StatusListPlugin'
 import {getOrCreateConfiguredStatusList} from './utils/statuslist'
+import {CredentialValidation} from '@sphereon/ssi-sdk.credential-validation'
 
 /**
  * Lets setup supported DID resolvers first
@@ -185,6 +186,7 @@ const plugins: IAgentPlugin[] = [
       dataSource: dbConnection,
     }], defaultInstanceId: STATUS_LIST_ID, allDataSources: DataSources.singleInstance(),
   }),
+  new CredentialValidation()
 ]
 
 let oid4vpRP: SIOPv2RP | undefined
@@ -470,7 +472,7 @@ if (!cliMode) {
   }
 
   if (IS_JWKS_HOSTING_ENABLED) {
-    new PublicKeyHosting({ agent, expressSupport, opts: { hostingOpts: { enableFeatures: ['did-jwks'] } } })
+    new PublicKeyHosting({ agent, expressSupport, opts: { hostingOpts: { enableFeatures: ['did-jwks', 'all-jwks'] } } })
   }
 
 

@@ -25,6 +25,7 @@ import { ContactManagerMRestApiFeatures } from '@sphereon/ssi-sdk.contact-manage
 import { statusListFeatures } from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
 import { DidApiFeatures, DidWebServiceFeatures } from '@sphereon/ssi-sdk.uni-resolver-registrar-api'
 import { identifierResolutionContextMethods } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import {credentialValidationMethods} from '@sphereon/ssi-sdk.credential-validation'
 
 export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATURES', ENV_VAR_PREFIX)
   ? (env('REMOTE_SERVER_API_FEATURES', ENV_VAR_PREFIX)?.split(',') as string[])
@@ -42,6 +43,7 @@ export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATU
       ...pdManagerMethods,
       ...credentialStoreMethods,
       ...identifierResolutionContextMethods,
+      ...credentialValidationMethods,
       'crsGetUniqueCredentials', // FIXME in SSI_SDK
       // fixme: import from respective modules
       'createSdJwtVc',

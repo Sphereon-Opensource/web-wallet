@@ -1,7 +1,7 @@
 import {ComponentType} from 'react'
 import {AccessorFn, DeepKeys} from '@tanstack/react-table'
 import {TableCellType, TableCellOptions, CredentialMiniCardViewProps} from '@sphereon/ui-components.ssi-react'
-import {CredentialStatus} from '@sphereon/ui-components.core'
+import {ButtonIcon, CredentialStatus} from '@sphereon/ui-components.core'
 
 export type TabRoute = {
   key: string
@@ -27,7 +27,7 @@ export type ColumnHeader<T> = {
 export type Button = {
   caption: string
   onClick: () => Promise<void>
-  icon?: string
+  icon?: ButtonIcon
   disabled?: boolean
 }
 

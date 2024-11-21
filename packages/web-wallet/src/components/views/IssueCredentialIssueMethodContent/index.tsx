@@ -60,7 +60,7 @@ const IssueCredentialIssueMethodContent: FC = (): ReactElement => {
       label: translate('credential_issuance_column_issue_method_label'),
       type: TableCellType.COMBOBOX,
       columnOptions: {
-        columnWidth: 150,
+        columnWidth: 170,
         cellOptions: {
           selectOptions: issueMethods,
           defaultValue: issueMethods[0],
