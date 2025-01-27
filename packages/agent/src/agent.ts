@@ -116,6 +116,7 @@ import {StatusListPlugin} from '@sphereon/ssi-sdk.vc-status-list-issuer/dist/age
 import {getOrCreateConfiguredStatusList} from './utils/statuslist'
 import {CredentialValidation} from '@sphereon/ssi-sdk.credential-validation'
 import {OIDFMetadataServer, OIDFMetadataStore} from '@sphereon/ssi-sdk.oidf-metatdata-server'
+import {IEndpointOpts} from '@sphereon/ssi-express-support'
 
 /**
  * Lets setup supported DID resolvers first
@@ -468,7 +469,7 @@ if (!cliMode) {
         void OID4VCIRestAPI.init({
           opts: {
             baseUrl: credentialIssuer,
-            endpointOpts: {},
+            endpointOpts: opts.endpointOpts as IEndpointOpts,
           } as IOID4VCIRestAPIOpts,
           context: context as unknown as IRequiredContext,
           issuerInstanceArgs: {
