@@ -79,7 +79,7 @@ import {EventLogger} from '@sphereon/ssi-sdk.event-logger'
 import {RemoteServerApiServer} from '@sphereon/ssi-sdk.remote-server-rest-api'
 import {IssuanceBranding} from '@sphereon/ssi-sdk.issuance-branding'
 import {PDManager} from '@sphereon/ssi-sdk.pd-manager'
-import {DcqlQuery, LoggingEventType, StatusListDriverType} from '@sphereon/ssi-types'
+import {DcqlQueryREST, LoggingEventType, StatusListDriverType} from '@sphereon/ssi-types'
 import {createOID4VPRP, getDefaultOID4VPRPOptions} from './utils/oid4vp'
 import {IPresentationDefinition} from '@sphereon/pex'
 import {PresentationExchange} from '@sphereon/ssi-sdk.presentation-exchange'
@@ -589,6 +589,6 @@ function isPresentationDefinition(obj: any): obj is IPresentationDefinition {
   return obj && Array.isArray(obj.input_descriptors)
 }
 
-function isDcqlQuery(obj: any): obj is DcqlQuery {
+function isDcqlQuery(obj: any): obj is DcqlQueryREST {
   return obj && Array.isArray(obj.credentials)
 }

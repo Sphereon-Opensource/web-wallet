@@ -28,7 +28,7 @@ import {DidApiFeatures, DidWebServiceFeatures} from '@sphereon/ssi-sdk.uni-resol
 import {identifierResolutionContextMethods} from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {credentialValidationMethods} from '@sphereon/ssi-sdk.credential-validation'
 import {FederationMetadataImportArgs} from '@sphereon/ssi-sdk.oidf-metatdata-server'
-import {DcqlQuery} from '@sphereon/ssi-types'
+import {DcqlQueryREST} from '@sphereon/ssi-types'
 
 export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATURES', ENV_VAR_PREFIX)
   ? (env('REMOTE_SERVER_API_FEATURES', ENV_VAR_PREFIX)?.split(',') as string[])
@@ -73,7 +73,7 @@ export const oid4vpMetadataOpts = loadJsonFiles<FederationMetadataImportArgs>({
   path: OID4VP_RP_METADATA_PATH,
 })
 
-export const syncDefinitionsOpts = loadJsonFileMap<IPresentationDefinition|DcqlQuery>({ path: OID4VP_PRESENTATION_DEFINITION_PATH })
+export const syncDefinitionsOpts = loadJsonFileMap<IPresentationDefinition|DcqlQueryREST>({ path: OID4VP_PRESENTATION_DEFINITION_PATH })
 export const VC_API_FEATURES: vcApiFeatures[] = env('VC_API_FEATURES', ENV_VAR_PREFIX)
   ? (env('VC_API_FEATURES', ENV_VAR_PREFIX)?.split(',') as vcApiFeatures[])
   : ['vc-issue', 'vc-verify', 'vc-persist']
