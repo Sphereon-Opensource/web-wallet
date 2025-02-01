@@ -130,6 +130,10 @@ const privateKeyStore: PrivateKeyStore = new PrivateKeyStore(dbConnection, new S
 
 const cliMode: boolean = process.env.RUN_MODE === 'cli'
 
+if(process.env.RUN_MIGRATIONS === 'true') {
+  await (await dbConnection).runMigrations();
+}
+
 /**
  * Define Agent plugins being used. The plugins come from Sphereon's SSI-SDK and Veramo.
  */
