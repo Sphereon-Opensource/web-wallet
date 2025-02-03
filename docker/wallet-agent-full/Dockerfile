@@ -1,9 +1,7 @@
-FROM node:lts-bookworm
+FROM node:lts-bullseye
 SHELL ["/bin/bash", "-c"]
 WORKDIR /opt/wallet/agent
-RUN node -v
-RUN npm install -g pnpm && SHELL=bash pnpm setup && source /root/.bashrc && pnpm self-update
-
+RUN npm -g install pnpm && SHELL=bash pnpm setup && source /root/.bashrc && pnpm add -g pnpm
 RUN pnpm add typescript tslib
 
 COPY ./ .
