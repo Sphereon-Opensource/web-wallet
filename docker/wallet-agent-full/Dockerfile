@@ -1,4 +1,4 @@
-FROM node:lts-bookworm
+FROM node:lts-bullseye
 SHELL ["/bin/bash", "-c"]
 WORKDIR /opt/wallet/agent
 RUN npm -g install pnpm && SHELL=bash pnpm setup && source /root/.bashrc && pnpm add -g pnpm
