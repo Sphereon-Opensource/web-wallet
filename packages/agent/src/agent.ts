@@ -195,6 +195,7 @@ const plugins: IAgentPlugin[] = [
   new StatusListPlugin({
     instances: [{
       id: STATUS_LIST_ID,
+      correlationId: STATUS_LIST_CORRELATION_ID,
       driverType: StatusListDriverType.AGENT_TYPEORM,
       dataSource: dbConnection,
     }], defaultInstanceId: STATUS_LIST_ID, allDataSources: DataSources.singleInstance(),
