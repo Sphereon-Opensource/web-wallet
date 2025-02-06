@@ -230,6 +230,9 @@ importers:
       '@sphereon/ssi-sdk.pd-manager':
         specifier: 0.32.1-next.113
         version: 0.32.1-next.113(encoding@0.1.13)(pg@8.13.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.59)(typescript@5.6.3))(typescript@5.6.3)
+      '@sphereon/ssi-sdk.pd-manager-rest-api':
+        specifier: 0.32.1-next.113
+        version: 0.32.1-next.113(@noble/hashes@1.6.1)(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)(pg@8.13.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.59)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.presentation-exchange':
         specifier: 0.32.1-next.113
         version: 0.32.1-next.113(encoding@0.1.13)(pg@8.13.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.59)(typescript@5.6.3))(typescript@5.6.3)
@@ -3210,6 +3213,7 @@ packages:
 
   '@sphereon/kmp-mdoc-core@0.2.0-SNAPSHOT.26':
     resolution: {integrity: sha512-QXJ6R8ENiZV2rPMbn06cw5JKwqUYN1kzVRbYfONqE1PEXx1noQ4md7uxr2zSczi0ubKkNcbyYDNtIMTZIhGzmQ==}
+    bundledDependencies: []
 
   '@sphereon/oid4vc-common@0.16.1-next.339':
     resolution: {integrity: sha512-Ttw49G8liVpR/qZTuBX9YVI8vYb3rbtWAUr8Ra5GRGQo8+xE22dT5gMK0BwTeg6CRik3zhYnW6L4LN/NRPuhIA==}
@@ -3421,6 +3425,9 @@ packages:
 
   '@sphereon/ssi-sdk.oidf-metatdata-server@0.32.1-next.113':
     resolution: {integrity: sha512-RtLAtXYNkMShP0/oG9T7I2x077QlEDI5614jDjqlocWKAQ3LDFv0vPpYuCBb4zBpkZUhw8N/s49kmvj2xF3B7g==}
+
+  '@sphereon/ssi-sdk.pd-manager-rest-api@0.32.1-next.113':
+    resolution: {integrity: sha512-gWRqCRLm7AUy7UHtHzVtBGzr17OggTmMF2VBjHRDVOYMUGV4r12BqLeZpk6C+0+MqraOCUeguJSbKiu4EsmNMw==}
 
   '@sphereon/ssi-sdk.pd-manager@0.32.1-next.113':
     resolution: {integrity: sha512-tOJqCK/DgM6LL580DGHt7MjsIhOzQt/eyxqrKNZ68EpqjrZZ27ap2OutRPwihSdcTmmrv34eF2wLWgjKpb5v+A==}
@@ -15692,6 +15699,51 @@ snapshots:
       - supports-color
       - ts-node
       - typeorm-aurora-data-api-driver
+
+  '@sphereon/ssi-sdk.pd-manager-rest-api@0.32.1-next.113(@noble/hashes@1.6.1)(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)(pg@8.13.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.59)(typescript@5.6.3))(typescript@5.6.3)':
+    dependencies:
+      '@sphereon/ssi-express-support': 0.32.1-next.113(@noble/hashes@1.6.1)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
+      '@sphereon/ssi-sdk.core': 0.32.1-next.113(encoding@0.1.13)
+      '@sphereon/ssi-sdk.data-store': 0.32.1-next.113(encoding@0.1.13)(pg@8.13.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.59)(typescript@5.6.3))(typescript@5.6.3)
+      '@sphereon/ssi-sdk.pd-manager': 0.32.1-next.113(encoding@0.1.13)(pg@8.13.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.59)(typescript@5.6.3))(typescript@5.6.3)
+      '@sphereon/ssi-types': 0.32.1-next.113
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      body-parser: 1.20.3
+      casbin: 5.32.0
+      cookie-parser: 1.4.7
+      cors: 2.8.5
+      cross-fetch: 3.1.8(encoding@0.1.13)
+      debug: 4.3.7(supports-color@5.5.0)
+      dotenv-flow: 3.3.0
+      express: 4.21.1
+      short-uuid: 4.2.2
+      uuid: 9.0.1
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@noble/hashes'
+      - '@sap/hana-client'
+      - better-sqlite3
+      - bufferutil
+      - encoding
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - passport-azure-ad
+      - passport-http-bearer
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
+      - typescript
+      - utf-8-validate
 
   '@sphereon/ssi-sdk.pd-manager@0.32.1-next.113(encoding@0.1.13)(pg@8.13.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.59)(typescript@5.6.3))(typescript@5.6.3)':
     dependencies:
