@@ -5,6 +5,8 @@ RUN pnpm add typescript tslib
 WORKDIR /opt/wallet/frontend
 
 COPY . .
+
+ARG NEXT_PUBLIC_AGENT_BASE_URL
 RUN pnpm install -r
 RUN pnpm build
 

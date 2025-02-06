@@ -14,5 +14,6 @@ services:
       args:
         progress: plain
         no-cache: true
+        NEXT_PUBLIC_AGENT_BASE_URL:
     ports:
       - "3001:3001"
