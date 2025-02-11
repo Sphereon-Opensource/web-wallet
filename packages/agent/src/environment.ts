@@ -8,6 +8,7 @@
 import { config as dotenvConfig } from 'dotenv-flow'
 import { resolve } from 'path'
 import { env } from '@sphereon/ssi-express-support'
+import {StatusListType} from '@sphereon/ssi-types'
 await dotenvConfig()
 
 /*********************************************************************************************************************
@@ -73,9 +74,12 @@ export const IS_FEDERATION_ENABLED = toBoolean(process.env.IS_FEDERATION_ENABLED
 export const STATUS_LIST_API_BASE_PATH = env('STATUS_LIST_API_BASE_PATH', ENV_VAR_PREFIX) ?? VC_API_BASE_PATH
 export const STATUS_LIST_ISSUER = env('STATUS_LIST_ISSUER', ENV_VAR_PREFIX) ?? DEFAULT_DID
 export const STATUS_LIST_ID = env('STATUS_LIST_ID', ENV_VAR_PREFIX) ?? 'http://localhost/vc/credentials/status-lists/1'
+export const STATUS_LIST_TYPE = env('STATUS_LIST_TYPE', ENV_VAR_PREFIX) ?? StatusListType.StatusList2021
 export const STATUS_LIST_CORRELATION_ID = env('STATUS_LIST_CORRELATION_ID', ENV_VAR_PREFIX) ?? 'default-sl'
 export const STATUS_LIST_LENGTH = env('STATUS_LIST_LENGTH', ENV_VAR_PREFIX) ?? '150000' // at least 150k to ensure herd privacy
 export const STATUS_LIST_PURPOSE = env('STATUS_LIST_PURPOSE', ENV_VAR_PREFIX) ?? 'revocation' // revocation or suspension
+
+export const STATUS_LIST_DB_NAME = env('STATUS_LIST_DB_NAME', ENV_VAR_PREFIX) ?? 'default'
 
 export const DID_API_BASE_PATH = env('DID_API_BASE_PATH', ENV_VAR_PREFIX) ?? '/did'
 export const ASSET_DEFAULT_DID_METHOD = env('ASSET_DEFAULT_DID_METHOD', ENV_VAR_PREFIX) ?? 'jwk'

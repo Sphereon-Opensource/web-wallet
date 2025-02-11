@@ -48,8 +48,9 @@ import {
   OID4VCI_API_BASE_URL,
   OID4VP_DEFINITIONS,
   STATUS_LIST_API_BASE_PATH,
-  STATUS_LIST_CORRELATION_ID,
-  STATUS_LIST_ID, STATUS_LIST_ISSUER,
+  STATUS_LIST_CORRELATION_ID, STATUS_LIST_DB_NAME,
+  STATUS_LIST_ID,
+  STATUS_LIST_ISSUER, STATUS_LIST_TYPE,
   VC_API_BASE_PATH,
   VC_API_DEFAULT_PROOF_FORMAT,
 } from './environment'
@@ -79,7 +80,7 @@ import {EventLogger} from '@sphereon/ssi-sdk.event-logger'
 import {RemoteServerApiServer} from '@sphereon/ssi-sdk.remote-server-rest-api'
 import {IssuanceBranding} from '@sphereon/ssi-sdk.issuance-branding'
 import {PDManager} from '@sphereon/ssi-sdk.pd-manager'
-import {DcqlQueryREST, LoggingEventType, StatusListDriverType} from '@sphereon/ssi-types'
+import {DcqlQueryREST, LoggingEventType, StatusListDriverType, StatusListType} from '@sphereon/ssi-types'
 import {createOID4VPRP, getDefaultOID4VPRPOptions} from './utils/oid4vp'
 import {IPresentationDefinition} from '@sphereon/pex'
 import {PresentationExchange} from '@sphereon/ssi-sdk.presentation-exchange'
@@ -117,6 +118,7 @@ import {getOrCreateConfiguredStatusList} from './utils/statuslist'
 import {CredentialValidation} from '@sphereon/ssi-sdk.credential-validation'
 import {OIDFMetadataServer, OIDFMetadataStore} from '@sphereon/ssi-sdk.oidf-metatdata-server'
 import {IEndpointOpts} from '@sphereon/ssi-express-support'
+import {CreateNewStatusListArgs} from '@sphereon/ssi-sdk.vc-status-list'
 
 /**
  * Lets setup supported DID resolvers first
@@ -133,20 +135,6 @@ const cliMode: boolean = process.env.RUN_MODE === 'cli'
 if(process.env.RUN_MIGRATIONS === 'true') {
   await (await dbConnection).runMigrations();
 }
-
-const statusListPlugin = new StatusListPlugin({
-  /*...(STATUS_LIST_ID && {
-    defaultStatuslistImport: {
-      id: STATUS_LIST_ID,
-      correlationId: STATUS_LIST_CORRELATION_ID,
-      issuer: STATUS_LIST_ISSUER,
-      driverType: StatusListDriverType.AGENT_TYPEORM,
-      dataSource: dbConnection
-    } FIXME need a var for this
-  }),*/
-  defaultStatusListId: STATUS_LIST_ID,
-  allDataSources: DataSources.singleInstance()
-})
 
 /**
  * Define Agent plugins being used. The plugins come from Sphereon's SSI-SDK and Veramo.
@@ -206,7 +194,10 @@ const plugins: IAgentPlugin[] = [
     saltGenerator: generateSalt,
     verifySignature: verifySDJWTSignature,
   }),
-  statusListPlugin,
+  new StatusListPlugin({
+    defaultStatusListId: STATUS_LIST_ID,
+    allDataSources: DataSources.singleInstance()
+  }),
   new CredentialValidation(),
 ]
 
@@ -498,6 +489,10 @@ if (!cliMode) {
           credentialDataSupplier: getCredentialDataSupplier(instanceOpt.credentialIssuer),
           expressSupport,
         })
+
+        if (IS_STATUS_LIST_ENABLED && opts.issuerOpts) {
+          void await agent.slImportStatusLists(opts.statusLists)
+        }
       }),
     )
   }
@@ -519,7 +514,17 @@ if (!cliMode) {
 
 
   if (IS_STATUS_LIST_ENABLED) {
-    statusListPlugin.initialize(context) // Import status lists and initialize instance cache
+    if(STATUS_LIST_ID && STATUS_LIST_CORRELATION_ID) {
+      const defaultStatuslistImport: CreateNewStatusListArgs = {
+        id: STATUS_LIST_ID,
+        correlationId: STATUS_LIST_CORRELATION_ID,
+        type: STATUS_LIST_TYPE as StatusListType,
+        issuer: STATUS_LIST_ISSUER as string,
+        driverType: StatusListDriverType.AGENT_TYPEORM,
+        dbName: STATUS_LIST_DB_NAME
+      }
+      void await agent.slImportStatusLists([defaultStatuslistImport])
+    }
 
     new StatuslistManagementApiServer({
       opts: {
