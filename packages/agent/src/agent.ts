@@ -213,6 +213,11 @@ const plugins: IAgentPlugin[] = [
 let oid4vpRP: SIOPv2RP | undefined
 
 if (!cliMode) {
+
+  process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection:', reason)
+  })
+
   if (IS_OID4VCI_ENABLED) {
     plugins.push(
       new OID4VCIStore({
