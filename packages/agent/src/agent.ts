@@ -49,7 +49,7 @@ import {
   OID4VP_DEFINITIONS,
   STATUS_LIST_API_BASE_PATH,
   STATUS_LIST_CORRELATION_ID,
-  STATUS_LIST_ID,
+  STATUS_LIST_ID, STATUS_LIST_ISSUER,
   VC_API_BASE_PATH,
   VC_API_DEFAULT_PROOF_FORMAT,
 } from './environment'
@@ -134,6 +134,20 @@ if(process.env.RUN_MIGRATIONS === 'true') {
   await (await dbConnection).runMigrations();
 }
 
+const statusListPlugin = new StatusListPlugin({
+  /*...(STATUS_LIST_ID && {
+    defaultStatuslistImport: {
+      id: STATUS_LIST_ID,
+      correlationId: STATUS_LIST_CORRELATION_ID,
+      issuer: STATUS_LIST_ISSUER,
+      driverType: StatusListDriverType.AGENT_TYPEORM,
+      dataSource: dbConnection
+    } FIXME need a var for this
+  }),*/
+  defaultStatusListId: STATUS_LIST_ID,
+  allDataSources: DataSources.singleInstance()
+})
+
 /**
  * Define Agent plugins being used. The plugins come from Sphereon's SSI-SDK and Veramo.
  */
@@ -192,14 +206,7 @@ const plugins: IAgentPlugin[] = [
     saltGenerator: generateSalt,
     verifySignature: verifySDJWTSignature,
   }),
-  new StatusListPlugin({
-    instances: [{
-      id: STATUS_LIST_ID,
-      correlationId: STATUS_LIST_CORRELATION_ID,
-      driverType: StatusListDriverType.AGENT_TYPEORM,
-      dataSource: dbConnection,
-    }], defaultInstanceId: STATUS_LIST_ID, allDataSources: DataSources.singleInstance(),
-  }),
+  statusListPlugin,
   new CredentialValidation(),
 ]
 
@@ -507,6 +514,8 @@ if (!cliMode) {
 
 
   if (IS_STATUS_LIST_ENABLED) {
+    statusListPlugin.initialize(context) // Import status lists and initialize instance cache
+
     new StatuslistManagementApiServer({
       opts: {
         endpointOpts: {
