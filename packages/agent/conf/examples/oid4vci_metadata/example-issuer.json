@@ -1,0 +1,402 @@
+{
+  "correlationId": "http://my-hostname-or-ip:5010/oid4vci",
+  "overwriteExisting": true,
+  "metadataType": "issuer",
+  "metadata": {
+    "credential_issuer": "http://my-hostname-or-ip:5010/oid4vci",
+    "credential_endpoint": "http://my-hostname-or-ip:5010/oid4vci/credentials",
+    "client_name": "Findynet",
+    "client_uri": "https://findynet.fi",
+    "logo_uri": "https://findynet.fi/wp-content/uploads/2024/02/findynet-logo.png",
+    "tos_uri": "https://sphereon.com/sphereon-wallet-terms-and-conditions",
+    "policy_uri": "https://sphereon.com/sphereon-wallet-privacy-policy",
+    "contacts": [
+      "dev@sphereon.com",
+      "support@sphereon.com"
+    ],
+    "display": [
+      {
+        "name": "Findynet",
+        "description": "Findynet Issuer"
+      }
+    ],
+    "credential_configurations_supported": {
+      "PensionSdJwt": {
+        "format": "vc+sd-jwt",
+        "cryptographic_binding_methods_supported": [
+          "did:web",
+          "did:jwk"
+        ],
+        "cryptographic_suites_supported": [
+          "ES256"
+        ],
+        "display": [
+          {
+            "name": "PensionCredential",
+            "description": "Pension Credential",
+            "background_color": "rgba(0, 0, 0, 0.2)",
+            "text_color": "#FBFBFB",
+            "logo": {
+              "url": "https://findynet.fi/wp-content/uploads/2024/02/findynet-logo.png",
+              "alt_text": "Findynet logo"
+            }
+          },
+          {
+            "locale": "en-US",
+            "name": "PensionCredential",
+            "description": "Residence statement Belastingdienst",
+            "background_color": "rgba(0, 0, 0, 0.2)",
+            "text_color": "#FBFBFB",
+            "logo": {
+              "url": "https://findynet.fi/wp-content/uploads/2024/02/findynet-logo.png",
+              "alt_text": "Findynet logo"
+            }
+          },
+          {
+            "locale": "nl-NL",
+            "name": "PensioenCredential",
+            "description": "Pensioen Credential",
+            "background_color": "rgba(0, 0, 0, 0.2)",
+            "text_color": "#FBFBFB",
+            "logo": {
+              "url": "https://findynet.fi/wp-content/uploads/2024/02/findynet-logo.png",
+              "alt_text": "Findynet logo"
+            }
+          }
+        ],
+        "vct": "PensionSdJwt",
+        "claims": [
+          {
+            "display": [
+              {
+                "description": "Pension Information",
+                "label": "Pension",
+                "lang": "en-US"
+              },
+              {
+                "description": "Pensioeninformatie",
+                "label": "Pension",
+                "lang": "nl-NL"
+              }
+            ],
+            "path": [
+              "Pension"
+            ]
+          },
+          {
+            "display": [
+              {
+                "description": "Start Date",
+                "label": "Start Date",
+                "lang": "en-US"
+              },
+              {
+                "description": "Startdatum",
+                "label": "Start Date",
+                "lang": "nl-NL"
+              }
+            ],
+            "path": [
+              "Pension",
+              "startDate"
+            ]
+          },
+          {
+            "display": [
+              {
+                "description": "End Date",
+                "label": "End Date",
+                "lang": "en-US"
+              },
+              {
+                "description": "Einddatum",
+                "label": "End Date",
+                "lang": "nl-NL"
+              }
+            ],
+            "path": [
+              "Pension",
+              "endDate"
+            ]
+          },
+          {
+            "display": [
+              {
+                "description": "Personal Information",
+                "label": "Person",
+                "lang": "en-US"
+              },
+              {
+                "description": "Persoonlijke Informatie",
+                "label": "Person",
+                "lang": "nl-NL"
+              }
+            ],
+            "path": [
+              "Person"
+            ]
+          },
+          {
+            "display": [
+              {
+                "description": "Personal Administrative Number",
+                "label": "Personal Administrative Number",
+                "lang": "en-US"
+              },
+              {
+                "description": "Persoonlijk Administratienummer",
+                "label": "Personal Administrative Number",
+                "lang": "nl-NL"
+              }
+            ],
+            "path": [
+              "Person",
+              "personal_administrative_number"
+            ]
+          }
+        ],
+        "credential_definition": {
+          "type": [
+            "PensionSdJwt"
+          ]
+        }
+      },
+      "PensionCredential": {
+        "format": "jwt_vc_json",
+        "cryptographic_binding_methods_supported": [
+          "did:web",
+          "did:jwk"
+        ],
+        "cryptographic_suites_supported": [
+          "ES256"
+        ],
+        "display": [
+          {
+            "name": "PensionCredential",
+            "description": "Pension Credential",
+            "background_color": "rgba(0, 0, 0, 0.2)",
+            "text_color": "#FBFBFB",
+            "logo": {
+              "url": "https://findynet.fi/wp-content/uploads/2024/02/findynet-logo.png",
+              "alt_text": "Findynet logo"
+            }
+          },
+          {
+            "locale": "en-US",
+            "name": "PensionCredential",
+            "description": "Residence statement Belastingdienst",
+            "background_color": "rgba(0, 0, 0, 0.2)",
+            "text_color": "#FBFBFB",
+            "logo": {
+              "url": "https://findynet.fi/wp-content/uploads/2024/02/findynet-logo.png",
+              "alt_text": "Findynet logo"
+            }
+          },
+          {
+            "locale": "nl-NL",
+            "name": "PensioenCredential",
+            "description": "Pensioen Credential",
+            "background_color": "rgba(0, 0, 0, 0.2)",
+            "text_color": "#FBFBFB",
+            "logo": {
+              "url": "https://findynet.fi/wp-content/uploads/2024/02/findynet-logo.png",
+              "alt_text": "Findynet logo"
+            }
+          }
+        ],
+        "credentialSubject": {
+          "Pension": {
+            "display": [
+              {
+                "name": "Pension Information"
+              },
+              {
+                "name": "Pension Information",
+                "locale": "en-US"
+              },
+              {
+                "name": "Pensioeninformatie",
+                "locale": "nl-NL"
+              }
+            ],
+            "startDate": {
+              "display": [
+                {
+                  "name": "Start Date"
+                },
+                {
+                  "name": "Start Date",
+                  "locale": "en-US"
+                },
+                {
+                  "name": "Startdatum",
+                  "locale": "nl-NL"
+                }
+              ]
+            },
+            "endDate": {
+              "display": [
+                {
+                  "name": "End Date"
+                },
+                {
+                  "name": "End Date",
+                  "locale": "en-US"
+                },
+                {
+                  "name": "Einddatum",
+                  "locale": "nl-NL"
+                }
+              ]
+            },
+            "provisional": {
+              "display": [
+                {
+                  "name": "Provisional Status"
+                },
+                {
+                  "name": "Provisional Status",
+                  "locale": "en-US"
+                },
+                {
+                  "name": "Voorlopige Status",
+                  "locale": "nl-NL"
+                }
+              ]
+            },
+            "typeCode": {
+              "display": [
+                {
+                  "name": "Type Code"
+                },
+                {
+                  "name": "Type Code",
+                  "locale": "en-US"
+                },
+                {
+                  "name": "Typecode",
+                  "locale": "nl-NL"
+                }
+              ]
+            },
+            "typeName": {
+              "display": [
+                {
+                  "name": "Type Name"
+                },
+                {
+                  "name": "Type Name",
+                  "locale": "en-US"
+                },
+                {
+                  "name": "Typenaam",
+                  "locale": "nl-NL"
+                }
+              ]
+            }
+          },
+          "Person": {
+            "display": [
+              {
+                "name": "Personal Information"
+              },
+              {
+                "name": "Personal Information",
+                "locale": "en-US"
+              },
+              {
+                "name": "Persoonlijke Informatie",
+                "locale": "nl-NL"
+              }
+            ],
+            "personal_administrative_number": {
+              "display": [
+                {
+                  "name": "Personal Administrative Number"
+                },
+                {
+                  "name": "Personal Administrative Number",
+                  "locale": "en-US"
+                },
+                {
+                  "name": "Persoonlijk Administratienummer",
+                  "locale": "nl-NL"
+                }
+              ]
+            },
+            "birth_date": {
+              "display": [
+                {
+                  "name": "Date of Birth"
+                },
+                {
+                  "name": "Date of Birth",
+                  "locale": "en-US"
+                },
+                {
+                  "name": "Geboortedatum",
+                  "locale": "nl-NL"
+                }
+              ]
+            },
+            "family_name": {
+              "display": [
+                {
+                  "name": "Family Name"
+                },
+                {
+                  "name": "Family Name",
+                  "locale": "en-US"
+                },
+                {
+                  "name": "Achternaam",
+                  "locale": "nl-NL"
+                }
+              ]
+            },
+            "given_name": {
+              "display": [
+                {
+                  "name": "Given Name"
+                },
+                {
+                  "name": "Given Name",
+                  "locale": "en-US"
+                },
+                {
+                  "name": "Voornaam",
+                  "locale": "nl-NL"
+                }
+              ]
+            }
+          }
+        },
+        "credential_definition": {
+          "type": [
+            "VerifiableCredential",
+            "PensionCredential"
+          ]
+        }
+      }
+    },
+    "credential_supplier_config": {
+      "templates_base_dir": "templates",
+      "template_mappings": [
+        {
+          "credential_types": [
+            "PensionCredential"
+          ],
+          "template_path": "PensionCredential.hbs.json",
+          "format": "jwt_vc_json"
+        },
+        {
+          "credential_types": [
+            "PensionSdJwt"
+          ],
+          "template_path": "PensionSdJwt.hbs.json",
+          "format": "vc+sd-jwt"
+        }
+      ]
+    }
+  }
+}

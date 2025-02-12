@@ -230,7 +230,7 @@ if (!cliMode) {
     plugins.push(oid4vpRP)
     plugins.push(new PresentationExchange())
   }
-  
+
   if(IS_FEDERATION_ENABLED) {
     plugins.push(new OIDFMetadataStore())
   }
@@ -469,7 +469,7 @@ if (!cliMode) {
       },
     })
   }
-  
+
   if (IS_OID4VCI_ENABLED) {
     oid4vciInstanceOpts.asArray.map(async (opts) =>
       issuerPersistToInstanceOpts(opts).then(async (instanceOpt) => {
@@ -490,9 +490,9 @@ if (!cliMode) {
           expressSupport,
         })
 
-        if (IS_STATUS_LIST_ENABLED && opts.issuerOpts) {
+        /*if (IS_STATUS_LIST_ENABLED && opts.issuerOpts) {
           void await agent.slImportStatusLists(opts.statusLists)
-        }
+        }*/
       }),
     )
   }
@@ -504,17 +504,17 @@ if (!cliMode) {
     if(oid4vpMetadataOpts) {
       await context.agent.oidfStoreImportMetadatas(oid4vpMetadataOpts.asArray)
     }
-    
+
     void OIDFMetadataServer.init({context, expressSupport})
   }
-  
+
   if (IS_JWKS_HOSTING_ENABLED) {
     new PublicKeyHosting({ agent, expressSupport, opts: { hostingOpts: { enableFeatures: ['did-jwks', 'all-jwks'] } } })
   }
 
 
   if (IS_STATUS_LIST_ENABLED) {
-    if(STATUS_LIST_ID && STATUS_LIST_CORRELATION_ID) {
+    /*if(STATUS_LIST_ID && STATUS_LIST_CORRELATION_ID) {
       const defaultStatuslistImport: CreateNewStatusListArgs = {
         id: STATUS_LIST_ID,
         correlationId: STATUS_LIST_CORRELATION_ID,
@@ -524,7 +524,7 @@ if (!cliMode) {
         dbName: STATUS_LIST_DB_NAME
       }
       void await agent.slImportStatusLists([defaultStatuslistImport])
-    }
+    }*/
 
     new StatuslistManagementApiServer({
       opts: {

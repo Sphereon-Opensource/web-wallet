@@ -42,6 +42,8 @@ if (!process.env.DB_ENCRYPTION_KEY) {
   )
 }
 
+const DB_POSTGRES = DB_TYPE?.includes('postgres')
+
 /**
  * Setup SSL options
  */
@@ -83,8 +85,7 @@ const sqliteConfig: SqliteConnectionOptions = {
     ...DataStoreEventLoggerMigrations,
     ...DataStoreDigitalCredentialMigrations,
     ...DataStoreMachineStateMigrations,
-    ...DataStorePresentationDefinitionMigrations,
-    ...WebWalletMigrations,
+    ...DataStorePresentationDefinitionMigrations
   ],
   migrationsRun: false, // We run migrations from code to ensure proper ordering with Redux
   synchronize: false, // We do not enable synchronize, as we use migrations from code
@@ -145,4 +146,4 @@ function validatePostgresOptions(options: PostgresConnectionOptions) {
 }
 
 console.log(`Database type '${DB_TYPE}' is being used`)
-export const DB_CONFIG = DB_TYPE === 'postgres' ? postgresConfig : sqliteConfig
+export const DB_CONFIG = DB_POSTGRES ? postgresConfig : sqliteConfig
