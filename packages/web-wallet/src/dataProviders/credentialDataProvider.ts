@@ -126,9 +126,11 @@ export const credentialDataProvider = (): DataProvider => ({
   deleteOne: async <TData extends BaseRecord = BaseRecord, TVariables = {}>({
     resource,
     id,
+    meta,
   }: DeleteOneParams<TVariables>): Promise<DeleteOneResponse<TData>> => {
     assertResource(resource)
-    await agent.crsDeleteCredential({id: id as string})
+    const hashAsId = typeof meta?.idColumnName === 'string' && meta?.idColumnName === 'hash'
+    await agent.crsDeleteCredential(hashAsId ? {hash: id as string} : {id: id as string})
     return {
       data: {} as TData,
     }
