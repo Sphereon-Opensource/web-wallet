@@ -12,11 +12,9 @@ import {
   DB_URL,
   DB_USE_SSL,
   DB_USERNAME,
-} from '../environment'
-import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions'
+} from '../environment-vars'
 import { TlsOptions } from 'tls'
 import { WebWalletMigrations } from './migrations'
-import { SqliteConnectionOptions } from 'typeorm/driver/sqlite/SqliteConnectionOptions'
 import {
   DataStoreContactEntities,
   DataStoreDigitalCredentialEntities,
@@ -35,6 +33,10 @@ import {
   DataStorePresentationDefinitionMigrations,
   DataStoreStatusListMigrations,
 } from '@sphereon/ssi-sdk.data-store'
+// @ts-ignore // Package does not export these properly
+import {SqliteConnectionOptions} from "typeorm/driver/sqlite/SqliteConnectionOptions";
+// @ts-ignore // Package does not export these properly
+import {PostgresConnectionOptions} from "typeorm/driver/postgres/PostgresConnectionOptions";
 
 if (!process.env.DB_ENCRYPTION_KEY) {
   console.warn(

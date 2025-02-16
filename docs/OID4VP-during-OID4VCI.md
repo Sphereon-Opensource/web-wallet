@@ -83,7 +83,8 @@ ci -> w: tls() HTTP 200 <CredentialResponse>
 3. The Wallet acquires the Credential Issuer's metadata.
 4. The Credential Issuer responds with the required metadata.
 5. The Wallet submits an Authorization Challenge Request to the Issuer's Authorization Server using HTTP POST.
-6. The Issuer checks if enough information is available to authorize credential issuance. If not, it sends a presentation request to the Wallet via an Authorization Challenge Error Response.
+6. The Issuer checks if enough information is available to authorize credential issuance. If not, it sends a
+   presentation request to the Wallet via an Authorization Challenge Error Response.
 7. If the Wallet provides the required credential, it submits an authorization request to the RP.
 8. If the Wallet cannot provide the credentials:
     - It sends an error response, including the state information (auth_session), to the RP.
@@ -102,15 +103,17 @@ ci -> w: tls() HTTP 200 <CredentialResponse>
 This flow is based on the "OAuth 2.0 for First-Party Applications" draft, and
 aims for a browser-less approach to improve user experience. This comes with the
 limitation that the credential presentation request is handled by the same
-Wallet that was used to start the OID4VCI process. 
+Wallet that was used to start the OID4VCI process.
 If credentials are stored in other wallets there currently is no solution to remedy the situation.
-
 
 ## Changes to the OID4VC Flow
 
 With the usage of the first party application flow, the issuer metadata need to
 be extended with the
 [authorization_challenge_endpoint](https://www.ietf.org/archive/id/draft-parecki-oauth-first-party-apps-02.html#name-authorization-server-metada).
+
+This value needs to point to the agent's `authorization_challenge_endpoint`. You put the value in the `oid4vci_metadata`
+folder, as part of the OID4VCI issuer metadata.
 
 Since the OID4VCI flow includes an authorization flow, the lifetime of the
 session has to be increased.
@@ -237,3 +240,18 @@ Cache-Control: no-store
   "auth_session": "123456789"
 }
 ```
+
+### Requirements and setup
+
+Currently an issuer instance can support the First party flow. But if configured like that, it cannot support any other
+flows, like regular authorization code flows, or pre-authorized_code flows.
+The code is prepared to integrate with external Relying Party software conforming to OID4VP, but for now only the
+Sphereon OID4VP implementation, exposed as REST APIs is supported. This means that both the OID4VCI and OID4VP
+components have to be hosted by Sphereon agents (they could be hosted as separate instances).
+
+Another limitation is that we do not support different presentation definitions per OID4VCI configuration_id yet.
+Meaning it now is basically limited to using a single Presentation Definition for all credentials the particular agent
+can issue. This will be resolved in Q1 2025.
+
+In order to use the First Party support (OID4VP), you will have to configure either 1 agent that supports both OID4VCI
+and OID4VP, or you can opt to host 2 agents, where one is supporting OID4VCI and another OID4VP.

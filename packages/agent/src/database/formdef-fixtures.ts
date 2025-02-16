@@ -3,7 +3,7 @@
 import {promises as fs} from 'fs'
 import path from 'path'
 import {getDbConnection} from './databaseService'
-import {DB_CONNECTION_NAME} from '../environment'
+import {DB_CONNECTION_NAME} from '../environment-vars'
 
 interface Schema {
   schemaType: string

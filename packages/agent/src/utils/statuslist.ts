@@ -8,9 +8,9 @@ import {
   STATUS_LIST_ISSUER,
   STATUS_LIST_LENGTH,
   STATUS_LIST_PURPOSE,
-} from '../environment'
+} from '../environment-vars'
 import {context} from '../agent'
-import {STATUS_LIST_API_FEATURES} from '../environment-deps'
+import {STATUS_LIST_API_FEATURES} from '../environment-vars-with-deps'
 import {StatusListType} from '@sphereon/ssi-types'
 
 export async function getOrCreateConfiguredStatusList(args?: { issuer?: string; keyRef?: string }) {

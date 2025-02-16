@@ -1,0 +1,25 @@
+{
+  "correlationId": "http://localhost:5010/oid4vci-local",
+  "overwriteExisting": true,
+  "metadataType": "authorizationServer",
+  "metadata": {
+    "issuer": "http://127.0.0.1:5010/oid4vci-local",
+    "token_endpoint": "http://127.0.0.1:5010/oid4vci-local/token",
+    "token_endpoint_auth_methods_supported": [
+      "none",
+      "client_secret_jwt",
+      "client_secret_basic",
+      "client_secret_post"
+    ],
+    "scopes_supported": [
+      "openid"
+    ],
+    "revocation_endpoint_auth_methods_supported": [
+      "client_secret_basic",
+      "client_secret_post",
+      "client_secret_jwt",
+      "private_key_jwt"
+    ],
+    "jwks_uri": "http://127.0.0.1:5010/oid4vci-local/.well-known/jwks.json"
+  }
+}

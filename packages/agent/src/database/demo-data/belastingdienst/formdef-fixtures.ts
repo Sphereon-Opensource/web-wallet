@@ -1,5 +1,5 @@
 import { getDbConnection } from '../../databaseService'
-import { DB_CONNECTION_NAME } from '../../../environment'
+import { DB_CONNECTION_NAME } from '../../../environment-vars'
 import omzetbelastingUISchema from './omzetbelastingUISchema.json' assert { type: 'json' }
 import omzetbelastingDataSchema from './omzetbelastingSchema.json' assert { type: 'json' }
 import woonplaatsVerklaringUISchema from './woonplaatsVerklaringUISchema.json' assert { type: 'json' }

@@ -1,29 +1,3 @@
-import {createAgent, IAgentContext, IAgentPlugin, ProofFormat, TAgent} from '@veramo/core'
-import {
-  CredentialHandlerLDLocal,
-  LdDefaultContexts,
-  MethodNames,
-  SphereonEcdsaSecp256k1RecoverySignature2020,
-  SphereonEd25519Signature2018,
-  SphereonEd25519Signature2020,
-  SphereonJsonWebSignature2020,
-} from '@sphereon/ssi-sdk.vc-handler-ld-local'
-import {CredentialPlugin} from '@veramo/credential-w3c'
-import {DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore} from '@veramo/data-store'
-import {DIDManager} from '@veramo/did-manager'
-import {DIDResolverPlugin} from '@veramo/did-resolver'
-import {SphereonKeyManager} from '@sphereon/ssi-sdk-ext.key-manager'
-import {SecretBox} from '@veramo/kms-local'
-import {SphereonKeyManagementSystem} from '@sphereon/ssi-sdk-ext.kms-local'
-import {
-  createDidProviders,
-  createDidResolver,
-  expressBuilder,
-  getDefaultDID,
-  getDefaultKeyRef,
-  getOrCreateDIDWebFromEnv,
-  getOrCreateIdentifiersFromFS,
-} from './utils'
 import {
   ASSET_DEFAULT_DID_METHOD,
   AUTHENTICATION_ENABLED,
@@ -53,7 +27,34 @@ import {
   STATUS_LIST_ISSUER, STATUS_LIST_TYPE,
   VC_API_BASE_PATH,
   VC_API_DEFAULT_PROOF_FORMAT,
-} from './environment'
+} from './environment-vars.js'
+
+import {createAgent, IAgentContext, IAgentPlugin, ProofFormat, TAgent} from '@veramo/core'
+import {
+  CredentialHandlerLDLocal,
+  LdDefaultContexts,
+  MethodNames,
+  SphereonEcdsaSecp256k1RecoverySignature2020,
+  SphereonEd25519Signature2018,
+  SphereonEd25519Signature2020,
+  SphereonJsonWebSignature2020,
+} from '@sphereon/ssi-sdk.vc-handler-ld-local'
+import {CredentialPlugin} from '@veramo/credential-w3c'
+import {DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore} from '@veramo/data-store'
+import {DIDManager} from '@veramo/did-manager'
+import {DIDResolverPlugin} from '@veramo/did-resolver'
+import {SphereonKeyManager} from '@sphereon/ssi-sdk-ext.key-manager'
+import {SecretBox} from '@veramo/kms-local'
+import {SphereonKeyManagementSystem} from '@sphereon/ssi-sdk-ext.kms-local'
+import {
+  createDidProviders,
+  createDidResolver,
+  expressBuilder,
+  getDefaultDID,
+  getDefaultKeyRef,
+  getOrCreateDIDWebFromEnv,
+  getOrCreateIdentifiersFromFS,
+} from './utils'
 import {VcApiServer} from '@sphereon/ssi-sdk.w3c-vc-api'
 import {UniResolverApiServer} from '@sphereon/ssi-sdk.uni-resolver-registrar-api'
 import {DID_PREFIX, DIDMethods, TAgentTypes} from './types'
@@ -104,7 +105,7 @@ import {
   STATUS_LIST_API_FEATURES,
   syncDefinitionsOpts,
   VC_API_FEATURES,
-} from './environment-deps'
+} from './environment-vars-with-deps'
 import {dbConnection} from './database'
 import {IdentifierResolution} from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {JwtService} from '@sphereon/ssi-sdk-ext.jwt-service'

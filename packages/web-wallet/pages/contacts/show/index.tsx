@@ -8,11 +8,7 @@ import {ContactViewItem, SSITabView} from '@sphereon/ui-components.ssi-react'
 import {credentialLocaleBrandingFrom} from '@sphereon/ssi-sdk.oid4vci-holder/dist/agent/OIDC4VCIBrandingMapper'
 import PageHeaderBar from '@components/bars/PageHeaderBar'
 import {staticPropsWithSST} from '@/src/i18n/server'
-import {
-  CredentialConfigurationSupported,
-  CredentialConfigurationSupportedV1_0_13,
-  CredentialsSupportedDisplay,
-} from '@sphereon/oid4vci-common'
+import {CredentialConfigurationSupported, CredentialConfigurationSupportedV1_0_13, CredentialsSupportedDisplay} from '@sphereon/oid4vci-common'
 import agent from '@agent'
 import style from './index.module.css'
 import {CredentialCatalogItem} from '@typings'
@@ -70,26 +66,24 @@ const ShowContactDetails: FC = (): ReactElement => {
   }
 
   const getCredentialBranding = async (args: getCredentialBrandingArgs): Promise<Record<string, Array<IBasicCredentialLocaleBranding>>> => {
-    const { credentialsSupported } = args
+    const {credentialsSupported} = args
     const credentialBranding: Record<string, Array<IBasicCredentialLocaleBranding>> = {}
     await Promise.all(
-        Object.entries(credentialsSupported).map(async ([configId, credentialsConfigSupported]) => {
-          const localeBranding: Array<IBasicCredentialLocaleBranding> = await Promise.all(
-              (credentialsConfigSupported.display ?? []).map(
-                  async (display: CredentialsSupportedDisplay): Promise<IBasicCredentialLocaleBranding> =>
-                      await agent.ibCredentialLocaleBrandingFrom({ localeBranding: await credentialLocaleBrandingFrom(display) }),
-              ),
-          )
-
-          credentialBranding[configId] = localeBranding
-        }),
+      Object.entries(credentialsSupported).map(async ([configId, credentialsConfigSupported]) => {
+        credentialBranding[configId] = await Promise.all(
+          (credentialsConfigSupported.display ?? []).map(
+            async (display: CredentialsSupportedDisplay): Promise<IBasicCredentialLocaleBranding> =>
+              await agent.ibCredentialLocaleBrandingFrom({localeBranding: await credentialLocaleBrandingFrom({credentialDisplay: display})}),
+          ),
+        )
+      }),
     )
 
     return credentialBranding
   }
 
   const selectCredentialLocaleBranding = (args: SelectCredentialLocaleBrandingArgs): IBasicCredentialLocaleBranding | undefined => {
-    const { locale, localeBranding } = args
+    const {locale, localeBranding} = args
     return localeBranding?.find((branding: IBasicCredentialLocaleBranding) =>
       locale ? branding.locale?.startsWith(locale) || branding.locale === undefined : branding.locale === undefined,
     )
@@ -126,24 +120,24 @@ const ShowContactDetails: FC = (): ReactElement => {
 
     getCredentialBranding({credentialsSupported}).then(credentialBranding => {
       const credentialCatalogItems: Array<CredentialCatalogItem> = Object.entries(credentialBranding).map(([configId, branding]) => {
-                const localeBranding = selectCredentialLocaleBranding({ locale: getLocale(), localeBranding: branding })
-                return {
-                  configId,
-                  credential: {
-                    backgroundColor: localeBranding?.background?.color,
-                    backgroundImage: localeBranding?.background?.image,
-                    logo: localeBranding?.logo,
-                    credentialTitle: localeBranding?.alias,
-                    credentialSubtitle: localeBranding?.description,
-                    issuerName: partyData?.data.contact.displayName,
-                    credentialStatus: CredentialStatus.VALID,
+        const localeBranding = selectCredentialLocaleBranding({locale: getLocale(), localeBranding: branding})
+        return {
+          configId,
+          credential: {
+            backgroundColor: localeBranding?.background?.color,
+            backgroundImage: localeBranding?.background?.image,
+            logo: localeBranding?.logo,
+            credentialTitle: localeBranding?.alias,
+            credentialSubtitle: localeBranding?.description,
+            issuerName: partyData?.data.contact.displayName,
+            credentialStatus: CredentialStatus.VALID,
             textColor: localeBranding?.text?.color,
-                  },
+          },
           actions: 'actions',
-                }
-              })
-          setCredentialCatalogItems(credentialCatalogItems)
-        })
+        }
+      })
+      setCredentialCatalogItems(credentialCatalogItems)
+    })
   }, [credentialsSupported])
 
   if (isLoading) {
@@ -194,9 +188,9 @@ const ShowContactDetails: FC = (): ReactElement => {
     ...(!party.roles.includes(CredentialRole.ISSUER)
       ? [
           {
-              key: ContactDetailsTabRoute.CREDENTIAL_CATALOG,
-              title: translate('contact_details_credential_catalog_tab_label'),
-              content: getCredentialCatalogContent,
+            key: ContactDetailsTabRoute.CREDENTIAL_CATALOG,
+            title: translate('contact_details_credential_catalog_tab_label'),
+            content: getCredentialCatalogContent,
           },
         ]
       : []),

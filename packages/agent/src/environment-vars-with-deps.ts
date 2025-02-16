@@ -16,7 +16,7 @@ import {
   OID4VP_PRESENTATION_DEFINITION_PATH,
   OID4VP_RP_METADATA_PATH,
   OID4VP_RP_OPTIONS_PATH,
-} from './environment'
+} from './environment-vars'
 import {loadJsonFileMap, loadJsonFiles} from './utils'
 import {IIdentifierConfigOpts, OID4VPInstanceOpts} from './types'
 import {IIssuerMetadataImportArgs, IIssuerOptsImportArgs} from '@sphereon/ssi-sdk.oid4vci-issuer-store'

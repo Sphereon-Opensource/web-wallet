@@ -1,7 +1,7 @@
 /*********************************************************************************************************************
  * DO NOT IMPORT OTHER DEPS BELOW.
  *
- * If you need env vars with types or imports, put them in ./environment-deps.ts
+ * If you need env vars with types or imports, put them in ./environment-vars-with-deps.ts
  * Reason is that we want to load this file early on. The more deps the bigger the chance that we would load files that depend on the env vars!
  * *******************************************************************************************************************
  */
@@ -9,12 +9,13 @@ import { config as dotenvConfig } from 'dotenv-flow'
 import { resolve } from 'path'
 import { env } from '@sphereon/ssi-express-support'
 import {StatusListType} from '@sphereon/ssi-types'
+import * as process from "node:process";
 await dotenvConfig()
 
 /*********************************************************************************************************************
  * DO NOT IMPORT OTHER DEPS ABOVE.
  *
- * If you need env vars with types or imports, put them in ./environment-deps.ts
+ * If you need env vars with types or imports, put them in ./environment-vars-with-deps.ts
  * Reason is that we want to load this file early on. The more deps the bigger the chance that we would load files that depend on the env vars!
  * *******************************************************************************************************************
  */
@@ -28,10 +29,6 @@ const toBoolean = (value: string | undefined, defaultValue?: boolean): boolean =
  * so the rest of the code doesn't have to know the exact environment values
  */
 export const ENV_VAR_PREFIX = process.env.ENV_VAR_PREFIX ?? ''
-export const DB_TYPE = env('DB_TYPE', ENV_VAR_PREFIX) ?? 'postgres'
-process.env[`${ENV_VAR_PREFIX}${DB_TYPE}`] = DB_TYPE // make sure we sync back in case we did not have it above
-//#DB_URL="database/agent_default.sqlite"
-//#DB_URL="'postgresql://postgres:your-super-secret-and-long-postgres-password@127.0.0.1:5432/postgres"
 export const DB_URL = env('DB_URL', ENV_VAR_PREFIX) // Using DB_URL is optional
 export const DB_HOST = env('DB_HOST', ENV_VAR_PREFIX)
 export const DB_PORT = env('DB_PORT', ENV_VAR_PREFIX)
@@ -45,6 +42,29 @@ export const DB_CONNECTION_NAME = env('DB_CONNECTION_NAME', ENV_VAR_PREFIX) ?? '
 export const DB_DATABASE_NAME = env('DB_DATABASE_NAME', ENV_VAR_PREFIX) ?? 'web-wallet-agent'
 export const DB_CACHE_ENABLED = env('DB_CACHE_ENABLED', ENV_VAR_PREFIX) ?? 'true'
 export const DB_ENCRYPTION_KEY = env('DB_ENCRYPTION_KEY', ENV_VAR_PREFIX) ?? '29739248cad1bd1a0fc4d9b75cd4d2990de535baf5caadfdf8d8f86664aa830c'
+
+let dbType = env('DB_TYPE', ENV_VAR_PREFIX)
+if (!dbType) {
+    if (DB_URL) {
+        if (DB_URL.includes('sqlite')) {
+            dbType = 'sqlite'
+        } else if (DB_URL.startsWith('http') || DB_URL.startsWith('postgres')) {
+            dbType = 'postgres'
+        } else {
+            dbType = 'postgres'
+        }
+    }
+}
+if (!dbType) {
+    if (DB_HOST || DB_PORT) {
+        dbType = 'postgres'
+    }
+} else if (dbType.toLowerCase().includes('postgres')) {
+    dbType = 'postgres'
+}
+export const DB_TYPE = dbType ?? 'postgres'
+process.env[`${ENV_VAR_PREFIX}${DB_TYPE}`] = DB_TYPE // make sure we sync back in case we did not have it above
+
 export const INTERNAL_HOSTNAME_OR_IP = env('INTERNAL_HOSTNAME_OR_IP', ENV_VAR_PREFIX) ?? env('HOSTNAME', ENV_VAR_PREFIX) ?? '0.0.0.0'
 export const INTERNAL_PORT = env('PORT', ENV_VAR_PREFIX) ? Number.parseInt(env('PORT', ENV_VAR_PREFIX)!) : 5000
 export const EXTERNAL_HOSTNAME = env('EXTERNAL_HOSTNAME', ENV_VAR_PREFIX) ?? 'localhost'
@@ -53,6 +73,8 @@ export const DEFAULT_MODE = env('DEFAULT_MODE', ENV_VAR_PREFIX) ?? 'did' //did, 
 export const DEFAULT_DID = env('DEFAULT_DID', ENV_VAR_PREFIX)
 export const DEFAULT_KID = env('DEFAULT_KID', ENV_VAR_PREFIX)
 export const CONF_PATH = env('CONF_PATH', ENV_VAR_PREFIX) ? resolve(env('CONF_PATH', ENV_VAR_PREFIX)!) : resolve('../../conf')
+
+export const IS_WALLET_ENABLED = toBoolean(process.env.IS_WALLET_ENABLED, true)
 export const IS_OID4VP_ENABLED = toBoolean(process.env.OID4VP_ENABLED, true)
 
 export const IS_OID4VCI_ENABLED = toBoolean(process.env.OID4VCI_ENABLED, true)

@@ -1,6 +1,6 @@
 import {
   DB_TYPE
-} from '../environment'
+} from '../environment-vars'
 console.log(`Database type '${DB_TYPE}' is being used`) // This forces the env to be loaded before typeorm
 
 import {addContactsRWS} from './demo-data/rws/contact-fixtures'

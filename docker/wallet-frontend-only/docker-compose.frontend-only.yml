@@ -9,7 +9,7 @@ services:
       - .env
     tty: true
     build:
-      context: ../..
+      context: ../../
       dockerfile: ./docker/wallet-frontend-only/Dockerfile
       args:
         progress: plain
@@ -17,3 +17,6 @@ services:
         NEXT_PUBLIC_AGENT_BASE_URL:
     ports:
       - "3001:3001"
+    x-develop:
+      files:
+        - .env:/opt/wallet/frontend/.env

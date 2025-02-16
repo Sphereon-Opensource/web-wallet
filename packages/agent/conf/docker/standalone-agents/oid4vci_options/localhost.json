@@ -1,10 +1,17 @@
 {
-  "correlationId": "http://0.0.0.0:5001/oid4vci",
+  "correlationId": "http://0.0.0.0:5010/oid4vci",
   "definitionId": "example",
+  "asClientOpts": {
+    "authorization_server": "https://auth.test.sphereon.com",
+    "client_id": "zELcpfANLqY7Oqas",
+    "client_secret": "TQV5U29k1gHibH5bx1layBo0OSAvAbRT3UYW3EWrSYBB5swxjVfWUa1BS8lqzxG/0v9wruMcrGadany3",
+    "redirect_uris": ["http://localhost:3000/cb"],
+    "response_types": ["code"]
+  },
   "issuerOpts": {
     "didOpts": {
       "checkLinkedDomains": "if_present",
-      "identifierOpts": {
+      "idOpts": {
         "identifier": "did:jwk:eyJhbGciOiJFUzI1NiIsInVzZSI6InNpZyIsImt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiVEcySDJ4MmRXWE4zdUNxWnBxRjF5c0FQUVZESkVOX0gtQ010YmdqYi1OZyIsInkiOiI5TThOeGQwUE4yMk05bFBEeGRwRHBvVEx6MTV3ZnlaSnM2WmhLSVVKMzM4In0",
         "kid": "034c6d87db1d9d597377b82a99a6a175cac00f4150c910dfc7f8232d6e08dbf8d8"
       }

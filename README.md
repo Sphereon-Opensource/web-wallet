@@ -8,7 +8,7 @@
 
 # alpha state
 
-Please be aware that although the wallet can be used to issue credential, manage presentation definitions, receive and
+Please be aware that although the wallet can be used to issue credentials, manage presentation definitions, receive and
 present credentials using the OID4VC set of specifications, the wallet is still in an alpha stage.
 
 # Web wallet
@@ -34,15 +34,18 @@ directory.
 
 The agent can be configured using several environment variables. Amongst these are variables to enable certain
 functionalities of the agent. If you want to use Docker then there are 2 distinct agent versions you can run.
+
 - A standalone agent, to be used without the web wallet, only enabling REST APIs
 - The web wallet agent, enabling certain features needed for the web wallet to run
 
-- The Sphereon **Standalone Agent**: This agent running on port 5001 by default, contains the did:web of SPHEREON, and is
-  responsible for issuance and optional
+- The Sphereon **Standalone Agent**: This agent running on port 5001 by default, runs without a web-wallet, and
+  is responsible for issuance and optional
   storage of Verifiable Credentials. Creating DIDs from the REST API is enabled on this agent. Resolution of DIDs will
-  use hybrid resolution, meaning any did:web will be resolved to the actual https endpoint, but it also resolved non-published DIDs only available to the agent.
+  use hybrid resolution, meaning any did:web will be resolved to the actual https endpoint, but it also resolved
+  non-published DIDs only available to the agent. The W3C VC API is available, and also support to act as a Relying Party.
 - The **Wallet Agent**: This agent running on port 5010 by default, it can create and verify Verifiable
-  Credentials using a W3C VC API, or using OID4VC. The DIDs will be resolved in hybrid mode, meaning the agent will first look
+  Credentials using a W3C VC API, or using OID4VC. The DIDs will be resolved in hybrid mode, meaning the agent will
+  first look
   whether the DID is managed by the agent and then generate a DID resolution result from the database. If not managed by
   the agent it will perform an external resolution call.
 
@@ -55,18 +58,19 @@ environment variables, as well as how to call the different REST API endpoints
 
 ## Docker
 
-Docker images are provided in the `docker` folder for both agent types. Please read the [Docker readme](./docker/README.docker.md)
+Docker images are provided in the `docker` folder for both agent types. Please read
+the [Docker readme](./docker/README.docker.md)
 
-You can run `docker compose up` to run the agents in Docker. 
+You can run `docker compose up` to run the agents in Docker.
 
 ## Postman collection
 
 In the `docs/postman` folder you can find a Postman collection you can import in Postman. This collection allows you to
-test REST API endpoints manually
+test the W3C VC API endpoints manually
 
 ## OpenAPI
 
-The [OpenAPI definition](./docs/openapi/SPHEREON_VC_API.yaml) for all REST endpoints can be found in
+The [OpenAPI definition](./docs/openapi/SPHEREON_VC_API.yaml) for all W3C VC REST endpoints can be found in
 the [docs/openapi](./docs/openapi) folder.
 You can use the definition to generate models for a target language of choice.
 This folder also contains an [HTML documentation](./docs/openapi/index.html) export of the REST API endpoints and

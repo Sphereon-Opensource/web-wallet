@@ -1,10 +1,10 @@
-import { IS_OID4VCI_ENABLED } from '../environment'
+import { IS_OID4VCI_ENABLED } from '../environment-vars'
 import { OID4VCIIssuer } from '@sphereon/ssi-sdk.oid4vci-issuer'
 import { Resolvable } from 'did-resolver'
 import { IIssuerInstanceOptions, IIssuerOptions, IIssuerOptsPersistArgs, OID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import { IIssuerOptsImportArgs } from '@sphereon/ssi-sdk.oid4vci-issuer-store/src/types/IOID4VCIStore'
 import { createDidResolver } from './did'
-import { oid4vciInstanceOpts, oid4vciMetadataOpts } from '../environment-deps'
+import { oid4vciInstanceOpts, oid4vciMetadataOpts } from '../environment-vars-with-deps'
 import {
   ensureManagedIdentifierResult,
   legacyKeyRefsToIdentifierOpts,
@@ -13,18 +13,19 @@ import {
 import { agentContext } from '@sphereon/ssi-sdk.core'
 import agent from '../agent'
 import { IIdentifier } from '@veramo/core'
+import { ClientMetadata } from "@sphereon/oid4vci-issuer";
 
-export function toImportIssuerOptions(args?: { oid4vciInstanceOpts: IIssuerOptsImportArgs[] }): IIssuerOptsImportArgs[] {
+export function toImportIssuerOptions(args?: { oid4vciInstanceOpts: (IIssuerOptsImportArgs & {asClientOpts?: ClientMetadata})[] }): (IIssuerOptsImportArgs & {asClientOpts?: ClientMetadata})[] {
   return args?.oid4vciInstanceOpts ?? oid4vciInstanceOpts.asArray
 }
 
 export async function getDefaultOID4VCIIssuerOptions(args?: { idOpts?: ManagedIdentifierOptsOrResult; resolver?: Resolvable }) {
   if (!IS_OID4VCI_ENABLED) {
-    return
+    return undefined
   }
   const { idOpts, resolver } = args ?? {}
   if (!idOpts) {
-    return
+    return undefined
   }
   const identifier = await ensureManagedIdentifierResult(idOpts, agentContext(agent))
 
@@ -79,7 +80,7 @@ export async function issuerPersistToInstanceOpts(opt: IIssuerOptsPersistArgs): 
 
 export async function createOID4VCIStore() {
   if (!IS_OID4VCI_ENABLED) {
-    return
+    return undefined
   }
   const importIssuerOpts = toImportIssuerOptions()
   return new OID4VCIStore({
@@ -91,7 +92,7 @@ export async function createOID4VCIStore() {
 
 export async function createOID4VCIIssuer(opts?: { resolver?: Resolvable }) {
   if (!IS_OID4VCI_ENABLED) {
-    return
+    return undefined
   }
   return new OID4VCIIssuer({
     returnSessions: true,

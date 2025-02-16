@@ -12,7 +12,8 @@ to the web wallet.
 # Environment variables
 
 There are several environment variables, allowing you to influence the behaviour of the agent(s).
-Please see [.env.example](.env.example) for a list and explanation of all the environment variables.
+Please see [.env.example](.env.example) for a list and explanation of all the environment variables. You will need to copy the
+.env.example file to .env.local to enable the env-vars for your argent.
 
 # Agent instances
 

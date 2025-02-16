@@ -1,7 +1,7 @@
 import { CredentialDataSupplier, CredentialDataSupplierArgs, CredentialDataSupplierResult, CredentialSignerCallback } from '@sphereon/oid4vci-issuer'
 import { TemplateVCGenerator } from './templateManager'
 import { getTypesFromRequest } from '@sphereon/oid4vci-common'
-import { CONF_PATH } from '../environment'
+import { CONF_PATH } from '../environment-vars'
 import { CredentialSupplierConfigWithTemplateSupport } from '../types'
 import { normalizeFilePath } from './generic'
 import agent from '../agent'

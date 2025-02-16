@@ -1,12 +1,12 @@
 import { IPEXInstanceOptions, IRPDefaultOpts, SIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
-import { IS_OID4VP_ENABLED } from '../environment'
+import { IS_OID4VP_ENABLED } from '../environment-vars'
 
 import { CheckLinkedDomain } from '@sphereon/did-auth-siop-adapter'
 import { SupportedVersion } from '@sphereon/did-auth-siop'
 import { Resolvable } from 'did-resolver'
 import { OID4VPInstanceOpts } from '../types'
 import { createDidResolver, getDefaultDID, getDefaultKeyRef, getIdentifier } from './did'
-import { oid4vpInstanceOpts } from '../environment-deps'
+import { oid4vpInstanceOpts } from '../environment-vars-with-deps'
 import { ManagedIdentifierDidOpts, ManagedIdentifierX5cOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 
 function toPexInstanceOptions(
@@ -36,7 +36,7 @@ function toPexInstanceOptions(
 
 export async function getDefaultOID4VPRPOptions(args?: { did?: string; x5c?: string[]; resolver?: Resolvable }): Promise<IRPDefaultOpts | undefined> {
   if (!IS_OID4VP_ENABLED) {
-    return
+    return undefined
   }
   let idOpts: ManagedIdentifierX5cOpts | ManagedIdentifierDidOpts
   let resolver: Resolvable | undefined
@@ -48,11 +48,11 @@ export async function getDefaultOID4VPRPOptions(args?: { did?: string; x5c?: str
   } else if (args?.did) {
     const did = args?.did ?? (await getDefaultDID())
     if (!did) {
-      return
+      return undefined
     }
     const identifier = await getIdentifier(did)
     if (!identifier) {
-      return
+      return undefined
     }
     resolver = args?.resolver ?? createDidResolver()
     idOpts = {

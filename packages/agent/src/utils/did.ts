@@ -21,10 +21,10 @@ import {
   DID_WEB_DID,
   DID_WEB_KID,
   DID_WEB_PRIVATE_KEY_PEM,
-} from '../environment'
+} from '../environment-vars'
 import { EbsiDidProvider } from '@sphereon/ssi-sdk.ebsi-support'
 import { SphereonKeyDidProvider } from '@sphereon/ssi-sdk-ext.did-provider-key'
-import { identifierOptConfigs } from '../environment-deps'
+import { identifierOptConfigs } from '../environment-vars-with-deps'
 import { ensureManagedIdentifierResult, ManagedIdentifierResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 
 export function createDidResolver() {
@@ -96,7 +96,7 @@ export async function getDefaultKeyRef({
   if (DEFAULT_KID) {
     return DEFAULT_KID
   }
-  if (DEFAULT_MODE.toLowerCase() !== 'x5c') {
+  if (DEFAULT_MODE.toLowerCase() === 'x5c') {
     return Promise.reject(Error(`Mode ${DEFAULT_MODE}, requires a DEFAULT_KID to be set`))
   }
   const targetDid = did ?? (await getDefaultDID())
