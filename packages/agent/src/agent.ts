@@ -196,7 +196,7 @@ const plugins: IAgentPlugin[] = [
     verifySignature: verifySDJWTSignature,
   }),
   new StatusListPlugin({
-    defaultStatusListId: STATUS_LIST_ID,
+    defaultInstanceId: STATUS_LIST_ID,
     allDataSources: DataSources.singleInstance()
   }),
   new CredentialValidation(),
@@ -474,7 +474,10 @@ if (!cliMode) {
   if (IS_OID4VCI_ENABLED) {
     oid4vciInstanceOpts.asArray.map(async (opts) =>
       issuerPersistToInstanceOpts(opts).then(async (instanceOpt) => {
-        const credentialIssuer = opts.correlationId.startsWith('http') ? opts.correlationId : OID4VCI_API_BASE_URL
+        const credentialIssuer = instanceOpt.credentialIssuer ?? opts.issuerOpts.idOpts?.issuer ?? process.env.OID4VCI_API_BASE_URL ?? opts.correlationId.startsWith('http') ? opts.correlationId : undefined
+        if (!credentialIssuer) {
+          throw Error(`No credential issuer could be deduced from the options: ${JSON.stringify(opts)}`)
+        }
         void OID4VCIRestAPI.init({
           opts: {
             baseUrl: credentialIssuer,
@@ -487,7 +490,7 @@ if (!cliMode) {
             namespace: 'oid4vci', // TODO configurable?
           } as IIssuerInstanceArgs,
           //credentialDataSupplier: defaultCredentialDataSupplier,
-          credentialDataSupplier: getCredentialDataSupplier(instanceOpt.credentialIssuer),
+          credentialDataSupplier: getCredentialDataSupplier(credentialIssuer),
           expressSupport,
         })
 

@@ -13,7 +13,7 @@ import {
 import { agentContext } from '@sphereon/ssi-sdk.core'
 import agent from '../agent'
 import { IIdentifier } from '@veramo/core'
-import { ClientMetadata } from "@sphereon/oid4vci-issuer";
+import { ClientMetadata } from "@sphereon/oid4vci-common";
 
 export function toImportIssuerOptions(args?: { oid4vciInstanceOpts: (IIssuerOptsImportArgs & {asClientOpts?: ClientMetadata})[] }): (IIssuerOptsImportArgs & {asClientOpts?: ClientMetadata})[] {
   return args?.oid4vciInstanceOpts ?? oid4vciInstanceOpts.asArray

@@ -90,7 +90,7 @@ export const IS_CONTACT_MANAGER_ENABLED = toBoolean(process.env.CONTACT_MANAGER_
 
 export const IS_JWKS_HOSTING_ENABLED = toBoolean(process.env.JWKS_HOSTING_ENABLED, true)
 export const IS_STATUS_LIST_ENABLED = toBoolean(process.env.IS_STATUS_LIST_ENABLED, true)
-export const IS_FEDERATION_ENABLED = toBoolean(process.env.IS_FEDERATION_ENABLED, true)
+export const IS_FEDERATION_ENABLED = toBoolean(process.env.IS_FEDERATION_ENABLED, false)
 
 
 export const STATUS_LIST_API_BASE_PATH = env('STATUS_LIST_API_BASE_PATH', ENV_VAR_PREFIX) ?? VC_API_BASE_PATH

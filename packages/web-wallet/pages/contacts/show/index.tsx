@@ -5,7 +5,7 @@ import {CredentialRole, IBasicCredentialLocaleBranding, Party} from '@sphereon/s
 import {OpenID4VCIClient} from '@sphereon/oid4vci-client'
 import {CredentialStatus, TabViewRoute} from '@sphereon/ui-components.core'
 import {ContactViewItem, SSITabView} from '@sphereon/ui-components.ssi-react'
-import {credentialLocaleBrandingFrom} from '@sphereon/ssi-sdk.oid4vci-holder/dist/agent/OIDC4VCIBrandingMapper'
+import {oid4vciCredentialLocaleBrandingFrom} from '@sphereon/ssi-sdk.oid4vci-holder'
 import PageHeaderBar from '@components/bars/PageHeaderBar'
 import {staticPropsWithSST} from '@/src/i18n/server'
 import {CredentialConfigurationSupported, CredentialConfigurationSupportedV1_0_13, CredentialsSupportedDisplay} from '@sphereon/oid4vci-common'
@@ -73,7 +73,7 @@ const ShowContactDetails: FC = (): ReactElement => {
         credentialBranding[configId] = await Promise.all(
           (credentialsConfigSupported.display ?? []).map(
             async (display: CredentialsSupportedDisplay): Promise<IBasicCredentialLocaleBranding> =>
-              await agent.ibCredentialLocaleBrandingFrom({localeBranding: await credentialLocaleBrandingFrom({credentialDisplay: display})}),
+              await agent.ibCredentialLocaleBrandingFrom({localeBranding: await oid4vciCredentialLocaleBrandingFrom({credentialDisplay: display})}),
           ),
         )
       }),

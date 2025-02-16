@@ -28,7 +28,7 @@ export async function defaultCredentialDataSupplier(args: CredentialDataSupplier
     )
 
     // Since this is an already issued credential we are looking up from our store, we provide a signer that does nothing
-    const signCallback: CredentialSignerCallback<DIDDocument> = () => Promise.resolve(credential)
+    const signCallback: CredentialSignerCallback = () => Promise.resolve(credential)
     return {
       credential: credential as ICredential,
       format: args.credentialRequest.format,
