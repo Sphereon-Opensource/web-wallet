@@ -1,4 +1,4 @@
-version: '3.8'
+name: sphereon-standalone-agent
 
 services:
   standalone-agent-full:
@@ -9,7 +9,10 @@ services:
       - .env
     tty: true
     build:
-      context: ../../packages/agent
-      dockerfile: ../../docker/standalone-agent-full/Dockerfile
+      context: ../..
+      dockerfile: ./docker/standalone-agent-full/Dockerfile
     ports:
-      - "5001:5001"
+      - "5010:5010"
+    volumes:
+      - ./volumes/conf:/opt/agent/packages/agent/conf:ro
+      - ./volumes/database:/opt/agent/packages/agent/database:rw

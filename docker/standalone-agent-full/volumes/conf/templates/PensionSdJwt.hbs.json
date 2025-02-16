@@ -1,0 +1,36 @@
+{
+  "vct": "PensionSdJwt",
+  "Pension": {
+    "startDate": "{{startDate}}",
+    "endDate": "{{endDate}}",
+    "provisional": "{{provisional}}",
+    "typeCode": "{{typeCode}}",
+    "typeName": "{{typeName}}"
+  },
+  "Person": {
+    "personal_administrative_number": "{{personalAdministrativeNumber}}",
+    "birth_date": "{{birthDate}}",
+    "family_name": "{{familyName}}",
+    "given_name": "{{givenName}}"
+  },
+  "disclosureFrame": {
+    "Pension": {
+      "_sd": [
+        "startDate",
+        "endDate",
+        "provisional",
+        "typeCode",
+        "typeName"
+      ]
+    },
+    "Person": {
+      "_sd": [
+        "personal_administrative_number",
+        "birth_date",
+        "family_name",
+        "given_name"
+      ]
+    }
+  },
+  "expirationDate": "{{{ dateTimeAfterMonths 12 }}}"
+}

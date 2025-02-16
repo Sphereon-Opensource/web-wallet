@@ -1,7 +1,7 @@
 FROM node:20.12.1-bookworm
 SHELL ["/bin/bash", "-c"]
 WORKDIR /opt/wallet/agent
-RUN npm -g install pnpm && SHELL=bash pnpm setup && source /root/.bashrc && pnpm self-update
+RUN npm -g install pnpm@9 && SHELL=bash pnpm setup && source /root/.bashrc && pnpm self-update
 
 RUN pnpm add typescript tslib
 

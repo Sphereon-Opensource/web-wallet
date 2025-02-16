@@ -1,11 +1,19 @@
-FROM node:lts-bullseye
+FROM node:20.12.1-bookworm
 SHELL ["/bin/bash", "-c"]
 WORKDIR /opt/agent
-RUN npm -g install pnpm && SHELL=bash pnpm setup && source /root/.bashrc && pnpm add -g pnpm
+RUN npm -g install pnpm@9 && SHELL=bash pnpm setup && source /root/.bashrc && pnpm self-update
+
 RUN pnpm add typescript tslib
 
-COPY ./ .
+COPY ./packages/agent packages/agent
+COPY ./patches patches
+COPY *.json .
+COPY *.yaml .
 RUN pnpm install -r
+RUN rm -rf packages/agent/conf/examples
+RUN rm packages/agent/.env*
+
+WORKDIR /opt/agent/packages/agent
 RUN pnpm build
 
 ENTRYPOINT ["pnpm", "start:dev"]
