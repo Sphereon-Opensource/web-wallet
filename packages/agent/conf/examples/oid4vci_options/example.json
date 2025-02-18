@@ -1,8 +1,8 @@
 {
-  "correlationId": "https://ca2b910c76b1.ngrok.app/oid4vci",
+  "correlationId": "http://my-hostname-or-ip:5010/oid4vci",
   "definitionId": "PensionCredential",
   "issuerOpts": {
-    "iss": "https://ca2b910c76b1.ngrok.app",
+    "iss": "http://my-hostname-or-ip:5010",
     "didOpts": {
       "checkLinkedDomains": "if_present",
       "identifierOpts": {
@@ -18,14 +18,30 @@
         "kmsKeyRef": "034c6d87db1d9d597377b82a99a6a175cac00f4150c910dfc7f8232d6e08dbf8d8"
       }
     },
-    "asClientOpts": {
+    "presentationDefinitionId": "PensionSdJwt",
+    "asClientOptsDisabled": {
       "client_id": "auth-code-flow-issuer",
       "client_secret": "pUOb0pDft1xpymNnWxIMZB6rtcaAvK6N"
+    },
+    "endpointOpts": {
+      "createCredentialOfferOpts": {
+        "defaultCredentialOfferPayloadMode": "VALUE"
+      },
+      "authorizationChallengeOpts": {
+        "enabled": true,
+        "createAuthRequestUriEndpointPath": "1stparty/create-auth",
+        "verifyAuthResponseEndpointPath": "1stparty/create-auth"
+      }
     }
   },
   "endpointOpts": {
     "createCredentialOfferOpts": {
       "defaultCredentialOfferPayloadMode": "VALUE"
+    },
+    "authorizationChallengeOpts": {
+      "enabled": true,
+      "createAuthRequestUriEndpointPath": "1stparty/create-auth",
+      "verifyAuthResponseEndpointPath": "1stparty/create-auth"
     }
   }
 }
