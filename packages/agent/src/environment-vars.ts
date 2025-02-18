@@ -74,7 +74,7 @@ export const DEFAULT_DID = env('DEFAULT_DID', ENV_VAR_PREFIX)
 export const DEFAULT_KID = env('DEFAULT_KID', ENV_VAR_PREFIX)
 export const CONF_PATH = env('CONF_PATH', ENV_VAR_PREFIX) ? resolve(env('CONF_PATH', ENV_VAR_PREFIX)!) : resolve('../../conf')
 
-export const IS_WALLET_ENABLED = toBoolean(process.env.IS_WALLET_ENABLED, true)
+export const IS_WALLET_ENABLED = toBoolean(process.env.IS_WALLET_ENABLED, false)
 export const IS_OID4VP_ENABLED = toBoolean(process.env.OID4VP_ENABLED, true)
 
 export const IS_OID4VCI_ENABLED = toBoolean(process.env.OID4VCI_ENABLED, true)

@@ -482,6 +482,7 @@ if (!cliMode) {
           opts: {
             baseUrl: credentialIssuer,
             endpointOpts: opts.endpointOpts as IEndpointOpts,
+            asClientOpts: opts.issuerOpts.asClientOpts
           } as IOID4VCIRestAPIOpts,
           context: context as unknown as IRequiredContext,
           issuerInstanceArgs: {
