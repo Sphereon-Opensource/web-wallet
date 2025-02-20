@@ -7,6 +7,9 @@ services:
       - "host.docker.internal:host-gateway"
     environment:
       IS_WALLET_ENABLED: false
+      CONF_PATH: ./conf
+#      If you change the conf volume mount point below adjust the above env var as well
+
     env_file:
       - .env
     tty: true
@@ -16,5 +19,6 @@ services:
     ports:
       - "5010:5010"
     volumes:
-      - ./volumes/conf:/opt/agent/packages/agent/conf:ro
+      - ../../packages/agent/conf/examples:/opt/agent/packages/agent/conf:ro
+      #      If you change the conf volume mount point adjust the above env var as well
       - ./volumes/database:/opt/agent/packages/agent/database:rw

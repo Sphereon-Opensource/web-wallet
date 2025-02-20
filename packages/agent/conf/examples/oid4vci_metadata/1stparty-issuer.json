@@ -1,11 +1,12 @@
 {
-  "correlationId": "http://my-hostname-or-ip:5010/oid4vci",
+  "correlationId": "http://my-hostname-or-ip:5010/1stparty/oid4vci",
   "overwriteExisting": true,
   "metadataType": "issuer",
   "metadata": {
-    "credential_issuer": "http://my-hostname-or-ip:5010/oid4vci",
-    "credential_endpoint": "http://my-hostname-or-ip:5010/oid4vci/credentials",
-    "client_name": "Example",
+    "credential_issuer": "http://my-hostname-or-ip:5010/1stparty/oid4vci",
+    "credential_endpoint": "http://my-hostname-or-ip:5010/1stparty/oid4vci/credentials",
+    "authorization_challenge_endpoint": "http://my-hostname-or-ip:5010/1stparty/oid4vci/authorize-challenge",
+    "client_name": "1st Party",
     "client_uri": "https://findynet.fi",
     "logo_uri": "https://findynet.fi/wp-content/uploads/2024/02/findynet-logo.png",
     "tos_uri": "https://sphereon.com/sphereon-wallet-terms-and-conditions",
@@ -16,8 +17,8 @@
     ],
     "display": [
       {
-        "name": "Example",
-        "description": "Example Issuer"
+        "name": "1st Party",
+        "description": "1st Party Issuer"
       }
     ],
     "credential_configurations_supported": {

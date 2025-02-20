@@ -1,0 +1,68 @@
+{
+  "definitionId": "wallet-identity",
+  "rpOpts": {
+    "supportedVersions": [
+      200,
+      180
+    ],
+    "responseMode": "direct_post",
+    "clientMetadataOpts": {
+      "idTokenSigningAlgValuesSupported": [
+        "ES256"
+      ],
+      "requestObjectSigningAlgValuesSupported": [
+        "ES256"
+      ],
+      "responseTypesSupported": [
+        "id_token",
+        "vp_token"
+      ],
+      "client_name": "Example",
+      "vpFormatsSupported": {
+        "jwt_vc_json": {
+          "alg": [
+            "ES256"
+          ]
+        },
+        "jwt_vp_json": {
+          "alg": [
+            "ES256"
+          ]
+        },
+        "jwt_vc": {
+          "alg": [
+            "ES256"
+          ]
+        },
+        "jwt_vp": {
+          "alg": [
+            "ES256"
+          ]
+        }
+      },
+      "scopesSupported": [
+        "openid did_authn"
+      ],
+      "subjectTypesSupported": [
+        "pairwise"
+      ],
+      "subject_syntax_types_supported": [
+        "did:web",
+        "did:jwk"
+      ],
+      "passBy": "VALUE"
+    },
+    "didOpts": {
+      "checkLinkedDomains": "if_present"
+    },
+    "identifierOpts": {
+      "idOpts": {
+        "clientIdScheme": "did",
+        "method": "did",
+        "identifier": "did:jwk:eyJhbGciOiJFUzI1NiIsInVzZSI6InNpZyIsImt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiVEcySDJ4MmRXWE4zdUNxWnBxRjF5c0FQUVZESkVOX0gtQ010YmdqYi1OZyIsInkiOiI5TThOeGQwUE4yMk05bFBEeGRwRHBvVEx6MTV3ZnlaSnM2WmhLSVVKMzM4In0",
+        "kid": "did:jwk:eyJhbGciOiJFUzI1NiIsInVzZSI6InNpZyIsImt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiVEcySDJ4MmRXWE4zdUNxWnBxRjF5c0FQUVZESkVOX0gtQ010YmdqYi1OZyIsInkiOiI5TThOeGQwUE4yMk05bFBEeGRwRHBvVEx6MTV3ZnlaSnM2WmhLSVVKMzM4In0#0",
+        "kmsKeyRef": "034c6d87db1d9d597377b82a99a6a175cac00f4150c910dfc7f8232d6e08dbf8d8"
+      }
+    }
+  }
+}

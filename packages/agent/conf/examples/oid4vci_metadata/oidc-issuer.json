@@ -1,11 +1,12 @@
 {
-  "correlationId": "http://my-hostname-or-ip:5010/oid4vci",
+  "correlationId": "http://my-hostname-or-ip:5010/oidc/oid4vci",
   "overwriteExisting": true,
   "metadataType": "issuer",
   "metadata": {
-    "credential_issuer": "http://my-hostname-or-ip:5010/oid4vci",
-    "credential_endpoint": "http://my-hostname-or-ip:5010/oid4vci/credentials",
-    "client_name": "Example",
+    "credential_issuer": "http://my-hostname-or-ip:5010/oidc/oid4vci",
+    "credential_endpoint": "http://my-hostname-or-ip:5010/oidc/oid4vci/credentials",
+    "authorization_servers": ["https://auth01.test.sphereon.com/auth/realms/vdx"],
+    "client_name": "OIDC example",
     "client_uri": "https://findynet.fi",
     "logo_uri": "https://findynet.fi/wp-content/uploads/2024/02/findynet-logo.png",
     "tos_uri": "https://sphereon.com/sphereon-wallet-terms-and-conditions",
@@ -16,8 +17,8 @@
     ],
     "display": [
       {
-        "name": "Example",
-        "description": "Example Issuer"
+        "name": "OIDC Issuer",
+        "description": "OIDC Issuer"
       }
     ],
     "credential_configurations_supported": {
@@ -34,7 +35,7 @@
           {
             "name": "PensionCredential",
             "description": "Pension Credential",
-            "background_color": "rgba(0, 0, 0, 0.2)",
+            "background_color": "rgba(0, 0, 0, 0.5)",
             "text_color": "#FBFBFB",
             "logo": {
               "url": "https://findynet.fi/wp-content/uploads/2024/02/findynet-logo.png",
@@ -45,7 +46,7 @@
             "locale": "en-US",
             "name": "PensionCredential",
             "description": "Residence statement Belastingdienst",
-            "background_color": "rgba(0, 0, 0, 0.2)",
+            "background_color": "rgba(0, 0, 0, 0.5)",
             "text_color": "#FBFBFB",
             "logo": {
               "url": "https://findynet.fi/wp-content/uploads/2024/02/findynet-logo.png",
@@ -56,7 +57,7 @@
             "locale": "nl-NL",
             "name": "PensioenCredential",
             "description": "Pensioen Credential",
-            "background_color": "rgba(0, 0, 0, 0.2)",
+            "background_color": "rgba(0, 0, 0, 0.5)",
             "text_color": "#FBFBFB",
             "logo": {
               "url": "https://findynet.fi/wp-content/uploads/2024/02/findynet-logo.png",
@@ -174,7 +175,7 @@
           {
             "name": "PensionCredential",
             "description": "Pension Credential",
-            "background_color": "rgba(0, 0, 0, 0.2)",
+            "background_color": "rgba(0, 0, 0, 0.5)",
             "text_color": "#FBFBFB",
             "logo": {
               "url": "https://findynet.fi/wp-content/uploads/2024/02/findynet-logo.png",
@@ -185,7 +186,7 @@
             "locale": "en-US",
             "name": "PensionCredential",
             "description": "Residence statement Belastingdienst",
-            "background_color": "rgba(0, 0, 0, 0.2)",
+            "background_color": "rgba(0, 0, 0, 0.5)",
             "text_color": "#FBFBFB",
             "logo": {
               "url": "https://findynet.fi/wp-content/uploads/2024/02/findynet-logo.png",
@@ -196,7 +197,7 @@
             "locale": "nl-NL",
             "name": "PensioenCredential",
             "description": "Pensioen Credential",
-            "background_color": "rgba(0, 0, 0, 0.2)",
+            "background_color": "rgba(0, 0, 0, 0.5)",
             "text_color": "#FBFBFB",
             "logo": {
               "url": "https://findynet.fi/wp-content/uploads/2024/02/findynet-logo.png",

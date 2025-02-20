@@ -49,10 +49,10 @@ functionalities of the agent. If you want to use Docker then there are 2 distinc
   whether the DID is managed by the agent and then generate a DID resolution result from the database. If not managed by
   the agent it will perform an external resolution call.
 
-# Agent documentation
+# Agent documentation and exercises
 
-The [agent documentation](./packages/agent/README.md) contains information about supported features, methods,
-environment variables, as well as how to call the different REST API endpoints
+You can find setup information on our [documentation website](https://docs.sphereon.com). It explains seting up the agent in multiple ways, as well as how to work with the
+configuration files and APIs.
 
 # Building and testing
 
@@ -70,11 +70,7 @@ test the W3C VC API endpoints manually
 
 ## OpenAPI
 
-The [OpenAPI definition](./docs/openapi/SPHEREON_VC_API.yaml) for all W3C VC REST endpoints can be found in
-the [docs/openapi](./docs/openapi) folder.
-You can use the definition to generate models for a target language of choice.
-This folder also contains an [HTML documentation](./docs/openapi/index.html) export of the REST API endpoints and
-models.
+See our [documentation website](https://docs.sphereon.com) for more information on the REST APIs exposed by the agent.
 
 ## From source
 

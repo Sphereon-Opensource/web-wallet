@@ -1,11 +1,11 @@
 {
-  "correlationId": "http://my-hostname-or-ip:5010/oid4vci",
+  "correlationId": "http://my-hostname-or-ip:5010/1stparty/oid4vci",
   "overwriteExisting": true,
   "metadataType": "authorizationServer",
   "metadata": {
-    "issuer": "http://my-hostname-or-ip:5010/oid4vci",
-    "authorization_challenge_endpoint": "http://my-hostname-or-ip:5010/oid4vci/authorize-challenge",
-    "token_endpoint": "http://my-hostname-or-ip:5010/oid4vci/token",
+    "issuer": "http://my-hostname-or-ip:5010/1stparty/oid4vci",
+    "token_endpoint": "http://my-hostname-or-ip:5010/1stparty/oid4vci/token",
+    "authorization_challenge_endpoint": "http://my-hostname-or-ip:5010/1stparty/oid4vci/authorize-challenge",
     "token_endpoint_auth_methods_supported": [
       "none",
       "client_secret_jwt",
@@ -21,6 +21,6 @@
       "client_secret_jwt",
       "private_key_jwt"
     ],
-    "jwks_uri": "http://my-hostname-or-ip:5010/.well-known/jwks.json"
+    "jwks_uri": "http://my-hostname-or-ip:5010/1stparty/oid4vci/.well-known/jwks.json"
   }
 }
