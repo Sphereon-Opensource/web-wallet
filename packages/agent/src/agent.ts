@@ -197,7 +197,7 @@ const plugins: IAgentPlugin[] = [
     verifySignature: verifySDJWTSignature,
   }),
   new StatusListPlugin({
-    defaultInstanceId: STATUS_LIST_ID,
+    defaultStatusListId: STATUS_LIST_ID,
     allDataSources: DataSources.singleInstance()
   }),
   new CredentialValidation(),
