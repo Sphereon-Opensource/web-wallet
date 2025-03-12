@@ -1,8 +1,8 @@
 import {Asset} from '../asset'
 import {getMatchingIdentity} from '@helpers/IdentityFilters'
-import {formatDate} from '@helpers/date/DateHelper'
 import {TranslateFn} from '../type-commons'
 import {Identity, Party} from '@sphereon/ssi-sdk.data-store'
+import {formatDate} from '@sphereon/ui-components.ssi-react'
 
 export const PROCESS_OWNER_DID =
   process.env.NEXT_PUBLIC_PROCESS_OWNER_DID ??
