@@ -16,7 +16,7 @@ import {
   IS_FEDERATION_ENABLED,
   IS_JWKS_HOSTING_ENABLED,
   IS_OID4VCI_ENABLED,
-  IS_OID4VP_ENABLED,
+  IS_OID4VP_ENABLED, IS_PDM_API_ENABLED,
   IS_STATUS_LIST_ENABLED,
   IS_VC_API_ENABLED,
   OID4VCI_API_BASE_URL,
@@ -119,6 +119,7 @@ import {getOrCreateConfiguredStatusList} from './utils/statuslist'
 import {CredentialValidation} from '@sphereon/ssi-sdk.credential-validation'
 import {OIDFMetadataServer, OIDFMetadataStore} from '@sphereon/ssi-sdk.oidf-metatdata-server'
 import {IEndpointOpts} from '@sphereon/ssi-express-support'
+import {PdManagerApiServer} from '@sphereon/ssi-sdk.pd-manager-rest-api'
 import {CreateNewStatusListArgs} from '@sphereon/ssi-sdk.vc-status-list'
 
 /**
@@ -450,6 +451,11 @@ if (!cliMode) {
       agent,
     })
   }
+
+  if(IS_PDM_API_ENABLED) {
+    new PdManagerApiServer({agent, expressSupport})
+  }
+
 
   /**
    * Enable the Veramo remote server API

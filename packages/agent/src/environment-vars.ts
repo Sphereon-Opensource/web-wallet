@@ -131,3 +131,5 @@ export const OID4VP_DEFINITIONS: string[] = process.env.OID4VP_DEFINITIONS
 export const OID4VP_PRESENTATION_DEFINITION_PATH = `${CONF_PATH}/presentation_definitions`
 export const OID4VP_RP_OPTIONS_PATH = `${CONF_PATH}/oid4vp_options`
 export const OID4VP_RP_METADATA_PATH = `${CONF_PATH}/oid4vp_metadata`
+
+export const IS_PDM_API_ENABLED = toBoolean(process.env.PDM_API_ENABLED, true)
