@@ -23,6 +23,7 @@ import {CredentialSummary, toCredentialSummary} from '@sphereon/ui-components.cr
 import {DigitalCredential} from '@sphereon/ssi-sdk.credential-store'
 import {VerifiableCredential} from '@veramo/core'
 import {CredentialMapper} from '@sphereon/ssi-types'
+import {defaultHasher} from "@sphereon/ssi-sdk.core";
 
 enum CredentialDetailsTabRoute {
   INFO = 'info',
@@ -103,7 +104,7 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
           ],
         })
 
-        const wrappedCredential = CredentialMapper.toWrappedVerifiableCredential(rawDocument)  // FIXME
+        const wrappedCredential = CredentialMapper.toWrappedVerifiableCredential(rawDocument, {hasher: defaultHasher})  // FIXME
         const credentialSummary: CredentialSummary = await toCredentialSummary({
           verifiableCredential: wrappedCredential.decoded as VerifiableCredential,   // FIXME
           hash,
@@ -142,9 +143,9 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
     ...(credentialSummary?.branding?.background?.color && {backgroundColor: credentialSummary?.branding?.background?.color}),
   }
   const getVerifiedInformationContent = (): ReactElement => {
-    const wrappedCredential = CredentialMapper.toWrappedVerifiableCredential(credentialResult.data.data.rawDocument)
+    const wrappedCredential = CredentialMapper.toWrappedVerifiableCredential(credentialResult.data.data.rawDocument, {hasher: defaultHasher})
     const credentialSubject = wrappedCredential.decoded.credentialSubject
-    if ('id' in credentialSubject && credentialSubject.id.startsWith('did:')) {
+    if (credentialSubject && 'id' in credentialSubject && credentialSubject.id.startsWith('did:')) {
       delete credentialSubject.id
     }
     const termsOfUse = credentialSummary.termsOfUse?.length

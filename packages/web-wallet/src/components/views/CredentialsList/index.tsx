@@ -23,6 +23,7 @@ import {AddContactArgs} from "@sphereon/ssi-sdk.contact-manager";
 import {IdentityOrigin} from "@sphereon/ssi-sdk.data-store/dist/types/contact/contact";
 import {addContact} from "@/src/services/contactService";
 import {registerDidEbsiOnLedger} from "@/src/services/ebsiService";
+import {defaultHasher} from "@sphereon/ssi-sdk.core";
 
 type Props = {
   credentialRole: CredentialRole
@@ -268,7 +269,7 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
 
   const onImportCredential = async (file: File): Promise<void> => {
     const rawCredential = await file.text()
-    const uniformCredential = CredentialMapper.toUniformCredential(rawCredential)
+    const uniformCredential = CredentialMapper.toUniformCredential(rawCredential, {hasher: defaultHasher})
     const { issuerName, issuerAlias} = getCredentialIssuerNameAndAlias({ verifiableCredential: uniformCredential as VerifiableCredential })
     const correlationId = CredentialMapper.issuerCorrelationIdFromIssuerType(uniformCredential.issuer)
     const filter: FindPartyArgs = [
@@ -347,7 +348,7 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
     }
 
     const rawCredential = await file.text()
-    const uniformCredential = CredentialMapper.toUniformCredential(rawCredential)
+    const uniformCredential = CredentialMapper.toUniformCredential(rawCredential, {hasher: defaultHasher})
 
     const verificationResult = await agent.verifyCredential({
       credential: uniformCredential as W3CVerifiableCredential,

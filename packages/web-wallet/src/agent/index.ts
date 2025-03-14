@@ -3,7 +3,7 @@ import {eventLoggerAuditMethods} from '@sphereon/ssi-sdk.event-logger'
 import {sphereonKeyManagerMethods} from '@sphereon/ssi-sdk-ext.key-manager'
 import {VcApiIssuerClient} from '@sphereon/ssi-sdk.w3c-vc-api-issuer-rest-client'
 import {QrCodeProvider} from '@sphereon/ssi-sdk.qr-code-generator'
-import {LinkHandlerEventType, LinkHandlerPlugin, LinkHandlers, LogLinkHandler} from '@sphereon/ssi-sdk.core'
+import {defaultHasher, LinkHandlerEventType, LinkHandlerPlugin, LinkHandlers, LogLinkHandler} from '@sphereon/ssi-sdk.core'
 import {OID4VCIRestClient} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-client'
 import {createAgent, IAgentContext, IAgentPlugin} from '@veramo/core'
 import {getResolver as getDidKeyResolver} from '@sphereon/ssi-sdk-ext.did-resolver-key'
@@ -21,14 +21,18 @@ import {oid4vciStateNavigationListener} from '@machines/oid4vci/oid4vciStateNavi
 import {AuthorizationRequestOpts, PARMode} from '@sphereon/oid4vci-common'
 import {CLIENT_ID, OID4VCI_CODE_URL_REGEX, OID4VCI_DEFAULT_REDIRECT_URI} from '@/app'
 import {TAgentTypes} from '@typings'
-import {DidAuthSiopOpAuthenticator, OID4VPCallbackStateListener, Siopv2OID4VPLinkHandler} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
+import {
+  DidAuthSiopOpAuthenticator,
+  didAuthSiopOpAuthenticatorMethods,
+  OID4VPCallbackStateListener,
+  Siopv2OID4VPLinkHandler,
+} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 import {vpStateCallbacks} from '@machines/siopv2/siopv2StateNavigation'
-import {didAuthSiopOpAuthenticatorMethods} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 import {credentialStoreMethods} from '@sphereon/ssi-sdk.credential-store'
 import {IdentifierResolution, identifierResolutionContextMethods} from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {SDJwtPlugin, sdJwtPluginContextMethods} from '@sphereon/ssi-sdk.sd-jwt'
 import {JwtService, jwtServiceContextMethods} from '@sphereon/ssi-sdk-ext.jwt-service'
-import {generateDigest, generateSalt, verifySDJWTSignature} from '@helpers/CryptoUtils'
+import {generateSalt, verifySDJWTSignature} from '@helpers/CryptoUtils'
 import {credentialValidationMethods} from '@sphereon/ssi-sdk.credential-validation'
 
 export const resolver = new Resolver({
@@ -96,7 +100,7 @@ const plugins: IAgentPlugin[] = [
     ],
   }),
   new OID4VCIHolder({
-    hasher: generateDigest,
+    hasher: defaultHasher,
   }),
   new LinkHandlerPlugin({
     eventTypes: [LinkHandlerEventType.LINK_HANDLER_URL],
@@ -105,7 +109,7 @@ const plugins: IAgentPlugin[] = [
   new IdentifierResolution(),
   new JwtService(),
   new SDJwtPlugin({
-    hasher: generateDigest,
+    hasher: defaultHasher,
     saltGenerator: generateSalt,
     verifySignature: verifySDJWTSignature,
   }),

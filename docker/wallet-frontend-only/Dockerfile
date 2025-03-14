@@ -8,7 +8,7 @@ COPY packages packages
 COPY patches patches
 COPY *.json .
 COPY *.yaml .
-RUN rm -rf /opt/wallet/frontend/packages/agent
+RUN rm -rf packages/agent
 WORKDIR /opt/wallet/frontend/packages/web-wallet
 
 ARG NEXT_PUBLIC_AGENT_BASE_URL

@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "properties": {
+    "vct": {
+      "type": "string",
+      "default": "Employee"
+    },
+    "firstName": {
+      "type": "string"
+    },
+    "middleName": {
+      "type": "string"
+    },
+    "lastName": {
+      "type": "string"
+    },
+    "emailAddress": {
+      "type": "string"
+    },
+    "employeeNumber": {
+      "type": "string"
+    }
+  },
+  "required": ["firstName", "lastName", "emailAddress", "employeeNumber"]
+}

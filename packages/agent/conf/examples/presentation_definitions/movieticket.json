@@ -1,0 +1,60 @@
+{
+  "id": "MovieTicket",
+  "name": "Movie ticket",
+  "purpose": "We need to verify your movie tickets.",
+  "format": {
+    "vc+sd-jwt": {
+      "sd-jwt_alg_values": [
+        "ES256",
+        "ES384",
+        "ES512"
+      ]
+    }
+  },
+  "input_descriptors": [
+    {
+      "id": "e5d97b9a-d9cd-a16e-3308-1da46145cda6",
+      "constraints": {
+        "limit_disclosure": "required",
+        "fields": [
+          {
+            "path": [
+              "$.MovieTicket.movieName"
+            ]
+          },
+          {
+            "path": [
+              "$.MovieTicket.date"
+            ]
+          },
+          {
+            "path": [
+              "$.MovieTicket.starTime"
+            ]
+          },
+          {
+            "path": [
+              "$.MovieTicket.seats"
+            ]
+          },
+          {
+            "path": [
+              "$.MovieTicket.VIP"
+            ]
+          },
+          {
+            "path": [
+              "$.vct"
+            ],
+            "filter": {
+              "type": "string",
+              "pattern": "MovieTicket"
+            }
+          }
+        ]
+      },
+      "name": "Ticket details",
+      "purpose": "We need to check your ticket."
+    }
+  ]
+}

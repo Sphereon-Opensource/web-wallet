@@ -25,12 +25,12 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
           )
       `)
 
-    await queryRunner.query(`
+    /*await queryRunner.query(`
           CREATE UNIQUE INDEX meta_data_set_unique_no_tenant ON meta_data_set (name) WHERE tenant_id IS NULL
       `)
-
+*/
     await queryRunner.query(`
-          CREATE UNIQUE INDEX meta_data_set_unique_tenant ON meta_data_set (name, tenant_id) WHERE tenant_id IS NOT NULL
+          CREATE UNIQUE INDEX meta_data_set_unique_tenant ON meta_data_set (name, tenant_id)/* WHERE tenant_id IS NOT NULL*/
       `)
 
     await queryRunner.query(`

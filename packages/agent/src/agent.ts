@@ -81,7 +81,7 @@ import {EventLogger} from '@sphereon/ssi-sdk.event-logger'
 import {RemoteServerApiServer} from '@sphereon/ssi-sdk.remote-server-rest-api'
 import {IssuanceBranding} from '@sphereon/ssi-sdk.issuance-branding'
 import {PDManager} from '@sphereon/ssi-sdk.pd-manager'
-import {DcqlQueryREST, LoggingEventType, StatusListDriverType, StatusListType} from '@sphereon/ssi-types'
+import {DcqlQueryREST, defaultHasher, LoggingEventType, StatusListDriverType, StatusListType} from '@sphereon/ssi-types'
 import {createOID4VPRP, getDefaultOID4VPRPOptions} from './utils/oid4vp'
 import {IPresentationDefinition} from '@sphereon/pex'
 import {PresentationExchange} from '@sphereon/ssi-sdk.presentation-exchange'
@@ -110,7 +110,7 @@ import {dbConnection} from './database'
 import {IdentifierResolution} from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {JwtService} from '@sphereon/ssi-sdk-ext.jwt-service'
 import {SDJwtPlugin} from '@sphereon/ssi-sdk.sd-jwt'
-import {generateDigest, generateSalt, verifySDJWTSignature} from './utils/CryptoUtils'
+import {generateSalt, verifySDJWTSignature} from './utils/CryptoUtils'
 import {animoFunkeCert, funkeTestCA, sphereonCA} from './trustanchors'
 import {MDLMdoc} from '@sphereon/ssi-sdk.mdl-mdoc'
 import {DataSources} from '@sphereon/ssi-sdk.agent-config'
@@ -185,14 +185,14 @@ const plugins: IAgentPlugin[] = [
   }),
   new CredentialStore({ store: new DigitalCredentialStore(dbConnection) }),
   new DidAuthSiopOpAuthenticator(),
-  new OID4VCIHolder({ hasher: generateDigest }),
+  new OID4VCIHolder({ hasher: defaultHasher }),
   new EbsiSupport(),
   // The Animo funke cert is self-signed and not issued by a CA. Since we perform strict checks on certs, we blindly trust if for the Funke
   new MDLMdoc({ trustAnchors: [sphereonCA, funkeTestCA], opts: { blindlyTrustedAnchors: [animoFunkeCert] } }),
   new IdentifierResolution(),
   new JwtService(),
   new SDJwtPlugin({
-    hasher: generateDigest,
+    hasher: defaultHasher,
     saltGenerator: generateSalt,
     verifySignature: verifySDJWTSignature,
   }),

@@ -94,14 +94,16 @@ const ShowContactDetails: FC = (): ReactElement => {
       return
     }
 
-    const credentialIssuer = partyData?.data.identities.find(identity => identity.roles.includes(CredentialRole.ISSUER))?.identifier.correlationId
+    const credentialIssuer = partyData?.data.identities
+      .find(identity => identity.roles.includes(CredentialRole.ISSUER))
+      ?.identifier.correlationId?.replace('did:web:', 'https://')
     if (!credentialIssuer) {
       return
     }
 
     OpenID4VCIClient.fromCredentialIssuer({
       credentialIssuer,
-    }).then(setOpenID4VCIClient)
+    }).then(setOpenID4VCIClient).catch(error => {console.error(error); return})
   }, [id, isLoading])
 
   useEffect(() => {
@@ -155,11 +157,11 @@ const ShowContactDetails: FC = (): ReactElement => {
   }
 
   const getContactInformationContent = (): ReactElement => {
-    return <div/>
+    return <div />
   }
 
   const getActivityContent = (): ReactElement => {
-    return <div/>
+    return <div />
   }
 
   const getCredentialCatalogContent = (): ReactElement => {
@@ -167,11 +169,11 @@ const ShowContactDetails: FC = (): ReactElement => {
   }
 
   const getRelationsContent = (): ReactElement => {
-    return <div/>
+    return <div />
   }
 
   const getIdentifiersContent = (): ReactElement => {
-    return <div/>
+    return <div />
   }
 
   const routes: Array<TabViewRoute> = [

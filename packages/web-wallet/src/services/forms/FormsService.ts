@@ -9,7 +9,7 @@ import {
   SchemaDefinitionEntity,
   SchemaType,
 } from '@typings'
-import {MetaDataKeysDTO, MetaDataKeysEntity, MetaDataSetDTO, MetaDataSetEntity, MetaDataValuesEntity, ValueType} from '../../types/metadata'
+import {MetaDataKeysDTO, MetaDataKeysEntity, MetaDataSetDTO, MetaDataSetEntity, MetaDataValuesEntity, ValueType} from '@typings/metadata'
 import {CredentialFormSelectionType} from '@sphereon/ui-components.ssi-react'
 
 export type ById = {
@@ -26,6 +26,7 @@ export class FormsService {
     const query = `*, machine!fk_machine(*),
                 form_def_to_form_step!fk_form_definition(form_step!fk_form_step(*))`
 
+    console.log(`query: ${query}`)
     let select = supabaseServiceClient.from('form_definition').select(query)
 
     if ('id' in args) {
@@ -36,6 +37,8 @@ export class FormsService {
         select = select.eq('tenant_id', args.tenantId)
       }
     }
+
+    console.log(`select query: ${JSON.stringify(select)}`)
 
     const result = await select.single()
     if (result.status >= 300 || !result.data) {

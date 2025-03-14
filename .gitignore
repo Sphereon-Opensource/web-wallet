@@ -1,5 +1,6 @@
 # Logs
 logs
+!docker/wallet-agent/volumes/logs
 *.log
 npm-debug.log*
 lerna-debug.log
@@ -66,3 +67,5 @@ test/*.js
 /packages/**/192.168.2.90.json
 /docker/wallet-agent-full/volumes/db/data/**/*
 /docker/wallet-agent-full/volumes/storage/stub/dpp-workflow-storage/**/*
+/docker/wallet-agent/volumes/db/data/
+/docker/standalone-agent/volumes/database/**/*

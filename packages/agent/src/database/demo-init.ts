@@ -11,10 +11,11 @@ import * as process from 'node:process'
 import * as fs from 'node:fs/promises'
 import * as path from 'node:path'
 import {addFormDefs} from './formdef-fixtures'
+import {addFormDefsGeneric} from "./demo-data/generic/formdef-fixtures";
 
 // Define allowed fixture and demo values
 const allowedFixtureVals = ['contacts', 'formdefs'] as const
-const allowedDemoVals = ['rws', 'konkuk', 'belastingdienst'] as const
+const allowedDemoVals = ['rws', 'konkuk', 'belastingdienst', 'generic'] as const
 type FixtureType = (typeof allowedFixtureVals)[number]
 type PredefinedDemo = (typeof allowedDemoVals)[number]
 
@@ -58,6 +59,9 @@ async function handleDemo(fixtureType: FixtureType, demo: Demo) {
               break
             case 'belastingdienst':
               await addFormDefsBelastingdienst()
+              break
+            case 'generic':
+              await addFormDefsGeneric()
               break
           }
         } else {
@@ -135,6 +139,7 @@ async function fileExistsAsync(filePath: string): Promise<boolean> {
 
 function examples() {
   console.log('Examples:')
+  console.log('  pnpm demo:init formdefs generic')
   console.log('  pnpm demo:init contacts konkuk')
   console.log('  pnpm demo:init formdefs konkuk')
   console.log('  pnpm demo:init formdefs /path/to/agent/fixtures/forms')
