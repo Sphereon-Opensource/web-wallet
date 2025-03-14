@@ -1,5 +1,5 @@
-import { createNewStatusList } from '@sphereon/ssi-sdk.vc-status-list'
-import { getDriver } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
+import {createNewStatusList} from '@sphereon/ssi-sdk.vc-status-list'
+import {getDriver} from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
 import {
   DB_CONNECTION_NAME,
   DEFAULT_DID,
@@ -8,9 +8,10 @@ import {
   STATUS_LIST_ISSUER,
   STATUS_LIST_LENGTH,
   STATUS_LIST_PURPOSE,
-} from '../environment'
-import { context } from '../agent'
-import {STATUS_LIST_API_FEATURES} from "../environment-deps";
+} from '../environment-vars'
+import {context} from '../agent'
+import {STATUS_LIST_API_FEATURES} from '../environment-vars-with-deps'
+import {StatusListType} from '@sphereon/ssi-types'
 
 export async function getOrCreateConfiguredStatusList(args?: { issuer?: string; keyRef?: string }) {
   if (!STATUS_LIST_API_FEATURES || STATUS_LIST_API_FEATURES.length === 0) {
@@ -33,16 +34,20 @@ export async function getOrCreateConfiguredStatusList(args?: { issuer?: string; 
     )
   }
   if (statusList) {
-    console.log(`Existing status list found id ${STATUS_LIST_ID}, purpose ${statusList.statusPurpose} and length ${statusList.length}`)
+    console.log(`Existing status list found id ${STATUS_LIST_ID}, type ${statusList.type} and length ${statusList.length}`)
   } else {
     statusList = await createNewStatusList(
       {
+        type: StatusListType.StatusList2021,
         correlationId: STATUS_LIST_CORRELATION_ID,
         id: STATUS_LIST_ID,
-        statusPurpose: STATUS_LIST_PURPOSE,
+        statusList2021: {
+          statusPurpose: STATUS_LIST_PURPOSE,
+          indexingDirection: 'rightToLeft'
+        },
         length: Number.parseInt(STATUS_LIST_LENGTH),
         issuer: args?.issuer ?? STATUS_LIST_ISSUER ?? DEFAULT_DID!,
-        keyRef: args?.keyRef,
+        keyRef: args?.keyRef
       },
       context,
     )

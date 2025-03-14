@@ -7,7 +7,7 @@ import studentDataSchema from './studentSchema.json' assert { type: 'json' }
 import employeeUISchema from './employeeUISchema.json' assert { type: 'json' }
 import employeeDataSchema from './employeeSchema.json' assert { type: 'json' }
 import { getDbConnection } from '../../databaseService'
-import { DB_CONNECTION_NAME } from '../../../environment'
+import { DB_CONNECTION_NAME } from '../../../environment-vars'
 
 export async function addFormDefsKonkuk() {
   const ds = await getDbConnection(DB_CONNECTION_NAME)

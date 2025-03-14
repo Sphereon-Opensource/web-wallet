@@ -1,6 +1,5 @@
-
 import { dropDatabase, revertMigration } from './databaseService'
-import {dbConnection} from "../index";
+import { dbConnection } from '../index'
 
 enum Action {
   RevertMigration = 'revert-migration',

@@ -1,12 +1,12 @@
 import { CredentialDataSupplier, CredentialDataSupplierArgs, CredentialDataSupplierResult, CredentialSignerCallback } from '@sphereon/oid4vci-issuer'
 import { TemplateVCGenerator } from './templateManager'
 import { getTypesFromRequest } from '@sphereon/oid4vci-common'
-import { CONF_PATH } from '../environment'
+import { CONF_PATH } from '../environment-vars'
 import { CredentialSupplierConfigWithTemplateSupport } from '../types'
 import { normalizeFilePath } from './generic'
 import agent from '../agent'
 import { CredentialRole } from '@sphereon/ssi-sdk.data-store'
-import { CredentialMapper, ICredential, OriginalVerifiableCredential } from '@sphereon/ssi-types'
+import {CredentialMapper, ICredential, OriginalVerifiableCredential, W3CVerifiableCredential} from '@sphereon/ssi-types'
 import { CredentialPayload, DIDDocument } from '@veramo/core'
 import { decodeJWT } from 'did-jwt'
 
@@ -31,6 +31,8 @@ class TemplateCredentialDataSupplier {
       throw Error(`Agent needs a credential data supplier input upfront`)
     }
 
+    let credential: ICredential | W3CVerifiableCredential | undefined = undefined
+
     let types: string[]
     if ('credential_identifier' in args.credentialRequest) {
       if (!args.credentialRequest.credential_identifier || args.credentialRequest.credential_identifier.length === 0) {
@@ -51,12 +53,12 @@ class TemplateCredentialDataSupplier {
       if (!credentialResult?.originalVerifiableCredential) {
         throw Error(`Could not get credential for id ${hashOrId}`)
       }
-      const credential = CredentialMapper.storedCredentialToOriginalFormat(
+      credential = CredentialMapper.storedCredentialToOriginalFormat(
         credentialResult.originalVerifiableCredential as OriginalVerifiableCredential,
       )
 
       // Since this is an already issued credential we are looking up from our store, we provide a signer that does nothing
-      const signCallback: CredentialSignerCallback<DIDDocument> = () => Promise.resolve(credential)
+      const signCallback: CredentialSignerCallback = () => Promise.resolve(credential as W3CVerifiableCredential)
       return {
         credential: credential as ICredential,
         format: args.credentialRequest.format,
@@ -67,13 +69,12 @@ class TemplateCredentialDataSupplier {
       console.log('-------------> credentialPayload', credentialPayload)
       if (types.includes('VerifiableCredential') && !credentialPayload.type?.includes('VerifiableCredential')) {
         credentialPayload.type = [...types]
-      } else if (!Array.isArray(credentialPayload.type)) {
-        // TODO do we need this? credentialPayload.type is optional and credentialRequest.credential_identifier supplies the type
-        throw Error(`Could not infer credential types from offer, or supplied credential payload`)
+      } else if (Array.isArray(credentialPayload.type) && !('vct' in credentialPayload)) {
+        credentialPayload.vct = credentialPayload.type[0]
       } else if (!credentialRequest.proof || !credentialRequest.proof.jwt) {
         throw Error(`Credential request proof was missing`)
       }
-      if (!credentialPayload.credentialSubject?.id) {
+      if (!credentialPayload.credentialSubject?.id && !('vct' in credentialPayload)) {
         credentialPayload.credentialSubject = {
           ...credentialPayload.credentialSubject,
           ...{},
@@ -90,8 +91,7 @@ class TemplateCredentialDataSupplier {
         }
         credentialPayload.credentialSubject.id = did
       }
-      const credential = credentialPayload as ICredential
-      return { credential }
+      credential = credentialPayload as ICredential
     }
 
     const credentialSupplierConfig = args.credentialSupplierConfig as CredentialSupplierConfigWithTemplateSupport
@@ -101,7 +101,7 @@ class TemplateCredentialDataSupplier {
       )
       if (templateMapping) {
         const templatePath = normalizeFilePath(CONF_PATH, credentialSupplierConfig?.templates_base_dir, templateMapping.template_path)
-        const credential = templateVCGenerator.generateCredential(templatePath, args.credentialDataSupplierInput)
+        credential = templateVCGenerator.generateCredential(templatePath, credential ?? args.credentialDataSupplierInput)
         if (!credential) {
           throw new Error(`Credential generation failed for template ${templatePath}`)
         }
@@ -112,6 +112,9 @@ class TemplateCredentialDataSupplier {
       } else {
         throw new Error(`No template mapping could be found for types ${types.join(', ')}`)
       }
+    }
+    if (credential) {
+      return Promise.resolve({credential})
     }
     throw new Error(
       `The credential supplier could not find a match for the requested credential types ${types.join(', ')}. The issuer correlationId is ${this.issuerCorrelationId}`,

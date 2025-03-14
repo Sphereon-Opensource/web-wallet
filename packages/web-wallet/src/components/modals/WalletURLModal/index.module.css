@@ -1,0 +1,107 @@
+.overlay {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(217,217,217, 0.6);
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+.container {
+    width: 828px;
+    height: 659px;
+    border-radius: 24px;
+    background-color: #FBFBFB;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.headerContainer {
+    display: flex;
+    flex-direction: row;
+    padding-left: 49px;
+    padding-right: 15px;
+}
+
+.headerCaptionContainer {
+    flex-grow: 1;
+    padding-top: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.headerCloseContainer {
+    padding-top: 16px;
+}
+
+.closeButton {
+    display: flex;
+    aspect-ratio: 1;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+}
+
+.titleCaption {
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.subTitleCaption {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 0.14px;
+}
+
+.formContentContainer {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    padding-left: 46px;
+    padding-right: 46px;
+    padding-top: 24px;
+    gap: 32px;
+}
+
+.formRowContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 22px;
+}
+
+.formFieldContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.formFieldLabel {
+    color: #303030;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 0.14px;
+}
+
+.formButtonsContainer {
+    position: absolute;
+    display: flex;
+    margin-top: 600px;
+    flex-direction: row;
+}
+
+.urlContainer {
+    position: absolute;
+    width: 40%;
+}

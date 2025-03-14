@@ -26,6 +26,7 @@ import {useInterpret} from '@xstate/react'
 import debug from 'debug'
 import {CredentialMapper} from '@sphereon/ssi-types'
 import {Contact, Party} from '@sphereon/ssi-sdk.data-store'
+import {defaultHasher} from "@sphereon/ssi-sdk.core";
 
 const assetStateNavigationListener = async (assetMachine: AssetInterpretType, state: AssetState, navigate: any) => {
   if (state.matches(AssetMachineStates.enterOwnerContactData)) {
@@ -132,7 +133,7 @@ export const AssetContextProvider = (props: AssetProviderProps): JSX.Element => 
 
     //todo: here I think we need to have a connection from asset to the credential
     // https://sphereon.atlassian.net/browse/DPP-131
-    const uniformVC = CredentialMapper.toUniformCredential(vc)
+    const uniformVC = CredentialMapper.toUniformCredential(vc, {hasher: defaultHasher})
     await insertCredentialReference(
       {
         dataProviderName: 'supaBase',

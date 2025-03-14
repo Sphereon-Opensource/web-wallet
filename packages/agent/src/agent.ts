@@ -1,3 +1,34 @@
+import {
+  ASSET_DEFAULT_DID_METHOD,
+  AUTHENTICATION_ENABLED,
+  AUTHENTICATION_STRATEGY,
+  AUTHORIZATION_ENABLED,
+  AUTHORIZATION_GLOBAL_REQUIRE_USER_IN_ROLES,
+  DB_CONNECTION_NAME,
+  DB_DATABASE_NAME,
+  DB_ENCRYPTION_KEY,
+  DEFAULT_MODE,
+  DEFAULT_X5C,
+  DID_API_BASE_PATH,
+  DID_API_RESOLVE_MODE,
+  INTERNAL_PORT,
+  IS_CONTACT_MANAGER_ENABLED,
+  IS_FEDERATION_ENABLED,
+  IS_JWKS_HOSTING_ENABLED,
+  IS_OID4VCI_ENABLED,
+  IS_OID4VP_ENABLED, IS_PDM_API_ENABLED,
+  IS_STATUS_LIST_ENABLED,
+  IS_VC_API_ENABLED,
+  OID4VCI_API_BASE_URL,
+  OID4VP_DEFINITIONS,
+  STATUS_LIST_API_BASE_PATH,
+  STATUS_LIST_CORRELATION_ID, STATUS_LIST_DB_NAME,
+  STATUS_LIST_ID,
+  STATUS_LIST_ISSUER, STATUS_LIST_TYPE,
+  VC_API_BASE_PATH,
+  VC_API_DEFAULT_PROOF_FORMAT,
+} from './environment-vars.js'
+
 import {createAgent, IAgentContext, IAgentPlugin, ProofFormat, TAgent} from '@veramo/core'
 import {
   CredentialHandlerLDLocal,
@@ -21,32 +52,9 @@ import {
   expressBuilder,
   getDefaultDID,
   getDefaultKeyRef,
-  getOrCreateDIDsFromFS,
   getOrCreateDIDWebFromEnv,
+  getOrCreateIdentifiersFromFS,
 } from './utils'
-import {
-  ASSET_DEFAULT_DID_METHOD,
-  AUTHENTICATION_ENABLED,
-  AUTHENTICATION_STRATEGY,
-  AUTHORIZATION_ENABLED,
-  AUTHORIZATION_GLOBAL_REQUIRE_USER_IN_ROLES,
-  DB_CONNECTION_NAME, DB_DATABASE_NAME,
-  DB_ENCRYPTION_KEY,
-  DID_API_BASE_PATH,
-  DID_API_RESOLVE_MODE,
-  INTERNAL_PORT,
-  IS_CONTACT_MANAGER_ENABLED,
-  IS_JWKS_HOSTING_ENABLED,
-  IS_OID4VCI_ENABLED,
-  IS_OID4VP_ENABLED, IS_STATUS_LIST_ENABLED,
-  IS_VC_API_ENABLED,
-  OID4VCI_API_BASE_URL,
-  OID4VP_DEFINITIONS,
-  STATUS_LIST_API_BASE_PATH,
-  STATUS_LIST_CORRELATION_ID,
-  VC_API_BASE_PATH,
-  VC_API_DEFAULT_PROOF_FORMAT,
-} from './environment'
 import {VcApiServer} from '@sphereon/ssi-sdk.w3c-vc-api'
 import {UniResolverApiServer} from '@sphereon/ssi-sdk.uni-resolver-registrar-api'
 import {DID_PREFIX, DIDMethods, TAgentTypes} from './types'
@@ -59,16 +67,21 @@ import {
   DigitalCredentialStore,
   EventLoggerStore,
   IssuanceBrandingStore,
-  PDStore
+  PDStore,
 } from '@sphereon/ssi-sdk.data-store'
 import {IIssuerInstanceArgs, OID4VCIIssuer} from '@sphereon/ssi-sdk.oid4vci-issuer'
-import {IIssuerInstanceOptions, IIssuerOptsPersistArgs, OID4VCIStore} from '@sphereon/ssi-sdk.oid4vci-issuer-store'
+import {
+  IIssuerInstanceOptions,
+  IIssuerOptsPersistArgs,
+  IMetadataImportArgs,
+  OID4VCIStore,
+} from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import {IOID4VCIRestAPIOpts, IRequiredContext, OID4VCIRestAPI} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
 import {EventLogger} from '@sphereon/ssi-sdk.event-logger'
 import {RemoteServerApiServer} from '@sphereon/ssi-sdk.remote-server-rest-api'
 import {IssuanceBranding} from '@sphereon/ssi-sdk.issuance-branding'
 import {PDManager} from '@sphereon/ssi-sdk.pd-manager'
-import {LoggingEventType} from '@sphereon/ssi-types'
+import {DcqlQueryREST, defaultHasher, LoggingEventType, StatusListDriverType, StatusListType} from '@sphereon/ssi-types'
 import {createOID4VPRP, getDefaultOID4VPRPOptions} from './utils/oid4vp'
 import {IPresentationDefinition} from '@sphereon/pex'
 import {PresentationExchange} from '@sphereon/ssi-sdk.presentation-exchange'
@@ -80,27 +93,39 @@ import {EbsiSupport} from '@sphereon/ssi-sdk.ebsi-support'
 import {OID4VCIHolder} from '@sphereon/ssi-sdk.oid4vci-holder'
 import {addDefaultsToOpts} from './utils/oid4vci'
 import {getCredentialDataSupplier} from './utils/oid4vciCredentialSuppliers'
-import {SIOPv2RP} from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
+import {IDefinitionPair, SIOPv2RP} from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import {
   CONTACT_MANAGER_API_FEATURES,
   DID_API_FEATURES,
   DID_WEB_SERVICE_FEATURES,
   oid4vciInstanceOpts,
   oid4vciMetadataOpts,
+  oid4vpMetadataOpts,
   REMOTE_SERVER_API_FEATURES,
   STATUS_LIST_API_FEATURES,
   syncDefinitionsOpts,
-  VC_API_FEATURES
-} from './environment-deps'
-import {dbConnection} from "./database";
-import {getOrCreateConfiguredStatusList} from "./utils/statuslist";
+  VC_API_FEATURES,
+} from './environment-vars-with-deps'
+import {dbConnection} from './database'
+import {IdentifierResolution} from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import {JwtService} from '@sphereon/ssi-sdk-ext.jwt-service'
+import {SDJwtPlugin} from '@sphereon/ssi-sdk.sd-jwt'
+import {generateSalt, verifySDJWTSignature} from './utils/CryptoUtils'
+import {animoFunkeCert, funkeTestCA, sphereonCA} from './trustanchors'
+import {MDLMdoc} from '@sphereon/ssi-sdk.mdl-mdoc'
+import {DataSources} from '@sphereon/ssi-sdk.agent-config'
+import {StatusListPlugin} from '@sphereon/ssi-sdk.vc-status-list-issuer/dist/agent/StatusListPlugin'
+import {getOrCreateConfiguredStatusList} from './utils/statuslist'
+import {CredentialValidation} from '@sphereon/ssi-sdk.credential-validation'
+import {OIDFMetadataServer, OIDFMetadataStore} from '@sphereon/ssi-sdk.oidf-metatdata-server'
+import {IEndpointOpts} from '@sphereon/ssi-express-support'
+import {PdManagerApiServer} from '@sphereon/ssi-sdk.pd-manager-rest-api'
+import {CreateNewStatusListArgs} from '@sphereon/ssi-sdk.vc-status-list'
 
 /**
  * Lets setup supported DID resolvers first
  */
 const resolver = createDidResolver()
-
-
 
 /**
  * Private key store, responsible for storing private keys in the database using encryption
@@ -108,6 +133,10 @@ const resolver = createDidResolver()
 const privateKeyStore: PrivateKeyStore = new PrivateKeyStore(dbConnection, new SecretBox(DB_ENCRYPTION_KEY))
 
 const cliMode: boolean = process.env.RUN_MODE === 'cli'
+
+if(process.env.RUN_MIGRATIONS === 'true') {
+  await (await dbConnection).runMigrations();
+}
 
 /**
  * Define Agent plugins being used. The plugins come from Sphereon's SSI-SDK and Veramo.
@@ -156,18 +185,37 @@ const plugins: IAgentPlugin[] = [
   }),
   new CredentialStore({ store: new DigitalCredentialStore(dbConnection) }),
   new DidAuthSiopOpAuthenticator(),
-  new OID4VCIHolder({}),
+  new OID4VCIHolder({ hasher: defaultHasher }),
   new EbsiSupport(),
+  // The Animo funke cert is self-signed and not issued by a CA. Since we perform strict checks on certs, we blindly trust if for the Funke
+  new MDLMdoc({ trustAnchors: [sphereonCA, funkeTestCA], opts: { blindlyTrustedAnchors: [animoFunkeCert] } }),
+  new IdentifierResolution(),
+  new JwtService(),
+  new SDJwtPlugin({
+    hasher: defaultHasher,
+    saltGenerator: generateSalt,
+    verifySignature: verifySDJWTSignature,
+  }),
+  new StatusListPlugin({
+    defaultStatusListId: STATUS_LIST_ID,
+    allDataSources: DataSources.singleInstance()
+  }),
+  new CredentialValidation(),
 ]
 
 let oid4vpRP: SIOPv2RP | undefined
 
 if (!cliMode) {
+
+  process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection:', reason)
+  })
+
   if (IS_OID4VCI_ENABLED) {
     plugins.push(
       new OID4VCIStore({
         importIssuerOpts: oid4vciInstanceOpts.asArray,
-        importMetadatas: oid4vciMetadataOpts.asArray,
+        importMetadatas: oid4vciMetadataOpts.asArray as Array<IMetadataImportArgs>, // with method parameters like for oidfStoreImportMetadatas, TypeScript is being more lenient. Here we need to cast to the discriminator base interface
       }),
     )
     plugins.push(
@@ -179,10 +227,14 @@ if (!cliMode) {
     )
   }
 
-  oid4vpRP = IS_OID4VP_ENABLED ? await createOID4VPRP({ resolver }) : undefined
-  if (oid4vpRP) {
+  if (IS_OID4VP_ENABLED) {
+    oid4vpRP = await createOID4VPRP({resolver})
     plugins.push(oid4vpRP)
     plugins.push(new PresentationExchange())
+  }
+
+  if(IS_FEDERATION_ENABLED) {
+    plugins.push(new OIDFMetadataStore())
   }
 }
 
@@ -195,25 +247,34 @@ const agent = createAgent<TAgentTypes>({
 export default agent
 export const context: IAgentContext<TAgentTypes> = { agent }
 
-/**
- * Import/creates DIDs from configurations files and environment. They then get stored in the database.
- * Also assign default DID and Key Identifier values. Whenever a DID or KID is not explicitly defined,
- * the defaults will be used
- */
-await getOrCreateDIDWebFromEnv().catch((e) => console.log(`ERROR env: ${e}`))
-await getOrCreateDIDsFromFS().catch((e) => console.log(`ERROR dids: ${e}`))
+let defaultDID: string | undefined
+let defaultKid: string | undefined
+if (!cliMode) {
+  /**
+   * Import/creates DIDs from configurations files and environment. They then get stored in the database.
+   * Also assign default DID and Key Identifier values. Whenever a DID or KID is not explicitly defined,
+   * the defaults will be used
+   */
+  await getOrCreateDIDWebFromEnv().catch((e) => console.log(`ERROR env: ${e}`))
+  await getOrCreateIdentifiersFromFS().catch((e) => console.log(`ERROR dids: ${e}`))
 
-const defaultDID = await getDefaultDID()
-console.log(`[DID] default DID: ${defaultDID}`)
-const defaultKid = await getDefaultKeyRef({ did: defaultDID })
-console.log(`[DID] default key identifier: ${defaultKid}`)
-if (!defaultDID || !defaultKid) {
-  console.log('[DID] Agent has no default DID and Key Identifier!')
-}
+  defaultDID = await getDefaultDID()
+  if (defaultDID) {
+    console.log(`[DID] default DID: ${defaultDID}`)
+  }
+  defaultKid = await getDefaultKeyRef({ did: defaultDID })
+  console.log(`[DID] default key identifier: ${defaultKid}`)
+  if ((DEFAULT_MODE.toLowerCase() === 'did' && !defaultDID) || !defaultKid) {
+    console.warn('[DID] Agent has no default DID and Key Identifier!')
+  }
 
-const oid4vpOpts = IS_OID4VP_ENABLED ? await getDefaultOID4VPRPOptions({ did: defaultDID, resolver }) : undefined
-if (oid4vpOpts && oid4vpRP) {
-  oid4vpRP.setDefaultOpts(oid4vpOpts, context)
+  const oid4vpOpts = IS_OID4VP_ENABLED ? await getDefaultOID4VPRPOptions({ did: defaultDID, x5c: DEFAULT_X5C, resolver }) : undefined
+  if (oid4vpOpts && oid4vpRP) {
+    oid4vpRP.setDefaultOpts(oid4vpOpts, context)
+  }
+} else {
+  defaultDID = undefined
+  defaultKid = undefined
 }
 
 /**
@@ -391,6 +452,11 @@ if (!cliMode) {
     })
   }
 
+  if(IS_PDM_API_ENABLED) {
+    new PdManagerApiServer({agent, expressSupport})
+  }
+
+
   /**
    * Enable the Veramo remote server API
    */
@@ -414,31 +480,63 @@ if (!cliMode) {
   if (IS_OID4VCI_ENABLED) {
     oid4vciInstanceOpts.asArray.map(async (opts) =>
       issuerPersistToInstanceOpts(opts).then(async (instanceOpt) => {
+        const credentialIssuer = instanceOpt.credentialIssuer ?? opts.issuerOpts.idOpts?.issuer ?? process.env.OID4VCI_API_BASE_URL ?? opts.correlationId.startsWith('http') ? opts.correlationId : undefined
+        if (!credentialIssuer) {
+          throw Error(`No credential issuer could be deduced from the options: ${JSON.stringify(opts)}`)
+        }
         void OID4VCIRestAPI.init({
           opts: {
-            baseUrl: OID4VCI_API_BASE_URL,
-            endpointOpts: {},
+            baseUrl: credentialIssuer,
+            endpointOpts: opts.endpointOpts as IEndpointOpts,
+            asClientOpts: opts.issuerOpts.asClientOpts
           } as IOID4VCIRestAPIOpts,
           context: context as unknown as IRequiredContext,
           issuerInstanceArgs: {
-            credentialIssuer: OID4VCI_API_BASE_URL,
+            credentialIssuer: credentialIssuer,
             storeId: '_default', // TODO configurable?
             namespace: 'oid4vci', // TODO configurable?
           } as IIssuerInstanceArgs,
           //credentialDataSupplier: defaultCredentialDataSupplier,
-          credentialDataSupplier: getCredentialDataSupplier(instanceOpt.credentialIssuer),
+          credentialDataSupplier: getCredentialDataSupplier(credentialIssuer),
           expressSupport,
         })
+
+        /*if (IS_STATUS_LIST_ENABLED && opts.issuerOpts) {
+          void await agent.slImportStatusLists(opts.statusLists)
+        }*/
       }),
     )
   }
 
+  if(IS_FEDERATION_ENABLED) {
+    if(oid4vciMetadataOpts) {
+      await context.agent.oidfStoreImportMetadatas(oid4vciMetadataOpts.asArray)
+    }
+    if(oid4vpMetadataOpts) {
+      await context.agent.oidfStoreImportMetadatas(oid4vpMetadataOpts.asArray)
+    }
+
+    void OIDFMetadataServer.init({context, expressSupport})
+  }
+
   if (IS_JWKS_HOSTING_ENABLED) {
-    new PublicKeyHosting({ agent, expressSupport, opts: { hostingOpts: { enableFeatures: ['did-jwks'] } } })
+    new PublicKeyHosting({ agent, expressSupport, opts: { hostingOpts: { enableFeatures: ['did-jwks', 'all-jwks'] } } })
   }
 
 
   if (IS_STATUS_LIST_ENABLED) {
+    /*if(STATUS_LIST_ID && STATUS_LIST_CORRELATION_ID) {
+      const defaultStatuslistImport: CreateNewStatusListArgs = {
+        id: STATUS_LIST_ID,
+        correlationId: STATUS_LIST_CORRELATION_ID,
+        type: STATUS_LIST_TYPE as StatusListType,
+        issuer: STATUS_LIST_ISSUER as string,
+        driverType: StatusListDriverType.AGENT_TYPEORM,
+        dbName: STATUS_LIST_DB_NAME
+      }
+      void await agent.slImportStatusLists([defaultStatuslistImport])
+    }*/
+
     new StatuslistManagementApiServer({
       opts: {
         endpointOpts: {
@@ -467,19 +565,39 @@ if (!cliMode) {
     })
 
     await getOrCreateConfiguredStatusList({issuer: defaultDID, keyRef: defaultKid}).catch(e => console.log(`ERROR statuslist`, e))
-
   }
 
 
-  // Import presentation definitions from disk.
-  const definitionsToImport: Array<IPresentationDefinition> = syncDefinitionsOpts.asArray.filter((definition) => {
-    const { id, name } = definition ?? {}
-    if (definition && (OID4VP_DEFINITIONS.length === 0 || OID4VP_DEFINITIONS.includes(id) || (name && OID4VP_DEFINITIONS.includes(name)))) {
-      console.log(`[OID4VP] Enabling Presentation Definition with name '${name ?? '<none>'}' and id '${id}'`)
-      return true
-    }
-    return false
-  })
+  // Import presentation definitions from disk, get base filenames without .dcql
+  const baseNames = Object.keys(syncDefinitionsOpts).filter(name => !name.endsWith('.dcql'))
+
+  const definitionsToImport: Array<IDefinitionPair> = baseNames
+    .map(baseName => {
+      const definition = syncDefinitionsOpts[baseName]
+      if (!isPresentationDefinition(definition)) {
+        return null
+      }
+
+      const { id, name } = definition
+      if (OID4VP_DEFINITIONS.length === 0 || OID4VP_DEFINITIONS.includes(id) || (name && OID4VP_DEFINITIONS.includes(name))) {
+        console.log(`[OID4VP] Enabling Presentation Definition with name '${name ?? '<none>'}' and id '${id}'`)
+
+        const pair: IDefinitionPair = {
+          definitionPayload: definition,
+          dcqlPayload: undefined
+        }
+
+        const dcqlContent = syncDefinitionsOpts[`${baseName}.dcql`]
+        if (isDcqlQuery(dcqlContent)) {
+          pair.dcqlPayload = dcqlContent
+        }
+
+        return pair
+      }
+      return null
+    })
+    .filter((pair): pair is IDefinitionPair => pair !== null)
+
   if (definitionsToImport.length > 0) {
     await agent.siopImportDefinitions({
       definitions: definitionsToImport,
@@ -500,4 +618,12 @@ export async function issuerPersistToInstanceOpts(opt: IIssuerOptsPersistArgs): 
     storeId: opt.storeId,
     storeNamespace: opt.namespace,
   }
+}
+
+function isPresentationDefinition(obj: any): obj is IPresentationDefinition {
+  return obj && Array.isArray(obj.input_descriptors)
+}
+
+function isDcqlQuery(obj: any): obj is DcqlQueryREST {
+  return obj && Array.isArray(obj.credentials)
 }

@@ -1,0 +1,22 @@
+{
+  "vct": "Employee",
+  "Employee": {
+    "firstName": "{{firstName}}",
+    "middleName": "{{middleName}}",
+    "lastName": "{{lastName}}",
+    "emailAddress": "{{emailAddress}}",
+    "employeeNumber": "{{employeeNumber}}"
+  },
+  "disclosureFrame": {
+    "Employee": {
+      "_sd": [
+        "firstName",
+        "middleName",
+        "lastName",
+        "emailAddress",
+        "employeeNumber"
+      ]
+    }
+  },
+  "expirationDate": "{{{ dateTimeAfterMonths 6 }}}"
+}

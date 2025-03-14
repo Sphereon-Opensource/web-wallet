@@ -1,5 +1,5 @@
 import {DocumentCategory, DocumentType} from '@typings'
-import {formatDate} from '@helpers/date/DateHelper'
+import {formatDate} from '@sphereon/ui-components.ssi-react'
 
 export class WorkflowDocumentStorageInfoDTO {
   id: string

@@ -75,7 +75,7 @@ const DocumentsList: React.FC<Props> = (props: Props): ReactElement => {
     setShowModal(false)
   }
 
-  // todo: move this to environment.ts file like we're doing in the web-wallet-agent
+  // todo: move this to environment-vars.ts file like we're doing in the web-wallet-agent
   const truncationLength: number = process.env.NEXT_PUBLIC_TRUNCATION_LENGTH ? Number(process.env.NEXT_PUBLIC_TRUNCATION_LENGTH) : 8
   const columns: Array<ColumnHeader<StorageDocumentTableItem>> = [
     {

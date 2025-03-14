@@ -2,7 +2,7 @@ import React, {FC, ReactElement, useEffect, useState} from 'react'
 import {HttpError, useCreate, useDelete, useList, useNavigation, useTranslate} from '@refinedev/core'
 import {ColumnHeader, Row, SSITableView, TableCellType} from '@sphereon/ui-components.ssi-react'
 import {ButtonIcon} from '@sphereon/ui-components.core'
-import {Button, Credential, CredentialReference, CredentialTableItem, DataResource} from '@typings'
+import {Button, Credential, CredentialReference, CredentialTableItem, DataProvider, DataResource} from '@typings'
 import {getCredentialIssuerNameAndAlias, toCredentialSummary} from '@sphereon/ui-components.credential-branding'
 import agent from '@agent'
 import {
@@ -23,6 +23,7 @@ import {AddContactArgs} from "@sphereon/ssi-sdk.contact-manager";
 import {IdentityOrigin} from "@sphereon/ssi-sdk.data-store/dist/types/contact/contact";
 import {addContact} from "@/src/services/contactService";
 import {registerDidEbsiOnLedger} from "@/src/services/ebsiService";
+import {defaultHasher} from "@sphereon/ssi-sdk.core";
 
 type Props = {
   credentialRole: CredentialRole
@@ -32,8 +33,8 @@ type Props = {
 const CredentialsList: FC<Props> = (props: Props): ReactElement => {
   const {credentialRole, allowIssueCredential = true} = props
   const translate = useTranslate()
-  const {mutateAsync: deleteCredential} = useDelete<Credential, HttpError>()
-  const {mutateAsync: deleteCredentialReference} = useDelete<CredentialReference, HttpError>()
+  const {mutateAsync: deleteCredential} = useDelete<DigitalCredential, HttpError>()
+  //const {mutateAsync: deleteCredentialReference} = useDelete<CredentialReference, HttpError>()
   const {mutate: mutateOne} = useCreate()
   const {create, show} = useNavigation()
   const [credentialTableItems, setCredentialTableItems] = useState<CredentialTableItem[]>([])
@@ -221,28 +222,16 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
     }
     await deleteCredential(
       {
-        dataProviderName: 'supaBase',
-        resource: 'credential',
+        dataProviderName: DataProvider.CREDENTIALS,
+        meta: {
+          idColumnName: 'hash',
+        },
+        resource: 'CREDENTIALS',
         id: rowData.original.hash,
       },
       {
         onError: error => {
           throw new Error(`Failed to delete credential: ${JSON.stringify(error)}`)
-        },
-      },
-    )
-    await deleteCredentialReference(
-      {
-        dataProviderName: 'supaBase',
-        resource: 'credential_reference',
-        id: rowData.original.hash,
-        meta: {
-          idColumnName: 'credential_id',
-        },
-      },
-      {
-        onError: error => {
-          throw new Error(`Failed to delete credential references: ${JSON.stringify(error)}`)
         },
       },
     )
@@ -280,7 +269,7 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
 
   const onImportCredential = async (file: File): Promise<void> => {
     const rawCredential = await file.text()
-    const uniformCredential = CredentialMapper.toUniformCredential(rawCredential)
+    const uniformCredential = CredentialMapper.toUniformCredential(rawCredential, {hasher: defaultHasher})
     const { issuerName, issuerAlias} = getCredentialIssuerNameAndAlias({ verifiableCredential: uniformCredential as VerifiableCredential })
     const correlationId = CredentialMapper.issuerCorrelationIdFromIssuerType(uniformCredential.issuer)
     const filter: FindPartyArgs = [
@@ -359,7 +348,7 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
     }
 
     const rawCredential = await file.text()
-    const uniformCredential = CredentialMapper.toUniformCredential(rawCredential)
+    const uniformCredential = CredentialMapper.toUniformCredential(rawCredential, {hasher: defaultHasher})
 
     const verificationResult = await agent.verifyCredential({
       credential: uniformCredential as W3CVerifiableCredential,

@@ -1,13 +1,14 @@
 import React, {FC} from 'react'
 import style from './index.module.css'
 import {useTranslate} from '@refinedev/core'
-import {ProgressStepIndicator, PrimaryButton} from '@sphereon/ui-components.ssi-react'
+import {PrimaryButton, ProgressStepIndicator} from '@sphereon/ui-components.ssi-react'
 import PageHeaderBar from '@components/bars/PageHeaderBar'
 import {Outlet} from 'react-router-dom'
 import {useCredentialsCreateMachine} from '@machines/credentials/credentialsCreateStateNavigation'
 import QRCodeModal, {QRValueResult} from 'src/components/modals/QRCodeModal'
 import {createCredentialPayloadWithSchema, qrValueGenerator} from '@/src/services/credentials/CredentialService'
 import {staticPropsWithSST} from '@/src/i18n/server'
+import WalletURLModal from '@components/modals/WalletURLModal'
 
 const CredentialsCreatePage: FC = () => {
   const translate = useTranslate()
@@ -22,7 +23,9 @@ const CredentialsCreatePage: FC = () => {
     onIssueCredential,
     onNext,
     onCloseCredentialQRCodeModal,
+    onCloseCredentialWalletUrlModal,
     showCredentialQRCodeModal,
+    showCredentialWalletUrlModal,
     onIssueMethodChange,
     issueMethod,
     issueMethods,
@@ -30,6 +33,11 @@ const CredentialsCreatePage: FC = () => {
 
   const onSubmitQr = async (): Promise<void> => {
     console.log('submit qr clicked')
+  }
+
+  const onSubmitUrl = async (walletUrl:string): Promise<void> => {
+    console.log('send to wallet', walletUrl)
+    window.open(walletUrl, '_blank');
   }
 
   const generateQr = async (): Promise<QRValueResult> => {
@@ -42,7 +50,7 @@ const CredentialsCreatePage: FC = () => {
       schemaOpts: {schema: credentialType?.schema},
       payload: {
         type: credentialType.credentialType,
-        credentialSubject: {...credentialFormData.data},
+        ...credentialFormData.data
       },
     })
     return qrValueGenerator({credentialPayload: payloadWithSchema.payload}, {credentials: credentialType.credentialType})
@@ -51,6 +59,7 @@ const CredentialsCreatePage: FC = () => {
   return (
     <div className={style.container}>
       {showCredentialQRCodeModal && <QRCodeModal qrValueGenerator={generateQr} onClose={onCloseCredentialQRCodeModal} onSubmit={onSubmitQr} />}
+      {showCredentialWalletUrlModal && <WalletURLModal qrValueGenerator={generateQr} onClose={onCloseCredentialWalletUrlModal} onSubmit={onSubmitUrl} />}
       <PageHeaderBar path={translate('issue_credential_path_label')} />
       <div className={style.contentContainer}>
         <div className={style.outletContainer}>

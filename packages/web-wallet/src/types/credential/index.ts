@@ -1,9 +1,8 @@
 import {Party} from '@sphereon/ssi-sdk.data-store'
 import {CredentialStatus} from '@sphereon/ui-components.core'
-import {CredentialMiniCardViewProps} from '@sphereon/ui-components.ssi-react'
+import {CredentialMiniCardViewProps, formatDate} from '@sphereon/ui-components.ssi-react'
 import {CredentialSummary} from '@sphereon/ui-components.credential-branding'
 import {getMatchingIdentity} from '@helpers/IdentityFilters'
-import {formatDate} from '@helpers/date/DateHelper'
 import {CredentialMapper} from '@sphereon/ssi-types'
 import {IVerifiableCredential} from '@sphereon/ssi-types'
 import {DigitalCredential} from '@sphereon/ssi-sdk.credential-store'
@@ -30,6 +29,7 @@ export type CredentialReference = {
 
 export enum IssueMethod {
   QR_CODE = 'qrCode',
+  WALLET_URL = 'walletUrl',
 }
 export class CredentialTableItem {
   id?: string

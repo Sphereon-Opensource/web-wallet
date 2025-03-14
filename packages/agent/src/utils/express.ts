@@ -1,7 +1,7 @@
 import { ExpressBuilder, ExpressCorsConfigurer, IExpressServerOpts } from '@sphereon/ssi-express-support'
 import { InitializeOptions } from 'passport'
 import { Enforcer } from 'casbin'
-import { AUTHENTICATION_ENABLED, ENV_VAR_PREFIX, INTERNAL_HOSTNAME_OR_IP, INTERNAL_PORT } from '../environment'
+import { AUTHENTICATION_ENABLED, ENV_VAR_PREFIX, INTERNAL_HOSTNAME_OR_IP, INTERNAL_PORT } from '../environment-vars'
 
 /**
  * Return an Express JS builder from provided Options. Takes into account several environment variables
@@ -25,7 +25,7 @@ export function expressBuilder(opts?: {
     }
   }
 }): ExpressBuilder {
-  //todo: move some env vars over to environment.ts
+  //todo: move some env vars over to environment-vars.ts
   const envVarPrefix = opts?.envVarPrefix ?? ENV_VAR_PREFIX ?? ''
   const port = opts?.server?.port ?? INTERNAL_PORT
   const cookieSigningKey = opts?.server?.cookieSigningKey ?? process.env.COOKIE_SIGNING_KEY

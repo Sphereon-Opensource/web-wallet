@@ -12,11 +12,9 @@ import {
   DB_URL,
   DB_USE_SSL,
   DB_USERNAME,
-} from '../environment'
-import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions'
+} from '../environment-vars'
 import { TlsOptions } from 'tls'
 import { WebWalletMigrations } from './migrations'
-import { SqliteConnectionOptions } from 'typeorm/driver/sqlite/SqliteConnectionOptions'
 import {
   DataStoreContactEntities,
   DataStoreDigitalCredentialEntities,
@@ -35,12 +33,18 @@ import {
   DataStorePresentationDefinitionMigrations,
   DataStoreStatusListMigrations,
 } from '@sphereon/ssi-sdk.data-store'
+// @ts-ignore // Package does not export these properly
+import {SqliteConnectionOptions} from "typeorm/driver/sqlite/SqliteConnectionOptions";
+// @ts-ignore // Package does not export these properly
+import {PostgresConnectionOptions} from "typeorm/driver/postgres/PostgresConnectionOptions";
 
 if (!process.env.DB_ENCRYPTION_KEY) {
   console.warn(
     `Please provide a DB_ENCRYPTION_KEY env var. Now we will use a pre-configured one. When you change to the var you will have to replace your DB`,
   )
 }
+
+const DB_POSTGRES = DB_TYPE?.includes('postgres')
 
 /**
  * Setup SSL options
@@ -83,8 +87,7 @@ const sqliteConfig: SqliteConnectionOptions = {
     ...DataStoreEventLoggerMigrations,
     ...DataStoreDigitalCredentialMigrations,
     ...DataStoreMachineStateMigrations,
-    ...DataStorePresentationDefinitionMigrations,
-    ...WebWalletMigrations,
+    ...DataStorePresentationDefinitionMigrations
   ],
   migrationsRun: false, // We run migrations from code to ensure proper ordering with Redux
   synchronize: false, // We do not enable synchronize, as we use migrations from code
@@ -131,7 +134,7 @@ const postgresConfig: PostgresConnectionOptions = validatePostgresOptions({
   migrationsRun: false, // We run migrations from code to ensure proper ordering with Redux
   synchronize: false, // We do not enable synchronize, as we use migrations from code
   migrationsTransactionMode: 'each', // protect every migration with a separate transaction
-  logging: ['info', 'error'], // 'all' means to enable all logging
+  logging: ['info', 'error'/*, 'query'*/], // 'all' means to enable all logging
   logger: 'advanced-console',
 })
 
@@ -145,4 +148,4 @@ function validatePostgresOptions(options: PostgresConnectionOptions) {
 }
 
 console.log(`Database type '${DB_TYPE}' is being used`)
-export const DB_CONFIG = DB_TYPE === 'postgres' ? postgresConfig : sqliteConfig
+export const DB_CONFIG = DB_POSTGRES ? postgresConfig : sqliteConfig

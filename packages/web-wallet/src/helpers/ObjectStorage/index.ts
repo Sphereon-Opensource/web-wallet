@@ -12,7 +12,7 @@ export class ObjectStorage {
   private readonly _resolver: IStoragePathResolver
 
   private constructor(resolver: IStoragePathResolver, args?: {storageClient?: StorageClient}) {
-    this.storageClient = args?.storageClient ?? supabaseServiceClient.storage
+    this.storageClient = args?.storageClient ?? supabaseServiceClient.storage as StorageClient
 
     this._resolver = resolver
     this.bucketId = resolver.getBucketId()

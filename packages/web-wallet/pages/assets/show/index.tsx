@@ -287,7 +287,7 @@ function ShowAssetDetails() {
 
   // FIXME at this point the asset needs to be defined or we need to take action
   const assetData: Asset = asset.data?.data!
-
+  
   return (
     <div className={style.container}>
       {showCredentialQRCodeModal && <QRCodeModal qrValueGenerator={generateQr} onClose={onCloseModal} onSubmit={onSubmitModal} />}

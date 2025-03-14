@@ -1,0 +1,22 @@
+{
+  "vct": "MovieTicket",
+  "MovieTicket": {
+    "movieName": "{{movieName}}",
+    "date": "{{date}}",
+    "startTime": "{{startTime}}",
+    "seats": "{{seats}}",
+    "VIP": {{#if VIP}}true{{else}}false{{/if}}
+  },
+  "disclosureFrame": {
+    "MovieTicket": {
+      "_sd": [
+        "movieName",
+        "date",
+        "startTime",
+        "seats",
+        "VIP"
+      ]
+    }
+  },
+  "expirationDate": "{{{ dateTimeAfterMonths 12 }}}"
+}

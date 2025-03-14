@@ -1,0 +1,840 @@
+{
+  "correlationId": "http://my-hostname-or-ip:5010/oid4vci",
+  "overwriteExisting": true,
+  "metadataType": "issuer",
+  "metadata": {
+    "credential_issuer": "http://my-hostname-or-ip:5010/oid4vci",
+    "credential_endpoint": "http://my-hostname-or-ip:5010/oid4vci/credentials",
+    "client_name": "Example",
+    "client_uri": "https://findynet.fi",
+    "logo_uri": "https://findynet.fi/wp-content/uploads/2024/02/findynet-logo.png",
+    "tos_uri": "https://sphereon.com/sphereon-wallet-terms-and-conditions",
+    "policy_uri": "https://sphereon.com/sphereon-wallet-privacy-policy",
+    "contacts": [
+      "dev@sphereon.com",
+      "support@sphereon.com"
+    ],
+    "display": [
+      {
+        "name": "Example",
+        "description": "Example Issuer"
+      }
+    ],
+    "credential_configurations_supported": {
+      "PensionSdJwt": {
+        "format": "vc+sd-jwt",
+        "vct": "PensionSdJwt",
+        "cryptographic_binding_methods_supported": [
+          "did:web",
+          "did:jwk"
+        ],
+        "cryptographic_suites_supported": [
+          "ES256"
+        ],
+        "display": [
+          {
+            "name": "PensionCredential",
+            "description": "Pension Credential",
+            "background_color": "rgba(0, 0, 0, 0.8)",
+            "text_color": "#FBFBFB",
+            "logo": {
+              "url": "https://findynet.fi/wp-content/uploads/2024/02/findynet-logo.png",
+              "alt_text": "Findynet logo"
+            }
+          },
+          {
+            "locale": "en-US",
+            "name": "PensionCredential",
+            "description": "Residence statement Belastingdienst",
+            "background_color": "rgba(0, 0, 0, 0.8)",
+            "text_color": "#FBFBFB",
+            "logo": {
+              "url": "https://findynet.fi/wp-content/uploads/2024/02/findynet-logo.png",
+              "alt_text": "Findynet logo"
+            }
+          },
+          {
+            "locale": "nl-NL",
+            "name": "PensioenCredential",
+            "description": "Pensioen Credential",
+            "background_color": "rgba(0, 0, 0, 0.8)",
+            "text_color": "#FBFBFB",
+            "logo": {
+              "url": "https://findynet.fi/wp-content/uploads/2024/02/findynet-logo.png",
+              "alt_text": "Findynet logo"
+            }
+          }
+        ],
+        "claims": [
+          {
+            "display": [
+              {
+                "description": "Pension Information",
+                "label": "Pension",
+                "lang": "en-US"
+              },
+              {
+                "description": "Pensioeninformatie",
+                "label": "Pension",
+                "lang": "nl-NL"
+              }
+            ],
+            "path": [
+              "Pension"
+            ]
+          },
+          {
+            "display": [
+              {
+                "description": "Start Date",
+                "label": "Start Date",
+                "lang": "en-US"
+              },
+              {
+                "description": "Startdatum",
+                "label": "Start Date",
+                "lang": "nl-NL"
+              }
+            ],
+            "path": [
+              "Pension",
+              "startDate"
+            ]
+          },
+          {
+            "display": [
+              {
+                "description": "End Date",
+                "label": "End Date",
+                "lang": "en-US"
+              },
+              {
+                "description": "Einddatum",
+                "label": "End Date",
+                "lang": "nl-NL"
+              }
+            ],
+            "path": [
+              "Pension",
+              "endDate"
+            ]
+          },
+          {
+            "display": [
+              {
+                "description": "Personal Information",
+                "label": "Person",
+                "lang": "en-US"
+              },
+              {
+                "description": "Persoonlijke Informatie",
+                "label": "Person",
+                "lang": "nl-NL"
+              }
+            ],
+            "path": [
+              "Person"
+            ]
+          },
+          {
+            "display": [
+              {
+                "description": "Personal Administrative Number",
+                "label": "Personal Administrative Number",
+                "lang": "en-US"
+              },
+              {
+                "description": "Persoonlijk Administratienummer",
+                "label": "Personal Administrative Number",
+                "lang": "nl-NL"
+              }
+            ],
+            "path": [
+              "Person",
+              "personal_administrative_number"
+            ]
+          }
+        ],
+        "credential_definition": {
+          "type": [
+            "PensionSdJwt"
+          ]
+        }
+      },
+      "PensionCredential": {
+        "format": "jwt_vc_json",
+        "cryptographic_binding_methods_supported": [
+          "did:web",
+          "did:jwk"
+        ],
+        "cryptographic_suites_supported": [
+          "ES256"
+        ],
+        "display": [
+          {
+            "name": "PensionCredential",
+            "description": "Pension Credential",
+            "background_color": "rgba(0, 0, 0, 0.8)",
+            "text_color": "#FBFBFB",
+            "logo": {
+              "url": "https://findynet.fi/wp-content/uploads/2024/02/findynet-logo.png",
+              "alt_text": "Findynet logo"
+            }
+          },
+          {
+            "locale": "en-US",
+            "name": "PensionCredential",
+            "description": "Residence statement Belastingdienst",
+            "background_color": "rgba(0, 0, 0, 0.8)",
+            "text_color": "#FBFBFB",
+            "logo": {
+              "url": "https://findynet.fi/wp-content/uploads/2024/02/findynet-logo.png",
+              "alt_text": "Findynet logo"
+            }
+          },
+          {
+            "locale": "nl-NL",
+            "name": "PensioenCredential",
+            "description": "Pensioen Credential",
+            "background_color": "rgba(0, 0, 0, 0.8)",
+            "text_color": "#FBFBFB",
+            "logo": {
+              "url": "https://findynet.fi/wp-content/uploads/2024/02/findynet-logo.png",
+              "alt_text": "Findynet logo"
+            }
+          }
+        ],
+        "credentialSubject": {
+          "Pension": {
+            "display": [
+              {
+                "name": "Pension Information"
+              },
+              {
+                "name": "Pension Information",
+                "locale": "en-US"
+              },
+              {
+                "name": "Pensioeninformatie",
+                "locale": "nl-NL"
+              }
+            ],
+            "startDate": {
+              "display": [
+                {
+                  "name": "Start Date"
+                },
+                {
+                  "name": "Start Date",
+                  "locale": "en-US"
+                },
+                {
+                  "name": "Startdatum",
+                  "locale": "nl-NL"
+                }
+              ]
+            },
+            "endDate": {
+              "display": [
+                {
+                  "name": "End Date"
+                },
+                {
+                  "name": "End Date",
+                  "locale": "en-US"
+                },
+                {
+                  "name": "Einddatum",
+                  "locale": "nl-NL"
+                }
+              ]
+            },
+            "provisional": {
+              "display": [
+                {
+                  "name": "Provisional Status"
+                },
+                {
+                  "name": "Provisional Status",
+                  "locale": "en-US"
+                },
+                {
+                  "name": "Voorlopige Status",
+                  "locale": "nl-NL"
+                }
+              ]
+            },
+            "typeCode": {
+              "display": [
+                {
+                  "name": "Type Code"
+                },
+                {
+                  "name": "Type Code",
+                  "locale": "en-US"
+                },
+                {
+                  "name": "Typecode",
+                  "locale": "nl-NL"
+                }
+              ]
+            },
+            "typeName": {
+              "display": [
+                {
+                  "name": "Type Name"
+                },
+                {
+                  "name": "Type Name",
+                  "locale": "en-US"
+                },
+                {
+                  "name": "Typenaam",
+                  "locale": "nl-NL"
+                }
+              ]
+            }
+          },
+          "Person": {
+            "display": [
+              {
+                "name": "Personal Information"
+              },
+              {
+                "name": "Personal Information",
+                "locale": "en-US"
+              },
+              {
+                "name": "Persoonlijke Informatie",
+                "locale": "nl-NL"
+              }
+            ],
+            "personal_administrative_number": {
+              "display": [
+                {
+                  "name": "Personal Administrative Number"
+                },
+                {
+                  "name": "Personal Administrative Number",
+                  "locale": "en-US"
+                },
+                {
+                  "name": "Persoonlijk Administratienummer",
+                  "locale": "nl-NL"
+                }
+              ]
+            },
+            "birth_date": {
+              "display": [
+                {
+                  "name": "Date of Birth"
+                },
+                {
+                  "name": "Date of Birth",
+                  "locale": "en-US"
+                },
+                {
+                  "name": "Geboortedatum",
+                  "locale": "nl-NL"
+                }
+              ]
+            },
+            "family_name": {
+              "display": [
+                {
+                  "name": "Family Name"
+                },
+                {
+                  "name": "Family Name",
+                  "locale": "en-US"
+                },
+                {
+                  "name": "Achternaam",
+                  "locale": "nl-NL"
+                }
+              ]
+            },
+            "given_name": {
+              "display": [
+                {
+                  "name": "Given Name"
+                },
+                {
+                  "name": "Given Name",
+                  "locale": "en-US"
+                },
+                {
+                  "name": "Voornaam",
+                  "locale": "nl-NL"
+                }
+              ]
+            }
+          }
+        },
+        "credential_definition": {
+          "type": [
+            "VerifiableCredential",
+            "PensionCredential"
+          ]
+        }
+      },
+      "Swimmingpool": {
+        "format": "vc+sd-jwt",
+        "vct": "Swimmingpool",
+        "display": [
+          {
+            "name": "Swimming pool",
+            "description": "No water Inc, swimming",
+            "background_color": "#738d13",
+            "text_color": "#FFFFFF",
+            "background_image": {
+              "url": "https://i.ibb.co/KKzwq3L/swimming-pool-underwater-background2.jpg",
+              "alt_text": "Swimming pool."
+            },
+            "logo": {
+              "url": "https://i.ibb.co/WzwFQKN/swimming-pool-icon.png",
+              "alt_text": "Swimming pool logo."
+            }
+          },
+          {
+            "locale": "en-US",
+            "name": "Swimming pool",
+            "description": "No water Inc, swimming",
+            "background_color": "#738d13",
+            "text_color": "#FFFFFF",
+            "background_image": {
+              "url": "https://i.ibb.co/KKzwq3L/swimming-pool-underwater-background2.jpg",
+              "alt_text": "Swimming pool."
+            },
+            "logo": {
+              "url": "https://i.ibb.co/WzwFQKN/swimming-pool-icon.png",
+              "alt_text": "Swimming pool logo."
+            }
+          },
+          {
+            "locale": "nl-NL",
+            "name": "Zwembad",
+            "description": "No water Inc, swimming",
+            "background_color": "#738d13",
+            "text_color": "#FFFFFF",
+            "background_image": {
+              "url": "https://i.ibb.co/KKzwq3L/swimming-pool-underwater-background2.jpg",
+              "alt_text": "Swimming pool."
+            },
+            "logo": {
+              "url": "https://i.ibb.co/WzwFQKN/swimming-pool-icon.png",
+              "alt_text": "Swimming pool logo."
+            }
+          }
+        ],
+        "credentialSubject": {
+          "General": {
+            "display": [
+              {
+                "name": "General info"
+              },
+              {
+                "name": "General Information",
+                "locale": "en-US"
+              },
+              {
+                "name": "Algemeen",
+                "locale": "nl-NL"
+              }
+            ],
+            "date": {
+              "display": [
+                {
+                  "name": "Valid on"
+                },
+                {
+                  "name": "Valid on",
+                  "locale": "en-US"
+                },
+                {
+                  "name": "Valid on",
+                  "locale": "nl-NL"
+                }
+              ]
+            }
+          },
+          "Pax": {
+            "display": [
+              {
+                "name": "Ticket amounts (PAX)"
+              },
+              {
+                "name": "Ticket amounts (PAX)",
+                "locale": "en-US"
+              },
+              {
+                "name": "Ticket aantallen (PAX)",
+                "locale": "nl-NL"
+              }
+            ],
+            "Adults": {
+              "display": [
+                {
+                  "name": "Amount of Adults"
+                },
+                {
+                  "name": "Amount of Adults",
+                  "locale": "en-US"
+                },
+                {
+                  "name": "Aantal volwassenen",
+                  "locale": "nl-NL"
+                }
+              ]
+            },
+            "Children": {
+              "display": [
+                {
+                  "name": "Amount of children"
+                },
+                {
+                  "name": "Amount of children",
+                  "locale": "en-US"
+                },
+                {
+                  "name": "Aantal kinderen",
+                  "locale": "nl-NL"
+                }
+              ]
+            }
+          }
+        },
+        "cryptographic_binding_methods_supported": [
+          "did:web",
+          "did:jwk"
+        ],
+        "cryptographic_suites_supported": [
+          "ES256"
+        ]
+      },
+      "MovieTicket": {
+        "format": "vc+sd-jwt",
+        "vct": "MovieTicket",
+        "display": [
+          {
+            "name": "Movies-r-us",
+            "description": "Movie ticket",
+            "background_color": "#738d13",
+            "text_color": "#FFFFFF",
+            "background_image": {
+              "url": "https://i.ibb.co/5YNyvsR/movietheather.jpg",
+              "alt_text": "Movie theather."
+            },
+            "logo": {
+              "url": "https://i.ibb.co/gZ9nF0Q/popcorn-icon.png",
+              "alt_text": "Popcorn logo."
+            }
+          },
+          {
+            "locale": "en-US",
+            "name": "Movies-r-us",
+            "description": "Movie ticket",
+            "background_color": "#738d13",
+            "text_color": "#FFFFFF",
+            "background_image": {
+              "url": "https://i.ibb.co/5YNyvsR/movietheather.jpg",
+              "alt_text": "Movie theather."
+            },
+            "logo": {
+              "url": "https://i.ibb.co/gZ9nF0Q/popcorn-icon.png",
+              "alt_text": "Popcorn logo."
+            }
+          },
+          {
+            "locale": "nl-NL",
+            "name": "Movies-r-us",
+            "description": "Movie ticket",
+            "background_color": "#738d13",
+            "text_color": "#FFFFFF",
+            "background_image": {
+              "url": "https://i.ibb.co/5YNyvsR/movietheather.jpg",
+              "alt_text": "Movie theather."
+            },
+            "logo": {
+              "url": "https://i.ibb.co/gZ9nF0Q/popcorn-icon.png",
+              "alt_text": "Popcorn logo."
+            }
+          }
+        ],
+        "credentialSubject": {
+          "MovieTicket": {
+            "display": [
+              {
+                "name": "Movie theater ticket"
+              },
+              {
+                "name": "Movie theater ticket",
+                "locale": "en-US"
+              },
+              {
+                "name": "Bioscoop ticket",
+                "locale": "nl-NL"
+              }
+            ],
+            "date": {
+              "display": [
+                {
+                  "name": "Valid on"
+                },
+                {
+                  "name": "Valid on",
+                  "locale": "en-US"
+                },
+                {
+                  "name": "Valid on",
+                  "locale": "nl-NL"
+                }
+              ]
+            },
+            "startTime": {
+              "display": [
+                {
+                  "name": "Start time"
+                },
+                {
+                  "name": "Start time",
+                  "locale": "en-US"
+                },
+                {
+                  "name": "Starttijd",
+                  "locale": "nl-NL"
+                }
+              ]
+            },
+            "seats": {
+              "display": [
+                {
+                  "name": "Number of seats"
+                },
+                {
+                  "name": "Number of seats",
+                  "locale": "en-US"
+                },
+                {
+                  "name": "Aantal stoelen",
+                  "locale": "nl-NL"
+                }
+              ]
+            },
+            "VIP": {
+              "display": [
+                {
+                  "name": "VIP treatment"
+                },
+                {
+                  "name": "VIP treatment",
+                  "locale": "en-US"
+                },
+                {
+                  "name": "VIP behandeling",
+                  "locale": "nl-NL"
+                }
+              ]
+            }
+          }
+        },
+        "cryptographic_binding_methods_supported": [
+          "did:web",
+          "did:jwk"
+        ],
+        "cryptographic_suites_supported": [
+          "ES256"
+        ]
+      },
+      "Employee": {
+        "format": "vc+sd-jwt",
+        "vct": "Employee",
+        "display": [
+          {
+            "name": "Employee",
+            "description": "Employee",
+            "background_color": "rgba(0, 0, 0, 0.2)",
+            "text_color": "#FBFBFB",
+            "background_image": {
+              "url": "https://i.ibb.co/kmfrH4F/tulips.png",
+              "alt_text": "Black and white photo of tulips with one red tulip"
+            },
+            "logo": {
+              "url": "https://i.ibb.co/NWQQ9kt/sphereon-logo.png",
+              "alt_text": "Red square depicting Sphereon logo."
+            }
+          },
+          {
+            "locale": "en-US",
+            "name": "Employee",
+            "description": "Employee",
+            "background_color": "rgba(0, 0, 0, 0.2)",
+            "text_color": "#FBFBFB",
+            "background_image": {
+              "url": "https://i.ibb.co/kmfrH4F/tulips.png",
+              "alt_text": "Black and white photo of tulips with one red tulip"
+            },
+            "logo": {
+              "url": "https://i.ibb.co/NWQQ9kt/sphereon-logo.png",
+              "alt_text": "Red square depicting Sphereon logo."
+            }
+          },
+          {
+            "locale": "nl-NL",
+            "name": "Medewerker",
+            "description": "Medewerker",
+            "background_color": "rgba(0, 0, 0, 0.2)",
+            "text_color": "#FBFBFB",
+            "background_image": {
+              "url": "https://i.ibb.co/kmfrH4F/tulips.png",
+              "alt_text": "Black and white photo of tulips with one red tulip"
+            },
+            "logo": {
+              "url": "https://i.ibb.co/NWQQ9kt/sphereon-logo.png",
+              "alt_text": "Red square depicting Sphereon logo."
+            }
+          }
+        ],
+        "credentialSubject": {
+          "Employee": {
+            "display": [
+              {
+                "name": "Employee details"
+              },
+              {
+                "name": "Employee details",
+                "locale": "en-US"
+              },
+              {
+                "name": "Medewerker details",
+                "locale": "nl-NL"
+              }
+            ],
+            "firstName": {
+              "display": [
+                {
+                  "name": "Firstname"
+                },
+                {
+                  "name": "Firstname",
+                  "locale": "en-US"
+                },
+                {
+                  "name": "Voornaam",
+                  "locale": "nl-NL"
+                }
+              ]
+            },
+            "middleName": {
+              "display": [
+                {
+                  "name": "Middle-name"
+                },
+                {
+                  "name": "Middle-name",
+                  "locale": "en-US"
+                },
+                {
+                  "name": "Tussenvoegsels",
+                  "locale": "nl-NL"
+                }
+              ]
+            },
+            "lastName": {
+              "display": [
+                {
+                  "name": "Lastname"
+                },
+                {
+                  "name": "Lastname",
+                  "locale": "en-US"
+                },
+                {
+                  "name": "Achternaam",
+                  "locale": "nl-NL"
+                }
+              ]
+            },
+            "emailAddress": {
+              "display": [
+                {
+                  "name": "E-mail"
+                },
+                {
+                  "name": "E-mail",
+                  "locale": "en-US"
+                },
+                {
+                  "name": "E-mail",
+                  "locale": "nl-NL"
+                }
+              ]
+            },
+            "employeeNumber": {
+              "display": [
+                {
+                  "name": "Employee number"
+                },
+                {
+                  "name": "Employee number",
+                  "locale": "en-US"
+                },
+                {
+                  "name": "Medewerker nr",
+                  "locale": "nl-NL"
+                }
+              ]
+            }
+          }
+        },
+        "cryptographic_binding_methods_supported": [
+          "did:web",
+          "did:jwk"
+        ],
+        "cryptographic_suites_supported": [
+          "ES256"
+        ]
+      }
+    },
+    "credential_supplier_config": {
+      "templates_base_dir": "templates",
+      "template_mappings": [
+        {
+          "credential_types": [
+            "PensionCredential"
+          ],
+          "template_path": "PensionCredential.hbs.json",
+          "format": "jwt_vc_json"
+        },
+        {
+          "credential_types": [
+            "PensionSdJwt"
+          ],
+          "template_path": "PensionSdJwt.hbs.json",
+          "format": "vc+sd-jwt"
+        },
+        {
+          "credential_types": [
+            "MovieTicket"
+          ],
+          "template_path": "MovieTicket.hbs.json",
+          "format": "vc+sd-jwt"
+        },
+        {
+          "credential_types": [
+            "Swimmingpool"
+          ],
+          "template_path": "Swimmingpool.hbs.json",
+          "format": "vc+sd-jwt"
+        },
+        {
+          "credential_types": [
+            "Employee"
+          ],
+          "template_path": "Employee.hbs.json",
+          "format": "vc+sd-jwt"
+        }
+      ]
+    }
+  }
+}
