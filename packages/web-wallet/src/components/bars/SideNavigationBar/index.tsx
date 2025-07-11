@@ -1,14 +1,39 @@
 import React, {ReactElement} from 'react'
 import {useTranslate} from '@refinedev/core'
 import SideNavigationCategory from '@components/bars/SideNavigationBar/SideNavigationCategory'
-import {KeyManagementRoute, MainRoute, NavigationRoute} from '@typings'
+import {RoleType} from '@sphereon/ui-components.core';
+import {Listbox, RoleViewItem} from '@sphereon/ui-components.ssi-react'
+import {KeyManagementRoute, MainRoute, NavigationRoute, RoleData} from '@typings'
 import style from './index.module.css'
 
 const SideNavigationBar: React.FC = (): ReactElement => {
   const translate = useTranslate()
 
+  // TODO replace dummy data for the Listbox
+  const roles: RoleData[] = [
+    { accountName: 'Account 1', role: RoleType.ISSUER },
+    { accountName: 'Account 2', role: RoleType.ADMIN, isDisabled: true },
+    { accountName: 'Account 3', role: RoleType.RELYING_PARTY },
+    { accountName: 'Account 4', role: RoleType.HOLDER },
+  ]
+
+  const onChangeRole = async (role: RoleData) => console.log(JSON.stringify(role))
+
   return (
     <nav className={style.container}>
+      <div className={style.roleSelectionContainer}>
+        <Listbox<RoleData>
+          items={roles}
+          renderItem={(role: RoleData) =>
+            <RoleViewItem
+              accountName={role.accountName}
+              role={role.role}
+            />
+          }
+          onChange={onChangeRole}
+          menuTitle={translate('roles_selection_label')}
+        />
+      </div>
       <div className={style.routesContainer}>
         {/* <SideNavigationCategory target={MainRoute.ASSETS} label={translate('navigation_side_menu_assets_label')} /> */}
         {/* <SideNavigationCategory target={MainRoute.WORKFLOW} label={translate('navigation_side_menu_workflow_label')} /> */}

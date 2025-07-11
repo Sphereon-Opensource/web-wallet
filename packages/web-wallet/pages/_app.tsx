@@ -18,15 +18,12 @@ import {ContactRoute, DataProvider, DataResource, KeyManagementRoute, MainRoute}
 import {keysDataProvider} from '@/src/dataProviders/keysDataProvider'
 import {identifiersDataProvider} from '@/src/dataProviders/identifiersDataProvider'
 import {presentationDefinitionDataProvider} from '@/src/dataProviders/presentationDefinitionDataProvider'
+import {credentialDataProvider} from '@/src/dataProviders/credentialDataProvider'
 import '../src/styles/global.css'
 import styles from './App.module.css'
 import '../app/constants'
 // initialize i18n
 import '../src/i18n/client'
-
-// Do not remove. We need to import CSS, which is available in the dist folder
-import '@sphereon/ui-components.ssi-react/dist/components/views/FormView/styles.css'
-import {credentialDataProvider} from '@/src/dataProviders/credentialDataProvider'
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   noLayout?: boolean
