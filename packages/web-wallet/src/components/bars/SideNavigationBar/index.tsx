@@ -9,7 +9,7 @@ import style from './index.module.css'
 const SideNavigationBar: React.FC = (): ReactElement => {
   const translate = useTranslate()
 
-  // TODO replace dummy data for the Listbox
+  // TODO SSISDK-19 replace dummy data for the Listbox
   const roles: RoleData[] = [
     { accountName: 'Account 1', role: RoleType.ISSUER },
     { accountName: 'Account 2', role: RoleType.ADMIN, isDisabled: true },
