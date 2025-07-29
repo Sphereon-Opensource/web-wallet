@@ -129,7 +129,9 @@ const _app = (props: React.PropsWithChildren<unknown>) => {
         <div className={styles.container}>
           <TopNavigationBar title={t('top_navigation_header_title')} />
           <div className={styles.main}>
-            <SideNavigationBar />
+            <div className={styles.sideNavigationContainer}>
+              <SideNavigationBar />
+            </div>
             <main className={styles.fragment}>
               <AppRouter />
             </main>

@@ -88,3 +88,20 @@ export type CredentialCatalogItem = {
   }
   actions: string
 }
+
+export type MenuEntry = MenuItem | MenuGroup;
+
+export type MenuItem = {
+  type: "item"
+  label: string
+  icon: MenuIcon
+  path: string
+}
+
+export type MenuGroup = {
+  type: "group"
+  label?: string
+  items: Array<MenuItem>
+}
+
+export type MenuIcon = "contact"
