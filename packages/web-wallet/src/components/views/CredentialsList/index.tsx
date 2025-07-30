@@ -111,7 +111,6 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
             return CredentialTableItem.from(credential, partyData.data, credentialSummary)
           }),
         )
-        console.log('newCredentialTableItems items', newCredentialTableItems.length)
         setCredentialTableItems(newCredentialTableItems)
       } catch (error) {
         console.error(error)
