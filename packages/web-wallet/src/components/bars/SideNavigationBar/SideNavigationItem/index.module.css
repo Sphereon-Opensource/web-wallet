@@ -1,11 +1,37 @@
 .container {
-    padding: 13px 10px 13px 18px;
+    padding: 4px 6px;
     display: flex;
     flex-direction: row;
     cursor: pointer;
-    gap: 13px;
     align-items: center;
     user-select: none;
+    border-radius: 4px;
+}
+
+.container:hover {
+    background-color: #E3E3E3;
+}
+
+.containerDisabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none; /* Prevent hover and clicks */
+}
+
+.containerActive {
+    background-color: #E7DEFB;
+}
+
+.containerActive:hover {
+    background-color: #E7DEFB; /* same as active, prevents hover override */
+}
+
+.iconContainer {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .label {

@@ -104,4 +104,4 @@ export type MenuGroup = {
   items: Array<MenuItem>
 }
 
-export type MenuIcon = "contact"
+export type MenuIcon = "contact" | "notification" | "activity" | "credential"

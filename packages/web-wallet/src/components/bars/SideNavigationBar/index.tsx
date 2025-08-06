@@ -15,7 +15,7 @@ export const menuItemFrom = (item: MenuItem): ReactElement => {
     return <SideNavigationItem
         label={item.label}
         icon={item.icon}
-        target={item.path}
+        href={item.path}
     />
 }
 
