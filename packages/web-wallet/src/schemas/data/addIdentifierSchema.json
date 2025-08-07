@@ -72,8 +72,7 @@
           "type": "string",
           "default": "/.well-known"
         }
-      },
-      "required": ["hostName"]
+      }
     },
     "network": {
       "type": "string",
@@ -93,5 +92,23 @@
       "type": "string"
     }
   },
-  "required": ["type", "method"]
+  "required": ["type", "method", "alias"],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "method": {
+            "const": "web"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "web": {
+            "required": ["hostName"]
+          }
+        }
+      }
+    }
+  ]
 }

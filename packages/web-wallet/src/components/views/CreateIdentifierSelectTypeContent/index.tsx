@@ -10,7 +10,7 @@ import {createAjv} from '@jsonforms/core'
 const CreateIdentifierSelectTypeContent: FC = (): ReactElement => {
   const translate = useTranslate()
   const {onIdentifierDataChange, identifierData, identifierMiddleware} = useIdentifierCreateOutletContext()
-  const ajv = createAjv({useDefaults: 'empty', coerceTypes: true})
+  const ajv = createAjv({ coerceTypes: true })
 
   return (
     <div className={style.container}>
