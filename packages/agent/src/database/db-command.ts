@@ -1,5 +1,6 @@
-import { dropDatabase, revertMigration } from './databaseService'
+import {dropDatabase, getDbConnection, revertMigration} from './databaseService'
 import { dbConnection } from '../index'
+import {DB_CONNECTION_NAME} from '../environment-vars'
 
 enum Action {
   RevertMigration = 'revert-migration',
@@ -40,7 +41,25 @@ function getActionFromArgs(args: string[]): string {
 
 async function main() {
   const action = getActionFromArgs(process.argv.slice(2))
+
+  process.on('uncaughtException', (err) => {
+    console.error('UNCUGHT EXCEPTION >>>');
+    console.error(err);
+    if (err && typeof err === 'object') console.dir(err, { depth: 20 });
+    console.error('<<< END');
+    process.exit(1);
+  });
+
+  process.on('unhandledRejection', (reason) => {
+    console.error('UNHANDLED REJECTION >>>');
+    console.error(reason);
+    if (reason && typeof reason === 'object') console.dir(reason, { depth: 20 });
+    console.error('<<< END');
+    process.exit(1);
+  });
+
   await handleAction(action)
 }
+
 
 main()

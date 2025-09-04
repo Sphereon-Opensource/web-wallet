@@ -11,13 +11,14 @@ console.log(`Using DB configuration for a ${DB_CONFIG.type} database`)
  * Also makes sure that migrations are run (versioning for DB schema's), so we can properly update over time
  *
  * @param connectionName The database name
+ * @param allowMigrations
  */
 export const getDbConnection = async (connectionName: string): Promise<DataSource> => {
   if (!DataSources.singleInstance().has(connectionName)) {
     console.log(`Using DB connection with connectionName ${connectionName} and type ${DB_TYPE}`)
     DataSources.singleInstance().addConfig(connectionName, DB_CONFIG)
   }
-  return DataSources.singleInstance().getDbConnection(connectionName)
+  return DataSources.singleInstance().getDbConnection(connectionName, false)
 }
 
 /**

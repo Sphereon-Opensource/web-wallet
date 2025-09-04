@@ -23,7 +23,7 @@ import {
   DID_WEB_PRIVATE_KEY_PEM,
 } from '../environment-vars'
 import { EbsiDidProvider } from '@sphereon/ssi-sdk.ebsi-support'
-import { SphereonKeyDidProvider } from '@sphereon/ssi-sdk-ext.did-provider-key'
+
 import { identifierOptConfigs } from '../environment-vars-with-deps'
 import { ensureManagedIdentifierResult, ManagedIdentifierResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 
@@ -36,7 +36,9 @@ export function createDidResolver() {
   })
 }
 
-export function createDidProviders() {
+export async function createDidProviders() {
+  const { SphereonKeyDidProvider } = await import('@sphereon/ssi-sdk-ext.did-provider-key');
+
   return {
     [`${DID_PREFIX}:${DIDMethods.DID_WEB}`]: new WebDIDProvider({
       defaultKms: KMS.LOCAL,
