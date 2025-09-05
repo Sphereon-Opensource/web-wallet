@@ -1,14 +1,24 @@
-import { CredentialDataSupplier, CredentialDataSupplierArgs, CredentialDataSupplierResult, CredentialSignerCallback } from '@sphereon/oid4vci-issuer'
-import { TemplateVCGenerator } from './templateManager'
+import {
+  CredentialDataSupplier,
+  CredentialDataSupplierArgs,
+  CredentialDataSupplierResult,
+  CredentialSignerCallback,
+} from '@sphereon/oid4vci-issuer'
+import {TemplateVCGenerator} from './templateManager'
 import {CredentialRequestV1_0_15, getTypesFromRequest} from '@sphereon/oid4vci-common'
-import { CONF_PATH } from '../environment-vars'
-import { CredentialSupplierConfigWithTemplateSupport } from '../types'
-import { normalizeFilePath } from './generic'
+import {CONF_PATH} from '../environment-vars'
+import {CredentialSupplierConfigWithTemplateSupport} from '../types'
+import {normalizeFilePath} from './generic'
 import agent from '../agent'
-import { CredentialRole } from '@sphereon/ssi-sdk.data-store'
-import {CredentialMapper, ICredential, OriginalVerifiableCredential, W3CVerifiableCredential} from '@sphereon/ssi-types'
-import { CredentialPayload, DIDDocument } from '@veramo/core'
-import { decodeJWT } from 'did-jwt'
+import {
+  CredentialMapper,
+  CredentialRole,
+  ICredential,
+  OriginalVerifiableCredential,
+  W3CVerifiableCredential,
+} from '@sphereon/ssi-types'
+import {CredentialPayload} from '@veramo/core'
+import {decodeJWT} from 'did-jwt'
 
 const templateVCGenerator = new TemplateVCGenerator()
 

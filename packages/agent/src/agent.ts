@@ -81,7 +81,7 @@ import {EventLogger} from '@sphereon/ssi-sdk.event-logger'
 import {RemoteServerApiServer} from '@sphereon/ssi-sdk.remote-server-rest-api'
 import {IssuanceBranding} from '@sphereon/ssi-sdk.issuance-branding'
 import {PDManager} from '@sphereon/ssi-sdk.pd-manager'
-import {CredentialProofFormat, DcqlQueryREST, defaultHasher, LoggingEventType} from '@sphereon/ssi-types'
+import {CredentialProofFormat, DcqlQueryPayload, defaultHasher, LoggingEventType} from '@sphereon/ssi-types'
 import {createOID4VPRP, getDefaultOID4VPRPOptions} from './utils/oid4vp'
 import {IPresentationDefinition} from '@sphereon/pex'
 import {PresentationExchange} from '@sphereon/ssi-sdk.presentation-exchange'
@@ -568,29 +568,25 @@ if (!cliMode) {
   }
 
 
-  // Import presentation definitions from disk, get base filenames without .dcql
-  const baseNames = Object.keys(syncDefinitionsOpts).filter(name => !name.endsWith('.dcql'))
-
+  // Import presentation definitions from disk, get base filenames without file ext
+  const baseNames = Object.keys(syncDefinitionsOpts).filter(name => !name.endsWith('.json'))
   const definitionsToImport: Array<IDefinitionPair> = baseNames
     .map(baseName => {
-      const definition = syncDefinitionsOpts[baseName]
-      if (!isPresentationDefinition(definition)) {
+      const dcqlQueryPayload = syncDefinitionsOpts[baseName]
+      if (!isDcqlQuery(dcqlQueryPayload)) {
         return null
       }
 
-      const { id, name } = definition
-      if (OID4VP_DEFINITIONS.length === 0 || OID4VP_DEFINITIONS.includes(id) || (name && OID4VP_DEFINITIONS.includes(name))) {
-        console.log(`[OID4VP] Enabling Presentation Definition with name '${name ?? '<none>'}' and id '${id}'`)
+      const { queryId } = dcqlQueryPayload
+      if (OID4VP_DEFINITIONS.length === 0 || OID4VP_DEFINITIONS.includes(queryId)) {
+        console.log(`[OID4VP] Enabling DCQL Presentation Definition id '${queryId}'`)
 
         const pair: IDefinitionPair = {
-          definitionPayload: definition,
-          dcqlPayload: undefined
+          dcqlPayload: dcqlQueryPayload
         }
 
-        const dcqlContent = syncDefinitionsOpts[`${baseName}.dcql`]
-        if (isDcqlQuery(dcqlContent)) {
-          pair.dcqlPayload = dcqlContent
-        }
+        const dcqlContent = syncDefinitionsOpts[baseName]
+        pair.dcqlPayload = dcqlContent
 
         return pair
       }
@@ -620,10 +616,6 @@ export async function issuerPersistToInstanceOpts(opt: IIssuerOptsPersistArgs): 
   }
 }
 
-function isPresentationDefinition(obj: any): obj is IPresentationDefinition {
-  return obj && Array.isArray(obj.input_descriptors)
-}
-
-function isDcqlQuery(obj: any): obj is DcqlQueryREST {
-  return obj && Array.isArray(obj.credentials)
+function isDcqlQuery(obj: any): obj is DcqlQueryPayload {
+  return obj && obj.dcqlQuery && Array.isArray(obj.dcqlQuery.credentials)
 }
