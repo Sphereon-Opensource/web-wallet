@@ -83,7 +83,6 @@ import {IssuanceBranding} from '@sphereon/ssi-sdk.issuance-branding'
 import {PDManager} from '@sphereon/ssi-sdk.pd-manager'
 import {CredentialProofFormat, DcqlQueryPayload, defaultHasher, LoggingEventType} from '@sphereon/ssi-types'
 import {createOID4VPRP, getDefaultOID4VPRPOptions} from './utils/oid4vp'
-import {IPresentationDefinition} from '@sphereon/pex'
 import {PresentationExchange} from '@sphereon/ssi-sdk.presentation-exchange'
 import {ISIOPv2RPRestAPIOpts, SIOPv2RPApiServer} from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-api'
 import {DidAuthSiopOpAuthenticator} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
@@ -569,34 +568,34 @@ if (!cliMode) {
 
 
   // Import presentation definitions from disk, get base filenames without file ext
-  const baseNames = Object.keys(syncDefinitionsOpts).filter(name => !name.endsWith('.json'))
+  const baseNames = Object.keys(syncDefinitionsOpts)
   const queriesToImport: Array<IDefinitionPair> = baseNames
-    .map(baseName => {
-      const dcqlQueryPayload = syncDefinitionsOpts[baseName]
-      if (!isDcqlQuery(dcqlQueryPayload)) {
-        return null
-      }
-
-      const { queryId } = dcqlQueryPayload
-      if (OID4VP_DEFINITIONS.length === 0 || OID4VP_DEFINITIONS.includes(queryId)) {
-        console.log(`[OID4VP] Enabling DCQL Presentation Definition id '${queryId}'`)
-
-        const pair: IDefinitionPair = {
-          dcqlPayload: dcqlQueryPayload
+      .map(baseName => {
+        const dcqlQueryPayload = syncDefinitionsOpts[baseName]
+        if (!isDcqlQuery(dcqlQueryPayload)) {
+          return null
         }
 
-        const dcqlContent = syncDefinitionsOpts[baseName]
-        pair.dcqlPayload = dcqlContent
+        const { queryId } = dcqlQueryPayload
+        if (OID4VP_DEFINITIONS.length === 0 || OID4VP_DEFINITIONS.includes(queryId)) {
+          console.log(`[OID4VP] Enabling DCQL query id '${queryId}'`)
 
-        return pair
-      }
-      return null
-    })
-    .filter((pair): pair is IDefinitionPair => pair !== null)
+          const pair: IDefinitionPair = {
+            dcqlPayload: dcqlQueryPayload
+          }
+
+          const dcqlContent = syncDefinitionsOpts[baseName]
+          pair.dcqlPayload = dcqlContent
+
+          return pair
+        }
+        return null
+      })
+      .filter((pair): pair is IDefinitionPair => pair !== null)
 
   if (queriesToImport.length > 0) {
     await agent.siopImportDefinitions({
-      queries: queriesToImport,
+      definitions: queriesToImport,
       versionControlMode: 'AutoIncrement', // This is the default, but just to indicate here it exists
     })
   }
