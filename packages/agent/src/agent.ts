@@ -81,9 +81,8 @@ import {EventLogger} from '@sphereon/ssi-sdk.event-logger'
 import {RemoteServerApiServer} from '@sphereon/ssi-sdk.remote-server-rest-api'
 import {IssuanceBranding} from '@sphereon/ssi-sdk.issuance-branding'
 import {PDManager} from '@sphereon/ssi-sdk.pd-manager'
-import {CredentialProofFormat, DcqlQueryREST, defaultHasher, LoggingEventType} from '@sphereon/ssi-types'
+import {CredentialProofFormat, DcqlQueryPayload, defaultHasher, LoggingEventType} from '@sphereon/ssi-types'
 import {createOID4VPRP, getDefaultOID4VPRPOptions} from './utils/oid4vp'
-import {IPresentationDefinition} from '@sphereon/pex'
 import {PresentationExchange} from '@sphereon/ssi-sdk.presentation-exchange'
 import {ISIOPv2RPRestAPIOpts, SIOPv2RPApiServer} from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-api'
 import {DidAuthSiopOpAuthenticator} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
@@ -127,12 +126,10 @@ if(process.env.DISABLE_MIGRATIONS !== 'true') {
   await (await dbConnection).runMigrations();
 }
 
-
 /**
  * Lets setup supported DID resolvers first
  */
 const resolver = createDidResolver()
-
 
 /**
  * Private key store, responsible for storing private keys in the database using encryption
@@ -567,44 +564,39 @@ if (!cliMode) {
     await getOrCreateConfiguredStatusList({issuer: defaultDID, keyRef: defaultKid}).catch(e => console.log(`ERROR statuslist`, e))
   }
 
-
-  // Import presentation definitions from disk, get base filenames without .dcql
-  const baseNames = Object.keys(syncDefinitionsOpts).filter(name => !name.endsWith('.dcql'))
-
-  const definitionsToImport: Array<IDefinitionPair> = baseNames
-    .map(baseName => {
-      const definition = syncDefinitionsOpts[baseName]
-      if (!isPresentationDefinition(definition)) {
-        return null
-      }
-
-      const { id, name } = definition
-      if (OID4VP_DEFINITIONS.length === 0 || OID4VP_DEFINITIONS.includes(id) || (name && OID4VP_DEFINITIONS.includes(name))) {
-        console.log(`[OID4VP] Enabling Presentation Definition with name '${name ?? '<none>'}' and id '${id}'`)
-
-        const pair: IDefinitionPair = {
-          definitionPayload: definition,
-          dcqlPayload: undefined
+  // Import presentation definitions from disk, get base filenames without file ext
+  const baseNames = Object.keys(syncDefinitionsOpts).filter(name => !name.endsWith('.json'))
+  const queriesToImport: Array<IDefinitionPair> = baseNames
+      .map(baseName => {
+        const dcqlQueryPayload = syncDefinitionsOpts[baseName]
+        if (!isDcqlQuery(dcqlQueryPayload)) {
+          return null
         }
 
-        const dcqlContent = syncDefinitionsOpts[`${baseName}.dcql`]
-        if (isDcqlQuery(dcqlContent)) {
+        const { queryId } = dcqlQueryPayload
+        if (OID4VP_DEFINITIONS.length === 0 || OID4VP_DEFINITIONS.includes(queryId)) {
+          console.log(`[OID4VP] Enabling DCQL query id '${queryId}'`)
+
+          const pair: IDefinitionPair = {
+            dcqlPayload: dcqlQueryPayload
+          }
+
+          const dcqlContent = syncDefinitionsOpts[baseName]
           pair.dcqlPayload = dcqlContent
+
+          return pair
         }
+        return null
+      })
+      .filter((pair): pair is IDefinitionPair => pair !== null)
 
-        return pair
-      }
-      return null
-    })
-    .filter((pair): pair is IDefinitionPair => pair !== null)
+  if (queriesToImport.length > 0) {
 
-  if (definitionsToImport.length > 0) {
     await agent.siopImportDefinitions({
-      definitions: definitionsToImport,
+      definitions: queriesToImport,
       versionControlMode: 'AutoIncrement', // This is the default, but just to indicate here it exists
     })
   }
-
   if (expressSupport) {
     expressSupport.start()
   }
@@ -620,10 +612,6 @@ export async function issuerPersistToInstanceOpts(opt: IIssuerOptsPersistArgs): 
   }
 }
 
-function isPresentationDefinition(obj: any): obj is IPresentationDefinition {
-  return obj && Array.isArray(obj.input_descriptors)
-}
-
-function isDcqlQuery(obj: any): obj is DcqlQueryREST {
-  return obj && Array.isArray(obj.credentials)
+function isDcqlQuery(obj: any): obj is DcqlQueryPayload {
+  return obj && Array.isArray(obj.dcqlQuery.credentials)
 }

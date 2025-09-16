@@ -1,6 +1,5 @@
 import * as fs from 'fs'
 
-
 /**
  * Loads one or more JSON files from a path.
  *
@@ -41,7 +40,6 @@ export function loadJsonFiles<T>({ path }: { path: string }): {
   return { names, fileNames: files, asObject, asArray }
 }
 
-
 /**
  * Loads one or more JSON files from a path into a map.
  *
@@ -70,7 +68,6 @@ export function loadJsonFileMap<T>({path}: {path: string}): Record<string, T> {
 
   return fileMap
 }
-
 
 /**
  * The function builds a file path without missing or excess slashes

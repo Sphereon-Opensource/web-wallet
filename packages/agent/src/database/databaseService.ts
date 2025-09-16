@@ -18,7 +18,7 @@ export const getDbConnection = async (connectionName: string): Promise<DataSourc
     console.log(`Using DB connection with connectionName ${connectionName} and type ${DB_TYPE}`)
     DataSources.singleInstance().addConfig(connectionName, DB_CONFIG)
   }
-  return DataSources.singleInstance().getDbConnection(connectionName, false)
+  return DataSources.singleInstance().getDbConnection(connectionName)
 }
 
 /**

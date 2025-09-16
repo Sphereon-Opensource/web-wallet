@@ -1,13 +1,23 @@
-import { CredentialDataSupplier, CredentialDataSupplierArgs, CredentialDataSupplierResult, CredentialSignerCallback } from '@sphereon/oid4vci-issuer'
+import {
+  CredentialDataSupplier,
+  CredentialDataSupplierArgs,
+  CredentialDataSupplierResult,
+  CredentialSignerCallback
+} from '@sphereon/oid4vci-issuer'
 import { TemplateVCGenerator } from './templateManager'
-import {CredentialRequestV1_0_15, getTypesFromRequest} from '@sphereon/oid4vci-common'
+import { CredentialRequestV1_0_15 } from '@sphereon/oid4vci-common'
 import { CONF_PATH } from '../environment-vars'
 import { CredentialSupplierConfigWithTemplateSupport } from '../types'
 import { normalizeFilePath } from './generic'
 import agent from '../agent'
-import { CredentialRole } from '@sphereon/ssi-sdk.data-store'
-import {CredentialMapper, ICredential, OriginalVerifiableCredential, W3CVerifiableCredential} from '@sphereon/ssi-types'
-import { CredentialPayload, DIDDocument } from '@veramo/core'
+import {
+  CredentialMapper,
+  CredentialRole,
+  ICredential,
+  OriginalVerifiableCredential,
+  W3CVerifiableCredential
+} from '@sphereon/ssi-types'
+import { CredentialPayload } from '@veramo/core'
 import { decodeJWT } from 'did-jwt'
 
 const templateVCGenerator = new TemplateVCGenerator()
@@ -56,14 +66,10 @@ class TemplateCredentialDataSupplier {
       }
     } else if ('credentialPayload' in credentialDataSupplierInput && credentialDataSupplierInput.credentialPayload) {
       let types: string[]
-      if ('credential_identifier' in args.credentialRequest) {
-        if (!args.credentialRequest.credential_identifier || args.credentialRequest.credential_identifier.length === 0) {
-          throw Error('credential_identifier may not be blank')
-        }
-        types = [args.credentialRequest.credential_identifier]
-      } else {
-        types = getTypesFromRequest(args.credentialRequest, args.format)
+      if (!args.credentialRequest.credential_identifier || args.credentialRequest.credential_identifier.length === 0) {
+        throw Error('credential_identifier may not be blank')
       }
+      types = [args.credentialRequest.credential_identifier]
 
       const credentialPayload = credentialDataSupplierInput.credentialPayload as CredentialPayload
       console.log('-------------> credentialPayload', credentialPayload)

@@ -1,5 +1,5 @@
-import {createNewStatusList} from '@sphereon/ssi-sdk.vc-status-list'
-import {getDriver} from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
+import { createNewStatusList } from '@sphereon/ssi-sdk.vc-status-list'
+import { getDriver } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
 import {
   DB_CONNECTION_NAME,
   DEFAULT_DID,
@@ -8,10 +8,11 @@ import {
   STATUS_LIST_ISSUER,
   STATUS_LIST_LENGTH,
   STATUS_LIST_PURPOSE,
+  STATUS_LIST_TYPE,
 } from '../environment-vars'
-import {context} from '../agent'
-import {STATUS_LIST_API_FEATURES} from '../environment-vars-with-deps'
-import {StatusListType} from '@sphereon/ssi-types'
+import { context } from '../agent'
+import { STATUS_LIST_API_FEATURES } from '../environment-vars-with-deps'
+import { StatusListType } from '@sphereon/ssi-types'
 
 export async function getOrCreateConfiguredStatusList(args?: { issuer?: string; keyRef?: string }) {
   if (!STATUS_LIST_API_FEATURES || STATUS_LIST_API_FEATURES.length === 0) {
@@ -52,6 +53,7 @@ export async function getOrCreateConfiguredStatusList(args?: { issuer?: string; 
       context,
     )
     await driver.createStatusList({
+      statusListType: STATUS_LIST_TYPE as StatusListType,
       statusListCredential: statusList.statusListCredential,
       correlationId: STATUS_LIST_CORRELATION_ID,
     })
