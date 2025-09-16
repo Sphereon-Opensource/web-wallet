@@ -5,7 +5,7 @@ import {
   CredentialSignerCallback,
 } from '@sphereon/oid4vci-issuer'
 import {TemplateVCGenerator} from './templateManager'
-import {CredentialRequestV1_0_15, getTypesFromRequest} from '@sphereon/oid4vci-common'
+import {CredentialRequestV1_0_15} from '@sphereon/oid4vci-common'
 import {CONF_PATH} from '../environment-vars'
 import {CredentialSupplierConfigWithTemplateSupport} from '../types'
 import {normalizeFilePath} from './generic'
@@ -36,7 +36,7 @@ class TemplateCredentialDataSupplier {
 
   // TODO Refactor, this is the TemplateCredentialDataSupplier & defaultCredentialDataSupplier smacked together
   public async generateCredentialData(args: CredentialDataSupplierArgs): Promise<CredentialDataSupplierResult> {
-    const { credentialDataSupplierInput, credentialRequest, credentialOffer, issuerState, preAuthorizedCode } = args
+    const { credentialDataSupplierInput, credentialRequest } = args
     if (!credentialDataSupplierInput) {
       throw Error(`Agent needs a credential data supplier input upfront`)
     }
@@ -65,21 +65,15 @@ class TemplateCredentialDataSupplier {
         signCallback,
       }
     } else if ('credentialPayload' in credentialDataSupplierInput && credentialDataSupplierInput.credentialPayload) {
-      let types: string[]
       if ('credential_identifier' in args.credentialRequest) {
         if (!args.credentialRequest.credential_identifier || args.credentialRequest.credential_identifier.length === 0) {
           throw Error('credential_identifier may not be blank')
         }
-        types = [args.credentialRequest.credential_identifier]
-      } else {
-        types = getTypesFromRequest(args.credentialRequest, args.format)
       }
 
       const credentialPayload = credentialDataSupplierInput.credentialPayload as CredentialPayload
       console.log('-------------> credentialPayload', credentialPayload)
-      if (types.includes('VerifiableCredential') && !credentialPayload.type?.includes('VerifiableCredential')) {
-        credentialPayload.type = [...types]
-      } else if (Array.isArray(credentialPayload.type) && !('vct' in credentialPayload)) {
+      if (Array.isArray(credentialPayload.type) && !('vct' in credentialPayload)) {
         credentialPayload.vct = credentialPayload.type[0]
       } else if (!credentialRequest.proof || !credentialRequest.proof.jwt) {
         throw Error(`Credential request proof was missing`)

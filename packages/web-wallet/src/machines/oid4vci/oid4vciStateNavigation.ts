@@ -7,7 +7,7 @@ import {
   OID4VCIMachineStates,
 } from '@sphereon/ssi-sdk.oid4vci-holder'
 import {SimpleEventsOf} from 'xstate'
-import {ConnectionType, CorrelationIdentifierType, CredentialRole, IBasicCredentialLocaleBranding} from '@sphereon/ssi-sdk.data-store'
+import {ConnectionType, CorrelationIdentifierType, IBasicCredentialLocaleBranding} from '@sphereon/ssi-sdk.data-store'
 import {getIssuerName} from '@sphereon/oid4vci-common'
 import debug from 'debug'
 import {LoadingPageState} from '@/pages/oid4vci/loading'
@@ -28,7 +28,8 @@ import {toNonPersistedCredentialSummary} from '@sphereon/ui-components.credentia
 import {AuthorizationCodeState} from '@/pages/oid4vci/AuthorizationCodeUrl'
 import agent from '@agent'
 import {OID4VCI_STATE_STORAGE_KEY} from '@/app'
-import {IdentityOrigin} from '@sphereon/ssi-sdk.data-store/dist/types/contact/contact'
+import {IdentityOrigin} from '@sphereon/ssi-sdk.data-store'
+import {CredentialRole} from '@sphereon/ssi-types'
 
 const navigateLoading = async (args: OID4VCINavigationArgs): Promise<void> => {
   const state: LoadingPageState = {

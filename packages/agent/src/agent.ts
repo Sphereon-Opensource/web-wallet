@@ -570,7 +570,7 @@ if (!cliMode) {
 
   // Import presentation definitions from disk, get base filenames without file ext
   const baseNames = Object.keys(syncDefinitionsOpts).filter(name => !name.endsWith('.json'))
-  const definitionsToImport: Array<IDefinitionPair> = baseNames
+  const queriesToImport: Array<IDefinitionPair> = baseNames
     .map(baseName => {
       const dcqlQueryPayload = syncDefinitionsOpts[baseName]
       if (!isDcqlQuery(dcqlQueryPayload)) {
@@ -594,9 +594,9 @@ if (!cliMode) {
     })
     .filter((pair): pair is IDefinitionPair => pair !== null)
 
-  if (definitionsToImport.length > 0) {
+  if (queriesToImport.length > 0) {
     await agent.siopImportDefinitions({
-      definitions: definitionsToImport,
+      queries: queriesToImport,
       versionControlMode: 'AutoIncrement', // This is the default, but just to indicate here it exists
     })
   }
