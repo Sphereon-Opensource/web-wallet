@@ -21,7 +21,7 @@ import {IIdentifier} from '@veramo/core'
 import {generateEbsiMethodSpecificId} from '@sphereon/ssi-sdk.ebsi-support/dist/did/functions'
 import {EbsiAccessTokenOpts} from '@sphereon/ssi-sdk.ebsi-support/dist/did'
 import {EbsiEnvironment} from '@sphereon/ssi-sdk.ebsi-support'
-import {CredentialRole} from '@sphereon/ssi-sdk.data-store'
+import { CredentialRole } from '@sphereon/ssi-types'
 
 // TODO CWALL-244 further implement
 

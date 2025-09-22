@@ -18,11 +18,11 @@ import {
 } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 import debug from 'debug'
 import {InformationRequestPageState} from '@/pages/siopv2/informationRequest'
-import {PresentationDefinitionWithLocation} from '@sphereon/did-auth-siop'
 import {Format} from '@sphereon/pex-models'
-import {IdentityOrigin} from '@sphereon/ssi-sdk.data-store/dist/types/contact/contact'
+import {IdentityOrigin} from '@sphereon/ssi-sdk.data-store'
 import agent from '@agent'
-import {ConnectionType, CorrelationIdentifierType, CredentialRole, PartyOrigin, PartyTypeType} from '@sphereon/ssi-sdk.data-store'
+import {ConnectionType, CorrelationIdentifierType, PartyOrigin, PartyTypeType} from '@sphereon/ssi-sdk.data-store'
+import { CredentialRole } from '@sphereon/ssi-types'
 
 const handleNavigation = async (
   path: string,
@@ -67,11 +67,11 @@ const navigateInformationRequest = async (args: Siopv2NavigationArgs): Promise<v
     return Promise.reject(Error('Missing authorization request data in context'))
   }
 
-  if (authorizationRequestData.presentationDefinitions === undefined || authorizationRequestData.presentationDefinitions.length === 0) {
+  if (authorizationRequestData.dcqlQuery === undefined || authorizationRequestData.dcqlQuery.credentials.length === 0) {
     return Promise.reject(Error('No presentation definitions present'))
   }
 
-  if (authorizationRequestData.presentationDefinitions.length > 1) {
+  if (authorizationRequestData.dcqlQuery.credentials.length > 1) {
     return Promise.reject(Error('Multiple presentation definitions not supported yet'))
   }
 
@@ -79,7 +79,7 @@ const navigateInformationRequest = async (args: Siopv2NavigationArgs): Promise<v
     return Promise.reject(Error('No selectable credentials present'))
   }
 
-  const presentationDefinitionWithLocation: PresentationDefinitionWithLocation = authorizationRequestData.presentationDefinitions[0]
+  const presentationDefinitionWithLocation: PresentationDefinitionWithLocation = authorizationRequestData.presentationDefinitions[0] // TODO update to DCQL impl
   const format: Format | undefined = authorizationRequestData.registrationMetadataPayload?.registration?.vp_formats
   const subjectSyntaxTypesSupported: Array<string> | undefined =
     authorizationRequestData.registrationMetadataPayload?.registration?.subject_syntax_types_supported

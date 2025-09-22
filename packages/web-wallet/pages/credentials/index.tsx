@@ -4,7 +4,7 @@ import AppHeaderBar from '@components/bars/AppHeaderBar'
 import CredentialsList from '@components/views/CredentialsList'
 import style from './index.module.css'
 import {staticPropsWithSST} from '@/src/i18n/server'
-import {CredentialRole} from '@sphereon/ssi-sdk.data-store'
+import { CredentialRole } from '@sphereon/ssi-types'
 
 const CredentialsListPage: React.FC = () => {
   const translate = useTranslate()
