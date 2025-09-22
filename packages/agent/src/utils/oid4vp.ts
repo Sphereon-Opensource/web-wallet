@@ -1,12 +1,12 @@
-import { IPEXInstanceOptions, IRPDefaultOpts, SIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
-import { IS_OID4VP_ENABLED } from '../environment-vars'
-import { CheckLinkedDomain } from '@sphereon/did-auth-siop-adapter'
-import { SupportedVersion } from '@sphereon/did-auth-siop'
-import { Resolvable } from 'did-resolver'
-import { OID4VPInstanceOpts } from '../types'
-import { createDidResolver, getDefaultDID, getDefaultKeyRef, getIdentifier } from './did'
-import { oid4vpInstanceOpts } from '../environment-vars-with-deps'
-import { ManagedIdentifierDidOpts, ManagedIdentifierX5cOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import {IPEXInstanceOptions, IRPDefaultOpts, SIOPv2RP} from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
+import {IS_OID4VP_ENABLED} from '../environment-vars'
+import {CheckLinkedDomain} from '@sphereon/did-auth-siop-adapter'
+import {SupportedVersion} from '@sphereon/did-auth-siop'
+import {Resolvable} from 'did-resolver'
+import {OID4VPInstanceOpts} from '../types'
+import {createDidResolver, getDefaultDID, getDefaultKeyRef, getIdentifier} from './did'
+import {oid4vpInstanceOpts} from '../environment-vars-with-deps'
+import {ManagedIdentifierDidOpts, ManagedIdentifierX5cOpts} from '@sphereon/ssi-sdk-ext.identifier-resolution'
 
 function toPexInstanceOptions(
   oid4vpInstanceOpts: OID4VPInstanceOpts[],
@@ -61,7 +61,7 @@ export async function getDefaultOID4VPRPOptions(args?: { did?: string; x5c?: str
     } satisfies ManagedIdentifierDidOpts
   }
   return {
-    supportedVersions: [SupportedVersion.SIOPv2_D12_OID4VP_D18, SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1],
+    supportedVersions: [SupportedVersion.SIOPv2_OID4VP_D28, SupportedVersion.OID4VP_v1],
     identifierOpts: {
       idOpts: idOpts!,
       ...(resolver && {
