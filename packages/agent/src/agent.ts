@@ -267,7 +267,7 @@ if (!cliMode) {
 
   const oid4vpOpts = IS_OID4VP_ENABLED ? await getDefaultOID4VPRPOptions({ did: defaultDID, x5c: DEFAULT_X5C, resolver }) : undefined
   if (oid4vpOpts && oid4vpRP) {
-    // oid4vpRP.setDefaultOpts(oid4vpOpts, context) FIXME this is no longer working as I do not have a ICredentialIssuer anymore
+    oid4vpRP.setDefaultOpts(oid4vpOpts, context)
   }
 } else {
   defaultDID = undefined
