@@ -1,8 +1,13 @@
 import { IS_OID4VCI_ENABLED } from '../environment-vars'
 import { OID4VCIIssuer } from '@sphereon/ssi-sdk.oid4vci-issuer'
 import { Resolvable } from 'did-resolver'
-import { IIssuerInstanceOptions, IIssuerOptions, IIssuerOptsPersistArgs, OID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
-import { IIssuerOptsImportArgs } from '@sphereon/ssi-sdk.oid4vci-issuer-store/src/types/IOID4VCIStore'
+import {
+  IIssuerInstanceOptions,
+  IIssuerOptions,
+  IIssuerOptsPersistArgs,
+  OID4VCIStore,
+  IIssuerOptsImportArgs
+} from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import { createDidResolver } from './did'
 import { oid4vciInstanceOpts, oid4vciMetadataOpts } from '../environment-vars-with-deps'
 import {

@@ -1,32 +1,30 @@
 import {
-  ICredentialIssuer,
   ICredentialVerifier,
   IDataStore,
   IDataStoreORM,
   IDIDManager,
   IDIDManagerCreateArgs,
-  IIdentifier,
   IKeyManager,
   IResolver,
 } from '@veramo/core'
-import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
-import { IOID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
-import { IOID4VCIIssuer } from '@sphereon/ssi-sdk.oid4vci-issuer'
-import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
-import { ISphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
-import { IPDManager } from '@sphereon/ssi-sdk.pd-manager'
-import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
-import { IPEXInstanceOptions } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
-import { ISIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
-import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
-import { CredentialSupplierConfig } from '@sphereon/oid4vci-common'
-import { ISDJwtPlugin, SDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
-import { IIdentifierResolution, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
-import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
+import {IContactManager} from '@sphereon/ssi-sdk.contact-manager'
+import {IOID4VCIStore} from '@sphereon/ssi-sdk.oid4vci-issuer-store'
+import {IOID4VCIIssuer} from '@sphereon/ssi-sdk.oid4vci-issuer'
+import {IIssuanceBranding} from '@sphereon/ssi-sdk.issuance-branding'
+import {ISphereonKeyManager} from '@sphereon/ssi-sdk-ext.key-manager'
+import {IPDManager} from '@sphereon/ssi-sdk.pd-manager'
+import {IPresentationExchange} from '@sphereon/ssi-sdk.presentation-exchange'
+import {IPEXInstanceOptions, ISIOPv2RP} from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
+import {ICredentialStore} from '@sphereon/ssi-sdk.credential-store'
+import {CredentialSupplierConfig} from '@sphereon/oid4vci-common'
+import {ISDJwtPlugin} from '@sphereon/ssi-sdk.sd-jwt'
+import {IIdentifierResolution, ManagedIdentifierOptsOrResult} from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import {IJwtService} from '@sphereon/ssi-sdk-ext.jwt-service'
+import {ImDLMdoc} from '@sphereon/ssi-sdk.mdl-mdoc'
 import {IStatusListPlugin} from '@sphereon/ssi-sdk.vc-status-list'
 import {ICredentialValidation} from '@sphereon/ssi-sdk.credential-validation'
 import {IOIDFMetadataStore} from '@sphereon/ssi-sdk.oidf-metatdata-server'
+import {IVcdmCredentialPlugin} from '@sphereon/ssi-sdk.credential-vcdm'
 
 export const DID_PREFIX = 'did'
 
@@ -38,8 +36,7 @@ export type TAgentTypes = IDIDManager &
   IKeyManager &
   IDataStore &
   IDataStoreORM &
-  ICredentialVerifier &
-  ICredentialIssuer &
+  IVcdmCredentialPlugin &
   IContactManager &
   IOID4VCIStore &
   IOID4VCIIssuer &
@@ -55,7 +52,8 @@ export type TAgentTypes = IDIDManager &
   ImDLMdoc &
   ICredentialValidation &
   IStatusListPlugin &
-  IOIDFMetadataStore
+  IOIDFMetadataStore &
+  ICredentialVerifier
 
 /**
  * The Key Management System (name) to use. Currently, there is only one KMS
@@ -102,7 +100,7 @@ export interface CredentialSupplierConfigWithTemplateSupport extends CredentialS
 }
 
 interface TemplateMapping {
-  credential_types: string[]
+  credential_config_ids: string[]
   template_path: string
   format?: string
 }
