@@ -1,48 +1,49 @@
 {
-  "queryId": "Swimmingpool",
+  "definitionId": "Swimmingpool",
   "rpOpts": {
     "supportedVersions": [
-      1000
+      200,
+      180
     ],
     "responseMode": "direct_post",
     "clientMetadataOpts": {
-      "id_token_signing_alg_values_supported": [
+      "idTokenSigningAlgValuesSupported": [
         "ES256"
       ],
-      "request_object_signing_alg_values_supported": [
+      "requestObjectSigningAlgValuesSupported": [
         "ES256"
       ],
-      "response_types_supported": [
+      "responseTypesSupported": [
         "id_token",
         "vp_token"
       ],
       "client_name": "Water is wet",
-      "vp_formats_supported": {
+      "vpFormatsSupported": {
         "jwt_vc_json": {
-          "alg_values": [
+          "alg": [
             "ES256"
           ]
         },
         "jwt_vp_json": {
-          "alg_values": [
+          "alg": [
             "ES256"
           ]
         },
         "jwt_vc": {
-          "alg_values": [
+          "alg": [
             "ES256"
           ]
         },
         "jwt_vp": {
-          "alg_values": [
+          "alg": [
             "ES256"
           ]
         }
       },
-      "scopes_supported": [
+      "scopesSupported": [
         "openid did_authn"
       ],
-      "subject_types_supported": [
+      "subjectTypesSupported": [
         "pairwise"
       ],
       "subject_syntax_types_supported": [
@@ -56,6 +57,7 @@
     },
     "identifierOpts": {
       "idOpts": {
+        "clientIdScheme": "did",
         "method": "did",
         "identifier": "did:jwk:eyJhbGciOiJFUzI1NiIsInVzZSI6InNpZyIsImt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiVEcySDJ4MmRXWE4zdUNxWnBxRjF5c0FQUVZESkVOX0gtQ010YmdqYi1OZyIsInkiOiI5TThOeGQwUE4yMk05bFBEeGRwRHBvVEx6MTV3ZnlaSnM2WmhLSVVKMzM4In0",
         "kid": "did:jwk:eyJhbGciOiJFUzI1NiIsInVzZSI6InNpZyIsImt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiVEcySDJ4MmRXWE4zdUNxWnBxRjF5c0FQUVZESkVOX0gtQ010YmdqYi1OZyIsInkiOiI5TThOeGQwUE4yMk05bFBEeGRwRHBvVEx6MTV3ZnlaSnM2WmhLSVVKMzM4In0#0",

@@ -16,30 +16,29 @@ import {
   IS_FEDERATION_ENABLED,
   IS_JWKS_HOSTING_ENABLED,
   IS_OID4VCI_ENABLED,
-  IS_OID4VP_ENABLED,
-  IS_PDM_API_ENABLED,
+  IS_OID4VP_ENABLED, IS_PDM_API_ENABLED,
   IS_STATUS_LIST_ENABLED,
   IS_VC_API_ENABLED,
+  OID4VCI_API_BASE_URL,
   OID4VP_DEFINITIONS,
   STATUS_LIST_API_BASE_PATH,
-  STATUS_LIST_CORRELATION_ID,
+  STATUS_LIST_CORRELATION_ID, STATUS_LIST_DB_NAME,
   STATUS_LIST_ID,
+  STATUS_LIST_ISSUER, STATUS_LIST_TYPE,
   VC_API_BASE_PATH,
   VC_API_DEFAULT_PROOF_FORMAT,
 } from './environment-vars.js'
 
-import {ClientAuthMethod} from '@sphereon/oid4vci-common'
-
-import {createAgent, IAgentContext, IAgentPlugin, TAgent} from '@veramo/core'
-import {VcdmCredentialPlugin} from '@sphereon/ssi-sdk.credential-vcdm'
+import {createAgent, IAgentContext, IAgentPlugin, ProofFormat, TAgent} from '@veramo/core'
 import {
-  CredentialProviderJsonld,
+  CredentialHandlerLDLocal,
   LdDefaultContexts,
+  MethodNames,
+  SphereonEcdsaSecp256k1RecoverySignature2020,
   SphereonEd25519Signature2018,
   SphereonEd25519Signature2020,
-} from '@sphereon/ssi-sdk.credential-vcdm-jsonld-provider'
-import {CredentialProviderVcdm2Jose} from '@sphereon/ssi-sdk.credential-vcdm2-jose-provider'
-
+  SphereonJsonWebSignature2020,
+} from '@sphereon/ssi-sdk.vc-handler-ld-local'
 import {CredentialPlugin} from '@veramo/credential-w3c'
 import {DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore} from '@veramo/data-store'
 import {DIDManager} from '@veramo/did-manager'
@@ -57,8 +56,9 @@ import {
   getOrCreateIdentifiersFromFS,
 } from './utils'
 import {VcApiServer} from '@sphereon/ssi-sdk.w3c-vc-api'
-import {DidWebServer, UniResolverApiServer} from '@sphereon/ssi-sdk.uni-resolver-registrar-api'
+import {UniResolverApiServer} from '@sphereon/ssi-sdk.uni-resolver-registrar-api'
 import {DID_PREFIX, DIDMethods, TAgentTypes} from './types'
+import {DidWebServer} from '@sphereon/ssi-sdk.uni-resolver-registrar-api/dist/did-web-server'
 import {StatuslistManagementApiServer} from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
 import {ContactManagerApiServer} from '@sphereon/ssi-sdk.contact-manager-rest-api'
 import {ContactManager} from '@sphereon/ssi-sdk.contact-manager'
@@ -81,8 +81,9 @@ import {EventLogger} from '@sphereon/ssi-sdk.event-logger'
 import {RemoteServerApiServer} from '@sphereon/ssi-sdk.remote-server-rest-api'
 import {IssuanceBranding} from '@sphereon/ssi-sdk.issuance-branding'
 import {PDManager} from '@sphereon/ssi-sdk.pd-manager'
-import {CredentialProofFormat, DcqlQueryPayload, defaultHasher, LoggingEventType} from '@sphereon/ssi-types'
+import {DcqlQueryREST, defaultHasher, LoggingEventType, StatusListDriverType, StatusListType} from '@sphereon/ssi-types'
 import {createOID4VPRP, getDefaultOID4VPRPOptions} from './utils/oid4vp'
+import {IPresentationDefinition} from '@sphereon/pex'
 import {PresentationExchange} from '@sphereon/ssi-sdk.presentation-exchange'
 import {ISIOPv2RPRestAPIOpts, SIOPv2RPApiServer} from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-api'
 import {DidAuthSiopOpAuthenticator} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
@@ -113,18 +114,13 @@ import {generateSalt, verifySDJWTSignature} from './utils/CryptoUtils'
 import {animoFunkeCert, funkeTestCA, sphereonCA} from './trustanchors'
 import {MDLMdoc} from '@sphereon/ssi-sdk.mdl-mdoc'
 import {DataSources} from '@sphereon/ssi-sdk.agent-config'
-import {StatusListPlugin} from '@sphereon/ssi-sdk.vc-status-list-issuer'
+import {StatusListPlugin} from '@sphereon/ssi-sdk.vc-status-list-issuer/dist/agent/StatusListPlugin'
 import {getOrCreateConfiguredStatusList} from './utils/statuslist'
 import {CredentialValidation} from '@sphereon/ssi-sdk.credential-validation'
 import {OIDFMetadataServer, OIDFMetadataStore} from '@sphereon/ssi-sdk.oidf-metatdata-server'
 import {IEndpointOpts} from '@sphereon/ssi-express-support'
 import {PdManagerApiServer} from '@sphereon/ssi-sdk.pd-manager-rest-api'
-
-const cliMode: boolean = process.env.RUN_MODE === 'cli'
-
-if(process.env.DISABLE_MIGRATIONS !== 'true') {
-  await (await dbConnection).runMigrations();
-}
+import {CreateNewStatusListArgs} from '@sphereon/ssi-sdk.vc-status-list'
 
 /**
  * Lets setup supported DID resolvers first
@@ -136,22 +132,15 @@ const resolver = createDidResolver()
  */
 const privateKeyStore: PrivateKeyStore = new PrivateKeyStore(dbConnection, new SecretBox(DB_ENCRYPTION_KEY))
 
+const cliMode: boolean = process.env.RUN_MODE === 'cli'
+
+if(process.env.RUN_MIGRATIONS === 'true') {
+  await (await dbConnection).runMigrations();
+}
+
 /**
  * Define Agent plugins being used. The plugins come from Sphereon's SSI-SDK and Veramo.
  */
-
-const test:ClientAuthMethod = 'client_secret_basic'
-
-const jsonldProvider = new CredentialProviderJsonld({
-  //todo: We could add the GS1 contexts locally as well
-  contextMaps: [LdDefaultContexts],
-  suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020()],
-  keyStore: privateKeyStore,
-})
-
-const vcdm2JoseProvider = new CredentialProviderVcdm2Jose()
-
-
 const plugins: IAgentPlugin[] = [
   new DataStore(dbConnection),
   new DataStoreORM(dbConnection),
@@ -164,13 +153,27 @@ const plugins: IAgentPlugin[] = [
   new DIDManager({
     store: new DIDStore(dbConnection),
     defaultProvider: `${DID_PREFIX}:${DIDMethods.DID_WEB}`,
-    providers: await createDidProviders(),
+    providers: createDidProviders(),
   }),
   new DIDResolverPlugin({
     resolver,
   }),
   new CredentialPlugin(),
-  new VcdmCredentialPlugin({issuers: [jsonldProvider, vcdm2JoseProvider]}),
+  new CredentialHandlerLDLocal({
+    //todo: We could add the SPHEREON contexts locally as well
+    contextMaps: [LdDefaultContexts],
+    suites: [
+      new SphereonEd25519Signature2018(),
+      new SphereonEd25519Signature2020(),
+      new SphereonJsonWebSignature2020(),
+      new SphereonEcdsaSecp256k1RecoverySignature2020(),
+    ],
+    bindingOverrides: new Map([
+      ['createVerifiableCredentialLD', MethodNames.createVerifiableCredentialLDLocal],
+      ['createVerifiablePresentationLD', MethodNames.createVerifiablePresentationLDLocal],
+    ]),
+    keyStore: privateKeyStore,
+  }),
   new ContactManager({ store: new ContactStore(dbConnection) }),
   new IssuanceBranding({ store: new IssuanceBrandingStore(dbConnection) }),
   new EventLogger({
@@ -308,7 +311,7 @@ if (!cliMode) {
         },
         issueCredentialOpts: {
           enableFeatures: VC_API_FEATURES,
-          proofFormat: VC_API_DEFAULT_PROOF_FORMAT as CredentialProofFormat | undefined,
+          proofFormat: VC_API_DEFAULT_PROOF_FORMAT as ProofFormat,
           persistIssuedCredentials: VC_API_FEATURES.includes('vc-persist'),
         },
       },
@@ -564,34 +567,40 @@ if (!cliMode) {
     await getOrCreateConfiguredStatusList({issuer: defaultDID, keyRef: defaultKid}).catch(e => console.log(`ERROR statuslist`, e))
   }
 
-  // Import presentation definitions from disk, get base filenames without file ext
-  const baseNames = Object.keys(syncDefinitionsOpts)
-  const queriesToImport: Array<IDefinitionPair> = baseNames
-      .map(baseName => {
-        const dcqlQueryPayload = syncDefinitionsOpts[baseName]
-        if (!isDcqlQuery(dcqlQueryPayload)) {
-          return null
-        }
 
-        const { queryId } = dcqlQueryPayload
-        if (OID4VP_DEFINITIONS.length === 0 || OID4VP_DEFINITIONS.includes(queryId)) {
-          console.log(`[OID4VP] Enabling DCQL query id '${queryId}'`)
+  // Import presentation definitions from disk, get base filenames without .dcql
+  const baseNames = Object.keys(syncDefinitionsOpts).filter(name => !name.endsWith('.dcql'))
 
-          const pair: IDefinitionPair = {
-            dcqlPayload: dcqlQueryPayload
-          }
-
-          pair.dcqlPayload = syncDefinitionsOpts[baseName]
-
-          return pair
-        }
+  const definitionsToImport: Array<IDefinitionPair> = baseNames
+    .map(baseName => {
+      const definition = syncDefinitionsOpts[baseName]
+      if (!isPresentationDefinition(definition)) {
         return null
-      })
-      .filter((pair): pair is IDefinitionPair => pair !== null)
+      }
 
-  if (queriesToImport.length > 0) {
+      const { id, name } = definition
+      if (OID4VP_DEFINITIONS.length === 0 || OID4VP_DEFINITIONS.includes(id) || (name && OID4VP_DEFINITIONS.includes(name))) {
+        console.log(`[OID4VP] Enabling Presentation Definition with name '${name ?? '<none>'}' and id '${id}'`)
+
+        const pair: IDefinitionPair = {
+          definitionPayload: definition,
+          dcqlPayload: undefined
+        }
+
+        const dcqlContent = syncDefinitionsOpts[`${baseName}.dcql`]
+        if (isDcqlQuery(dcqlContent)) {
+          pair.dcqlPayload = dcqlContent
+        }
+
+        return pair
+      }
+      return null
+    })
+    .filter((pair): pair is IDefinitionPair => pair !== null)
+
+  if (definitionsToImport.length > 0) {
     await agent.siopImportDefinitions({
-      queries: queriesToImport,
+      definitions: definitionsToImport,
       versionControlMode: 'AutoIncrement', // This is the default, but just to indicate here it exists
     })
   }
@@ -611,6 +620,10 @@ export async function issuerPersistToInstanceOpts(opt: IIssuerOptsPersistArgs): 
   }
 }
 
-function isDcqlQuery(obj: any): obj is DcqlQueryPayload {
-  return obj && Array.isArray(obj.dcqlQuery.credentials)
+function isPresentationDefinition(obj: any): obj is IPresentationDefinition {
+  return obj && Array.isArray(obj.input_descriptors)
+}
+
+function isDcqlQuery(obj: any): obj is DcqlQueryREST {
+  return obj && Array.isArray(obj.credentials)
 }

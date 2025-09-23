@@ -1,23 +1,13 @@
-import {
-  CredentialDataSupplier,
-  CredentialDataSupplierArgs,
-  CredentialDataSupplierResult,
-  CredentialSignerCallback
-} from '@sphereon/oid4vci-issuer'
+import { CredentialDataSupplier, CredentialDataSupplierArgs, CredentialDataSupplierResult, CredentialSignerCallback } from '@sphereon/oid4vci-issuer'
 import { TemplateVCGenerator } from './templateManager'
-import { CredentialRequestV1_0_15 } from '@sphereon/oid4vci-common'
+import { getTypesFromRequest } from '@sphereon/oid4vci-common'
 import { CONF_PATH } from '../environment-vars'
 import { CredentialSupplierConfigWithTemplateSupport } from '../types'
 import { normalizeFilePath } from './generic'
 import agent from '../agent'
-import {
-  CredentialMapper,
-  CredentialRole,
-  ICredential,
-  OriginalVerifiableCredential,
-  W3CVerifiableCredential
-} from '@sphereon/ssi-types'
-import { CredentialPayload } from '@veramo/core'
+import { CredentialRole } from '@sphereon/ssi-sdk.data-store'
+import {CredentialMapper, ICredential, OriginalVerifiableCredential, W3CVerifiableCredential} from '@sphereon/ssi-types'
+import { CredentialPayload, DIDDocument } from '@veramo/core'
 import { decodeJWT } from 'did-jwt'
 
 const templateVCGenerator = new TemplateVCGenerator()
@@ -36,12 +26,22 @@ class TemplateCredentialDataSupplier {
 
   // TODO Refactor, this is the TemplateCredentialDataSupplier & defaultCredentialDataSupplier smacked together
   public async generateCredentialData(args: CredentialDataSupplierArgs): Promise<CredentialDataSupplierResult> {
-    const { credentialDataSupplierInput, credentialRequest } = args
+    const { credentialDataSupplierInput, credentialRequest, credentialOffer, issuerState, preAuthorizedCode } = args
     if (!credentialDataSupplierInput) {
       throw Error(`Agent needs a credential data supplier input upfront`)
     }
 
     let credential: ICredential | W3CVerifiableCredential | undefined = undefined
+
+    let types: string[]
+    if ('credential_identifier' in args.credentialRequest) {
+      if (!args.credentialRequest.credential_identifier || args.credentialRequest.credential_identifier.length === 0) {
+        throw Error('credential_identifier may not be blank')
+      }
+      types = [args.credentialRequest.credential_identifier]
+    } else {
+      types = getTypesFromRequest(args.credentialRequest)
+    }
 
     if ('hashOrId' in credentialDataSupplierInput && !!credentialDataSupplierInput.hashOrId) {
       const hashOrId = credentialDataSupplierInput?.hashOrId as string
@@ -61,20 +61,15 @@ class TemplateCredentialDataSupplier {
       const signCallback: CredentialSignerCallback = () => Promise.resolve(credential as W3CVerifiableCredential)
       return {
         credential: credential as ICredential,
-        format: args.format,
+        format: args.credentialRequest.format,
         signCallback,
       }
     } else if ('credentialPayload' in credentialDataSupplierInput && credentialDataSupplierInput.credentialPayload) {
-      if ('credential_identifier' in args.credentialRequest) {
-        if (!args.credentialRequest.credential_identifier || args.credentialRequest.credential_identifier.length === 0) {
-          throw Error('credential_identifier may not be blank')
-        }
-      }
-      types = [args.credentialRequest.credential_identifier]
-
       const credentialPayload = credentialDataSupplierInput.credentialPayload as CredentialPayload
       console.log('-------------> credentialPayload', credentialPayload)
-      if (Array.isArray(credentialPayload.type) && !('vct' in credentialPayload)) {
+      if (types.includes('VerifiableCredential') && !credentialPayload.type?.includes('VerifiableCredential')) {
+        credentialPayload.type = [...types]
+      } else if (Array.isArray(credentialPayload.type) && !('vct' in credentialPayload)) {
         credentialPayload.vct = credentialPayload.type[0]
       } else if (!credentialRequest.proof || !credentialRequest.proof.jwt) {
         throw Error(`Credential request proof was missing`)
@@ -100,15 +95,9 @@ class TemplateCredentialDataSupplier {
     }
 
     const credentialSupplierConfig = args.credentialSupplierConfig as CredentialSupplierConfigWithTemplateSupport
-    const requestedConfigId = (credentialRequest as CredentialRequestV1_0_15).credential_configuration_id
     if (credentialSupplierConfig.template_mappings) {
-      const templateMapping = credentialSupplierConfig.template_mappings.find((mapping) => {
-        if(!mapping.credential_config_ids) {
-          return Promise.reject(Error("credential_config_ids field not found in template mapping. (Make sure you converted credential_types to credential_config_ids.)"))
-        }
-        return mapping.credential_config_ids.find((credential_config_id) =>
-            credential_config_id === requestedConfigId)
-        },
+      const templateMapping = credentialSupplierConfig.template_mappings.find((mapping) =>
+        mapping.credential_types.some((type) => type !== 'VerifiableCredential' && types.includes(type)),
       )
       if (templateMapping) {
         const templatePath = normalizeFilePath(CONF_PATH, credentialSupplierConfig?.templates_base_dir, templateMapping.template_path)
@@ -117,18 +106,18 @@ class TemplateCredentialDataSupplier {
           throw new Error(`Credential generation failed for template ${templatePath}`)
         }
         return Promise.resolve({
-          format: templateMapping.format || args.format,
+          format: templateMapping.format || args.credentialRequest.format,
           credential: credential,
         } as unknown as CredentialDataSupplierResult)
       } else {
-        throw new Error(`No template mapping could be found for config id ${requestedConfigId}`)
+        throw new Error(`No template mapping could be found for types ${types.join(', ')}`)
       }
     }
     if (credential) {
       return Promise.resolve({credential})
     }
     throw new Error(
-      `The credential supplier could not find a match for the requested credential ${requestedConfigId}. The issuer correlationId is ${this.issuerCorrelationId}`,
+      `The credential supplier could not find a match for the requested credential types ${types.join(', ')}. The issuer correlationId is ${this.issuerCorrelationId}`,
     )
   }
 }

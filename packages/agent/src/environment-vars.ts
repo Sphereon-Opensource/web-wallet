@@ -10,7 +10,7 @@ import { resolve } from 'path'
 import { env } from '@sphereon/ssi-express-support'
 import {StatusListType} from '@sphereon/ssi-types'
 import * as process from "node:process";
-dotenvConfig()
+await dotenvConfig()
 
 /*********************************************************************************************************************
  * DO NOT IMPORT OTHER DEPS ABOVE.
