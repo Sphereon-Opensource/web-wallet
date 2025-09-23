@@ -6,7 +6,7 @@ import {sphereonKeyManagerMethods} from '@sphereon/ssi-sdk-ext.key-manager'
 import {didAuthSiopOpAuthenticatorMethods} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 import {ebsiSupportMethods} from '@sphereon/ssi-sdk.ebsi-support'
 import {issuanceBrandingMethods} from '@sphereon/ssi-sdk.issuance-branding'
-import {pdManagerMethods} from '@sphereon/ssi-sdk.pd-manager'
+import {ImportDcqlQueryItem, pdManagerMethods} from '@sphereon/ssi-sdk.pd-manager'
 import {credentialStoreMethods} from '@sphereon/ssi-sdk.credential-store'
 import {
   ENV_VAR_PREFIX,
@@ -20,7 +20,6 @@ import {
 import {loadJsonFileMap, loadJsonFiles} from './utils'
 import {IIdentifierConfigOpts, OID4VPInstanceOpts} from './types'
 import {IIssuerMetadataImportArgs, IIssuerOptsImportArgs} from '@sphereon/ssi-sdk.oid4vci-issuer-store'
-import {IPresentationDefinition} from '@sphereon/pex'
 import {vcApiFeatures} from '@sphereon/ssi-sdk.w3c-vc-api'
 import {ContactManagerMRestApiFeatures} from '@sphereon/ssi-sdk.contact-manager-rest-api'
 import {statusListFeatures} from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
@@ -28,7 +27,6 @@ import {DidApiFeatures, DidWebServiceFeatures} from '@sphereon/ssi-sdk.uni-resol
 import {identifierResolutionContextMethods} from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {credentialValidationMethods} from '@sphereon/ssi-sdk.credential-validation'
 import {FederationMetadataImportArgs} from '@sphereon/ssi-sdk.oidf-metatdata-server'
-import {DcqlQueryPayload} from '@sphereon/ssi-types'
 
 export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATURES', ENV_VAR_PREFIX)
   ? (env('REMOTE_SERVER_API_FEATURES', ENV_VAR_PREFIX)?.split(',') as string[])
@@ -73,7 +71,7 @@ export const oid4vpMetadataOpts = loadJsonFiles<FederationMetadataImportArgs>({
   path: OID4VP_RP_METADATA_PATH,
 })
 
-export const syncDefinitionsOpts = loadJsonFileMap<DcqlQueryPayload>({ path: OID4VP_PRESENTATION_DEFINITION_PATH })
+export const syncDefinitionsOpts = loadJsonFileMap<ImportDcqlQueryItem>({ path: OID4VP_PRESENTATION_DEFINITION_PATH })
 export const VC_API_FEATURES: vcApiFeatures[] = env('VC_API_FEATURES', ENV_VAR_PREFIX)
   ? (env('VC_API_FEATURES', ENV_VAR_PREFIX)?.split(',') as vcApiFeatures[])
   : ['vc-issue', 'vc-verify', 'vc-persist']

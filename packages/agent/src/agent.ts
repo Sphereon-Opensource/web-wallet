@@ -28,6 +28,7 @@ import {
   VC_API_DEFAULT_PROOF_FORMAT,
 } from './environment-vars.js'
 
+import {ImportDcqlQueryItem, PDManager} from '@sphereon/ssi-sdk.pd-manager'
 import {ClientAuthMethod} from '@sphereon/oid4vci-common'
 
 import {createAgent, IAgentContext, IAgentPlugin, TAgent} from '@veramo/core'
@@ -80,8 +81,7 @@ import {IOID4VCIRestAPIOpts, IRequiredContext, OID4VCIRestAPI} from '@sphereon/s
 import {EventLogger} from '@sphereon/ssi-sdk.event-logger'
 import {RemoteServerApiServer} from '@sphereon/ssi-sdk.remote-server-rest-api'
 import {IssuanceBranding} from '@sphereon/ssi-sdk.issuance-branding'
-import {PDManager} from '@sphereon/ssi-sdk.pd-manager'
-import {CredentialProofFormat, DcqlQueryPayload, defaultHasher, LoggingEventType} from '@sphereon/ssi-types'
+import {CredentialProofFormat, defaultHasher, LoggingEventType} from '@sphereon/ssi-types'
 import {createOID4VPRP, getDefaultOID4VPRPOptions} from './utils/oid4vp'
 import {PresentationExchange} from '@sphereon/ssi-sdk.presentation-exchange'
 import {ISIOPv2RPRestAPIOpts, SIOPv2RPApiServer} from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-api'
@@ -92,7 +92,7 @@ import {EbsiSupport} from '@sphereon/ssi-sdk.ebsi-support'
 import {OID4VCIHolder} from '@sphereon/ssi-sdk.oid4vci-holder'
 import {addDefaultsToOpts} from './utils/oid4vci'
 import {getCredentialDataSupplier} from './utils/oid4vciCredentialSuppliers'
-import {IDefinitionPair, SIOPv2RP} from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
+import {SIOPv2RP} from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import {
   CONTACT_MANAGER_API_FEATURES,
   DID_API_FEATURES,
@@ -569,7 +569,7 @@ if (!cliMode) {
 
   // Import presentation definitions from disk, get base filenames without file ext
   const baseNames = Object.keys(syncDefinitionsOpts)
-  const queriesToImport: Array<IDefinitionPair> = baseNames
+  const queriesToImport: Array<ImportDcqlQueryItem> = baseNames
       .map(baseName => {
         const dcqlQueryPayload = syncDefinitionsOpts[baseName]
         if (!isDcqlQuery(dcqlQueryPayload)) {
@@ -580,22 +580,15 @@ if (!cliMode) {
         if (OID4VP_DEFINITIONS.length === 0 || OID4VP_DEFINITIONS.includes(queryId)) {
           console.log(`[OID4VP] Enabling DCQL query id '${queryId}'`)
 
-          const pair: IDefinitionPair = {
-            dcqlPayload: dcqlQueryPayload
-          }
-
-          const dcqlContent = syncDefinitionsOpts[baseName]
-          pair.dcqlPayload = dcqlContent
-
-          return pair
+          return syncDefinitionsOpts[baseName]
         }
         return null
       })
-      .filter((pair): pair is IDefinitionPair => pair !== null)
+      .filter((item): item is ImportDcqlQueryItem => item !== null)
 
   if (queriesToImport.length > 0) {
     await agent.siopImportDefinitions({
-      definitions: queriesToImport,
+      importItems: queriesToImport,
       versionControlMode: 'AutoIncrement', // This is the default, but just to indicate here it exists
     })
   }
@@ -615,6 +608,6 @@ export async function issuerPersistToInstanceOpts(opt: IIssuerOptsPersistArgs): 
   }
 }
 
-function isDcqlQuery(obj: any): obj is DcqlQueryPayload {
+function isDcqlQuery(obj: any): obj is ImportDcqlQueryItem {
   return obj && obj.dcqlQuery && Array.isArray(obj.dcqlQuery.credentials)
 }
