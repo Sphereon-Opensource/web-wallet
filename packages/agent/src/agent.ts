@@ -606,5 +606,5 @@ export async function issuerPersistToInstanceOpts(opt: IIssuerOptsPersistArgs): 
 }
 
 function isDcqlQuery(obj: any): obj is ImportDcqlQueryItem {
-  return obj && Array.isArray(obj.dcqlQuery.credentials)
+  return obj && Array.isArray(obj.query.credentials)
 }
