@@ -1,6 +1,5 @@
-import {dropDatabase, getDbConnection, revertMigration} from './databaseService'
+import {dropDatabase, revertMigration} from './databaseService'
 import { dbConnection } from '../index'
-import {DB_CONNECTION_NAME} from '../environment-vars'
 
 enum Action {
   RevertMigration = 'revert-migration',
@@ -61,5 +60,4 @@ async function main() {
   await handleAction(action)
 }
 
-
-main()
+void main()

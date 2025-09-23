@@ -2,23 +2,23 @@ import {
   CredentialDataSupplier,
   CredentialDataSupplierArgs,
   CredentialDataSupplierResult,
-  CredentialSignerCallback,
+  CredentialSignerCallback
 } from '@sphereon/oid4vci-issuer'
-import {TemplateVCGenerator} from './templateManager'
-import {CredentialRequestV1_0_15} from '@sphereon/oid4vci-common'
-import {CONF_PATH} from '../environment-vars'
-import {CredentialSupplierConfigWithTemplateSupport} from '../types'
-import {normalizeFilePath} from './generic'
+import { TemplateVCGenerator } from './templateManager'
+import { CredentialRequestV1_0_15 } from '@sphereon/oid4vci-common'
+import { CONF_PATH } from '../environment-vars'
+import { CredentialSupplierConfigWithTemplateSupport } from '../types'
+import { normalizeFilePath } from './generic'
 import agent from '../agent'
 import {
   CredentialMapper,
   CredentialRole,
   ICredential,
   OriginalVerifiableCredential,
-  W3CVerifiableCredential,
+  W3CVerifiableCredential
 } from '@sphereon/ssi-types'
-import {CredentialPayload} from '@veramo/core'
-import {decodeJWT} from 'did-jwt'
+import { CredentialPayload } from '@veramo/core'
+import { decodeJWT } from 'did-jwt'
 
 const templateVCGenerator = new TemplateVCGenerator()
 
@@ -70,6 +70,7 @@ class TemplateCredentialDataSupplier {
           throw Error('credential_identifier may not be blank')
         }
       }
+      types = [args.credentialRequest.credential_identifier]
 
       const credentialPayload = credentialDataSupplierInput.credentialPayload as CredentialPayload
       console.log('-------------> credentialPayload', credentialPayload)
