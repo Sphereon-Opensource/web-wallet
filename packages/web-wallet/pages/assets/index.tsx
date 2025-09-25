@@ -8,7 +8,7 @@ import style from './index.module.css'
 import {VerifiableCredential} from '@veramo/core'
 import {getMatchingIdentity} from '@helpers/IdentityFilters'
 import {ID_TRUNCATION_LENGTH} from '@/src/agent/environment'
-import type {Party} from '@sphereon/ssi-sdk.data-store'
+import type {Party} from '@sphereon/ssi-sdk.data-store-types'
 import {staticPropsWithSST} from '@/src/i18n/server'
 
 export class AssetDTO {

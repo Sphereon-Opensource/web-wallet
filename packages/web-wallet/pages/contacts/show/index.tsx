@@ -1,7 +1,7 @@
 import React, {FC, ReactElement, useEffect, useState} from 'react'
 import {useParams} from 'react-router-dom'
 import {HttpError, useOne, useTranslation} from '@refinedev/core'
-import type {IBasicCredentialLocaleBranding, Party} from '@sphereon/ssi-sdk.data-store'
+import type {IBasicCredentialLocaleBranding, Party} from '@sphereon/ssi-sdk.data-store-types'
 import {OpenID4VCIClient} from '@sphereon/oid4vci-client'
 import {CredentialStatus, TabViewRoute} from '@sphereon/ui-components.core'
 import {ContactViewItem, SSITabView} from '@sphereon/ui-components.ssi-react'

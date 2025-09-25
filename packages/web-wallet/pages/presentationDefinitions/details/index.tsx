@@ -14,7 +14,7 @@ import {useNavigate, useParams} from 'react-router-dom'
 // @ts-ignore // FIXME CWALL-245 path complaining
 import style from './index.module.css'
 import {DataResource, MainRoute} from '@typings'
-import type {DcqlQueryItem, PartialDcqlQueryItem} from '@sphereon/ssi-sdk.data-store'
+import type {DcqlQueryItem, PartialDcqlQueryItem} from '@sphereon/ssi-sdk.data-store-types'
 import PageHeaderBar from '@components/bars/PageHeaderBar'
 import JsonEditor from '@components/editors/JsonEditor'
 import {ButtonIcon} from '@sphereon/ui-components.core'

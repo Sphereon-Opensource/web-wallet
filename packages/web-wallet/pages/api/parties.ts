@@ -1,7 +1,7 @@
 import {NextApiRequest, NextApiResponse} from 'next'
 import axios from 'axios'
 import process from 'process'
-import type {Party} from '@sphereon/ssi-sdk.data-store'
+import type {Party} from '@sphereon/ssi-sdk.data-store-types'
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<Party[]>) {
   const url = process.env.NEXT_PUBLIC_CONTACT_DATA_PROVIDER_BASE_URL
