@@ -1,0 +1,58 @@
+{
+  "queryId": "PensionSdJwt",
+  "name": "Findy Pension SD-JWT",
+  "defaultPurpose": "We need to verify your details.",
+  "query": {
+    "credentials": [
+      {
+        "id": "findy-pension",
+        "format": "dc+sd-jwt",
+        "require_cryptographic_holder_binding": true,
+        "multiple": false,
+        "meta": {
+          "vct_values": [
+            "PensionSdJwt"
+          ]
+        },
+        "claims": [
+          {
+            "path": [
+              "Person",
+              "personal_administrative_number"
+            ]
+          },
+          {
+            "path": [
+              "Person",
+              "family_name"
+            ]
+          },
+          {
+            "path": [
+              "Pension",
+              "startDate"
+            ]
+          },
+          {
+            "path": [
+              "Pension",
+              "endDate"
+            ]
+          },
+          {
+            "path": [
+              "Pension",
+              "typeCode"
+            ]
+          },
+          {
+            "path": [
+              "Pension",
+              "provisional"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "queryId": "wallet-identity",
+  "name": "Wallet details",
+  "defaultPurpose": "We need to verify your name",
+  "query": {
+    "credentials": [
+      {
+        "id": "sphereon-wallet",
+        "format": "dc+sd-jwt",
+        "require_cryptographic_holder_binding": true,
+        "multiple": false,
+        "meta": {
+          "vct_values": [
+            "SphereonWalletIdentityCredential"
+          ]
+        },
+        "claims": [
+          {
+            "path": [
+              "firstName"
+            ]
+          },
+          {
+            "path": [
+              "lastName"
+            ]
+          },
+          {
+            "path": [
+              "iat"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

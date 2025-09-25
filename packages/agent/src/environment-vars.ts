@@ -128,7 +128,7 @@ export const AUTHORIZATION_GLOBAL_REQUIRE_USER_IN_ROLES = env('AUTHORIZATION_GLO
 export const OID4VP_DEFINITIONS: string[] = process.env.OID4VP_DEFINITIONS
   ? process.env.OID4VP_DEFINITIONS.split(/[, ]/).map((val) => val.trim())
   : []
-export const OID4VP_PRESENTATION_DEFINITION_PATH = `${CONF_PATH}/presentation_definitions`
+export const OID4VP_PRESENTATION_DEFINITION_PATH = `${CONF_PATH}/dcql_definitions`
 export const OID4VP_RP_OPTIONS_PATH = `${CONF_PATH}/oid4vp_options`
 export const OID4VP_RP_METADATA_PATH = `${CONF_PATH}/oid4vp_metadata`
 
