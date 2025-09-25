@@ -79,7 +79,7 @@ const navigateInformationRequest = async (args: Siopv2NavigationArgs): Promise<v
     return Promise.reject(Error('No selectable credentials present'))
   }
 
-  const presentationDefinitionWithLocation: PresentationDefinitionWithLocation = authorizationRequestData.presentationDefinitions[0] // TODO update to DCQL impl
+  const dcqlQuery = authorizationRequestData.dcqlQuery
   const format: Format | undefined = authorizationRequestData.registrationMetadataPayload?.registration?.vp_formats
   const subjectSyntaxTypesSupported: Array<string> | undefined =
     authorizationRequestData.registrationMetadataPayload?.registration?.subject_syntax_types_supported
@@ -104,7 +104,7 @@ const navigateInformationRequest = async (args: Siopv2NavigationArgs): Promise<v
   }
   const state: InformationRequestPageState = {
     verifierName: contact.contact.displayName,
-    presentationDefinition: presentationDefinitionWithLocation.definition,
+    dcqlQuery,
     selectableCredentialsMap,
     format,
     subjectSyntaxTypesSupported,

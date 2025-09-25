@@ -1,7 +1,7 @@
 import {useTranslate} from '@refinedev/core'
 import React, {CSSProperties, ReactElement} from 'react'
 import styles from './index.module.css'
-import {Contact} from '@sphereon/ssi-sdk.data-store'
+import type {Contact} from '@sphereon/ssi-sdk.data-store'
 
 type Props = {
   contact: Contact

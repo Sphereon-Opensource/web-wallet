@@ -7,21 +7,21 @@ import {
 import React, {ReactElement, useEffect, useMemo, useState} from 'react'
 import CredentialSelection from '@components/panels/CredentialSelection'
 import {CredentialSummary} from '@sphereon/ui-components.credential-branding/dist/types'
-import {InputDescriptorV1} from '@sphereon/pex-models/dist/model/inputDescriptorV1'
 import StatePanel from '@components/panels/StatePanel'
 import {JSONDataView} from '@sphereon/ui-components.ssi-react'
-import {InputDescriptorV2} from '@sphereon/pex-models'
 import Debug, {Debugger} from 'debug'
 import {SelectableCredential} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 import {toCredentialSummary} from '@sphereon/ui-components.credential-branding'
 import {UniqueDigitalCredential} from '@sphereon/ssi-sdk.credential-store'
 import {VerifiableCredential} from '@veramo/core'
-import { CredentialRole } from '@sphereon/ssi-types'
+import {CredentialRole} from '@sphereon/ssi-types'
+import {DcqlClaim} from '@typings'
+import {DcqlCredentialQuery} from 'dcql'
 
 const debug: Debugger = Debug('sphereon:cloud-wallet:CredentialSelectionView')
 
 type CredentialSelectionViewProps = {
-  inputDescriptor: InputDescriptorV1 | InputDescriptorV2
+  credential: DcqlCredentialQuery
   selectableCredentials: Array<SelectableCredential>
   fallbackPurpose?: string
   index?: number
@@ -30,7 +30,7 @@ type CredentialSelectionViewProps = {
 }
 
 const CredentialSelectionView: React.FC<CredentialSelectionViewProps> = ({
-  inputDescriptor,
+  credential,
   selectableCredentials,
   fallbackPurpose,
   credentialRole,
@@ -94,7 +94,7 @@ const CredentialSelectionView: React.FC<CredentialSelectionViewProps> = ({
         <InformationRequestViewTitleStyled>The following information will be shared</InformationRequestViewTitleStyled>
       )}
       <InformationRequestViewParagraphStyled>{'Purpose'}</InformationRequestViewParagraphStyled>
-      <InformationRequestViewDescriptionStyled>{inputDescriptor.purpose ?? fallbackPurpose ?? ''}</InformationRequestViewDescriptionStyled>
+      <InformationRequestViewDescriptionStyled>{ fallbackPurpose ?? 'TODO'}</InformationRequestViewDescriptionStyled> {/*TODO SSISDK-41 implement purpose from credential_sets*/}
       <InformationRequestViewParagraphStyled>{'Suitable credentials'}</InformationRequestViewParagraphStyled>
       <CredentialSelection key={`credSel${index}`} credentialSummaryItems={credentialSummaryItems} onSelect={handleCredentialSelect} />
       {selectedCredential && (

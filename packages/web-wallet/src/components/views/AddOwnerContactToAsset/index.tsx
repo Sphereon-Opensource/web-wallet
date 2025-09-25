@@ -4,7 +4,7 @@ import style from './index.module.css'
 import DropDownList from '@components/lists/DropDownList'
 import SelectionField from '@components/fields/SelectionField'
 import {useTranslate} from '@refinedev/core'
-import {Contact} from '@sphereon/ssi-sdk.data-store'
+import type {Contact} from '@sphereon/ssi-sdk.data-store'
 
 type ContactSelection = {
   value: Contact

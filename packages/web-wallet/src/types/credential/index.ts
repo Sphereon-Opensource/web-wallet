@@ -1,4 +1,4 @@
-import {Party} from '@sphereon/ssi-sdk.data-store'
+import type {Party} from '@sphereon/ssi-sdk.data-store'
 import {CredentialStatus} from '@sphereon/ui-components.core'
 import {CredentialMiniCardViewProps, formatDate} from '@sphereon/ui-components.ssi-react'
 import {CredentialSummary} from '@sphereon/ui-components.credential-branding'

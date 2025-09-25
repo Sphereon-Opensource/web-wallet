@@ -7,7 +7,8 @@ import {
   OID4VCIMachineStates,
 } from '@sphereon/ssi-sdk.oid4vci-holder'
 import {SimpleEventsOf} from 'xstate'
-import {ConnectionType, CorrelationIdentifierType, IBasicCredentialLocaleBranding} from '@sphereon/ssi-sdk.data-store'
+import type { IBasicCredentialLocaleBranding} from '@sphereon/ssi-sdk.data-store'
+import {ConnectionType, CorrelationIdentifierType} from '@sphereon/ssi-sdk.data-store'
 import {getIssuerName} from '@sphereon/oid4vci-common'
 import debug from 'debug'
 import {LoadingPageState} from '@/pages/oid4vci/loading'

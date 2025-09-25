@@ -1,4 +1,5 @@
-import { CorrelationIdentifierType, NonPersistedIdentity, PartyOrigin, PartyTypeType } from '@sphereon/ssi-sdk.data-store'
+import type { NonPersistedIdentity } from '@sphereon/ssi-sdk.data-store'
+import { CorrelationIdentifierType, PartyOrigin, PartyTypeType } from '@sphereon/ssi-sdk.data-store'
 import { IIdentifier } from '@veramo/core'
 import agent from '../../../agent'
 import { v4 } from 'uuid'

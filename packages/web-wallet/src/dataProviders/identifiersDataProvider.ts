@@ -18,10 +18,9 @@ import {DID_PREFIX} from '@sphereon/ssi-sdk-ext.did-utils'
 import agent, {agentContext} from '@agent'
 import {IdentifierKey, IdentifierServiceEndpoint, KeyManagementIdentifier, KeyManagementSystem} from '@typings'
 import {IIdentifier} from '@veramo/core'
-import {generateEbsiMethodSpecificId} from '@sphereon/ssi-sdk.ebsi-support/dist/did/functions'
-import {EbsiAccessTokenOpts} from '@sphereon/ssi-sdk.ebsi-support/dist/did'
-import {EbsiEnvironment} from '@sphereon/ssi-sdk.ebsi-support'
-import { CredentialRole } from '@sphereon/ssi-types'
+import type {EbsiAccessTokenOpts, EbsiEnvironment} from '@sphereon/ssi-sdk.ebsi-support'
+import {generateEbsiMethodSpecificId} from '@sphereon/ssi-sdk.ebsi-support'
+import {CredentialRole} from '@sphereon/ssi-types'
 
 // TODO CWALL-244 further implement
 

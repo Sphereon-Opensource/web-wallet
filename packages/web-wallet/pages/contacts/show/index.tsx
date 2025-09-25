@@ -1,14 +1,14 @@
 import React, {FC, ReactElement, useEffect, useState} from 'react'
 import {useParams} from 'react-router-dom'
 import {HttpError, useOne, useTranslation} from '@refinedev/core'
-import {IBasicCredentialLocaleBranding, Party} from '@sphereon/ssi-sdk.data-store'
+import type {IBasicCredentialLocaleBranding, Party} from '@sphereon/ssi-sdk.data-store'
 import {OpenID4VCIClient} from '@sphereon/oid4vci-client'
 import {CredentialStatus, TabViewRoute} from '@sphereon/ui-components.core'
 import {ContactViewItem, SSITabView} from '@sphereon/ui-components.ssi-react'
 import {oid4vciCredentialLocaleBrandingFrom} from '@sphereon/ssi-sdk.oid4vci-holder'
 import PageHeaderBar from '@components/bars/PageHeaderBar'
 import {staticPropsWithSST} from '@/src/i18n/server'
-import {CredentialConfigurationSupported, CredentialConfigurationSupportedV1_0_13, CredentialsSupportedDisplay} from '@sphereon/oid4vci-common'
+import {CredentialConfigurationSupported, CredentialConfigurationSupportedV1_0_15, CredentialsSupportedDisplay} from '@sphereon/oid4vci-common'
 import agent from '@agent'
 import style from './index.module.css'
 import {CredentialCatalogItem} from '@typings'
@@ -36,7 +36,7 @@ const ShowContactDetails: FC = (): ReactElement => {
   const {translate, getLocale} = useTranslation()
   const params = useParams()
   const {id} = params
-  const [credentialsSupported, setCredentialsSupported] = useState<Record<string, CredentialConfigurationSupportedV1_0_13> | undefined>(undefined)
+  const [credentialsSupported, setCredentialsSupported] = useState<Record<string, CredentialConfigurationSupportedV1_0_15> | undefined>(undefined)
   const [credentialCatalogItems, setCredentialCatalogItems] = useState<Array<CredentialCatalogItem>>([])
   const [openID4VCIClient, setOpenID4VCIClient] = useState<OpenID4VCIClient>()
 
@@ -49,7 +49,7 @@ const ShowContactDetails: FC = (): ReactElement => {
     id,
   })
 
-  const getSupportedCredentials = (): Record<string, CredentialConfigurationSupportedV1_0_13> => {
+  const getSupportedCredentials = (): Record<string, CredentialConfigurationSupportedV1_0_15> => {
     try {
       if (!openID4VCIClient) {
         throw Error('client not initialized')

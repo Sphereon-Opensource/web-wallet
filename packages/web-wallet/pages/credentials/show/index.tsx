@@ -1,5 +1,5 @@
 import React, {FC, ReactElement, useEffect, useState} from 'react'
-import {HttpError, useList, useOne, useResource, useTranslate} from '@refinedev/core'
+import {HttpError, useList, useOne, useTranslate} from '@refinedev/core'
 import {TabViewRoute} from '@sphereon/ui-components.core'
 import {
   ColumnHeader,
@@ -14,7 +14,8 @@ import {
 import PageHeaderBar from '@components/bars/PageHeaderBar'
 import style from './index.module.css'
 import {CredentialTableItem, DataResource} from '@typings'
-import { NaturalPerson, Organization, Party, PartyTypeType} from '@sphereon/ssi-sdk.data-store'
+import type {NaturalPerson, Organization, Party} from '@sphereon/ssi-sdk.data-store'
+import {PartyTypeType} from '@sphereon/ssi-sdk.data-store'
 import {useParams} from 'react-router-dom'
 import {staticPropsWithSST} from '@/src/i18n/server'
 import agent from '@agent'
@@ -23,7 +24,7 @@ import {CredentialSummary, toCredentialSummary} from '@sphereon/ui-components.cr
 import {DigitalCredential} from '@sphereon/ssi-sdk.credential-store'
 import {VerifiableCredential} from '@veramo/core'
 import {CredentialMapper, CredentialRole} from '@sphereon/ssi-types'
-import {defaultHasher} from "@sphereon/ssi-sdk.core";
+import {defaultHasher} from '@sphereon/ssi-sdk.core'
 
 enum CredentialDetailsTabRoute {
   INFO = 'info',

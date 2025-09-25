@@ -1,7 +1,7 @@
 import {Asset} from '../asset'
 import {getMatchingIdentity} from '@helpers/IdentityFilters'
 import {TranslateFn} from '../type-commons'
-import {Identity, Party} from '@sphereon/ssi-sdk.data-store'
+import type {Identity, Party} from '@sphereon/ssi-sdk.data-store'
 import {formatDate} from '@sphereon/ui-components.ssi-react'
 
 export const PROCESS_OWNER_DID =

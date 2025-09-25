@@ -1,3 +1,5 @@
+import {DcqlCredentialQuery} from 'dcql'
+
 export enum DataProvider {
   DEFAULT = 'default',
   SUPABASE = 'supaBase',
@@ -6,3 +8,5 @@ export enum DataProvider {
   IDENTIFIERS = 'identifiers',
   PRESENTATION_DEFINITIONS = 'presentationDefinitions',
 }
+
+export type DcqlClaim = NonNullable<DcqlCredentialQuery['claims']>[number] // TODO find a better location for this

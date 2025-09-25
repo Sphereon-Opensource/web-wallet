@@ -20,11 +20,11 @@ type JsonEditorProps = {
   initialPayload?: string
 }
 
-const defaultDefinitionPayload = '{\n\t\n}'
+const defaultQuery = '{\n\t\n}'
 
 const JsonEditor: FC<JsonEditorProps> = ({initialPayload, isNewDocument, isReadOnly, onEditorContentChanged}) => {
   const [editorView, setEditorView] = useState<EditorView | null>(null)
-  const initialContent = initialPayload !== undefined && initialPayload.length > 0 ? initialPayload : isNewDocument ? defaultDefinitionPayload : ''
+  const initialContent = initialPayload !== undefined && initialPayload.length > 0 ? initialPayload : isNewDocument ? defaultQuery : ''
   const [editorContent, setEditorContent] = useState<string>('')
   const initialSet = useRef(false)
   const [validationResult, setValidationResult] = useState<ValidationResult>()
@@ -127,7 +127,7 @@ const JsonEditor: FC<JsonEditorProps> = ({initialPayload, isNewDocument, isReadO
       initialSet.current = true
 
       // Set cursor at a convenient position when starting a new doc
-      if (editorContent === defaultDefinitionPayload) {
+      if (editorContent === defaultQuery) {
         editorView.dispatch({
           selection: {anchor: editorContent.length - 2},
         })

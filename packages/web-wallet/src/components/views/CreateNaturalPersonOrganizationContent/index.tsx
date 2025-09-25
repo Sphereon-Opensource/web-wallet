@@ -4,7 +4,8 @@ import {HttpError, useList, useTranslate} from '@refinedev/core'
 import {useNaturalPersonOutletContext} from '@typings'
 import DropDownList from '@components/lists/DropDownList'
 import SelectionField from '@components/fields/SelectionField'
-import {Party, PartyTypeType} from '@sphereon/ssi-sdk.data-store'
+import type {Party} from '@sphereon/ssi-sdk.data-store'
+import {PartyTypeType} from '@sphereon/ssi-sdk.data-store'
 
 type OrganizationSelection = {
   value: Party

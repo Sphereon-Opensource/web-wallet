@@ -1,11 +1,10 @@
 import {AddNaturalPersonArgs, AddPartyRelationshipArgs, NaturalPersonData} from '@typings'
 import {supabaseServiceClient} from '@helpers/SupabaseClient'
 import {EventLogger, EventLoggerBuilder} from '@sphereon/ssi-sdk.core'
-import {ActionType, InitiatorType, LogLevel, SubSystem, System, LoggingEventType} from '@sphereon/ssi-types'
+import {ActionType, InitiatorType, LoggingEventType, LogLevel, SubSystem, System} from '@sphereon/ssi-types'
 import agent, {agentContext} from '@agent'
 import {AGENT_BASE_URL} from '../agent/environment'
-import {Party as RealParty} from '@sphereon/ssi-sdk.data-store'
-import {Party, PartyType} from '@sphereon/ssi-sdk.data-store'
+import type {Party as RealParty, Party, PartyType} from '@sphereon/ssi-sdk.data-store'
 import {AddContactArgs} from '@sphereon/ssi-sdk.contact-manager'
 
 const logger: EventLogger = new EventLoggerBuilder()

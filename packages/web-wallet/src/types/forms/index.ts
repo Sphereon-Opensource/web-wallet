@@ -221,7 +221,7 @@ export class FormStepEntity {
     return new FormStepDTO({
       id: entity.id,
       tenantId: entity.tenant_id,
-      //          definitionId: dto.definition_id,
+      //          queryId: dto.definition_id,
       formId: entity.form_id,
       stepNr: entity.step_nr,
       order: entity.order,

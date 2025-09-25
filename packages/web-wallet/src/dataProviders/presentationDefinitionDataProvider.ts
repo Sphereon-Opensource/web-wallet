@@ -15,12 +15,12 @@ import {
   UpdateResponse,
 } from '@refinedev/core'
 import agent from '@agent'
-import {FindDefinitionArgs, PresentationDefinitionItem} from '@sphereon/ssi-sdk.data-store'
+import type {DcqlQueryItem, FindDcqlQueryArgs} from '@sphereon/ssi-sdk.data-store'
+import type {DcqlQueryItemFilter} from '@sphereon/ssi-sdk.data-store'
 import {DataResource} from '@typings'
-import {PresentationDefinitionItemFilter} from '@sphereon/ssi-sdk.data-store'
 import {FetchOptions} from '@sphereon/ssi-sdk.pd-manager'
 
-const filterableFields: (keyof PresentationDefinitionItemFilter)[] = ['definitionId', 'tenantId', 'version', 'name', 'purpose', 'id']
+const filterableFields: (keyof DcqlQueryItemFilter)[] = ['queryId', 'tenantId', 'version', 'name', 'purpose', 'id']
 
 // TODO CWALL-234 further implement
 
@@ -41,15 +41,15 @@ export const presentationDefinitionDataProvider = (): DataProvider => ({
     assertResource(resource)
     // TODO CWALL-246 switch to our REST implementation
 
-    const findArgs: FindDefinitionArgs = []
-    let filterItem: PresentationDefinitionItemFilter
+    const findArgs: FindDcqlQueryArgs = []
+    let filterItem: DcqlQueryItemFilter
     filters?.forEach(filter => {
       if (filter.operator === 'eq') {
         if (filterItem === undefined) {
           filterItem = {}
           findArgs.push(filterItem)
         }
-        const filterField = filter.field as keyof PresentationDefinitionItemFilter
+        const filterField = filter.field as keyof DcqlQueryItemFilter
         if (filterableFields.includes(filterField)) {
           filterItem[filterField] = filter.value
         }
@@ -63,7 +63,7 @@ export const presentationDefinitionDataProvider = (): DataProvider => ({
       fetchOptions.showVersionHistory = meta.variables.showVersionHistory
     }
 
-    const items: PresentationDefinitionItem[] = await agent.pdmGetDefinitions({filter: findArgs, opts: fetchOptions})
+    const items: DcqlQueryItem[] = await agent.pdmGetDefinitions({filter: findArgs, opts: fetchOptions})
     // FIXME CWALL-234 there should be a better way for this but i could not find any yet without refine.dev not complaining
     const data: TData[] = items.map(item => ({...(item as any)}))
 
@@ -74,7 +74,7 @@ export const presentationDefinitionDataProvider = (): DataProvider => ({
   },
   getOne: async <TData extends BaseRecord = BaseRecord>({resource, id}: GetOneParams): Promise<GetOneResponse<TData>> => {
     assertResource(resource)
-    const item: PresentationDefinitionItem = await agent.pdmGetDefinition({itemId: id as string})
+    const item: DcqlQueryItem = await agent.pdmGetDefinition({itemId: id as string})
     return {
       data: item as unknown as TData,
     }
@@ -84,7 +84,7 @@ export const presentationDefinitionDataProvider = (): DataProvider => ({
     variables,
   }: CreateParams<TVariables>): Promise<CreateResponse<TData>> => {
     assertResource(resource)
-    const item: PresentationDefinitionItem = await agent.pdmPersistDefinition({definitionItem: variables as PresentationDefinitionItem})
+    const item: DcqlQueryItem = await agent.pdmPersistDefinition({definitionItem: variables as DcqlQueryItem})
     return {
       data: item as unknown as TData,
     }
@@ -95,7 +95,7 @@ export const presentationDefinitionDataProvider = (): DataProvider => ({
     variables,
   }: UpdateParams<TVariables>): Promise<UpdateResponse<TData>> => {
     assertResource(resource)
-    const item: PresentationDefinitionItem = await agent.pdmPersistDefinition({definitionItem: variables as PresentationDefinitionItem})
+    const item: DcqlQueryItem = await agent.pdmPersistDefinition({definitionItem: variables as DcqlQueryItem})
     return {
       data: item as unknown as TData,
     }
@@ -112,7 +112,7 @@ export const presentationDefinitionDataProvider = (): DataProvider => ({
   },
   deleteMany: async <TData, TVariables>(params: DeleteManyParams<TVariables>): Promise<DeleteManyResponse<TData>> => {
     assertResource(params.resource)
-    const filter: FindDefinitionArgs = params.ids.map(id => {
+    const filter: FindDcqlQueryArgs = params.ids.map(id => {
       return {id: id as string}
     })
     await agent.pdmDeleteDefinitions({
