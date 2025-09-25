@@ -13,7 +13,7 @@ import {
   IDENTIFIER_OPTIONS_PATH,
   OID4VCI_ISSUER_METADATA_PATH,
   OID4VCI_ISSUER_OPTIONS_PATH,
-  OID4VP_PRESENTATION_DEFINITION_PATH,
+  OID4VP_DCQL_DEFINITION_PATH,
   OID4VP_RP_METADATA_PATH,
   OID4VP_RP_OPTIONS_PATH,
 } from './environment-vars'
@@ -71,7 +71,7 @@ export const oid4vpMetadataOpts = loadJsonFiles<FederationMetadataImportArgs>({
   path: OID4VP_RP_METADATA_PATH,
 })
 
-export const syncDefinitionsOpts = loadJsonFileMap<ImportDcqlQueryItem>({ path: OID4VP_PRESENTATION_DEFINITION_PATH })
+export const syncDefinitionsOpts = loadJsonFileMap<ImportDcqlQueryItem>({ path: OID4VP_DCQL_DEFINITION_PATH })
 export const VC_API_FEATURES: vcApiFeatures[] = env('VC_API_FEATURES', ENV_VAR_PREFIX)
   ? (env('VC_API_FEATURES', ENV_VAR_PREFIX)?.split(',') as vcApiFeatures[])
   : ['vc-issue', 'vc-verify', 'vc-persist']
