@@ -3,7 +3,7 @@ import {KeyValuePair, Product} from '@typings'
 import {uuid} from 'short-uuid'
 import {CredentialPayload, VerifiableCredential} from '@veramo/core'
 import {supabaseServiceClient} from '@helpers/SupabaseClient'
-import type {Contact, Identity} from '@sphereon/ssi-sdk.data-store'
+import type {Contact, Identity} from '@sphereon/ssi-sdk.data-store-types'
 
 const generateProduct = (product: Product): Record<string, unknown> => ({
   name: product.productNature,

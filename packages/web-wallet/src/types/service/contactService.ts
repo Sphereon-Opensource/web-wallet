@@ -1,4 +1,4 @@
-import type {ElectronicAddress, NaturalPerson, PartyType, PhysicalAddress} from '@sphereon/ssi-sdk.data-store'
+import type {ElectronicAddress, NaturalPerson, PartyType, PhysicalAddress} from '@sphereon/ssi-sdk.data-store-types'
 
 export type AddNaturalPersonArgs = Omit<NaturalPerson, 'id' | 'createdAt' | 'lastUpdatedAt'> & {
   uri?: string

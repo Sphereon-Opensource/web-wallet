@@ -1,4 +1,4 @@
-import type {Identity, Party} from '@sphereon/ssi-sdk.data-store'
+import type {Identity, Party} from '@sphereon/ssi-sdk.data-store-types'
 
 export function getMatchingIdentities(parties: Party[], correlationId: string): Array<{identity: Identity; party: Party}> {
   const ids = parties

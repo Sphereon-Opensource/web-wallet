@@ -4,8 +4,8 @@ import {HttpError, useDelete, useList, useNavigation, useTranslate} from '@refin
 import short from 'short-uuid'
 import {WorkflowEntity, WorkflowStepEntity, DataResource} from '@typings'
 import {ButtonIcon} from '@sphereon/ui-components.core'
-import type {Contact, Identity, MetadataItem, Party, MetadataTypes} from '@sphereon/ssi-sdk.data-store'
-import {PartyTypeType} from '@sphereon/ssi-sdk.data-store'
+import type {Contact, Identity, MetadataItem, Party, MetadataTypes} from '@sphereon/ssi-sdk.data-store-types'
+import {PartyTypeType} from '@sphereon/ssi-sdk.data-store-types'
 import {camelToSnakeCase} from '@helpers/StringUtils'
 
 type Props = {

@@ -19,7 +19,7 @@ import type {
   DigitalCredential,
   FindDigitalCredentialArgs,
   UpdateCredentialStateArgs,
-} from '@sphereon/ssi-sdk.data-store'
+} from '@sphereon/ssi-sdk.data-store-types'
 import {DataResource} from '@typings'
 import {FetchOptions} from '@sphereon/ssi-sdk.pd-manager'
 import type {GetCredentialsByIdOrHashArgs, OptionalUniqueDigitalCredential} from '@sphereon/ssi-sdk.credential-store'

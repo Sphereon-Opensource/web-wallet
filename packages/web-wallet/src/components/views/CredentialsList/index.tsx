@@ -12,7 +12,7 @@ import {
   Party,
   PartyOrigin,
   PartyTypeType
-} from '@sphereon/ssi-sdk.data-store'
+} from '@sphereon/ssi-sdk.data-store-types'
 import {CredentialRole, DigitalCredential} from '@sphereon/ssi-sdk.credential-store'
 import {getMatchingIdentity} from '@helpers/IdentityFilters'
 import {CredentialMapper, OriginalVerifiableCredential} from '@sphereon/ssi-types'

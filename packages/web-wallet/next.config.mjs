@@ -29,13 +29,13 @@ const nextConfig = {
   },
 
   compiler: {
-
     styledComponents: {
       ssr: true,
       displayName: true,
       fileName: false,
     },
   },
+
   async rewrites() {
     return [
       /*JWKS proxy to agent*/

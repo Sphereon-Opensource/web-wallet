@@ -1,7 +1,7 @@
 import {Interpreter, State, StateMachine} from 'xstate'
 import {ChangeEvent, createContext, ReactNode, useContext} from 'react'
 import {NavigateFunction, useOutletContext} from 'react-router-dom'
-import type {Party} from '@sphereon/ssi-sdk.data-store'
+import type {Party} from '@sphereon/ssi-sdk.data-store-types'
 import {UIContextType} from '../general'
 
 export enum NaturalPersonMachineEvents {

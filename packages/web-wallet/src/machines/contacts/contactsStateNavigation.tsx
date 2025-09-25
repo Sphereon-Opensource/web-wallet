@@ -2,7 +2,7 @@ import React, {ChangeEvent, useCallback, useEffect, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import {useTranslate} from '@refinedev/core'
 import {useInterpret} from '@xstate/react'
-import type {Party} from '@sphereon/ssi-sdk.data-store'
+import type {Party} from '@sphereon/ssi-sdk.data-store-types'
 import {naturalPersonMachine, naturalPersonPersonalDataGuard, naturalPersonPhysicalAddressGuard} from './contactsMachine'
 import {storeContact} from '../../services/contactService'
 import {

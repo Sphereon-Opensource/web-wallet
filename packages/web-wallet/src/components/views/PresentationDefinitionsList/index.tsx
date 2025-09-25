@@ -3,7 +3,7 @@ import short from 'short-uuid'
 import {HttpError, useDeleteMany, useList, useNavigation, useTranslate, useDataProvider} from '@refinedev/core'
 import {ButtonIcon} from '@sphereon/ui-components.core'
 import {ColumnHeader, Row, SSITableView, TableCellType} from '@sphereon/ui-components.ssi-react'
-import type {DcqlQueryItem} from '@sphereon/ssi-sdk.data-store'
+import type {DcqlQueryItem} from '@sphereon/ssi-sdk.data-store-types'
 import {DataProvider, DataResource} from '@typings'
 
 type Props = {
