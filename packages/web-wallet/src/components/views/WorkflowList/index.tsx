@@ -18,7 +18,7 @@ import {
 import {WorkflowStorageService} from '@objectstorage/WorkflowStorageService'
 import {HttpError, useList, useTranslate} from '@refinedev/core'
 import SidePanelModal from '@components/modals/SidePanelModal'
-import {Party} from '@sphereon/ssi-sdk.data-store'
+import type {Party} from '@sphereon/ssi-sdk.data-store-types'
 
 type Props = {
   assetIdFilter?: string

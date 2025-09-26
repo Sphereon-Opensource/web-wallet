@@ -1,16 +1,20 @@
 import React, {FC, ReactElement, useEffect, useState} from 'react'
-import {CreateResponse, FormAction, HttpError, UpdateResponse, useForm, UseFormProps, useTranslate} from '@refinedev/core'
+import {
+  CreateResponse,
+  FormAction,
+  HttpError,
+  UpdateResponse,
+  useForm,
+  UseFormProps,
+  useTranslate,
+} from '@refinedev/core'
 
 import {ComboBox, IconButton, PrimaryButton, SecondaryButton} from '@sphereon/ui-components.ssi-react'
-import {SSRConfig} from 'next-i18next'
-import {serverSideTranslations} from 'next-i18next/serverSideTranslations'
-import nextI18nextConfig from '@/next-i18next.config.mjs'
 import {useNavigate, useParams} from 'react-router-dom'
 // @ts-ignore // FIXME CWALL-245 path complaining
 import style from './index.module.css'
 import {DataResource, MainRoute} from '@typings'
-import {PresentationDefinitionItem} from '@sphereon/ssi-sdk.data-store'
-import {PartialPresentationDefinitionItem} from '@sphereon/ssi-sdk.data-store'
+import type {DcqlQueryItem, PartialDcqlQueryItem} from '@sphereon/ssi-sdk.data-store-types'
 import PageHeaderBar from '@components/bars/PageHeaderBar'
 import JsonEditor from '@components/editors/JsonEditor'
 import {ButtonIcon} from '@sphereon/ui-components.core'
@@ -37,9 +41,9 @@ const PresentationDefinitionPage: FC<Props> = (props: Props): ReactElement => {
   const [mode, setMode] = useState<Mode>(initialMode)
   const disabled = mode === 'show'
 
-  const [definitionPayload, setDefinitionPayload] = useState<string | undefined>()
-  const [partialDefinitionItem, setPartialDefinitionItem] = React.useState<PartialPresentationDefinitionItem>({})
-  const {onFinish, queryResult} = useForm<PresentationDefinitionItem, HttpError, PartialPresentationDefinitionItem>(
+  const [query, setQuery] = useState<string | undefined>()
+  const [partialDefinitionItem, setPartialDefinitionItem] = React.useState<PartialDcqlQueryItem>({})
+  const {onFinish, queryResult} = useForm<DcqlQueryItem, HttpError, PartialDcqlQueryItem>(
     buildUseFormOpts(selectFormAction(mode), id),
   )
 
@@ -77,8 +81,8 @@ const PresentationDefinitionPage: FC<Props> = (props: Props): ReactElement => {
     if (Object.keys(partialDefinitionItem).length === 0 && !isLoading && entityResponse) {
       const item = entityResponse.data
       setPartialDefinitionItem(item)
-      if (item.definitionPayload) {
-        setDefinitionPayload(JSON.stringify(item.definitionPayload, null, 2))
+      if (item.query) {
+        setQuery(JSON.stringify(item.query, null, 2))
       }
     }
   }, [queryResult, partialDefinitionItem])
@@ -102,18 +106,18 @@ const PresentationDefinitionPage: FC<Props> = (props: Props): ReactElement => {
     if (mode !== 'create' && mode !== 'edit') {
       throw new Error(`Saving is not allowed for mode ${mode}`)
     }
-    if (!definitionPayload) {
+    if (!query) {
       throw new Error(`There is no definition data to save`)
     }
-    partialDefinitionItem.definitionPayload = JSON.parse(definitionPayload)
+    partialDefinitionItem.query = JSON.parse(query)
 
-    const addResult: CreateResponse<PresentationDefinitionItem> | UpdateResponse<PresentationDefinitionItem> | void =
+    const addResult: CreateResponse<DcqlQueryItem> | UpdateResponse<DcqlQueryItem> | void =
       await onFinish(partialDefinitionItem)
-    if (addResult && (addResult as CreateResponse<PresentationDefinitionItem>).data) {
-      const resultData = (addResult as CreateResponse<PresentationDefinitionItem>).data
+    if (addResult && (addResult as CreateResponse<DcqlQueryItem>).data) {
+      const resultData = (addResult as CreateResponse<DcqlQueryItem>).data
       setPartialDefinitionItem(resultData)
-    } else if (addResult && (addResult as UpdateResponse<PresentationDefinitionItem>).data) {
-      const resultData = (addResult as UpdateResponse<PresentationDefinitionItem>).data
+    } else if (addResult && (addResult as UpdateResponse<DcqlQueryItem>).data) {
+      const resultData = (addResult as UpdateResponse<DcqlQueryItem>).data
       setPartialDefinitionItem(resultData)
     } else {
       setPartialDefinitionItem(partialDefinitionItem)
@@ -161,7 +165,7 @@ const PresentationDefinitionPage: FC<Props> = (props: Props): ReactElement => {
           <PageHeaderBar path={headerLabels.pathText} title={headerLabels.titleText} />
           <div className={style.actionButtonPanel}>
             <div className={style.iconButtonContainer}>
-              <IconButton icon={ButtonIcon.COPY} onClick={() => definitionPayload && copyToClipboard(definitionPayload)} />
+              <IconButton icon={ButtonIcon.COPY} onClick={() => query && copyToClipboard(query)} />
             </div>
             {mode !== 'create' && (
               <ComboBox options={actionComboOptions} onChange={handleActionComboBoxChange} defaultValue={getDefaultActionValue()} />
@@ -170,10 +174,10 @@ const PresentationDefinitionPage: FC<Props> = (props: Props): ReactElement => {
         </div>
         <div className={style.presentationDefinitionDetailContentContainer}>
           <JsonEditor
-            initialPayload={definitionPayload}
+            initialPayload={query}
             isNewDocument={mode === 'create'}
             isReadOnly={mode === 'show'}
-            onEditorContentChanged={(value: string) => setDefinitionPayload(value)}
+            onEditorContentChanged={(value: string) => setQuery(value)}
           />
           {mode !== 'show' && (
             <div className={style.buttonsContainer}>
@@ -194,7 +198,7 @@ const PresentationDefinitionPage: FC<Props> = (props: Props): ReactElement => {
   function buildUseFormOpts(
     formAction: FormAction,
     idToLoad?: string,
-  ): UseFormProps<PresentationDefinitionItem, HttpError, Partial<PresentationDefinitionItem>> {
+  ): UseFormProps<DcqlQueryItem, HttpError, Partial<DcqlQueryItem>> {
     if (!idToLoad && (formAction === 'edit' || formAction === 'clone')) {
       throw new Error(`Mode ${formAction} requires idToLoad to be set`)
     }

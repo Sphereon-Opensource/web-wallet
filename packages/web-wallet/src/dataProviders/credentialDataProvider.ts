@@ -15,12 +15,14 @@ import {
   UpdateResponse,
 } from '@refinedev/core'
 import agent from '@agent'
-import {DigitalCredential, UpdateCredentialStateArgs} from '@sphereon/ssi-sdk.data-store'
+import type {
+  DigitalCredential,
+  FindDigitalCredentialArgs,
+  UpdateCredentialStateArgs,
+} from '@sphereon/ssi-sdk.data-store-types'
 import {DataResource} from '@typings'
 import {FetchOptions} from '@sphereon/ssi-sdk.pd-manager'
-import {FindDigitalCredentialArgs} from '@sphereon/ssi-sdk.data-store/dist/types/digitalCredential/IAbstractDigitalCredentialStore'
-import {OptionalUniqueDigitalCredential} from '@sphereon/ssi-sdk.credential-store'
-import {GetCredentialsByIdOrHashArgs} from '@sphereon/ssi-sdk.credential-store/dist/types/ICredentialStore'
+import type {GetCredentialsByIdOrHashArgs, OptionalUniqueDigitalCredential} from '@sphereon/ssi-sdk.credential-store'
 
 export type DigitalCredentialFilter = Partial<DigitalCredential>
 

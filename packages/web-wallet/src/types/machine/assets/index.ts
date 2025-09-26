@@ -2,7 +2,7 @@ import {Interpreter, State, StateMachine} from 'xstate'
 import React, {createContext, ReactNode, useContext} from 'react'
 import {NavigateFunction, useOutletContext} from 'react-router-dom'
 import {AssetFilePermission, Product, SelectedAssetFile} from '@typings'
-import {Contact} from '@sphereon/ssi-sdk.data-store'
+import type {Contact} from '@sphereon/ssi-sdk.data-store-types'
 
 export enum AssetMachineEvents {
   NEXT = 'NEXT',

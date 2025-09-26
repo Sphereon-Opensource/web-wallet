@@ -7,27 +7,35 @@ const nextConfig = {
 
   transpilePackages: ['@sphereon/ui-components.ssi-react', '@sphereon/ssi-sdk.ebsi-support'],
 
-  webpack(config) {
-    config.resolve.fallback = {
-
-      // if you miss it, all the other options in fallback, specified
-      // by next.js will be dropped.
-      ...config.resolve.fallback,
-
-      fs: false, // the solution
+  webpack(config, { isServer }) {
+    if (!isServer) {
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        typeorm: 'typeorm/browser'
+      }
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        path: false,
+        net: false,
+        tls: false,
+        crypto: false,
+        stream: false,
+        events: false,
+        dns: false,
+      }
     }
-
     return config
   },
 
   compiler: {
-
     styledComponents: {
       ssr: true,
       displayName: true,
       fileName: false,
     },
   },
+
   async rewrites() {
     return [
       /*JWKS proxy to agent*/

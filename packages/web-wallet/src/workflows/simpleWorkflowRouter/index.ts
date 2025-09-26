@@ -16,7 +16,7 @@ import {
   WorkflowStepEntityType,
 } from '@typings'
 import {supabaseServiceClient} from '@helpers/SupabaseClient'
-import {Party} from '@sphereon/ssi-sdk.data-store'
+import type {Party} from '@sphereon/ssi-sdk.data-store-types'
 
 export type WorkflowType = WorkflowDTOType | WorkflowEntityType
 export type WorkflowStepType = WorkflowStepDTOType | WorkflowStepEntityType

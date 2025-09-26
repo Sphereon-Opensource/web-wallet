@@ -19,9 +19,9 @@ import {
 import debug from 'debug'
 import {InformationRequestPageState} from '@/pages/siopv2/informationRequest'
 import {Format} from '@sphereon/pex-models'
-import {IdentityOrigin} from '@sphereon/ssi-sdk.data-store'
+import {IdentityOrigin} from '@sphereon/ssi-sdk.data-store-types'
 import agent from '@agent'
-import {ConnectionType, CorrelationIdentifierType, PartyOrigin, PartyTypeType} from '@sphereon/ssi-sdk.data-store'
+import {ConnectionType, CorrelationIdentifierType, PartyOrigin, PartyTypeType} from '@sphereon/ssi-sdk.data-store-types'
 import { CredentialRole } from '@sphereon/ssi-types'
 
 const handleNavigation = async (
@@ -79,7 +79,7 @@ const navigateInformationRequest = async (args: Siopv2NavigationArgs): Promise<v
     return Promise.reject(Error('No selectable credentials present'))
   }
 
-  const presentationDefinitionWithLocation: PresentationDefinitionWithLocation = authorizationRequestData.presentationDefinitions[0] // TODO update to DCQL impl
+  const dcqlQuery = authorizationRequestData.dcqlQuery
   const format: Format | undefined = authorizationRequestData.registrationMetadataPayload?.registration?.vp_formats
   const subjectSyntaxTypesSupported: Array<string> | undefined =
     authorizationRequestData.registrationMetadataPayload?.registration?.subject_syntax_types_supported
@@ -104,7 +104,7 @@ const navigateInformationRequest = async (args: Siopv2NavigationArgs): Promise<v
   }
   const state: InformationRequestPageState = {
     verifierName: contact.contact.displayName,
-    presentationDefinition: presentationDefinitionWithLocation.definition,
+    dcqlQuery,
     selectableCredentialsMap,
     format,
     subjectSyntaxTypesSupported,

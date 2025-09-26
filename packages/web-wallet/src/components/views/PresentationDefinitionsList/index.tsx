@@ -3,26 +3,26 @@ import short from 'short-uuid'
 import {HttpError, useDeleteMany, useList, useNavigation, useTranslate, useDataProvider} from '@refinedev/core'
 import {ButtonIcon} from '@sphereon/ui-components.core'
 import {ColumnHeader, Row, SSITableView, TableCellType} from '@sphereon/ui-components.ssi-react'
-import {PresentationDefinitionItem} from '@sphereon/ssi-sdk.data-store'
+import type {DcqlQueryItem} from '@sphereon/ssi-sdk.data-store-types'
 import {DataProvider, DataResource} from '@typings'
 
 type Props = {
-  allowAddNewPresentationDefinition?: boolean
+  allowAddNewDcqlQueryItem?: boolean
 }
 
-type PresentationDefinitionMenuItem = PresentationDefinitionItem & {
+type DcqlQueryMenuItem = DcqlQueryItem & {
   actions: string
 }
 
-const PresentationDefinitionsList: FC<Props> = (props: Props): ReactElement => {
+const DcqlQuerysList: FC<Props> = (props: Props): ReactElement => {
   const translate = useTranslate()
-  const {allowAddNewPresentationDefinition = false} = props
+  const {allowAddNewDcqlQueryItem = false} = props
   const uuidTruncationLength: number = process.env.NEXT_PUBLIC_TRUNCATION_LENGTH ? Number(process.env.NEXT_PUBLIC_TRUNCATION_LENGTH) : 8
-  const {mutateAsync: deletePresentationDefinitionItems} = useDeleteMany<PresentationDefinitionItem[], HttpError>()
+  const {mutateAsync: deleteDcqlQueryItems} = useDeleteMany<DcqlQueryItem[], HttpError>()
   const {show, create, edit} = useNavigation()
   const dataProvider = useDataProvider()
 
-  const results = useList<PresentationDefinitionItem, HttpError>({
+  const results = useList<DcqlQueryItem, HttpError>({
     resource: DataResource.PRESENTATION_DEFINITIONS,
   })
 
@@ -33,7 +33,7 @@ const PresentationDefinitionsList: FC<Props> = (props: Props): ReactElement => {
     return <div>{translate('data_provider_loading_message')}</div>
   }
 
-  const onShowDefinition = async (row: Row<PresentationDefinitionMenuItem>): Promise<void> => {
+  const onShowDefinition = async (row: Row<DcqlQueryMenuItem>): Promise<void> => {
     show(DataResource.PRESENTATION_DEFINITIONS, row.original.id)
   }
 
@@ -41,15 +41,15 @@ const PresentationDefinitionsList: FC<Props> = (props: Props): ReactElement => {
     create(DataResource.PRESENTATION_DEFINITIONS)
   }
 
-  const onEditDefinition = async (opts: Row<PresentationDefinitionMenuItem>): Promise<void> => {
+  const onEditDefinition = async (opts: Row<DcqlQueryMenuItem>): Promise<void> => {
     edit(DataResource.PRESENTATION_DEFINITIONS, opts.original.id)
   }
 
-  const onDeleteDefinition = async (opts: Row<PresentationDefinitionMenuItem>): Promise<void> => {
+  const onDeleteDefinition = async (opts: Row<DcqlQueryMenuItem>): Promise<void> => {
     await onDelete(opts)
   }
 
-  const columns: ColumnHeader<PresentationDefinitionMenuItem>[] = [
+  const columns: ColumnHeader<DcqlQueryMenuItem>[] = [
     {
       accessor: 'id',
       label: translate('presentation_definitions_overview_column_id_label'),
@@ -63,7 +63,7 @@ const PresentationDefinitionsList: FC<Props> = (props: Props): ReactElement => {
       },
     },
     {
-      accessor: 'definitionId',
+      accessor: 'queryId',
       label: translate('presentation_definitions_overview_column_definition_id_label'),
       type: TableCellType.TEXT,
       columnOptions: {
@@ -117,14 +117,14 @@ const PresentationDefinitionsList: FC<Props> = (props: Props): ReactElement => {
     },
   ]
 
-  const onDelete = async (rowData: Row<PresentationDefinitionMenuItem>): Promise<void> => {
+  const onDelete = async (rowData: Row<DcqlQueryMenuItem>): Promise<void> => {
     if (!rowData) {
       return
     }
-    const allVersions = await dataProvider(DataProvider.PRESENTATION_DEFINITIONS).getList<PresentationDefinitionItem>({
+    const allVersions = await dataProvider(DataProvider.PRESENTATION_DEFINITIONS).getList<DcqlQueryItem>({
       resource: DataResource.PRESENTATION_DEFINITIONS,
       filters: [
-        {field: 'definitionId', operator: 'eq', value: rowData.original.definitionId},
+        {field: 'queryId', operator: 'eq', value: rowData.original.queryId},
         {field: 'tenantId', operator: 'eq', value: rowData.original.tenantId},
       ],
       meta: {
@@ -136,10 +136,10 @@ const PresentationDefinitionsList: FC<Props> = (props: Props): ReactElement => {
       throw new Error('Failed to fetch versions')
     }
 
-    await deletePresentationDefinitionItems(
+    await deleteDcqlQueryItems(
       {
         resource: DataResource.PRESENTATION_DEFINITIONS,
-        ids: allVersions.data?.map((versionedItem: PresentationDefinitionItem) => versionedItem.id) ?? [],
+        ids: allVersions.data?.map((versionedItem: DcqlQueryItem) => versionedItem.id) ?? [],
       },
       {
         onError: error => {
@@ -152,7 +152,7 @@ const PresentationDefinitionsList: FC<Props> = (props: Props): ReactElement => {
   }
   const buildActionList = () => {
     const actions = []
-    if (allowAddNewPresentationDefinition) {
+    if (allowAddNewDcqlQueryItem) {
       actions.push({
         caption: translate('presentation_definitions_overview_action_add_presentation_definition'),
         icon: ButtonIcon.ADD,
@@ -164,7 +164,7 @@ const PresentationDefinitionsList: FC<Props> = (props: Props): ReactElement => {
 
   const data = results.data.data.map(value => ({...value, actions: ''}))
   return (
-    <SSITableView<PresentationDefinitionMenuItem>
+    <SSITableView<DcqlQueryMenuItem>
       key={short.generate()}
       data={data}
       columns={columns}
@@ -174,4 +174,4 @@ const PresentationDefinitionsList: FC<Props> = (props: Props): ReactElement => {
   )
 }
 
-export default PresentationDefinitionsList
+export default DcqlQuerysList
