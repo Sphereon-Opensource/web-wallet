@@ -70,7 +70,7 @@ class TemplateCredentialDataSupplier {
           throw Error('credential_identifier may not be blank')
         }
       }
-      types = [args.credentialRequest.credential_identifier]
+      //types = [args.credentialRequest.credential_identifier]
 
       const credentialPayload = credentialDataSupplierInput.credentialPayload as CredentialPayload
       console.log('-------------> credentialPayload', credentialPayload)
