@@ -449,6 +449,7 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
   )
 }
 
-export const getStaticProps = staticPropsWithSST
+export const getStaticProps = async ({locale = 'en'}: {locale?: string}) =>
+  staticPropsWithSST({locale})
 
 export default ShowCredentialDetails

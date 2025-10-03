@@ -29,6 +29,7 @@ const LoadingPage: React.FC = (): ReactElement => {
   )
 }
 
-export const getStaticProps = staticPropsWithSST
+export const getStaticProps = async ({locale = 'en'}: {locale?: string}) =>
+  staticPropsWithSST({locale})
 
 export default LoadingPage

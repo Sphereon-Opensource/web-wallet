@@ -28,5 +28,6 @@ const DocumentViewerModal: FC<Props> = (props: Props): ReactElement => {
     </div>
   )
 }
-export const getStaticProps = staticPropsWithSST
+export const getStaticProps = async ({locale = 'en'}: {locale?: string}) =>
+  staticPropsWithSST({locale})
 export default DocumentViewerModal

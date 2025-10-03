@@ -71,6 +71,7 @@ const WorkflowApproveDocumentsModal: React.FC<Props> = (props: Props) => {
   )
 }
 
-export const getStaticProps = staticPropsWithSST
+export const getStaticProps = async ({locale = 'en'}: {locale?: string}) =>
+  staticPropsWithSST({locale})
 
 export default WorkflowApproveDocumentsModal
