@@ -69,7 +69,7 @@ import {
   EventLoggerStore,
   IssuanceBrandingStore,
   PDStore,
-} from '@sphereon/ssi-sdk.data-store'
+} from '@sphereon/ssi-sdk.data-store-types'
 import {IIssuerInstanceArgs, OID4VCIIssuer} from '@sphereon/ssi-sdk.oid4vci-issuer'
 import {
   IIssuerInstanceOptions,

@@ -2,7 +2,7 @@ import React, {FC, ReactElement, useEffect, useState} from 'react'
 import {HttpError, useCreate, useDelete, useList, useNavigation, useTranslate} from '@refinedev/core'
 import {ColumnHeader, Row, SSITableView, TableCellType} from '@sphereon/ui-components.ssi-react'
 import {ButtonIcon} from '@sphereon/ui-components.core'
-import {Button, Credential, CredentialReference, CredentialTableItem, DataProvider, DataResource} from '@typings'
+import {Button, CredentialTableItem, DataProvider, DataResource} from '@typings'
 import {getCredentialIssuerNameAndAlias, toCredentialSummary} from '@sphereon/ui-components.credential-branding'
 import agent from '@agent'
 import {
@@ -11,19 +11,19 @@ import {
   FindPartyArgs,
   Party,
   PartyOrigin,
-  PartyTypeType
+  PartyTypeType,
 } from '@sphereon/ssi-sdk.data-store-types'
 import {CredentialRole, DigitalCredential} from '@sphereon/ssi-sdk.credential-store'
 import {getMatchingIdentity} from '@helpers/IdentityFilters'
 import {CredentialMapper, OriginalVerifiableCredential} from '@sphereon/ssi-types'
 import {VerifiableCredential, W3CVerifiableCredential} from '@veramo/core'
-import ImportFileModal from "@components/modals/ImportFileModal";
-import {computeEntryHash} from '@veramo/utils';
-import {AddContactArgs} from "@sphereon/ssi-sdk.contact-manager";
-import {IdentityOrigin} from "@sphereon/ssi-sdk.data-store";
-import {addContact} from "@/src/services/contactService";
-import {registerDidEbsiOnLedger} from "@/src/services/ebsiService";
-import {defaultHasher} from "@sphereon/ssi-sdk.core";
+import ImportFileModal from '@components/modals/ImportFileModal'
+import {computeEntryHash} from '@veramo/utils'
+import {AddContactArgs} from '@sphereon/ssi-sdk.contact-manager'
+import {IdentityOrigin} from '@sphereon/ssi-sdk.data-store-types'
+import {addContact} from '@/src/services/contactService'
+import {registerDidEbsiOnLedger} from '@/src/services/ebsiService'
+import {defaultHasher} from '@sphereon/ssi-sdk.core'
 
 type Props = {
   credentialRole: CredentialRole
