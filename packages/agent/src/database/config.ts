@@ -23,7 +23,7 @@ import {
   DataStoreMachineStateEntities,
   DataStorePresentationDefinitionEntities,
   DataStoreStatusListEntities,
-} from '@sphereon/ssi-sdk.data-store-types'
+} from '@sphereon/ssi-sdk.data-store'
 import {
   DataStoreContactMigrations,
   DataStoreDigitalCredentialMigrations,
@@ -32,7 +32,7 @@ import {
   DataStoreMachineStateMigrations,
   DataStorePresentationDefinitionMigrations,
   DataStoreStatusListMigrations,
-} from '@sphereon/ssi-sdk.data-store-types'
+} from '@sphereon/ssi-sdk.data-store'
 // @ts-ignore // Package does not export these properly
 import {SqliteConnectionOptions} from "typeorm/driver/sqlite/SqliteConnectionOptions";
 // @ts-ignore // Package does not export these properly
