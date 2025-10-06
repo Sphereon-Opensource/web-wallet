@@ -66,13 +66,10 @@ function mergeSchemaDefaults(data: any, schema: JsonSchema): any {
     const typedPropSchema = propSchema as JsonSchema
 
     if (!(key in result) && 'default' in typedPropSchema) {
-      // Use the default value if key doesn't exist
       result[key] = typedPropSchema.default
     } else if (key in result && typedPropSchema.type === 'object' && typedPropSchema.properties) {
-      // Recursively merge defaults for nested objects
       result[key] = mergeSchemaDefaults(result[key] || {}, typedPropSchema)
     } else if (!(key in result) && typedPropSchema.type === 'object' && typedPropSchema.properties) {
-      // Create nested object with defaults even if parent key doesn't exist
       result[key] = mergeSchemaDefaults({}, typedPropSchema)
     }
   }
