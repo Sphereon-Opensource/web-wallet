@@ -250,6 +250,7 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
 
   const buildActionList = (): Array<Button> => {
     const actions: Array<Button> = []
+    console.log('==== allowIssueCredential', allowIssueCredential)
     if (allowIssueCredential) {
       actions.push({
         caption: translate('credentials_overview_action_add_credential'),

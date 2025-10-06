@@ -18,6 +18,7 @@ const SideNavigationBar: React.FC = (): ReactElement => {
   ]
 
   const onChangeRole = async (role: RoleData) => console.log(JSON.stringify(role))
+  console.log(')))))))))))  NEXT_PUBLIC_DISABLE_ISSUER_INTERFACE', process.env.NEXT_PUBLIC_DISABLE_ISSUER_INTERFACE)
 
   return (
     <nav className={style.container}>
