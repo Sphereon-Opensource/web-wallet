@@ -23,6 +23,7 @@ function isCredentialPayload(
 ): credentialDataSupplierInput is WithCredentialPayload {
   return 'credentialPayload' in credentialDataSupplierInput && !!credentialDataSupplierInput.credentialPayload
 }
+
 export const createCredentialPayloadWithSchema = (
   args: {
     schemaOpts?: {
@@ -36,8 +37,11 @@ export const createCredentialPayloadWithSchema = (
   const {schemaOpts, payload} = args
   const {credentialSchema, schema} = schemaOpts ?? {}
 
+  // Merge schema defaults into the payload
+  const payloadWithDefaults = schema ? mergeSchemaDefaults(payload, schema) : payload
+
   const mergedPayload: Partial<CredentialPayload> = {
-    ...payload,
+    ...payloadWithDefaults,
     ...(credentialSchema && {credentialSchema}),
     ...additionalData,
   }
@@ -50,6 +54,21 @@ export const createCredentialPayloadWithSchema = (
     schema,
     id: mergedPayload.id,
   }
+}
+
+
+function mergeSchemaDefaults(data: any, schema: JsonSchema): any {
+  if (!schema.properties) return data
+
+  const result = {...data}
+
+  for (const [key, propSchema] of Object.entries(schema.properties)) {
+    if (!(key in result) && 'default' in propSchema) {
+      result[key] = (propSchema as any).default
+    }
+  }
+
+  return result
 }
 export async function qrValueGenerator(
   credentialDataSupplierInput: WithHashOrId | WithCredentialPayload,
