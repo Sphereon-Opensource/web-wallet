@@ -21,7 +21,7 @@ const SideNavigationBar: React.FC = (): ReactElement => {
 
   return (
     <nav className={style.container}>
-{/*      <div className={style.roleSelectionContainer}> TODO only enable when all functionality is finsihed
+      <div className={style.roleSelectionContainer}>
         <Listbox<RoleData>
           items={roles}
           renderItem={(role: RoleData) =>
@@ -33,7 +33,7 @@ const SideNavigationBar: React.FC = (): ReactElement => {
           onChange={onChangeRole}
           menuTitle={translate('roles_selection_label')}
         />
-      </div>*/}
+      </div>
       <div className={style.routesContainer}>
         {/* <SideNavigationCategory target={MainRoute.ASSETS} label={translate('navigation_side_menu_assets_label')} /> */}
         {/* <SideNavigationCategory target={MainRoute.WORKFLOW} label={translate('navigation_side_menu_workflow_label')} /> */}
