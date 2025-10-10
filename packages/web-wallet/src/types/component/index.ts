@@ -89,13 +89,14 @@ export type CredentialCatalogItem = {
   actions: string
 }
 
-export type MenuEntry = MenuItem | MenuGroup;
+export type MenuEntry = MenuItem | MenuGroup | MenuSeparator;
 
 export type MenuItem = {
   type: "item"
   label: string
   icon: MenuIcon
   path: string
+  end?: boolean
 }
 
 export type MenuGroup = {
@@ -104,4 +105,19 @@ export type MenuGroup = {
   items: Array<MenuItem>
 }
 
-export type MenuIcon = "contact" | "notification" | "activity" | "credential"
+export type MenuSeparator = {
+  type: "separator"
+}
+
+export type MenuIcon =
+  | "contact"
+  | "notification"
+  | "activity"
+  | "credential"
+  | "issuedCredential"
+  | "issueCredential"
+  | "contactOverview"
+  | "addContact"
+  | "identifier"
+  | "management"
+  | "key"

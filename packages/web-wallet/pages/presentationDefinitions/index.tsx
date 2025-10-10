@@ -10,7 +10,7 @@ const PresentationDefinitionsListPage: FC = (): ReactElement => {
 
   return (
     <div className={style.container}>
-      <AppHeaderBar title={translate('presentation_definitions_overview_title')} />
+      <AppHeaderBar title={translate('queries_overview_title')} />
       <PresentationDefinitionsList allowAddNewDcqlQueryItem={true} />
     </div>
   )

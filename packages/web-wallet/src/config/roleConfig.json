@@ -1,137 +1,229 @@
 [
   {
-    "accountName": "Account 1",
     "role": "ISSUER",
-    "navigation":[
+    "navigation": [
       {
-        "type":"item",
-        "label":"Credentials",
-        "icon":"credential",
-        "path":"/credentials"
+        "type": "item",
+        "label": "Notifications",
+        "icon": "notification",
+        "path": "/notifications"
       },
       {
-        "type":"group",
-        "label":"General",
-        "items":[
+        "type": "item",
+        "label": "Activities",
+        "icon": "activity",
+        "path": "/activities"
+      },
+      {
+        "type": "separator"
+      },
+      {
+        "type": "group",
+        "label": "Document store",
+        "items": [
           {
-            "type":"item",
-            "label":"Notifications",
-            "icon":"notification",
-            "path":"/contacts"
+            "type": "item",
+            "label": "Issued credentials",
+            "icon": "issuedCredential",
+            "path": "/credentials/issued"
+          }
+        ]
+      },
+      {
+        "type": "group",
+        "label": "Credential issuance",
+        "items": [
+          {
+            "type": "item",
+            "label": "Issue new credential",
+            "icon": "issueCredential",
+            "path": "/credentials/issue"
+          }
+        ]
+      },
+      {
+        "type": "group",
+        "label": "Contacts",
+        "items": [
+          {
+            "type": "item",
+            "label": "Overview",
+            "icon": "contactOverview",
+            "path": "/contacts"
           },
           {
-            "type":"item",
-            "label":"Contacts",
-            "icon":"contact",
-            "path":"/contacts"
-          },
-          {
-            "type":"item",
-            "label":"Activities",
-            "icon":"activity",
-            "path":"/contacts"
+            "type": "item",
+            "label": "Add new contact",
+            "icon": "addContact",
+            "path": "/contacts/add"
           }
         ]
       }
     ]
   },
   {
-    "accountName":"Account 2",
-    "role":"ADMIN",
-    "navigation":[
+    "role": "ADMIN",
+    "navigation": [
       {
-        "type":"item",
-        "label":"DID management",
-        "icon":"contact",
-        "path":"/key-management/identifiers"
+        "type": "item",
+        "label": "Notifications",
+        "icon": "notification",
+        "path": "/notifications"
       },
       {
-        "type":"item",
-        "label":"Key management",
-        "icon":"contact",
-        "path":"/key-management/keys"
-      }
-    ]
-  },
-  {
-    "accountName":"Account 3",
-    "role":"RELYING_PARTY",
-    "navigation":[
-      {
-        "type":"item",
-        "label":"Credentials",
-        "icon":"credential",
-        "path":"/credentials"
+        "type": "item",
+        "label": "Activities",
+        "icon": "activity",
+        "path": "/activities"
       },
       {
-        "type":"item",
-        "label":"Issuers",
-        "icon":"contact",
-        "path":"/contacts"
+        "type": "separator"
       },
       {
-        "type":"item",
-        "label":"Definitions",
-        "icon":"contact",
-        "path":"/presentation_definitions"
-      },
-      {
-        "type":"group",
-        "label":"General",
-        "items":[
+        "type": "group",
+        "label": "Identifier management",
+        "items": [
           {
-            "type":"item",
-            "label":"Notifications",
-            "icon":"notification",
-            "path":"/contacts"
+            "type": "item",
+            "label": "Identifiers",
+            "icon": "identifier",
+            "path": "/key-management/identifiers"
           },
           {
-            "type":"item",
-            "label":"Contacts",
-            "icon":"contact",
-            "path":"/contacts"
+            "type": "item",
+            "label": "Keys",
+            "icon": "key",
+            "path": "/key-management/keys"
+          }
+        ]
+      },
+      {
+        "type": "group",
+        "label": "Relying parties",
+        "items": [
+          {
+            "type": "item",
+            "label": "Management",
+            "icon": "management",
+            "path": "/query-management"
+          }
+        ]
+      },
+      {
+        "type": "group",
+        "label": "Contacts",
+        "items": [
+          {
+            "type": "item",
+            "label": "Overview",
+            "icon": "contactOverview",
+            "path": "/contacts"
           },
           {
-            "type":"item",
-            "label":"Activities",
-            "icon":"activity",
-            "path":"/contacts"
+            "type": "item",
+            "label": "Add new contact",
+            "icon": "addContact",
+            "path": "/contacts/add"
           }
         ]
       }
     ]
   },
   {
-    "accountName":"Account 4",
-    "role":"HOLDER",
-    "navigation":[
+    "role": "RELYING_PARTY",
+    "navigation": [
       {
-        "type":"item",
-        "label":"Credentials",
-        "icon":"credential",
-        "path":"/credentials"
+        "type": "item",
+        "label": "Notifications",
+        "icon": "notification",
+        "path": "/notifications"
       },
       {
-        "type":"group",
-        "label":"General",
-        "items":[
+        "type": "item",
+        "label": "Activities",
+        "icon": "activity",
+        "path": "/activities"
+      },
+      {
+        "type": "separator"
+      },
+      {
+        "type": "group",
+        "label": "Document store",
+        "items": [
           {
-            "type":"item",
-            "label":"Notifications",
-            "icon":"notification",
-            "path":"/contacts"
+            "type": "item",
+            "label": "Received credentials",
+            "icon": "credential",
+            "path": "/credentials"
+          }
+        ]
+      },
+      {
+        "type": "group",
+        "label": "Contacts",
+        "items": [
+          {
+            "type": "item",
+            "label": "Overview",
+            "icon": "contactOverview",
+            "path": "/contacts"
           },
           {
-            "type":"item",
-            "label":"Contacts",
-            "icon":"contact",
-            "path":"/contacts"
+            "type": "item",
+            "label": "Add new contact",
+            "icon": "addContact",
+            "path": "/contacts/add"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "role": "HOLDER",
+    "navigation": [
+      {
+        "type": "item",
+        "label": "Notifications",
+        "icon": "notification",
+        "path": "/notifications"
+      },
+      {
+        "type": "item",
+        "label": "Activities",
+        "icon": "activity",
+        "path": "/activities"
+      },
+      {
+        "type": "separator"
+      },
+      {
+        "type": "group",
+        "label": "Document store",
+        "items": [
+          {
+            "type": "item",
+            "label": "Credentials",
+            "icon": "credential",
+            "path": "/credentials"
+          }
+        ]
+      },
+      {
+        "type": "group",
+        "label": "Contacts",
+        "items": [
+          {
+            "type": "item",
+            "label": "Overview",
+            "icon": "contactOverview",
+            "path": "/contacts"
           },
           {
-            "type":"item",
-            "label":"Activities",
-            "icon":"activity",
-            "path":"/contacts"
+            "type": "item",
+            "label": "Add new contact",
+            "icon": "addContact",
+            "path": "/contacts/add"
           }
         ]
       }

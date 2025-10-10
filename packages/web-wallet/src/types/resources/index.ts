@@ -8,5 +8,5 @@ export enum DataResource {
   DOCUMENTS = 'DOCUMENTS',
   IDENTIFIERS = 'key-management/identifiers',
   KEYS = 'KEYS',
-  PRESENTATION_DEFINITIONS = 'PRESENTATION_DEFINITIONS',
+  QUERIES = 'QUERIES',
 }

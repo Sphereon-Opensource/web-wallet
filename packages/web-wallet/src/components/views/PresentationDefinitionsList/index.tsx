@@ -23,7 +23,7 @@ const DcqlQuerysList: FC<Props> = (props: Props): ReactElement => {
   const dataProvider = useDataProvider()
 
   const results = useList<DcqlQueryItem, HttpError>({
-    resource: DataResource.PRESENTATION_DEFINITIONS,
+    resource: DataResource.QUERIES,
   })
 
   if (results.isError) {
@@ -34,15 +34,15 @@ const DcqlQuerysList: FC<Props> = (props: Props): ReactElement => {
   }
 
   const onShowDefinition = async (row: Row<DcqlQueryMenuItem>): Promise<void> => {
-    show(DataResource.PRESENTATION_DEFINITIONS, row.original.id)
+    show(DataResource.QUERIES, row.original.id)
   }
 
   const onCreateDefinition = async (): Promise<void> => {
-    create(DataResource.PRESENTATION_DEFINITIONS)
+    create(DataResource.QUERIES)
   }
 
   const onEditDefinition = async (opts: Row<DcqlQueryMenuItem>): Promise<void> => {
-    edit(DataResource.PRESENTATION_DEFINITIONS, opts.original.id)
+    edit(DataResource.QUERIES, opts.original.id)
   }
 
   const onDeleteDefinition = async (opts: Row<DcqlQueryMenuItem>): Promise<void> => {
@@ -52,7 +52,7 @@ const DcqlQuerysList: FC<Props> = (props: Props): ReactElement => {
   const columns: ColumnHeader<DcqlQueryMenuItem>[] = [
     {
       accessor: 'id',
-      label: translate('presentation_definitions_overview_column_id_label'),
+      label: translate('queries_overview_column_id_label'),
       type: TableCellType.TEXT,
       columnOptions: {
         columnWidth: 120,
@@ -64,7 +64,7 @@ const DcqlQuerysList: FC<Props> = (props: Props): ReactElement => {
     },
     {
       accessor: 'queryId',
-      label: translate('presentation_definitions_overview_column_definition_id_label'),
+      label: translate('queries_overview_column_definition_id_label'),
       type: TableCellType.TEXT,
       columnOptions: {
         columnWidth: 120,
@@ -72,7 +72,7 @@ const DcqlQuerysList: FC<Props> = (props: Props): ReactElement => {
     },
     {
       accessor: 'version',
-      label: translate('presentation_definitions_overview_column_version_label'),
+      label: translate('queries_overview_column_version_label'),
       type: TableCellType.TEXT,
       columnOptions: {
         columnWidth: 120,
@@ -80,7 +80,7 @@ const DcqlQuerysList: FC<Props> = (props: Props): ReactElement => {
     },
     {
       accessor: 'name',
-      label: translate('presentation_definitions_overview_column_name_label'),
+      label: translate('queries_overview_column_name_label'),
       type: TableCellType.TEXT,
       columnOptions: {
         columnWidth: 120,
@@ -88,7 +88,7 @@ const DcqlQuerysList: FC<Props> = (props: Props): ReactElement => {
     },
     {
       accessor: 'purpose',
-      label: translate('presentation_definitions_overview_column_purpose_label'),
+      label: translate('queries_overview_column_purpose_label'),
       type: TableCellType.TEXT,
       columnOptions: {
         columnWidth: 200,
@@ -96,18 +96,18 @@ const DcqlQuerysList: FC<Props> = (props: Props): ReactElement => {
     },
     {
       accessor: 'actions',
-      label: translate('presentation_definitions_overview_column_actions_label'),
+      label: translate('queries_overview_column_actions_label'),
       type: TableCellType.ACTIONS,
       columnOptions: {
         cellOptions: {
           actions: [
             {
-              caption: translate('presentation_definitions_overview_fields_actions_edit'),
+              caption: translate('queries_overview_fields_actions_edit'),
               icon: ButtonIcon.EDIT,
               onClick: onEditDefinition,
             },
             {
-              caption: translate('presentation_definitions_overview_fields_actions_delete'),
+              caption: translate('queries_overview_fields_actions_delete'),
               icon: ButtonIcon.DELETE,
               onClick: onDeleteDefinition,
             },
@@ -121,8 +121,8 @@ const DcqlQuerysList: FC<Props> = (props: Props): ReactElement => {
     if (!rowData) {
       return
     }
-    const allVersions = await dataProvider(DataProvider.PRESENTATION_DEFINITIONS).getList<DcqlQueryItem>({
-      resource: DataResource.PRESENTATION_DEFINITIONS,
+    const allVersions = await dataProvider(DataProvider.QUERIES).getList<DcqlQueryItem>({
+      resource: DataResource.QUERIES,
       filters: [
         {field: 'queryId', operator: 'eq', value: rowData.original.queryId},
         {field: 'tenantId', operator: 'eq', value: rowData.original.tenantId},
@@ -138,7 +138,7 @@ const DcqlQuerysList: FC<Props> = (props: Props): ReactElement => {
 
     await deleteDcqlQueryItems(
       {
-        resource: DataResource.PRESENTATION_DEFINITIONS,
+        resource: DataResource.QUERIES,
         ids: allVersions.data?.map((versionedItem: DcqlQueryItem) => versionedItem.id) ?? [],
       },
       {
@@ -154,7 +154,7 @@ const DcqlQuerysList: FC<Props> = (props: Props): ReactElement => {
     const actions = []
     if (allowAddNewDcqlQueryItem) {
       actions.push({
-        caption: translate('presentation_definitions_overview_action_add_presentation_definition'),
+        caption: translate('queries_overview_action_add_presentation_definition'),
         icon: ButtonIcon.ADD,
         onClick: onCreateDefinition,
       })

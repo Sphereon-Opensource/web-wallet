@@ -1,7 +1,7 @@
 import React, {CSSProperties, FC, ReactElement, ReactNode} from 'react'
 import {menuItemFrom} from '../../SideNavigationBar'
-import {MenuItem} from '../types'
 import styles from './index.module.css'
+import {MenuItem} from '@typings'
 
 type Props = {
     label?: string
@@ -13,7 +13,7 @@ const SideNavigationGroup: FC<Props> = (props: Props): ReactElement => {
     const { label, items, style } = props
 
     const groupFrom = (items: Array<MenuItem>): ReactNode => {
-        return items.map(item => menuItemFrom(item))
+        return items.map(item => menuItemFrom(item, items))
     }
 
     return (

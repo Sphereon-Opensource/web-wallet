@@ -223,7 +223,7 @@ const AppRouter: React.FC = () => {
               <Route index element={<KeysListPage />} />
             </Route>
           </Route>
-          <Route path={MainRoute.PRESENTATION_DEFINITIONS}>
+          <Route path={MainRoute.QUERY_MANAGEMENT}>
             <Route index element={<PresentationDefinitionsListPage />} />
             <Route path={MainRoute.SUB_ID} element={<PresentationDefinitionPage mode="show" />}></Route>
             <Route path={MainRoute.SUB_CREATE} element={<PresentationDefinitionPage mode="create" />}></Route>

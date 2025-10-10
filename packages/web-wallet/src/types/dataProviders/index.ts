@@ -6,7 +6,7 @@ export enum DataProvider {
   CREDENTIALS = 'credentials',
   KEYS = 'keys',
   IDENTIFIERS = 'identifiers',
-  PRESENTATION_DEFINITIONS = 'presentationDefinitions',
+  QUERIES = 'presentationDefinitions',
 }
 
 export type DcqlClaim = NonNullable<DcqlCredentialQuery['claims']>[number] // TODO find a better location for this
