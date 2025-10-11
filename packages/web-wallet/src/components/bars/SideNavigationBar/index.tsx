@@ -4,7 +4,7 @@ import {Listbox, RoleViewItem} from '@sphereon/ui-components.ssi-react'
 import SideNavigationItem from './SideNavigationItem'
 import SideNavigationGroup from './SideNavigationGroup'
 import {MenuEntry, MenuGroup, MenuItem, MenuSeparator, RoleData} from '@typings'
-import roles from '../../../config/roleConfig.json'
+import roleConfig from '../../../config/roleConfig'
 import styles from './index.module.css'
 
 type Props = {
@@ -29,18 +29,18 @@ export const menuItemFrom = (item: MenuItem | MenuSeparator, allItems: MenuItem[
   />
 }
 
-export const menuGroupFrom = (item: MenuGroup): ReactElement => {
+export const menuGroupFrom = (item: MenuGroup, allMenuItems: MenuItem[]): ReactElement => {
   return <SideNavigationGroup
     label={item.label}
     items={item.items}
+    allMenuItems={allMenuItems}
   />
 }
-
 const SideNavigationBar: FC<Props> = (props: Props): ReactElement => {
   const {style} = props
   const translate = useTranslate()
   // TODO SSISDK-19 replace dummy data for the Listbox
-  const [role, setRole] = React.useState<RoleData>((roles as Array<RoleData>)[0])
+  const [role, setRole] = React.useState<RoleData>(roleConfig[0])
 
   const onChangeRole = async (role: RoleData) => setRole(role)
 
@@ -69,7 +69,16 @@ const SideNavigationBar: FC<Props> = (props: Props): ReactElement => {
 
   const menuFrom = (items: MenuEntry[]): ReactNode => {
     const blocks = groupMenuBlocks(items)
-    const allMenuItems = items.filter(item => item.type === 'item') as MenuItem[]
+
+    // Extract ALL menu items, including those nested in groups
+    const allMenuItems = items.flatMap(item => {
+      if (item.type === 'item') {
+        return [item]
+      } else if (item.type === 'group') {
+        return item.items
+      }
+      return []
+    })
 
     return blocks.map((block, index): ReactElement => {
       const isSingleItemBlock = block.length === 1
@@ -82,7 +91,7 @@ const SideNavigationBar: FC<Props> = (props: Props): ReactElement => {
           ) : (
             <div className={styles.menuContainer}>
               {blockType === 'group'
-                ? menuGroupFrom(block[0] as MenuGroup)
+                ? menuGroupFrom(block[0] as MenuGroup, allMenuItems)
                 : block.map((item, itemIndex): ReactElement => (
                   <React.Fragment key={itemIndex}>
                     {menuItemFrom(item as MenuItem, allMenuItems)}
@@ -100,7 +109,7 @@ const SideNavigationBar: FC<Props> = (props: Props): ReactElement => {
       <div className={styles.roleSwitcherContainer}>
         <Listbox<RoleData>
           // TODO SSISDK-19 replace dummy data for the Listbox
-          items={roles as Array<RoleData>}
+          items={roleConfig}
           renderItem={(role: RoleData) =>
             <RoleViewItem role={role.role} />
           }

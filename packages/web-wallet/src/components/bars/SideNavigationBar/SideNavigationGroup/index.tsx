@@ -4,26 +4,27 @@ import styles from './index.module.css'
 import {MenuItem} from '@typings'
 
 type Props = {
-    label?: string
-    items: Array<MenuItem>
-    style?: CSSProperties
+  label?: string
+  items: Array<MenuItem>
+  allMenuItems: Array<MenuItem>
+  style?: CSSProperties
 }
 
 const SideNavigationGroup: FC<Props> = (props: Props): ReactElement => {
-    const { label, items, style } = props
+  const {label, items, allMenuItems, style} = props
 
-    const groupFrom = (items: Array<MenuItem>): ReactNode => {
-        return items.map(item => menuItemFrom(item, items))
-    }
+  const groupFrom = (items: Array<MenuItem>): ReactNode => {
+    return items.map(item => menuItemFrom(item, allMenuItems))
+  }
 
-    return (
-        <div className={styles.container} style={style}>
+  return (
+    <div className={styles.container} style={style}>
             <span className={styles.title}>
                 {label}
             </span>
-            {groupFrom(items)}
-        </div>
-    )
+      {groupFrom(items)}
+    </div>
+  )
 }
 
 export default SideNavigationGroup
