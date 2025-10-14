@@ -659,14 +659,14 @@ importers:
         specifier: 0.34.1-feature.SSISDK.65.redirect.fix.258
         version: 0.34.1-feature.SSISDK.65.redirect.fix.258(typescript@5.6.3)
       '@sphereon/ui-components.core':
-        specifier: 0.4.1-unstable.41
-        version: 0.4.1-unstable.41(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: 0.4.1-unstable.43
+        version: 0.4.1-unstable.43(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@sphereon/ui-components.credential-branding':
-        specifier: 0.4.1-unstable.41
-        version: 0.4.1-unstable.41(encoding@0.1.13)(pg@8.16.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
+        specifier: 0.4.1-unstable.43
+        version: 0.4.1-unstable.43(encoding@0.1.13)(pg@8.16.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ui-components.ssi-react':
-        specifier: 0.4.1-unstable.41
-        version: 0.4.1-unstable.41(@babel/core@7.28.3)(@types/react@18.3.24)(date-fns@2.30.0)(dayjs@1.11.18)(encoding@0.1.13)(moment@2.30.1)(pg@8.16.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
+        specifier: 0.4.1-unstable.43
+        version: 0.4.1-unstable.43(@babel/core@7.28.3)(@types/react@18.3.24)(date-fns@2.30.0)(dayjs@1.11.18)(encoding@0.1.13)(moment@2.30.1)(pg@8.16.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
       '@supabase/postgrest-js':
         specifier: 1.16.2
         version: 1.16.2
@@ -749,17 +749,14 @@ importers:
         specifier: ^14.2.24
         version: 14.2.32(@babel/core@7.28.3)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.92.0)
       next-auth:
-        specifier: 5.0.0-beta.29
-        version: 5.0.0-beta.29(next@14.2.32(@babel/core@7.28.3)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.92.0))(react@18.3.1)
+        specifier: 5.0.0-beta.19
+        version: 5.0.0-beta.19(next@14.2.32(@babel/core@7.28.3)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.92.0))(react@18.3.1)
       next-i18next:
         specifier: ^15.4.2
         version: 15.4.2(@types/react@18.3.24)(i18next@23.11.5)(next@14.2.32(@babel/core@7.28.3)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.92.0))(react-i18next@14.1.3(i18next@23.11.5)(react-dom@18.3.1(react@18.3.1))(react-native@0.81.1(@babel/core@7.28.3)(@types/react@18.3.24)(react@18.3.1))(react@18.3.1))(react@18.3.1)
       nookies:
         specifier: ^2.5.2
         version: 2.5.2
-      oauth4webapi:
-        specifier: 3.8.2
-        version: 3.8.2
       pdfjs-dist:
         specifier: ^3.11.174
         version: 3.11.174(encoding@0.1.13)
@@ -923,8 +920,8 @@ packages:
   '@astronautlabs/jsonpath@1.1.2':
     resolution: {integrity: sha512-FqL/muoreH7iltYC1EB5Tvox5E8NSOOPGkgns4G+qxRKl6k5dxEVljUjB5NcKESzkqwnUqWjSZkL61XGYOuV+A==}
 
-  '@auth/core@0.40.0':
-    resolution: {integrity: sha512-n53uJE0RH5SqZ7N1xZoMKekbHfQgjd0sAEyUbE+IYJnmuQkbvuZnXItCU7d+i7Fj8VGOgqvNO7Mw4YfBTlZeQw==}
+  '@auth/core@0.32.0':
+    resolution: {integrity: sha512-3+ssTScBd+1fd0/fscAyQN1tSygXzuhysuVVzB942ggU4mdfiTbv36P0ccVnExKWYJKvu3E2r3/zxXCCAmTOrg==}
     peerDependencies:
       '@simplewebauthn/browser': ^9.0.1
       '@simplewebauthn/server': ^9.0.2
@@ -2427,6 +2424,7 @@ packages:
   '@mui/base@5.0.0-beta.70':
     resolution: {integrity: sha512-Tb/BIhJzb0pa5zv/wu7OdokY9ZKEDqcu1BDFnohyvGCoHuSXbEr90rPq1qeNW3XvTBIbNWHEF7gqge+xpUo6tQ==}
     engines: {node: '>=14.0.0'}
+    deprecated: This package has been replaced by @base-ui-components/react
     peerDependencies:
       '@types/react': ^17.0.0 || ^18.0.0 || ^19.0.0
       react: ^17.0.0 || ^18.0.0 || ^19.0.0
@@ -3386,18 +3384,18 @@ packages:
   '@sphereon/ssi-types@0.34.1-feature.SSISDK.65.redirect.fix.258':
     resolution: {integrity: sha512-bYIndVYrbFuce5BI007eXqJM2aqUQV37r8gZv1GdeG8BDQ5J+7VngdqvmMpOKps7ZOo6uz7xj1aFPf+/v+1lcQ==}
 
-  '@sphereon/ui-components.core@0.4.1-unstable.41':
-    resolution: {integrity: sha512-OQ3lNVPcfTgFLh0Jnqe5MBt/8QGun3pTZ0g+W0zKRXBX3c5+DFP17RgA3cpXuGMVeWuXkNJXNQZ+aJifBoLOQQ==}
+  '@sphereon/ui-components.core@0.4.1-unstable.43':
+    resolution: {integrity: sha512-1lOQ8TMiDe6ffMJXv3y1dGAxtWm4dcDJUQEBTI/EximygK6TF8TnKVCN+1MszVOwvFxbtADmyNteIdwxMTj9+g==}
     peerDependencies:
       react: '>= 18.2'
 
-  '@sphereon/ui-components.credential-branding@0.4.1-unstable.41':
-    resolution: {integrity: sha512-Af18flhuxbAaiMn4nhLtLkV21FzjZXxnWA1KuR0vcvLbxQEl/VWElNFwhfOZqi5BcFACyAccqFJrS+SQ26cNSA==}
+  '@sphereon/ui-components.credential-branding@0.4.1-unstable.43':
+    resolution: {integrity: sha512-qMdjyRpAyhP8JlCJttsG8jKvm7MdQfKp9N8G7z9A9YWJIbrfA/rvnd4OOJSBZo8njeirW8JjvARY6FaI0ByQAw==}
     peerDependencies:
       react: '>= 18.2'
 
-  '@sphereon/ui-components.ssi-react@0.4.1-unstable.41':
-    resolution: {integrity: sha512-jNI6i/POxxSkqgTnEM/cxVw4eC3QaEwomWgLScTLrGor2lUBkKKa0LspMielwsc/lrqUL1lHRfApaHQgRRRKfw==}
+  '@sphereon/ui-components.ssi-react@0.4.1-unstable.43':
+    resolution: {integrity: sha512-/gutu/3bFvJCwUIAuciZ6vWtiawsIzvKu5XFtY9dsGWZsDU2fJqG3WUDiDChHNsjQjRakIFSnrfWV/t/2apZCw==}
     peerDependencies:
       react: '>= 18'
 
@@ -3733,6 +3731,9 @@ packages:
 
   '@types/cookie@0.5.4':
     resolution: {integrity: sha512-7z/eR6O859gyWIAjuvBWFzNURmf2oPBmJlfVWkwehU5nzIyjwBsTh7WMmEEV4JFnHuQ3ex4oyTvfKzcyJVDBNA==}
+
+  '@types/cookie@0.6.0':
+    resolution: {integrity: sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA==}
 
   '@types/cors@2.8.19':
     resolution: {integrity: sha512-mFNylyeyqN93lfe/9CSxOGREz8cpzAhH+E93xJ4xWQf62V8sQ/24reV2nyzUWM6H6Xji+GGHpkbLe7pVoUEskg==}
@@ -5040,6 +5041,10 @@ packages:
 
   cookie@0.5.0:
     resolution: {integrity: sha512-YZ3GUyn/o8gfKJlnlX7g7xq4gyO6OSuhGPKaaGssGB2qgDUS0gPgtTvoyZLTt9Ab6dC4hfc9dV5arkvc/OCmrw==}
+    engines: {node: '>= 0.6'}
+
+  cookie@0.6.0:
+    resolution: {integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==}
     engines: {node: '>= 0.6'}
 
   cookie@0.7.1:
@@ -6845,9 +6850,6 @@ packages:
   jose@5.9.4:
     resolution: {integrity: sha512-WBBl6au1qg6OHj67yCffCgFR3BADJBXN8MdRvCgJDuMv3driV2nHr7jdGvaKX9IolosAsn+M0XRArqLXUhyJHQ==}
 
-  jose@6.1.0:
-    resolution: {integrity: sha512-TTQJyoEoKcC1lscpVDCSsVgYzUDg/0Bt3WE//WiTPK6uOCQC2KZS4MpugbMWt/zyjkopgZoXhZuCi00gLudfUA==}
-
   js-base64@3.7.8:
     resolution: {integrity: sha512-hNngCeKxIUQiEUN3GPJOkz4wF/YvdUdbNL9hsBcMQTkKzboD7T/q3OYOuuPZLUE6dBxSGpwhk5mwuDud7JVAow==}
 
@@ -7695,12 +7697,12 @@ packages:
   nested-error-stacks@2.0.1:
     resolution: {integrity: sha512-SrQrok4CATudVzBS7coSz26QRSmlK9TzzoFbeKfcPBUFPjcQM9Rqvr/DlJkOrwI/0KcgvMub1n1g5Jt9EgRn4A==}
 
-  next-auth@5.0.0-beta.29:
-    resolution: {integrity: sha512-Ukpnuk3NMc/LiOl32njZPySk7pABEzbjhMUFd5/n10I0ZNC7NCuVv8IY2JgbDek2t/PUOifQEoUiOOTLy4os5A==}
+  next-auth@5.0.0-beta.19:
+    resolution: {integrity: sha512-YHu1igcAxZPh8ZB7GIM93dqgY6gcAzq66FOhQFheAdOx1raxNcApt05nNyNCSB6NegSiyJ4XOPsaNow4pfDmsg==}
     peerDependencies:
       '@simplewebauthn/browser': ^9.0.1
       '@simplewebauthn/server': ^9.0.2
-      next: ^14.0.0-0 || ^15.0.0-0
+      next: ^14 || ^15.0.0-0
       nodemailer: ^6.6.5
       react: ^18.2.0 || ^19.0.0-0
     peerDependenciesMeta:
@@ -7872,8 +7874,8 @@ packages:
     resolution: {integrity: sha512-Yx5PWQNZomfEhPPOphFbZKi9W93CocQj18NlD2Pa4GWZzdZpSJvYwoiuurRI7m3SpcChrnO08hkuQDL3FGsVFQ==}
     hasBin: true
 
-  oauth4webapi@3.8.2:
-    resolution: {integrity: sha512-FzZZ+bht5X0FKe7Mwz3DAVAmlH1BV5blSak/lHMBKz0/EBMhX6B10GlQYI51+oRp8ObJaX0g6pXrAxZh5s8rjw==}
+  oauth4webapi@2.17.0:
+    resolution: {integrity: sha512-lbC0Z7uzAFNFyzEYRIC+pkSVvDHJTbEW+dYlSBAlCYDe6RxUkJ26bClhk8ocBZip1wfI9uKTe0fm4Ib4RHn6uQ==}
 
   oauth@0.9.15:
     resolution: {integrity: sha512-a5ERWK1kh38ExDEfoO6qUHJb32rd7aYmPHuyCu3Fta/cnICvYmgd2uhuKXvPD+PXB+gCEYYEaQdIRAjCOwAKNA==}
@@ -8309,13 +8311,13 @@ packages:
     resolution: {integrity: sha512-9ZhXKM/rw350N1ovuWHbGxnGh/SNJ4cnxHiM0rxE4VN41wsg8P8zWn9hv/buK00RP4WvlOyr/RBDiptyxVbkZQ==}
     engines: {node: '>=0.10.0'}
 
-  preact-render-to-string@6.5.11:
-    resolution: {integrity: sha512-ubnauqoGczeGISiOh6RjX0/cdaF8v/oDXIjO85XALCQjwQP+SB4RDXXtvZ6yTYSjG+PC1QRP2AhPgCEsM2EvUw==}
+  preact-render-to-string@5.2.3:
+    resolution: {integrity: sha512-aPDxUn5o3GhWdtJtW0svRC2SS/l8D9MAgo2+AWml+BhDImb27ALf04Q2d+AHqUUOc6RdSXFIBVa2gxzgMKgtZA==}
     peerDependencies:
       preact: '>=10'
 
-  preact@10.24.3:
-    resolution: {integrity: sha512-Z2dPnBnMUfyQfSQ+GBdsGa16hz35YmLmtTLhM169uW944hYL6xzTYkJjC07j+Wosz733pMWx0fgON3JNw1jJQA==}
+  preact@10.11.3:
+    resolution: {integrity: sha512-eY93IVpod/zG3uMF22Unl8h9KkrcKIRs2EGar8hwLZZDU1lkjph303V9HZBwufh2s736U6VXuhD109LYqPoffg==}
 
   prebuild-install@7.1.3:
     resolution: {integrity: sha512-8Mf2cbV7x1cXPUILADGI3wuhfqWvtiLA1iclTDbFRZkgRQS0NqsPZphna9V+HyTEadheuPmjaJMsbzKQFOzLug==}
@@ -8355,6 +8357,9 @@ packages:
   pretty-format@29.7.0:
     resolution: {integrity: sha512-Pdlw/oPxN+aXdmM9R00JVC9WVFoCLTKJvDVLgmJ+qAffBMxsV85l/Lu7sNx4zSzPyoL2euImuEwHhOXdEgNFZQ==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
+
+  pretty-format@3.8.0:
+    resolution: {integrity: sha512-WuxUnVtlWL1OfZFQFuqvnvs6MiAGk9UNsBostyBOB0Is9wb5uRESevA6rnl/rkksXaGX3GzZhPup5d6Vp1nFew==}
 
   proc-log@4.2.0:
     resolution: {integrity: sha512-g8+OnU/L2v+wyiVK+D5fA34J7EH8jZ8DDlvwhRCMxmMj7UCBvxiO1mGeN+36JXIKF4zevU4kRBd8lVgG9vLelA==}
@@ -10268,13 +10273,15 @@ snapshots:
     dependencies:
       static-eval: 2.0.2
 
-  '@auth/core@0.40.0':
+  '@auth/core@0.32.0':
     dependencies:
       '@panva/hkdf': 1.2.1
-      jose: 6.1.0
-      oauth4webapi: 3.8.2
-      preact: 10.24.3
-      preact-render-to-string: 6.5.11(preact@10.24.3)
+      '@types/cookie': 0.6.0
+      cookie: 0.6.0
+      jose: 5.10.0
+      oauth4webapi: 2.17.0
+      preact: 10.11.3
+      preact-render-to-string: 5.2.3(preact@10.11.3)
 
   '@babel/code-frame@7.10.4':
     dependencies:
@@ -16050,7 +16057,7 @@ snapshots:
       - supports-color
       - typescript
 
-  '@sphereon/ui-components.core@0.4.1-unstable.41(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@sphereon/ui-components.core@0.4.1-unstable.43(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       i18n-js: 3.9.2
       lodash.memoize: 4.1.2
@@ -16059,12 +16066,12 @@ snapshots:
     transitivePeerDependencies:
       - react-dom
 
-  '@sphereon/ui-components.credential-branding@0.4.1-unstable.41(encoding@0.1.13)(pg@8.16.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)':
+  '@sphereon/ui-components.credential-branding@0.4.1-unstable.43(encoding@0.1.13)(pg@8.16.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)':
     dependencies:
       '@sphereon/ssi-sdk.core': 0.34.1-feature.SSISDK.65.redirect.fix.258(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-sdk.data-store': 0.34.1-feature.SSISDK.65.redirect.fix.258(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-types': 0.34.1-feature.SSISDK.65.redirect.fix.258(typescript@5.6.3)
-      '@sphereon/ui-components.core': 0.4.1-unstable.41(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@sphereon/ui-components.core': 0.4.1-unstable.43(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@veramo/core': 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
       '@veramo/utils': 4.2.0(encoding@0.1.13)
       i18n-js: 3.9.2
@@ -16095,7 +16102,7 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@sphereon/ui-components.ssi-react@0.4.1-unstable.41(@babel/core@7.28.3)(@types/react@18.3.24)(date-fns@2.30.0)(dayjs@1.11.18)(encoding@0.1.13)(moment@2.30.1)(pg@8.16.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)':
+  '@sphereon/ui-components.ssi-react@0.4.1-unstable.43(@babel/core@7.28.3)(@types/react@18.3.24)(date-fns@2.30.0)(dayjs@1.11.18)(encoding@0.1.13)(moment@2.30.1)(pg@8.16.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)':
     dependencies:
       '@emotion/react': 11.14.0(@types/react@18.3.24)(react@18.3.1)
       '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@18.3.24)(react@18.3.1))(@types/react@18.3.24)(react@18.3.1)
@@ -16111,7 +16118,7 @@ snapshots:
       '@mui/x-date-pickers': 6.20.2(@emotion/react@11.14.0(@types/react@18.3.24)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.24)(react@18.3.1))(@types/react@18.3.24)(react@18.3.1))(@mui/material@5.18.0(@emotion/react@11.14.0(@types/react@18.3.24)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.24)(react@18.3.1))(@types/react@18.3.24)(react@18.3.1))(@types/react@18.3.24)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mui/system@5.18.0(@emotion/react@11.14.0(@types/react@18.3.24)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.24)(react@18.3.1))(@types/react@18.3.24)(react@18.3.1))(@types/react@18.3.24)(react@18.3.1))(@types/react@18.3.24)(date-fns@2.30.0)(dayjs@1.11.18)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@sphereon/ssi-sdk.data-store': 0.34.1-feature.SSISDK.65.redirect.fix.258(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-types': 0.34.1-feature.SSISDK.65.redirect.fix.258(typescript@5.6.3)
-      '@sphereon/ui-components.core': 0.4.1-unstable.41(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@sphereon/ui-components.core': 0.4.1-unstable.43(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@tanstack/react-table': 8.21.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
       react-json-tree: 0.18.0(@types/react@18.3.24)(react@18.3.1)
@@ -16742,6 +16749,8 @@ snapshots:
       '@types/express': 4.17.23
 
   '@types/cookie@0.5.4': {}
+
+  '@types/cookie@0.6.0': {}
 
   '@types/cors@2.8.19':
     dependencies:
@@ -18548,6 +18557,8 @@ snapshots:
   cookie@0.4.2: {}
 
   cookie@0.5.0: {}
+
+  cookie@0.6.0: {}
 
   cookie@0.7.1: {}
 
@@ -20913,8 +20924,6 @@ snapshots:
 
   jose@5.9.4: {}
 
-  jose@6.1.0: {}
-
   js-base64@3.7.8: {}
 
   js-binary-schema-parser@2.0.3: {}
@@ -21967,9 +21976,9 @@ snapshots:
   nested-error-stacks@2.0.1:
     optional: true
 
-  next-auth@5.0.0-beta.29(next@14.2.32(@babel/core@7.28.3)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.92.0))(react@18.3.1):
+  next-auth@5.0.0-beta.19(next@14.2.32(@babel/core@7.28.3)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.92.0))(react@18.3.1):
     dependencies:
-      '@auth/core': 0.40.0
+      '@auth/core': 0.32.0
       next: 14.2.32(@babel/core@7.28.3)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.92.0)
       react: 18.3.1
 
@@ -22181,7 +22190,7 @@ snapshots:
       yaml: 1.10.2
       yargs: 17.7.2
 
-  oauth4webapi@3.8.2: {}
+  oauth4webapi@2.17.0: {}
 
   oauth@0.9.15: {}
 
@@ -22635,11 +22644,12 @@ snapshots:
     dependencies:
       xtend: 4.0.2
 
-  preact-render-to-string@6.5.11(preact@10.24.3):
+  preact-render-to-string@5.2.3(preact@10.11.3):
     dependencies:
-      preact: 10.24.3
+      preact: 10.11.3
+      pretty-format: 3.8.0
 
-  preact@10.24.3: {}
+  preact@10.11.3: {}
 
   prebuild-install@7.1.3:
     dependencies:
@@ -22685,6 +22695,8 @@ snapshots:
       '@jest/schemas': 29.6.3
       ansi-styles: 5.2.0
       react-is: 18.3.1
+
+  pretty-format@3.8.0: {}
 
   proc-log@4.2.0: {}
 
