@@ -9,7 +9,7 @@
 }
 
 .container:hover {
-    background-color: #E3E3E3;
+    background-color: var(--background-secondary-light);
 }
 
 .containerDisabled {
@@ -19,11 +19,11 @@
 }
 
 .containerActive {
-    background-color: #E7DEFB;
+    background-color: var(--background-selected);
 }
 
 .containerActive:hover {
-    background-color: #E7DEFB; /* same as active, prevents hover override */
+    background-color: var(--background-selected); /* same as active, prevents hover override */
 }
 
 .iconContainer {
