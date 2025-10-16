@@ -22,13 +22,13 @@ overrides:
   '@sphereon/ssi-sdk.ebsi-support': 0.34.1-fix.262
   '@sphereon/ssi-sdk-ext.key-utils': 0.34.1-fix.262
   '@sphereon/ssi-sdk-ext.did-utils': 0.34.1-fix.262
-  '@sphereon/oid4vci-issuer': 0.19.1-feature.SSISDK.73.well.known.draftv1.205
-  '@sphereon/oid4vc-common': 0.19.1-feature.SSISDK.73.well.known.draftv1.205
-  '@sphereon/oid4vci-issuer-server': 0.19.1-feature.SSISDK.73.well.known.draftv1.205
-  '@sphereon/oid4vci-client': 0.19.1-feature.SSISDK.73.well.known.draftv1.205
-  '@sphereon/oid4vci-common': 0.19.1-feature.SSISDK.73.well.known.draftv1.205
-  '@sphereon/did-auth-siop': 0.19.1-feature.SSISDK.73.well.known.draftv1.205
-  '@sphereon/did-auth-siop-did-adapter': 0.19.1-feature.SSISDK.73.well.known.draftv1.205
+  '@sphereon/oid4vci-issuer': 0.19.1-feature.SSISDK.73.auth.detail.fix.211
+  '@sphereon/oid4vc-common': 0.19.1-feature.SSISDK.73.auth.detail.fix.211
+  '@sphereon/oid4vci-issuer-server': 0.19.1-feature.SSISDK.73.auth.detail.fix.211
+  '@sphereon/oid4vci-client': 0.19.1-feature.SSISDK.73.auth.detail.fix.211
+  '@sphereon/oid4vci-common': 0.19.1-feature.SSISDK.73.auth.detail.fix.211
+  '@sphereon/did-auth-siop': 0.19.1-feature.SSISDK.73.auth.detail.fix.211
+  '@sphereon/did-auth-siop-did-adapter': 0.19.1-feature.SSISDK.73.auth.detail.fix.211
   '@supabase/supabase-js': 2.7.1
   '@supabase/storage-js': 2.7.1
   '@supabase/postgrest-js': 1.16.2
@@ -124,29 +124,29 @@ importers:
         specifier: ^5.7.0
         version: 5.8.0
       '@sphereon/did-auth-siop':
-        specifier: 0.19.1-feature.SSISDK.73.well.known.draftv1.205
-        version: 0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.19.1-feature.SSISDK.73.auth.detail.fix.211
+        version: 0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.19.1-feature.SSISDK.73.well.known.draftv1.205
-        version: 0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.19.1-feature.SSISDK.73.auth.detail.fix.211
+        version: 0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-uni-client':
         specifier: ^0.6.3
         version: 0.6.3(encoding@0.1.13)
       '@sphereon/oid4vc-common':
-        specifier: 0.19.1-feature.SSISDK.73.well.known.draftv1.205
-        version: 0.19.1-feature.SSISDK.73.well.known.draftv1.205(typescript@5.6.3)
+        specifier: 0.19.1-feature.SSISDK.73.auth.detail.fix.211
+        version: 0.19.1-feature.SSISDK.73.auth.detail.fix.211(typescript@5.6.3)
       '@sphereon/oid4vci-client':
-        specifier: 0.19.1-feature.SSISDK.73.well.known.draftv1.205
-        version: 0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.19.1-feature.SSISDK.73.auth.detail.fix.211
+        version: 0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/oid4vci-common':
-        specifier: 0.19.1-feature.SSISDK.73.well.known.draftv1.205
-        version: 0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.19.1-feature.SSISDK.73.auth.detail.fix.211
+        version: 0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/oid4vci-issuer':
-        specifier: 0.19.1-feature.SSISDK.73.well.known.draftv1.205
-        version: 0.19.1-feature.SSISDK.73.well.known.draftv1.205(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)(typescript@5.6.3)
+        specifier: 0.19.1-feature.SSISDK.73.auth.detail.fix.211
+        version: 0.19.1-feature.SSISDK.73.auth.detail.fix.211(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)(typescript@5.6.3)
       '@sphereon/oid4vci-issuer-server':
-        specifier: 0.19.1-feature.SSISDK.73.well.known.draftv1.205
-        version: 0.19.1-feature.SSISDK.73.well.known.draftv1.205(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
+        specifier: 0.19.1-feature.SSISDK.73.auth.detail.fix.211
+        version: 0.19.1-feature.SSISDK.73.auth.detail.fix.211(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
       '@sphereon/pex':
         specifier: 5.0.0-unstable.28
         version: 5.0.0-unstable.28(typescript@5.6.3)
@@ -566,26 +566,26 @@ importers:
         specifier: ^5.9.6
         version: 5.9.8(@refinedev/core@4.57.7(@tanstack/react-query@4.40.1(react-dom@18.3.1(react@18.3.1))(react-native@0.81.1(@babel/core@7.28.3)(@types/react@18.3.24)(react@18.3.1))(react@18.3.1))(@types/react-dom@18.3.7(@types/react@18.3.24))(@types/react@18.3.24)(react-dom@18.3.1(react@18.3.1))(react-native@0.81.1(@babel/core@7.28.3)(@types/react@18.3.24)(react@18.3.1))(react@18.3.1))(@supabase/supabase-js@2.7.1(encoding@0.1.13))
       '@sphereon/did-auth-siop':
-        specifier: 0.19.1-feature.SSISDK.73.well.known.draftv1.205
-        version: 0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.19.1-feature.SSISDK.73.auth.detail.fix.211
+        version: 0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.19.1-feature.SSISDK.73.well.known.draftv1.205
-        version: 0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.19.1-feature.SSISDK.73.auth.detail.fix.211
+        version: 0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-uni-client':
         specifier: 0.6.3
         version: 0.6.3(encoding@0.1.13)
       '@sphereon/oid4vc-common':
-        specifier: 0.19.1-feature.SSISDK.73.well.known.draftv1.205
-        version: 0.19.1-feature.SSISDK.73.well.known.draftv1.205(typescript@5.6.3)
+        specifier: 0.19.1-feature.SSISDK.73.auth.detail.fix.211
+        version: 0.19.1-feature.SSISDK.73.auth.detail.fix.211(typescript@5.6.3)
       '@sphereon/oid4vci-client':
-        specifier: 0.19.1-feature.SSISDK.73.well.known.draftv1.205
-        version: 0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.19.1-feature.SSISDK.73.auth.detail.fix.211
+        version: 0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/oid4vci-common':
-        specifier: 0.19.1-feature.SSISDK.73.well.known.draftv1.205
-        version: 0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.19.1-feature.SSISDK.73.auth.detail.fix.211
+        version: 0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/oid4vci-issuer':
-        specifier: 0.19.1-feature.SSISDK.73.well.known.draftv1.205
-        version: 0.19.1-feature.SSISDK.73.well.known.draftv1.205(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)(typescript@5.6.3)
+        specifier: 0.19.1-feature.SSISDK.73.auth.detail.fix.211
+        version: 0.19.1-feature.SSISDK.73.auth.detail.fix.211(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)(typescript@5.6.3)
       '@sphereon/ssi-sdk-ext.did-resolver-ebsi':
         specifier: 0.34.1-fix.262
         version: 0.34.1-fix.262(encoding@0.1.13)
@@ -3115,16 +3115,16 @@ packages:
   '@sinonjs/fake-timers@10.3.0':
     resolution: {integrity: sha512-V4BG07kuYSUkTCSBHG8G8TNhM+F19jXFWnQtzj+we8DrkpSBCee9Z3Ms8yiGer/dlmhe35/Xdgyo3/0rQKg7YA==}
 
-  '@sphereon/did-auth-siop-adapter@0.19.1-feature.SSISDK.73.well.known.draftv1.205':
-    resolution: {integrity: sha512-J4T3vMqgM5XLfu41sR2N2XnZ3hzpnnMwZz/YGhpoCmtx9FjVYMju1UtPQVBE97FPZrYIyoZ1mOVdXqzRD9eTtg==}
+  '@sphereon/did-auth-siop-adapter@0.19.1-feature.SSISDK.73.auth.detail.fix.211':
+    resolution: {integrity: sha512-JesWtZ2H9x2Ar6S1etN798HkWIyARmwXG4/5ISC0LkGMXHSUKIuu9BLLXp37lM/Kzun9FBJ4JMOgSnHZx/VBmA==}
     engines: {node: '>=20'}
 
   '@sphereon/did-auth-siop-adapter@0.19.1-fix.203':
     resolution: {integrity: sha512-1HuDFq31FbyNM7uCaDqmaCM3p7hQFERSct4GdMBV7ym4peA+RAl56GNdr7rjeuJoig55cL7wFHX9q2Q7WuDEHw==}
     engines: {node: '>=20'}
 
-  '@sphereon/did-auth-siop@0.19.1-feature.SSISDK.73.well.known.draftv1.205':
-    resolution: {integrity: sha512-xYqZrmPYOsaJZBzAZBMiZjd173y3hvxG12BhnM0KwBvIJZ8s0metMe6bad1nzhsjPcOfo84tJaRKMBP1Sh5L2g==}
+  '@sphereon/did-auth-siop@0.19.1-feature.SSISDK.73.auth.detail.fix.211':
+    resolution: {integrity: sha512-cx9Q4eQmirmJsDDYPc66IiJXfOJLRWu8LyRR5zj0qAZDR+cd7SWge2C699R2Fv5g5pw89F2UUx87lRDho/sd+w==}
     engines: {node: '>=20.6'}
 
   '@sphereon/did-uni-client@0.6.3':
@@ -3141,20 +3141,20 @@ packages:
     resolution: {integrity: sha512-QXJ6R8ENiZV2rPMbn06cw5JKwqUYN1kzVRbYfONqE1PEXx1noQ4md7uxr2zSczi0ubKkNcbyYDNtIMTZIhGzmQ==}
     bundledDependencies: []
 
-  '@sphereon/oid4vc-common@0.19.1-feature.SSISDK.73.well.known.draftv1.205':
-    resolution: {integrity: sha512-u1RUU2Uvog5FJqs7h8BYDPia9B/lJDKifGD9AEUA5jOVRqTrCTk8fXUVJ6ebQEK5oJs8nmxTrT4ekl+ao+jHLQ==}
+  '@sphereon/oid4vc-common@0.19.1-feature.SSISDK.73.auth.detail.fix.211':
+    resolution: {integrity: sha512-sA9YEEREukRWH5X1vpQwzg+gE+7l60VKh7Tjz+Pzu76kjHEyQ1Ltn0MOtV2GKB91TUKIgzABAmAs3vpYyPfWeg==}
     engines: {node: '>=20'}
 
-  '@sphereon/oid4vci-client@0.19.1-feature.SSISDK.73.well.known.draftv1.205':
-    resolution: {integrity: sha512-W+y15KSDaVsqnLr+YB47rsbMVdEJ1bqusTzkL/8Bz4otj3vzhM1leprSQ78tYN9+UCJKirDLVYkMjbUU0ibi6w==}
+  '@sphereon/oid4vci-client@0.19.1-feature.SSISDK.73.auth.detail.fix.211':
+    resolution: {integrity: sha512-2xKpL6JByqR5cwmL+BerSA0hL5AIA1cA7Ypqy9V5mUpvGLUf3Z70cTg/qFNHPKUpWhCdJYcidFH7OJVe99ZNwQ==}
     engines: {node: '>=20'}
 
-  '@sphereon/oid4vci-common@0.19.1-feature.SSISDK.73.well.known.draftv1.205':
-    resolution: {integrity: sha512-h6eFuBHz3Aga017thdA40jGYU1cFvSCMPn5pNM6iZkTqk4IORYI+2jonjEfstgBdrFsRq7vsM7Zc0qx01+4kow==}
+  '@sphereon/oid4vci-common@0.19.1-feature.SSISDK.73.auth.detail.fix.211':
+    resolution: {integrity: sha512-916jDtxBDH4pdNYmVghQDAOKvATkdrhgeC9stoKL6QOsXww+jFHTpyxWGAeI4q/lu+UiFGZpgmGc2byf9JTXYw==}
     engines: {node: '>=20'}
 
-  '@sphereon/oid4vci-issuer-server@0.19.1-feature.SSISDK.73.well.known.draftv1.205':
-    resolution: {integrity: sha512-qjN8s6dGZi2QEk07aG+SRRERZmsydd9b+SAvHzEsGv3z7DpmyqzBNGTvr48dplzTBjY4XEveJoLdNMBjH7qbKg==}
+  '@sphereon/oid4vci-issuer-server@0.19.1-feature.SSISDK.73.auth.detail.fix.211':
+    resolution: {integrity: sha512-sIZXRrkXCGMnxaYb9OtxIlVfjB3qhRkqZljEzQje9TDDw/lD1Y9pwSe//xyRDjelAtgYnDITpd58SqPo/r1XGg==}
     engines: {node: '>=20'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -3162,8 +3162,8 @@ packages:
       awesome-qr:
         optional: true
 
-  '@sphereon/oid4vci-issuer@0.19.1-feature.SSISDK.73.well.known.draftv1.205':
-    resolution: {integrity: sha512-QXnRTRoLzz2yAvI8Teg24T5HT14yVo0DPSpoXmujoRi0EUrYzcxvnUxx1XNiZU18mApwrzGh2xGyGdhpJ8nhVw==}
+  '@sphereon/oid4vci-issuer@0.19.1-feature.SSISDK.73.auth.detail.fix.211':
+    resolution: {integrity: sha512-Ji/KlcG/4qSO1dArpE6JaN1MDWTUpA78T046rQjFnF6ynoR7WSzTnqU7uE5/b/iGA/RJYdMM+0DY7gpe/s4few==}
     engines: {node: '>=20'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -13558,11 +13558,11 @@ snapshots:
     dependencies:
       '@sinonjs/commons': 3.0.1
 
-  '@sphereon/did-auth-siop-adapter@0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)':
+  '@sphereon/did-auth-siop-adapter@0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)':
     dependencies:
-      '@sphereon/did-auth-siop': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/did-auth-siop': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-uni-client': 0.6.4(encoding@0.1.13)
-      '@sphereon/oid4vc-common': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(typescript@5.6.3)
+      '@sphereon/oid4vc-common': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(typescript@5.6.3)
       '@sphereon/wellknown-dids-client': 0.1.3(encoding@0.1.13)(typescript@5.6.3)
       did-jwt: 6.11.6(patch_hash=3961df37be133a0b6a1493ec792a42d2fe4867acca16bde99554597fd98139af)
       did-resolver: 4.1.0
@@ -13573,9 +13573,9 @@ snapshots:
 
   '@sphereon/did-auth-siop-adapter@0.19.1-fix.203(encoding@0.1.13)(typescript@5.6.3)':
     dependencies:
-      '@sphereon/did-auth-siop': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/did-auth-siop': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-uni-client': 0.6.4(encoding@0.1.13)
-      '@sphereon/oid4vc-common': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(typescript@5.6.3)
+      '@sphereon/oid4vc-common': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(typescript@5.6.3)
       '@sphereon/wellknown-dids-client': 0.1.3(encoding@0.1.13)(typescript@5.6.3)
       did-jwt: 6.11.6(patch_hash=3961df37be133a0b6a1493ec792a42d2fe4867acca16bde99554597fd98139af)
       did-resolver: 4.1.0
@@ -13584,11 +13584,11 @@ snapshots:
       - supports-color
       - typescript
 
-  '@sphereon/did-auth-siop@0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)':
+  '@sphereon/did-auth-siop@0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)':
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
       '@sphereon/jarm': 0.19.1-next.2(typescript@5.6.3)
-      '@sphereon/oid4vc-common': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(typescript@5.6.3)
+      '@sphereon/oid4vc-common': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(typescript@5.6.3)
       '@sphereon/pex': 5.0.0-unstable.28(typescript@5.6.3)
       '@sphereon/ssi-types': 0.34.1-fix.262(typescript@5.6.3)
       cross-fetch: 3.2.0(encoding@0.1.13)
@@ -13622,7 +13622,7 @@ snapshots:
 
   '@sphereon/jarm@0.19.1-next.2(typescript@5.6.3)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(typescript@5.6.3)
+      '@sphereon/oid4vc-common': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(typescript@5.6.3)
       valibot: 0.42.1(typescript@5.6.3)
     transitivePeerDependencies:
       - supports-color
@@ -13634,7 +13634,7 @@ snapshots:
       '@js-joda/timezone': 2.3.0(@js-joda/core@5.6.3)
       format-util: 1.0.5
 
-  '@sphereon/oid4vc-common@0.19.1-feature.SSISDK.73.well.known.draftv1.205(typescript@5.6.3)':
+  '@sphereon/oid4vc-common@0.19.1-feature.SSISDK.73.auth.detail.fix.211(typescript@5.6.3)':
     dependencies:
       '@sphereon/ssi-types': 0.34.1-fix.262(typescript@5.6.3)
       jwt-decode: 4.0.0
@@ -13644,10 +13644,10 @@ snapshots:
       - supports-color
       - typescript
 
-  '@sphereon/oid4vci-client@0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)':
+  '@sphereon/oid4vci-client@0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(typescript@5.6.3)
-      '@sphereon/oid4vci-common': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/oid4vc-common': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(typescript@5.6.3)
+      '@sphereon/oid4vci-common': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-types': 0.34.1-fix.262(typescript@5.6.3)
       cross-fetch: 3.2.0(encoding@0.1.13)
       debug: 4.4.1(supports-color@5.5.0)
@@ -13656,9 +13656,9 @@ snapshots:
       - supports-color
       - typescript
 
-  '@sphereon/oid4vci-common@0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)':
+  '@sphereon/oid4vci-common@0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(typescript@5.6.3)
+      '@sphereon/oid4vc-common': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(typescript@5.6.3)
       '@sphereon/ssi-types': 0.34.1-fix.262(typescript@5.6.3)
       cross-fetch: 3.2.0(encoding@0.1.13)
       debug: 4.4.1(supports-color@5.5.0)
@@ -13670,11 +13670,11 @@ snapshots:
       - supports-color
       - typescript
 
-  '@sphereon/oid4vci-issuer-server@0.19.1-feature.SSISDK.73.well.known.draftv1.205(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)':
+  '@sphereon/oid4vci-issuer-server@0.19.1-feature.SSISDK.73.auth.detail.fix.211(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(typescript@5.6.3)
-      '@sphereon/oid4vci-common': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)
-      '@sphereon/oid4vci-issuer': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)(typescript@5.6.3)
+      '@sphereon/oid4vc-common': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(typescript@5.6.3)
+      '@sphereon/oid4vci-common': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/oid4vci-issuer': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)(typescript@5.6.3)
       '@sphereon/ssi-express-support': 0.34.1-fix.262(@noble/hashes@1.6.1)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)(typescript@5.6.3)
       '@sphereon/ssi-types': 0.34.1-fix.262(typescript@5.6.3)
       body-parser: 1.20.3
@@ -13693,10 +13693,10 @@ snapshots:
       - passport-http-bearer
       - supports-color
 
-  '@sphereon/oid4vci-issuer@0.19.1-feature.SSISDK.73.well.known.draftv1.205(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)(typescript@5.6.3)':
+  '@sphereon/oid4vci-issuer@0.19.1-feature.SSISDK.73.auth.detail.fix.211(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)(typescript@5.6.3)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(typescript@5.6.3)
-      '@sphereon/oid4vci-common': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/oid4vc-common': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(typescript@5.6.3)
+      '@sphereon/oid4vci-common': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-express-support': 0.34.1-fix.262(@noble/hashes@1.6.1)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)(typescript@5.6.3)
       '@sphereon/ssi-types': 0.34.1-fix.262(typescript@5.6.3)
       short-uuid: 4.2.2
@@ -14580,7 +14580,7 @@ snapshots:
   '@sphereon/ssi-sdk.ebsi-support@0.34.1-fix.262(encoding@0.1.13)(expo@53.0.22(@babel/core@7.28.3)(graphql@15.10.1)(react-native@0.81.1(@babel/core@7.28.3)(react@18.3.1))(react@18.3.1))(pg@8.16.3)(react-native@0.81.1(@babel/core@7.28.3)(react@18.3.1))(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)(web-streams-polyfill@3.3.3)':
     dependencies:
       '@ethersproject/random': 5.8.0
-      '@sphereon/did-auth-siop': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/did-auth-siop': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-auth-siop-adapter': 0.19.1-fix.203(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/pex': 5.0.0-unstable.28(typescript@5.6.3)
       '@sphereon/pex-models': 2.3.2
@@ -14638,7 +14638,7 @@ snapshots:
   '@sphereon/ssi-sdk.ebsi-support@0.34.1-fix.262(encoding@0.1.13)(pg@8.16.3)(react-native@0.81.1(@babel/core@7.28.3)(@types/react@18.3.24)(react@18.3.1))(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)':
     dependencies:
       '@ethersproject/random': 5.8.0
-      '@sphereon/did-auth-siop': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/did-auth-siop': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-auth-siop-adapter': 0.19.1-fix.203(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/pex': 5.0.0-unstable.28(typescript@5.6.3)
       '@sphereon/pex-models': 2.3.2
@@ -14853,10 +14853,10 @@ snapshots:
 
   '@sphereon/ssi-sdk.oid4vci-holder@0.34.1-fix.262(encoding@0.1.13)(expo@53.0.22(@babel/core@7.28.3)(graphql@15.10.1)(react-native@0.81.1(@babel/core@7.28.3)(react@18.3.1))(react@18.3.1))(pg@8.16.3)(react-native@0.81.1(@babel/core@7.28.3)(react@18.3.1))(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@sphereon/did-auth-siop': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/did-auth-siop': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/kmp-mdoc-core': 0.2.0-SNAPSHOT.26
-      '@sphereon/oid4vci-client': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)
-      '@sphereon/oid4vci-common': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/oid4vci-client': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/oid4vci-common': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-sdk-ext.did-utils': 0.34.1-fix.262(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk-ext.identifier-resolution': 0.34.1-fix.262(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk-ext.jwt-service': 0.34.1-fix.262(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
@@ -14914,10 +14914,10 @@ snapshots:
 
   '@sphereon/ssi-sdk.oid4vci-holder@0.34.1-fix.262(encoding@0.1.13)(pg@8.16.3)(react-native@0.81.1(@babel/core@7.28.3)(@types/react@18.3.24)(react@18.3.1))(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)':
     dependencies:
-      '@sphereon/did-auth-siop': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/did-auth-siop': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/kmp-mdoc-core': 0.2.0-SNAPSHOT.26
-      '@sphereon/oid4vci-client': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)
-      '@sphereon/oid4vci-common': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/oid4vci-client': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/oid4vci-common': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-sdk-ext.did-utils': 0.34.1-fix.262(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk-ext.identifier-resolution': 0.34.1-fix.262(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk-ext.jwt-service': 0.34.1-fix.262(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
@@ -14975,9 +14975,9 @@ snapshots:
 
   '@sphereon/ssi-sdk.oid4vci-issuer-rest-api@0.34.1-fix.262(@noble/hashes@1.6.1)(encoding@0.1.13)(expo@53.0.22(@babel/core@7.28.3)(graphql@15.10.1)(react-native@0.81.1(@babel/core@7.28.3)(react@18.3.1))(react@18.3.1))(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)(pg@8.16.3)(react-native@0.81.1(@babel/core@7.28.3)(react@18.3.1))(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@sphereon/oid4vci-common': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)
-      '@sphereon/oid4vci-issuer': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)(typescript@5.6.3)
-      '@sphereon/oid4vci-issuer-server': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
+      '@sphereon/oid4vci-common': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/oid4vci-issuer': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)(typescript@5.6.3)
+      '@sphereon/oid4vci-issuer-server': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
       '@sphereon/ssi-express-support': 0.34.1-fix.262(@noble/hashes@1.6.1)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)(typescript@5.6.3)
       '@sphereon/ssi-sdk-ext.identifier-resolution': 0.34.1-fix.262(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk-ext.jwt-service': 0.34.1-fix.262(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
@@ -15031,7 +15031,7 @@ snapshots:
 
   '@sphereon/ssi-sdk.oid4vci-issuer-rest-client@0.34.1-fix.262(encoding@0.1.13)(typescript@5.6.3)':
     dependencies:
-      '@sphereon/oid4vci-common': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/oid4vci-common': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-types': 0.34.1-fix.262(typescript@5.6.3)
       '@veramo/core': 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
       cross-fetch: 3.2.0(encoding@0.1.13)
@@ -15042,7 +15042,7 @@ snapshots:
 
   '@sphereon/ssi-sdk.oid4vci-issuer-store@0.34.1-fix.262(encoding@0.1.13)(expo@53.0.22(@babel/core@7.28.3)(graphql@15.10.1)(react-native@0.81.1(@babel/core@7.28.3)(react@18.3.1))(react@18.3.1))(pg@8.16.3)(react-native@0.81.1(@babel/core@7.28.3)(react@18.3.1))(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@sphereon/oid4vci-common': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/oid4vci-common': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-sdk-ext.did-utils': 0.34.1-fix.262(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk-ext.identifier-resolution': 0.34.1-fix.262(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.kv-store-temp': 0.34.1-fix.262(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))
@@ -15080,9 +15080,9 @@ snapshots:
 
   '@sphereon/ssi-sdk.oid4vci-issuer@0.34.1-fix.262(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(expo@53.0.22(@babel/core@7.28.3)(graphql@15.10.1)(react-native@0.81.1(@babel/core@7.28.3)(react@18.3.1))(react@18.3.1))(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)(pg@8.16.3)(react-native@0.81.1(@babel/core@7.28.3)(react@18.3.1))(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@sphereon/oid4vci-client': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)
-      '@sphereon/oid4vci-common': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)
-      '@sphereon/oid4vci-issuer': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)(typescript@5.6.3)
+      '@sphereon/oid4vci-client': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/oid4vci-common': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/oid4vci-issuer': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)(typescript@5.6.3)
       '@sphereon/ssi-sdk-ext.did-utils': 0.34.1-fix.262(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk-ext.identifier-resolution': 0.34.1-fix.262(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk-ext.jwt-service': 0.34.1-fix.262(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
@@ -15462,7 +15462,7 @@ snapshots:
 
   '@sphereon/ssi-sdk.siopv2-oid4vp-common@0.34.1-fix.262(encoding@0.1.13)(typescript@5.6.3)':
     dependencies:
-      '@sphereon/did-auth-siop': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/did-auth-siop': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-sdk.core': 0.34.1-fix.262(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-types': 0.34.1-fix.262(typescript@5.6.3)
       uint8arrays: 3.1.1
@@ -15473,9 +15473,9 @@ snapshots:
 
   '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth@0.34.1-fix.262(encoding@0.1.13)(expo@53.0.22(@babel/core@7.28.3)(graphql@15.10.1)(react-native@0.81.1(@babel/core@7.28.3)(react@18.3.1))(react@18.3.1))(pg@8.16.3)(react-native@0.81.1(@babel/core@7.28.3)(react@18.3.1))(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@sphereon/did-auth-siop': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/did-auth-siop': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-auth-siop-adapter': 0.19.1-fix.203(encoding@0.1.13)(typescript@5.6.3)
-      '@sphereon/oid4vc-common': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(typescript@5.6.3)
+      '@sphereon/oid4vc-common': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(typescript@5.6.3)
       '@sphereon/pex': 5.0.0-unstable.28(typescript@5.6.3)
       '@sphereon/pex-models': 2.3.2
       '@sphereon/ssi-sdk-ext.did-utils': 0.34.1-fix.262(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
@@ -15533,9 +15533,9 @@ snapshots:
 
   '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth@0.34.1-fix.262(encoding@0.1.13)(pg@8.16.3)(react-native@0.81.1(@babel/core@7.28.3)(@types/react@18.3.24)(react@18.3.1))(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)':
     dependencies:
-      '@sphereon/did-auth-siop': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/did-auth-siop': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-auth-siop-adapter': 0.19.1-fix.203(encoding@0.1.13)(typescript@5.6.3)
-      '@sphereon/oid4vc-common': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(typescript@5.6.3)
+      '@sphereon/oid4vc-common': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(typescript@5.6.3)
       '@sphereon/pex': 5.0.0-unstable.28(typescript@5.6.3)
       '@sphereon/pex-models': 2.3.2
       '@sphereon/ssi-sdk-ext.did-utils': 0.34.1-fix.262(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
@@ -15593,9 +15593,9 @@ snapshots:
 
   '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth@0.34.1-fix.262(encoding@0.1.13)(expo@53.0.22(@babel/core@7.28.3)(graphql@15.10.1)(react-native@0.81.1(@babel/core@7.28.3)(react@18.3.1))(react@18.3.1))(pg@8.16.3)(react-native@0.81.1(@babel/core@7.28.3)(react@18.3.1))(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@sphereon/did-auth-siop': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/did-auth-siop': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-auth-siop-adapter': 0.19.1-fix.203(encoding@0.1.13)(typescript@5.6.3)
-      '@sphereon/oid4vc-common': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(typescript@5.6.3)
+      '@sphereon/oid4vc-common': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(typescript@5.6.3)
       '@sphereon/pex': 5.0.0-unstable.28(typescript@5.6.3)
       '@sphereon/ssi-sdk-ext.did-utils': 0.34.1-fix.262(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk-ext.identifier-resolution': 0.34.1-fix.262(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
@@ -15645,7 +15645,7 @@ snapshots:
 
   '@sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-api@0.34.1-fix.262(@noble/hashes@1.6.1)(encoding@0.1.13)(expo@53.0.22(@babel/core@7.28.3)(graphql@15.10.1)(react-native@0.81.1(@babel/core@7.28.3)(react@18.3.1))(react@18.3.1))(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)(pg@8.16.3)(react-native@0.81.1(@babel/core@7.28.3)(react@18.3.1))(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@sphereon/did-auth-siop': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/did-auth-siop': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-express-support': 0.34.1-fix.262(@noble/hashes@1.6.1)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)(typescript@5.6.3)
       '@sphereon/ssi-sdk.core': 0.34.1-fix.262(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-sdk.credential-validation': 0.34.1-fix.262(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
@@ -15899,7 +15899,7 @@ snapshots:
       '@sd-jwt/jwt-status-list': 0.15.0
       '@sd-jwt/sd-jwt-vc': 0.15.1
       '@sphereon/kmp-mdoc-core': 0.2.0-SNAPSHOT.26
-      '@sphereon/oid4vci-common': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/oid4vci-common': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-sdk-ext.did-utils': 0.34.1-fix.262(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk-ext.identifier-resolution': 0.34.1-fix.262(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk-ext.jwt-service': 0.34.1-fix.262(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
@@ -15959,7 +15959,7 @@ snapshots:
 
   '@sphereon/ssi-sdk.w3c-vc-api@0.34.1-fix.262(@noble/hashes@1.6.1)(encoding@0.1.13)(expo@53.0.22(@babel/core@7.28.3)(graphql@15.10.1)(react-native@0.81.1(@babel/core@7.28.3)(react@18.3.1))(react@18.3.1))(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)(pg@8.16.3)(react-native-securerandom@0.1.1(react-native@0.81.1(@babel/core@7.28.3)(react@18.3.1)))(react-native@0.81.1(@babel/core@7.28.3)(react@18.3.1))(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@sphereon/did-auth-siop': 0.19.1-feature.SSISDK.73.well.known.draftv1.205(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/did-auth-siop': 0.19.1-feature.SSISDK.73.auth.detail.fix.211(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-express-support': 0.34.1-fix.262(@noble/hashes@1.6.1)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)(typescript@5.6.3)
       '@sphereon/ssi-sdk-ext.identifier-resolution': 0.34.1-fix.262(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk-ext.jwt-service': 0.34.1-fix.262(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
