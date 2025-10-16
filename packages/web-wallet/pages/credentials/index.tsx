@@ -12,11 +12,12 @@ const CredentialsListPage: React.FC = () => {
   return (
     <div className={style.container}>
       <AppHeaderBar title={translate('credentials_overview_title')} />
-      <CredentialsList credentialRole={CredentialRole.HOLDER} allowIssueCredential={!process.env.NEXT_PUBLIC_DISABLE_ISSUER_INTERFACE} />
+      <CredentialsList credentialRole={CredentialRole.HOLDER} allowIssueCredential={process.env.NEXT_PUBLIC_DISABLE_ISSUER_INTERFACE !== 'true'} />
     </div>
   )
 }
 
-export const getStaticProps = staticPropsWithSST
+export const getStaticProps = async ({locale = 'en'}: {locale?: string}) =>
+  staticPropsWithSST({locale})
 
 export default CredentialsListPage

@@ -42,7 +42,7 @@ const SideNavigationBar: React.FC = (): ReactElement => {
           target={MainRoute.CREDENTIALS}
           label={translate('navigation_side_menu_credentials_label')}
           routes={[
-            !process.env.NEXT_PUBLIC_DISABLE_ISSUER_INTERFACE
+            process.env.NEXT_PUBLIC_DISABLE_ISSUER_INTERFACE !== 'true'
               ? {
                   target: `${MainRoute.CREDENTIALS}/create`,
                   label: translate('navigation_side_menu_credentials_issue_credentials_label'),

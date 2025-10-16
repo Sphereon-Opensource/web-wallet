@@ -7,6 +7,7 @@ const SelectCredentialsPage: React.FC = (): ReactElement => {
   return <div className={style.container} />
 }
 
-export const getStaticProps = staticPropsWithSST
+export const getStaticProps = async ({locale = 'en'}: {locale?: string}) =>
+  staticPropsWithSST({locale})
 
 export default SelectCredentialsPage
