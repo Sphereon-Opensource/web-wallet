@@ -14,7 +14,7 @@ type DcqlQueryMenuItem = DcqlQueryItem & {
   actions: string
 }
 
-const DcqlQuerysList: FC<Props> = (props: Props): ReactElement => {
+const QueryDefinitionsList: FC<Props> = (props: Props): ReactElement => {
   const translate = useTranslate()
   const {allowAddNewDcqlQueryItem = false} = props
   const uuidTruncationLength: number = process.env.NEXT_PUBLIC_TRUNCATION_LENGTH ? Number(process.env.NEXT_PUBLIC_TRUNCATION_LENGTH) : 8
@@ -174,4 +174,4 @@ const DcqlQuerysList: FC<Props> = (props: Props): ReactElement => {
   )
 }
 
-export default DcqlQuerysList
+export default QueryDefinitionsList

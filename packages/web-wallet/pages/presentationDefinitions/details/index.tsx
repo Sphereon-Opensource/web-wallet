@@ -9,7 +9,7 @@ import {
   useTranslate,
 } from '@refinedev/core'
 
-import {ComboBox, IconButton, PrimaryButton, SecondaryButton} from '@sphereon/ui-components.ssi-react'
+import {ComboBox, IconButton, PrimaryButton, SecondaryButton, TextInputField} from '@sphereon/ui-components.ssi-react'
 import {useNavigate, useParams} from 'react-router-dom'
 // @ts-ignore // FIXME CWALL-245 path complaining
 import style from './index.module.css'
@@ -19,6 +19,8 @@ import PageHeaderBar from '@components/bars/PageHeaderBar'
 import JsonEditor from '@components/editors/JsonEditor'
 import {ButtonIcon} from '@sphereon/ui-components.core'
 import {staticPropsWithSST} from '@/src/i18n/server'
+import {MAX_QUERYID_LENGTH} from '@/app'
+import {DcqlQuery} from 'dcql'
 
 type Mode = 'create' | 'edit' | 'show'
 
@@ -150,11 +152,30 @@ const PresentationDefinitionPage: FC<Props> = (props: Props): ReactElement => {
     }
   }
 
+  const onQueryIdChange = (value: string): Promise<void> => {
+    setPartialDefinitionItem({...partialDefinitionItem, queryId: value})
+    return Promise.resolve()
+  }
+
   async function copyToClipboard(text: string): Promise<void> {
     if (navigator.clipboard) {
       await navigator.clipboard.writeText(text)
     } else {
       console.warn('Clipboard API not supported')
+    }
+  }
+
+  const dcqlValidator = (content: string): string | null => {
+    console.log('dcqlValidator called')
+    try {
+      const parsed = JSON.parse(content)
+      DcqlQuery.validate(parsed)
+      console.log('dcqlValidator pass')
+      return null
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Validation failed'
+      console.log('dcqlValidator:', message )
+      return message
     }
   }
 
@@ -168,16 +189,33 @@ const PresentationDefinitionPage: FC<Props> = (props: Props): ReactElement => {
               <IconButton icon={ButtonIcon.COPY} onClick={() => query && copyToClipboard(query)} />
             </div>
             {mode !== 'create' && (
-              <ComboBox options={actionComboOptions} onChange={handleActionComboBoxChange} defaultValue={getDefaultActionValue()} />
+              <ComboBox options={actionComboOptions} onChange={handleActionComboBoxChange}
+                        defaultValue={getDefaultActionValue()} />
             )}
           </div>
         </div>
         <div className={style.presentationDefinitionDetailContentContainer}>
+          <div style={{minWidth: '150px', maxWidth: '550px'}}>
+            {mode !== 'show' ? (
+              <TextInputField
+                label={translate('presentation_definition_queryid')}
+                onChangeValue={onQueryIdChange}
+                initialValue={partialDefinitionItem.queryId}
+                maxLength={MAX_QUERYID_LENGTH}
+              />
+            ) : (
+              <div>
+                <label>{translate('presentation_definition_queryid')}</label>
+                <div>{partialDefinitionItem.queryId}</div>
+              </div>
+            )}
+          </div>
           <JsonEditor
             initialPayload={query}
             isNewDocument={mode === 'create'}
             isReadOnly={mode === 'show'}
             onEditorContentChanged={(value: string) => setQuery(value)}
+            customValidator={dcqlValidator}
           />
           {mode !== 'show' && (
             <div className={style.buttonsContainer}>

@@ -1,7 +1,7 @@
 import React, {FC, ReactElement} from 'react'
 import {useTranslate} from '@refinedev/core'
 import AppHeaderBar from '@components/bars/AppHeaderBar'
-import PresentationDefinitionsList from '@components/views/PresentationDefinitionsList'
+import PresentationDefinitionsList from '@components/views/QueryDefinitionsList'
 import style from './index.module.css'
 import {staticPropsWithSST} from '@/src/i18n/server'
 

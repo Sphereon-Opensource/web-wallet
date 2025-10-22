@@ -3,7 +3,7 @@ import {EditorView, basicSetup} from 'codemirror'
 import {json} from '@codemirror/lang-json'
 import {Diagnostic, linter, lintGutter, LintSource} from '@codemirror/lint'
 import {jsonParseLinter} from '@codemirror/lang-json'
-import {EditorState} from '@codemirror/state'
+import {EditorState, StateEffect} from '@codemirror/state'
 import style from './index.module.css'
 import {useTranslate} from '@refinedev/core'
 import {smoothy} from 'thememirror'
@@ -18,11 +18,18 @@ type JsonEditorProps = {
   isReadOnly?: boolean
   onEditorContentChanged?: (value: string) => void
   initialPayload?: string
+  customValidator?: (content: string) => string | null
 }
 
 const defaultQuery = '{\n\t\n}'
 
-const JsonEditor: FC<JsonEditorProps> = ({initialPayload, isNewDocument, isReadOnly, onEditorContentChanged}) => {
+const JsonEditor: FC<JsonEditorProps> = ({
+                                           initialPayload,
+                                           isNewDocument,
+                                           isReadOnly,
+                                           customValidator,
+                                           onEditorContentChanged,
+                                         }) => {
   const [editorView, setEditorView] = useState<EditorView | null>(null)
   const initialContent = initialPayload !== undefined && initialPayload.length > 0 ? initialPayload : isNewDocument ? defaultQuery : ''
   const [editorContent, setEditorContent] = useState<string>('')
@@ -44,11 +51,26 @@ const JsonEditor: FC<JsonEditorProps> = ({initialPayload, isNewDocument, isReadO
 
   const jsonLinter: LintSource = useCallback((view: EditorView) => {
     const diagnostics: Diagnostic[] = jsonParseLinter()(view) as Diagnostic[]
+
+    if (diagnostics.length === 0 && customValidator) {
+      const content = view.state.doc.toString()
+      const error = customValidator(content)
+
+      if (error) {
+        diagnostics.push({
+          from: 0,
+          to: view.state.doc.length,
+          severity: 'error',
+          message: error,
+        })
+      }
+    }
+
     if (diagnostics.length === 0) {
       handleValidationResult(translate('json_editor_validation_success'), false)
     } else {
-      const messages: string[] = diagnostics.map(diagnostic => diagnostic.message)
-      handleValidationResult(messages.join(), true)
+      const messages = diagnostics.map(diagnostic => diagnostic.message)
+      handleValidationResult(messages.join(', '), true)
     }
     return diagnostics.map(diagnostic => ({
       ...diagnostic,
@@ -144,6 +166,14 @@ const JsonEditor: FC<JsonEditorProps> = ({initialPayload, isNewDocument, isReadO
       editorView?.destroy()
     }
   }, [editorView])
+
+  useEffect(() => {
+    if (editorView) {
+      editorView.dispatch({
+        effects: StateEffect.reconfigure.of(extensions),
+      })
+    }
+  }, [isReadOnly, editorView, extensions])
 
   return (
     <>
