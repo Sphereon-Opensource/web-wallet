@@ -167,6 +167,7 @@ const JsonEditor: FC<JsonEditorProps> = ({
     }
   }, [editorView])
 
+  // Apply changes when setting isReadOnly prop from true to false or vise versa
   useEffect(() => {
     if (editorView) {
       editorView.dispatch({
