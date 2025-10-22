@@ -67,7 +67,7 @@ const QueryDefinitionsList: FC<Props> = (props: Props): ReactElement => {
       label: translate('queries_overview_column_definition_id_label'),
       type: TableCellType.TEXT,
       columnOptions: {
-        columnWidth: 120,
+        columnWidth: 200,
       },
     },
     {
