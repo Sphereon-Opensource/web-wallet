@@ -75,19 +75,33 @@ const PresentationDefinitionPage: FC<Props> = (props: Props): ReactElement => {
   useEffect(() => {
     const {data: entityResponse, isLoading, status, error} = queryResult ?? {}
     const isError = status === 'error'
-
     if (isError && error) {
       throw Error('Could not load the machineDTO: ' + error.message)
     }
 
-    if (Object.keys(partialDefinitionItem).length === 0 && !isLoading && entityResponse) {
-      const item = entityResponse.data
-      setPartialDefinitionItem(item)
-      if (item.query) {
-        setQuery(JSON.stringify(item.query, null, 2))
+    if (Object.keys(partialDefinitionItem).length === 0) {
+      // For create mode, set default immediately regardless of loading state
+      if (mode === 'create') {
+        setQuery('{\n' +
+          '  "credentials": [\n' +
+          '    {\n' +
+          '      "id": "",\n' +
+          '      "require_cryptographic_holder_binding": true,\n' +
+          '      "multiple": false,\n' +
+          '      "format": "dc+sd-jwt",\n' +
+          '      "claims": []\n' +
+          '    }\n' +
+          '  ]\n' +
+          '}')
+      } else if (!isLoading && entityResponse?.data) {
+        const item = entityResponse.data
+        setPartialDefinitionItem(item)
+        if (item.query) {
+          setQuery(JSON.stringify(item.query, null, 2))
+        }
       }
     }
-  }, [queryResult, partialDefinitionItem])
+  }, [queryResult, partialDefinitionItem, mode])
 
   useEffect(() => {
     setIsClient(true)
