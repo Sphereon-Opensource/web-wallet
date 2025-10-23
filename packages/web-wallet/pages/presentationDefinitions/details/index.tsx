@@ -21,6 +21,7 @@ import {ButtonIcon} from '@sphereon/ui-components.core'
 import {staticPropsWithSST} from '@/src/i18n/server'
 import {MAX_QUERYID_LENGTH} from '@/app'
 import {DcqlQuery} from 'dcql'
+import {ValiError} from 'valibot'
 
 type Mode = 'create' | 'edit' | 'show'
 
@@ -75,19 +76,39 @@ const PresentationDefinitionPage: FC<Props> = (props: Props): ReactElement => {
   useEffect(() => {
     const {data: entityResponse, isLoading, status, error} = queryResult ?? {}
     const isError = status === 'error'
-
     if (isError && error) {
       throw Error('Could not load the machineDTO: ' + error.message)
     }
 
-    if (Object.keys(partialDefinitionItem).length === 0 && !isLoading && entityResponse) {
-      const item = entityResponse.data
-      setPartialDefinitionItem(item)
-      if (item.query) {
-        setQuery(JSON.stringify(item.query, null, 2))
+    if (Object.keys(partialDefinitionItem).length === 0) {
+      // For create mode, set default immediately regardless of loading state
+      if (mode === 'create') {
+        setQuery('{\n' +
+          '  "credentials": [\n' +
+          '    {\n' +
+          '      "id": "changeme",\n' +
+          '      "require_cryptographic_holder_binding": true,\n' +
+          '      "multiple": false,\n' +
+          '      "format": "dc+sd-jwt",\n' +
+          '      "claims": [\n' +
+          '        {\n' +
+          '          "path": [\n' +
+          '            "somePath"\n' +
+          '          ]\n' +
+          '        }\n' +
+          '      ]\n' +
+          '    }\n' +
+          '  ]\n' +
+          '}')
+      } else if (!isLoading && entityResponse?.data) {
+        const item = entityResponse.data
+        setPartialDefinitionItem(item)
+        if (item.query) {
+          setQuery(JSON.stringify(item.query, null, 2))
+        }
       }
     }
-  }, [queryResult, partialDefinitionItem])
+  }, [queryResult, partialDefinitionItem, mode])
 
   useEffect(() => {
     setIsClient(true)
@@ -168,16 +189,41 @@ const PresentationDefinitionPage: FC<Props> = (props: Props): ReactElement => {
   const dcqlValidator = (content: string): string | null => {
     console.log('dcqlValidator called')
     try {
-      const parsed = JSON.parse(content)
+      const query = JSON.parse(content)
+      console.log('query', query)
+      const parsed = DcqlQuery.parse(query)
       DcqlQuery.validate(parsed)
       console.log('dcqlValidator pass')
       return null
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Validation failed'
-      console.log('dcqlValidator:', message )
-      return message
+      console.log('dcqlValidator:', error)
+
+      if (error instanceof ValiError) {
+        const errorMessages = error.issues.map(issue => {
+          const pathStr = issue.path
+            ?.map((segment:any) => {
+              if (segment.type === 'object') {
+                return segment.key
+              }
+              if (segment.type === 'array') {
+                return `[${segment.key}]`
+              }
+              return segment.key
+            })
+            .filter(Boolean)
+            .join('.')
+
+          const location = pathStr ? `at ${pathStr}: ` : ''
+          return `${location}${issue.message}`
+        })
+
+        return errorMessages.join('\n')
+      }
+
+      return error instanceof Error ? error.message : 'Validation failed'
     }
   }
+
 
   return (
     <div className={style.container}>
