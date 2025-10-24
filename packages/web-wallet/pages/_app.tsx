@@ -92,12 +92,12 @@ const _app = (props: React.PropsWithChildren<unknown>) => {
       meta: {dataProviderName: DataProvider.KEYS},
     },
     {
-      name: DataResource.PRESENTATION_DEFINITIONS,
-      list: MainRoute.PRESENTATION_DEFINITIONS,
-      create: `${MainRoute.PRESENTATION_DEFINITIONS}/${MainRoute.SUB_CREATE}`,
-      show: `${MainRoute.PRESENTATION_DEFINITIONS}/${MainRoute.SUB_ID}`,
-      edit: `${MainRoute.PRESENTATION_DEFINITIONS}/${MainRoute.SUB_EDIT}/${MainRoute.SUB_ID}`,
-      meta: {dataProviderName: DataProvider.PRESENTATION_DEFINITIONS},
+      name: DataResource.QUERIES,
+      list: MainRoute.QUERY_MANAGEMENT,
+      create: `${MainRoute.QUERY_MANAGEMENT}/${MainRoute.SUB_CREATE}`,
+      show: `${MainRoute.QUERY_MANAGEMENT}/${MainRoute.SUB_ID}`,
+      edit: `${MainRoute.QUERY_MANAGEMENT}/${MainRoute.SUB_EDIT}/${MainRoute.SUB_ID}`,
+      meta: {dataProviderName: DataProvider.QUERIES},
     },
   ]
 
@@ -107,7 +107,7 @@ const _app = (props: React.PropsWithChildren<unknown>) => {
     [DataProvider.CREDENTIALS]: credentialDataProvider(),
     [DataProvider.KEYS]: keysDataProvider(),
     [DataProvider.IDENTIFIERS]: identifiersDataProvider(),
-    [DataProvider.PRESENTATION_DEFINITIONS]: presentationDefinitionDataProvider(),
+    [DataProvider.QUERIES]: presentationDefinitionDataProvider(),
   }
 
   return (
@@ -129,7 +129,9 @@ const _app = (props: React.PropsWithChildren<unknown>) => {
         <div className={styles.container}>
           <TopNavigationBar title={t('top_navigation_header_title')} />
           <div className={styles.main}>
-            <SideNavigationBar />
+            <div className={styles.sideNavigationContainer}>
+              <SideNavigationBar />
+            </div>
             <main className={styles.fragment}>
               <AppRouter />
             </main>

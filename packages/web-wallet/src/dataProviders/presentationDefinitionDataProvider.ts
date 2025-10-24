@@ -25,8 +25,8 @@ const filterableFields: (keyof DcqlQueryItemFilter)[] = ['queryId', 'tenantId', 
 // TODO CWALL-234 further implement
 
 const assertResource = (resource: string) => {
-  if (resource != DataResource.PRESENTATION_DEFINITIONS) {
-    throw new Error(`presentationDefinitionDataProvider can only handle resource type "${DataResource.PRESENTATION_DEFINITIONS}"`)
+  if (resource != DataResource.QUERIES) {
+    throw new Error(`presentationDefinitionDataProvider can only handle resource type "${DataResource.QUERIES}"`)
   }
 }
 

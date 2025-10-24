@@ -98,7 +98,7 @@ const PresentationDefinitionPage: FC<Props> = (props: Props): ReactElement => {
   }
 
   const onCancel = (): Promise<void> => {
-    navigate(MainRoute.PRESENTATION_DEFINITIONS)
+    navigate(MainRoute.QUERY_MANAGEMENT)
     return Promise.resolve()
   }
 
@@ -122,7 +122,7 @@ const PresentationDefinitionPage: FC<Props> = (props: Props): ReactElement => {
     } else {
       setPartialDefinitionItem(partialDefinitionItem)
     }
-    navigate(MainRoute.PRESENTATION_DEFINITIONS)
+    navigate(MainRoute.QUERY_MANAGEMENT)
     return Promise.resolve()
   }
 
@@ -204,7 +204,7 @@ const PresentationDefinitionPage: FC<Props> = (props: Props): ReactElement => {
     }
 
     return {
-      resource: DataResource.PRESENTATION_DEFINITIONS,
+      resource: DataResource.QUERIES,
       action: formAction,
       ...(idToLoad && {id: idToLoad}),
       meta: formAction === 'create' ? {select: 'id'} : formAction === 'clone' ? {select: '*'} : undefined,

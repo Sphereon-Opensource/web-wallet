@@ -1,22 +1,21 @@
 .container {
     background-color: #F2F2F2;
-    border-right: 1px solid #C4C5CA;
     display: flex;
     flex-direction: column;
-    width: 225px;
+    width: 236px;
+    gap: 8px;
 }
 
-.routesContainer {
-    gap: 19px;
-    display: flex;
-    flex-direction: column;
-    margin: 24px 16px 0;
+.menuContainer {
+    padding: 0 16px;
 }
 
-.settingsContainer {
-    margin: auto 0 40px;
+.roleSwitcherContainer {
+    padding: 24px 6px 0 6px;
 }
 
-.roleSelectionContainer {
-    padding: 6px 6px 0;
+.separator {
+    height: 1px;
+    background-color: var(--color-border-primary);
+    margin-bottom: 5px;
 }

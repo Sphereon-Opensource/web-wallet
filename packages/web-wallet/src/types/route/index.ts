@@ -13,7 +13,7 @@ export enum MainRoute {
   SUB_ID = ':id',
   OID4VCI = '/oid4vci',
   KEY_MANAGEMENT = '/key-management',
-  PRESENTATION_DEFINITIONS = '/presentation_definitions',
+  QUERY_MANAGEMENT = '/query-management',
   OID4VP = '/siopv2',
 }
 

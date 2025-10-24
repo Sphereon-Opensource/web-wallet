@@ -1,77 +1,123 @@
-import React, {ReactElement} from 'react'
+import React, {CSSProperties, FC, Fragment, ReactElement, ReactNode} from 'react'
 import {useTranslate} from '@refinedev/core'
-import SideNavigationCategory from '@components/bars/SideNavigationBar/SideNavigationCategory'
-import {RoleType} from '@sphereon/ui-components.core';
 import {Listbox, RoleViewItem} from '@sphereon/ui-components.ssi-react'
-import {KeyManagementRoute, MainRoute, NavigationRoute, RoleData} from '@typings'
-import style from './index.module.css'
+import SideNavigationItem from './SideNavigationItem'
+import SideNavigationGroup from './SideNavigationGroup'
+import {MenuEntry, MenuGroup, MenuItem, MenuSeparator, RoleData} from '@typings'
+import roleConfig from '../../../config/roleConfig'
+import styles from './index.module.css'
 
-const SideNavigationBar: React.FC = (): ReactElement => {
+type Props = {
+  style?: CSSProperties
+}
+
+export const menuItemFrom = (item: MenuItem | MenuSeparator, allItems: MenuItem[]): ReactElement => {
+  if (item.type === 'separator') {
+    return <div className={styles.separator} />
+  }
+
+  const shouldEnd = allItems.some(otherItem =>
+    otherItem !== item &&
+    otherItem.path.startsWith(item.path + '/'),
+  )
+
+  return <SideNavigationItem
+    label={item.label}
+    icon={item.icon}
+    href={item.path}
+    end={shouldEnd}
+  />
+}
+
+export const menuGroupFrom = (item: MenuGroup, allMenuItems: MenuItem[]): ReactElement => {
+  return <SideNavigationGroup
+    label={item.label}
+    items={item.items}
+    allMenuItems={allMenuItems}
+  />
+}
+const SideNavigationBar: FC<Props> = (props: Props): ReactElement => {
+  const {style} = props
   const translate = useTranslate()
-
   // TODO SSISDK-19 replace dummy data for the Listbox
-  const roles: RoleData[] = [
-    { accountName: 'Account 1', role: RoleType.ISSUER },
-    { accountName: 'Account 2', role: RoleType.ADMIN, isDisabled: true },
-    { accountName: 'Account 3', role: RoleType.RELYING_PARTY },
-    { accountName: 'Account 4', role: RoleType.HOLDER },
-  ]
+  const [role, setRole] = React.useState<RoleData>(roleConfig[0])
 
-  const onChangeRole = async (role: RoleData) => console.log(JSON.stringify(role))
+  const onChangeRole = async (role: RoleData) => setRole(role)
+
+  const groupMenuBlocks = (items: MenuEntry[]) => {
+    const blocks: MenuEntry[][] = []
+    let currentBlock: MenuEntry[] = []
+
+    items.forEach((item): void => {
+      if (item.type === 'item') {
+        currentBlock.push(item)
+      } else if (item.type === 'group' || item.type === 'separator') {
+        if (currentBlock.length > 0) {
+          blocks.push(currentBlock)
+          currentBlock = []
+        }
+        blocks.push([item])
+      }
+    })
+
+    if (currentBlock.length > 0) {
+      blocks.push(currentBlock)
+    }
+
+    return blocks
+  }
+
+  const menuFrom = (items: MenuEntry[]): ReactNode => {
+    const blocks = groupMenuBlocks(items)
+
+    // Extract ALL menu items, including those nested in groups
+    const allMenuItems = items.flatMap(item => {
+      if (item.type === 'item') {
+        return [item]
+      } else if (item.type === 'group') {
+        return item.items
+      }
+      return []
+    })
+
+    return blocks.map((block, index): ReactElement => {
+      const isSingleItemBlock = block.length === 1
+      const blockType = isSingleItemBlock ? block[0].type : 'item'
+
+      return (
+        <Fragment key={index}>
+          {blockType === 'separator' ? (
+            menuItemFrom(block[0] as MenuSeparator, allMenuItems)
+          ) : (
+            <div className={styles.menuContainer}>
+              {blockType === 'group'
+                ? menuGroupFrom(block[0] as MenuGroup, allMenuItems)
+                : block.map((item, itemIndex): ReactElement => (
+                  <React.Fragment key={itemIndex}>
+                    {menuItemFrom(item as MenuItem, allMenuItems)}
+                  </React.Fragment>
+                ))}
+            </div>
+          )}
+        </Fragment>
+      )
+    })
+  }
 
   return (
-    <nav className={style.container}>
-      <div className={style.roleSelectionContainer}>
+    <nav className={styles.container} style={style}>
+      <div className={styles.roleSwitcherContainer}>
         <Listbox<RoleData>
-          items={roles}
+          // TODO SSISDK-19 replace dummy data for the Listbox
+          items={roleConfig}
           renderItem={(role: RoleData) =>
-            <RoleViewItem
-              accountName={role.accountName}
-              role={role.role}
-            />
+            <RoleViewItem role={role.role} />
           }
           onChange={onChangeRole}
           menuTitle={translate('roles_selection_label')}
         />
       </div>
-      <div className={style.routesContainer}>
-        {/* <SideNavigationCategory target={MainRoute.ASSETS} label={translate('navigation_side_menu_assets_label')} /> */}
-        {/* <SideNavigationCategory target={MainRoute.WORKFLOW} label={translate('navigation_side_menu_workflow_label')} /> */}
-        <SideNavigationCategory target={MainRoute.CONTACTS} label={translate('navigation_side_menu_contacts_label')} />
-        <SideNavigationCategory
-          target={MainRoute.CREDENTIALS}
-          label={translate('navigation_side_menu_credentials_label')}
-          routes={[
-            process.env.NEXT_PUBLIC_DISABLE_ISSUER_INTERFACE !== 'true'
-              ? {
-                  target: `${MainRoute.CREDENTIALS}/create`,
-                  label: translate('navigation_side_menu_credentials_issue_credentials_label'),
-                }
-              : undefined,
-            {
-              target: `${MainRoute.CREDENTIALS}`,
-              label: translate('navigation_side_menu_credentials_my_credentials_label'),
-            },
-          ].filter((route): route is NavigationRoute => route !== undefined)}
-        />
-{/*        <SideNavigationCategory target={MainRoute.DOCUMENTS} label={translate('navigation_side_menu_documents_label')} />*/}
-        <SideNavigationCategory
-          target={MainRoute.KEY_MANAGEMENT}
-          label={translate('navigation_side_menu_key_management_label')}
-          routes={[
-            {
-              target: `${MainRoute.KEY_MANAGEMENT}/${KeyManagementRoute.IDENTIFIERS}`,
-              label: translate('navigation_side_menu_key_management_identifiers_label'),
-            },
-            {target: `${MainRoute.KEY_MANAGEMENT}/${KeyManagementRoute.KEYS}`, label: translate('navigation_side_menu_key_management_keys_label')},
-          ]}
-        />
-        <SideNavigationCategory target={MainRoute.PRESENTATION_DEFINITIONS} label={translate('presentation_definitions_overview_title')} />
-      </div>
-      {/*// TODO implementation*/}
-      {/*<div className={style.settingsContainer}>*/}
-      {/*  <NavigationLinkButton target={'/settings'} />*/}
-      {/*</div>*/}
+      {menuFrom(role.navigation)}
     </nav>
   )
 }
