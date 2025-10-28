@@ -659,14 +659,14 @@ importers:
         specifier: 0.34.1-feature.DIIPv4.272
         version: 0.34.1-feature.DIIPv4.272(typescript@5.6.3)
       '@sphereon/ui-components.core':
-        specifier: 0.4.1-unstable.43
-        version: 0.4.1-unstable.43(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: 0.4.1-unstable.55
+        version: 0.4.1-unstable.55(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@sphereon/ui-components.credential-branding':
-        specifier: 0.4.1-unstable.43
-        version: 0.4.1-unstable.43(encoding@0.1.13)(pg@8.16.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
+        specifier: 0.4.1-unstable.55
+        version: 0.4.1-unstable.55(encoding@0.1.13)(pg@8.16.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ui-components.ssi-react':
-        specifier: 0.4.1-unstable.43
-        version: 0.4.1-unstable.43(@babel/core@7.28.3)(@types/react@18.3.24)(date-fns@2.30.0)(dayjs@1.11.18)(encoding@0.1.13)(moment@2.30.1)(pg@8.16.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
+        specifier: 0.4.1-unstable.55
+        version: 0.4.1-unstable.55(@babel/core@7.28.3)(@types/react@18.3.24)(date-fns@2.30.0)(dayjs@1.11.18)(encoding@0.1.13)(moment@2.30.1)(pg@8.16.3)(react@18.3.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
       '@supabase/postgrest-js':
         specifier: 1.16.2
         version: 1.16.2
@@ -890,6 +890,9 @@ importers:
       typescript:
         specifier: 5.6.3
         version: 5.6.3
+      valibot:
+        specifier: 1.0.0-beta.8
+        version: 1.0.0-beta.8(typescript@5.6.3)
 
 packages:
 
@@ -3136,6 +3139,7 @@ packages:
 
   '@sphereon/kmp-mdoc-core@0.2.0-SNAPSHOT.26':
     resolution: {integrity: sha512-QXJ6R8ENiZV2rPMbn06cw5JKwqUYN1kzVRbYfONqE1PEXx1noQ4md7uxr2zSczi0ubKkNcbyYDNtIMTZIhGzmQ==}
+    bundledDependencies: []
 
   '@sphereon/oid4vc-common@0.19.1-feature.DIIPv4.219':
     resolution: {integrity: sha512-o8ngJ+s4xzIwH3RELOrWGjcBbtXvUqR24V45TgkyFY6u4mpNokZ7xeXHbgiBHY/c9ml3r5RE8imH1mEm4uxnrg==}
@@ -3382,18 +3386,18 @@ packages:
   '@sphereon/ssi-types@0.34.1-feature.DIIPv4.272':
     resolution: {integrity: sha512-nVJ0/YDcYHbVYcg3TLjnTZ3dH3RneQzpysjKpQuEuCnoHGXxcWHLmMiuoS+oRuZV6qBRooyMGVyygILMF7fS0w==}
 
-  '@sphereon/ui-components.core@0.4.1-unstable.43':
-    resolution: {integrity: sha512-1lOQ8TMiDe6ffMJXv3y1dGAxtWm4dcDJUQEBTI/EximygK6TF8TnKVCN+1MszVOwvFxbtADmyNteIdwxMTj9+g==}
+  '@sphereon/ui-components.core@0.4.1-unstable.55':
+    resolution: {integrity: sha512-iV45VCy/zwEUCjFmYRTbynIdE713aC2hfmywC6uYzO/VENevz0LrvydEyzp2RX9TIC1avNCKRePfVYO8TYxetg==}
     peerDependencies:
       react: '>= 18.2'
 
-  '@sphereon/ui-components.credential-branding@0.4.1-unstable.43':
-    resolution: {integrity: sha512-qMdjyRpAyhP8JlCJttsG8jKvm7MdQfKp9N8G7z9A9YWJIbrfA/rvnd4OOJSBZo8njeirW8JjvARY6FaI0ByQAw==}
+  '@sphereon/ui-components.credential-branding@0.4.1-unstable.55':
+    resolution: {integrity: sha512-WfRsIaSXTFh1Stssidt1XutBnbVu6kQ1KqrA07pBOTCRVhpkMOEsBzolCviqAt4W/2zknrCWs7s0vTcv0WBPiQ==}
     peerDependencies:
       react: '>= 18.2'
 
-  '@sphereon/ui-components.ssi-react@0.4.1-unstable.43':
-    resolution: {integrity: sha512-/gutu/3bFvJCwUIAuciZ6vWtiawsIzvKu5XFtY9dsGWZsDU2fJqG3WUDiDChHNsjQjRakIFSnrfWV/t/2apZCw==}
+  '@sphereon/ui-components.ssi-react@0.4.1-unstable.55':
+    resolution: {integrity: sha512-2NGoiMfBsCKZw+sPvXyJs14GY6heYiUQ33/AjJD2aTGAjiLVN28lbtES3eJolmxeUjELa1RI8nYhgHeNvajt7w==}
     peerDependencies:
       react: '>= 18'
 
@@ -7619,7 +7623,6 @@ packages:
   multibase@4.0.6:
     resolution: {integrity: sha512-x23pDe5+svdLz/k5JPGCVdfn7Q5mZVMBETiC+ORfO+sor9Sgs0smJzAjfTbM5tckeCqnaUuMYoz+k3RXMmJClQ==}
     engines: {node: '>=12.0.0', npm: '>=6.0.0'}
-    deprecated: This module has been superseded by the multiformats module
 
   multicodec@3.2.1:
     resolution: {integrity: sha512-+expTPftro8VAW8kfvcuNNNBgb9gPeNYV9dn+z1kJRWF2vih+/S79f2RVeIwmrJBUJ6NT9IUPWnZDQvegEh5pw==}
@@ -16050,7 +16053,7 @@ snapshots:
       - supports-color
       - typescript
 
-  '@sphereon/ui-components.core@0.4.1-unstable.43(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@sphereon/ui-components.core@0.4.1-unstable.55(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       i18n-js: 3.9.2
       lodash.memoize: 4.1.2
@@ -16059,12 +16062,12 @@ snapshots:
     transitivePeerDependencies:
       - react-dom
 
-  '@sphereon/ui-components.credential-branding@0.4.1-unstable.43(encoding@0.1.13)(pg@8.16.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)':
+  '@sphereon/ui-components.credential-branding@0.4.1-unstable.55(encoding@0.1.13)(pg@8.16.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)':
     dependencies:
       '@sphereon/ssi-sdk.core': 0.34.1-feature.DIIPv4.272(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-sdk.data-store': 0.34.1-feature.DIIPv4.272(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-types': 0.34.1-feature.DIIPv4.272(typescript@5.6.3)
-      '@sphereon/ui-components.core': 0.4.1-unstable.43(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@sphereon/ui-components.core': 0.4.1-unstable.55(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@veramo/core': 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
       '@veramo/utils': 4.2.0(encoding@0.1.13)
       i18n-js: 3.9.2
@@ -16095,7 +16098,7 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@sphereon/ui-components.ssi-react@0.4.1-unstable.43(@babel/core@7.28.3)(@types/react@18.3.24)(date-fns@2.30.0)(dayjs@1.11.18)(encoding@0.1.13)(moment@2.30.1)(pg@8.16.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)':
+  '@sphereon/ui-components.ssi-react@0.4.1-unstable.55(@babel/core@7.28.3)(@types/react@18.3.24)(date-fns@2.30.0)(dayjs@1.11.18)(encoding@0.1.13)(moment@2.30.1)(pg@8.16.3)(react@18.3.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)':
     dependencies:
       '@emotion/react': 11.14.0(@types/react@18.3.24)(react@18.3.1)
       '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@18.3.24)(react@18.3.1))(@types/react@18.3.24)(react@18.3.1)
@@ -16111,9 +16114,10 @@ snapshots:
       '@mui/x-date-pickers': 6.20.2(@emotion/react@11.14.0(@types/react@18.3.24)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.24)(react@18.3.1))(@types/react@18.3.24)(react@18.3.1))(@mui/material@5.18.0(@emotion/react@11.14.0(@types/react@18.3.24)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.24)(react@18.3.1))(@types/react@18.3.24)(react@18.3.1))(@types/react@18.3.24)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mui/system@5.18.0(@emotion/react@11.14.0(@types/react@18.3.24)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.24)(react@18.3.1))(@types/react@18.3.24)(react@18.3.1))(@types/react@18.3.24)(react@18.3.1))(@types/react@18.3.24)(date-fns@2.30.0)(dayjs@1.11.18)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@sphereon/ssi-sdk.data-store': 0.34.1-feature.DIIPv4.272(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.124)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-types': 0.34.1-feature.DIIPv4.272(typescript@5.6.3)
-      '@sphereon/ui-components.core': 0.4.1-unstable.43(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@sphereon/ui-components.core': 0.4.1-unstable.55(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@tanstack/react-table': 8.21.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
       react-json-tree: 0.18.0(@types/react@18.3.24)(react@18.3.1)
       react-loader-spinner: 5.4.5(@babel/core@7.28.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-select: 5.10.2(@types/react@18.3.24)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -16145,7 +16149,6 @@ snapshots:
       - pg
       - pg-native
       - pg-query-stream
-      - react-dom
       - redis
       - sql.js
       - sqlite3
