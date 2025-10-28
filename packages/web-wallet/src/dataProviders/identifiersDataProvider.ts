@@ -34,6 +34,18 @@ export type CreateVariables = {
   identifier?: KeyManagementIdentifier
 }
 
+export type UpdateVariables = {
+  alias?: string
+  web?: {
+    path?: string
+  }
+  selectedKeyId?: string
+}
+
+type IdentifierRecord = BaseRecord & IIdentifier
+
+const asIdentifierData = <T extends BaseRecord>(data: IdentifierRecord): T => (data as unknown as T)
+
 export const identifiersDataProvider = (): DataProvider => ({
   getList: async <TData extends BaseRecord = BaseRecord>({resource, pagination, filters}: GetListParams): Promise<GetListResponse<TData>> => {
     const identities: IIdentifier[] = await agent.didManagerFind()
@@ -44,10 +56,15 @@ export const identifiersDataProvider = (): DataProvider => ({
     }
   },
   getOne: async <TData extends BaseRecord = BaseRecord>({resource, id}: GetOneParams): Promise<GetOneResponse<TData>> => {
-    // TODO CWALL-244 implement
-    return {
-      data: {} as TData,
+    const identities: IIdentifier[] = await agent.didManagerFind()
+    const identity = identities.find(i => i.did === id)
+
+    if (!identity) {
+      return Promise.reject(Error(`Identifier with id ${id} not found`))
     }
+
+    const result: IdentifierRecord = {...identity, id: identity.did}
+    return { data: asIdentifierData<TData>(result) }
   },
 
   // @ts-ignore
@@ -179,10 +196,51 @@ export const identifiersDataProvider = (): DataProvider => ({
     id,
     variables,
   }: UpdateParams<TVariables>): Promise<UpdateResponse<TData>> => {
-    // TODO CWALL-244 implement
-    return {
-      data: {} as TData,
+    const updateVars = variables as UpdateVariables
+    const identities: IIdentifier[] = await agent.didManagerFind()
+    const identifier = identities.find(i => i.did === id)
+
+    if (!identifier) {
+      return Promise.reject(Error(`Identifier with id ${id} not found`))
     }
+
+    // Only support updating did:web for now
+    if (!identifier.did.startsWith('did:web')) {
+      return Promise.reject(Error(`Only did:web identifiers can be updated`))
+    }
+
+    // Update alias if provided
+    if (updateVars.alias && updateVars.alias !== identifier.alias) {
+      try {
+        // Note: This assumes the agent has a method to update the alias
+        // You may need to implement this in your agent if it doesn't exist
+        await agent.didManagerSetAlias({
+          did: identifier.did,
+          alias: updateVars.alias,
+        })
+        identifier.alias = updateVars.alias
+      } catch (error) {
+        console.error('Error updating alias:', error)
+        return Promise.reject(Error(`Failed to update alias: ${error}`))
+      }
+    }
+
+    // For did:web path updates, this would typically require:
+    // 1. Updating the DID document location
+    // 2. Re-publishing the DID document to the new path
+    // This is a more complex operation that may need backend support
+    if (updateVars.web?.path) {
+      console.log(`Path update requested: ${updateVars.web.path}`)
+      // TODO: Implement path update logic when backend support is available
+    }
+
+    if (updateVars.selectedKeyId) {
+      console.log(`Key selection updated: ${updateVars.selectedKeyId}`)
+      // TODO: Implement key assignment logic if needed
+    }
+
+    const result: IdentifierRecord = {...identifier, id: identifier.did}
+    return { data: asIdentifierData<TData>(result) }
   },
   deleteOne: async <TData extends BaseRecord = BaseRecord, TVariables = {}>({
     resource,

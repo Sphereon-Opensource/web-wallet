@@ -1,0 +1,26 @@
+{
+  "type": "object",
+  "properties": {
+    "alias": {
+      "type": "string",
+      "title": "Alias name"
+    },
+    "web": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "title": "Path",
+          "default": "/.well-known"
+        }
+      }
+    },
+    "selectedKeyId": {
+      "type": "string",
+      "title": "Key"
+    }
+  },
+  "required": [
+    "alias"
+  ]
+}

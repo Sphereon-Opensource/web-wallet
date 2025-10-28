@@ -1,0 +1,33 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Control",
+      "label": "Alias name",
+      "scope": "#/properties/alias"
+    },
+    {
+      "type": "Group",
+      "label": "WEB details",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "Path",
+          "scope": "#/properties/web/properties/path",
+          "options": {
+            "required": false,
+            "default": "/.well-known"
+          }
+        }
+      ]
+    },
+    {
+      "type": "Control",
+      "label": "Select Key",
+      "scope": "#/properties/selectedKeyId",
+      "options": {
+        "autocomplete": true
+      }
+    }
+  ]
+}
