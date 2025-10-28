@@ -9,3 +9,6 @@ export const OID4VCI_CODE_URL_REGEX = /https?:\/\/.*\/oid4vci.*\?.*code=.+/ // O
 
 export const SIOP_DEFAULT_REDIRECT_URI =
   typeof window !== 'undefined' && window.location ? `${window.location.protocol}//${window.location.host}/oid4vp` : CLIENT_ID
+
+
+export const MAX_QUERYID_LENGTH = 255
