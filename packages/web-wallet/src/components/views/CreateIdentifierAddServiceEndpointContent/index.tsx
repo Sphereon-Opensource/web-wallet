@@ -52,6 +52,7 @@ const CreateIdentifierAddServiceEndpointContent: FC = (): ReactElement => {
       serviceEndpoint: serviceEndpointData.data.serviceEndpoint,
     }
     onSetServiceEndpoints(prevServiceEndpoints => [...prevServiceEndpoints, newServiceEndpoint])
+    // TODO WALL-245 fix
 
     // Reset form by triggering change with empty data
     await onServiceEndpointChange({data: undefined, errors: []})
