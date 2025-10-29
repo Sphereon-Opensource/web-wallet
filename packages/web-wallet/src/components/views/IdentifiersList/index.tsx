@@ -1,6 +1,6 @@
 import React, {FC, ReactElement} from 'react'
 import short from 'short-uuid'
-import {HttpError, useList, useNavigation, useTranslate, useDeleteMany} from '@refinedev/core'
+import {HttpError, useDeleteMany, useList, useNavigation, useTranslate} from '@refinedev/core'
 import {ButtonIcon} from '@sphereon/ui-components.core'
 import {ColumnHeader, Row, SSITableView, TableCellType} from '@sphereon/ui-components.ssi-react'
 import {DataResource, KeyManagementIdentifier} from '@typings'
@@ -13,10 +13,9 @@ type Props = {
 
 type KeyManagementIdentifierWithActions = KeyManagementIdentifier & {
   actions: string
-  isWebDid: boolean // FIXME
 }
 
-const mapIdentifierData = (identifierData?: IIdentifier[]): KeyManagementIdentifierWithActions[] => {
+const mapIdentifierData = (identifierData?: IIdentifier[]): KeyManagementIdentifier[] => {
   if (!identifierData) {
     return []
   }
@@ -26,8 +25,6 @@ const mapIdentifierData = (identifierData?: IIdentifier[]): KeyManagementIdentif
     alias: identifier.alias,
     value: identifier.did,
     origin: 'Managed',
-    actions: '',
-    isWebDid: identifier.did.startsWith('did:web'),
   }))
 }
 
@@ -51,7 +48,7 @@ const IdentifiersList: FC<Props> = (props: Props): ReactElement => {
     return <div>{translate('data_provider_loading_message')}</div>
   }
 
-  const keyManagementIdentifiers: KeyManagementIdentifierWithActions[] = mapIdentifierData(identifierData?.data)
+  const keyManagementIdentifiers: KeyManagementIdentifier[] = mapIdentifierData(identifierData?.data)
 
   const truncationLength: number = 20
 
@@ -60,7 +57,12 @@ const IdentifiersList: FC<Props> = (props: Props): ReactElement => {
   }
 
   const onEditIdentifier = async (row: Row<KeyManagementIdentifierWithActions>): Promise<void> => {
-    edit(DataResource.IDENTIFIERS, row.original.value)
+    const did = row.original.value
+    if (!did.startsWith('did:web')) {
+      return
+    }
+    // Use the DID as the identifier for the edit route
+    edit(DataResource.IDENTIFIERS, did)
   }
 
   const onDeleteIdentifier = async (row: Row<KeyManagementIdentifierWithActions>): Promise<void> => {
@@ -125,25 +127,24 @@ const IdentifiersList: FC<Props> = (props: Props): ReactElement => {
       },
     },
     {
-      accessor: (row) => ({
-        actions: [
-          {
-            caption: translate('identifiers_overview_fields_actions_edit'),
-            icon: ButtonIcon.EDIT,
-            onClick: onEditIdentifier,
-            disabled: !row.isWebDid,
-          },
-          {
-            caption: translate('identifiers_overview_fields_actions_delete'),
-            icon: ButtonIcon.DELETE,
-            onClick: onDeleteIdentifier,
-          },
-        ],
-      }),
+      accessor: 'actions',
       label: translate('identifiers_overview_column_actions_label'),
       type: TableCellType.ACTIONS,
       columnOptions: {
-        columnWidth: 120,
+        cellOptions: {
+          actions: [
+            {
+              caption: translate('identifiers_overview_fields_actions_edit'),
+              icon: ButtonIcon.EDIT,
+              onClick: onEditIdentifier,
+            },
+            {
+              caption: translate('identifiers_overview_fields_actions_delete'),
+              icon: ButtonIcon.DELETE,
+              onClick: onDeleteIdentifier,
+            },
+          ],
+        },
       },
     },
   ]
@@ -160,10 +161,12 @@ const IdentifiersList: FC<Props> = (props: Props): ReactElement => {
     return actions
   }
 
+  const data = keyManagementIdentifiers.map(value => ({...value, actions: ''}))
+
   return (
     <SSITableView<KeyManagementIdentifierWithActions>
       key={short.generate()}
-      data={keyManagementIdentifiers}
+      data={data}
       columns={columns}
       actions={buildActionList()}
     />

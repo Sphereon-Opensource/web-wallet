@@ -21,6 +21,7 @@ import {IIdentifier} from '@veramo/core'
 import type {EbsiAccessTokenOpts, EbsiEnvironment} from '@sphereon/ssi-sdk.ebsi-support'
 import {generateEbsiMethodSpecificId} from '@sphereon/ssi-sdk.ebsi-support'
 import {CredentialRole} from '@sphereon/ssi-types'
+import {DIDDocument} from 'did-resolver'
 
 // TODO CWALL-244 further implement
 
@@ -36,10 +37,8 @@ export type CreateVariables = {
 
 export type UpdateVariables = {
   alias?: string
-  web?: {
-    path?: string
-  }
   selectedKeyId?: string
+  services?: Array<IdentifierServiceEndpoint>
 }
 
 type IdentifierRecord = BaseRecord & IIdentifier
@@ -47,7 +46,11 @@ type IdentifierRecord = BaseRecord & IIdentifier
 const asIdentifierData = <T extends BaseRecord>(data: IdentifierRecord): T => (data as unknown as T)
 
 export const identifiersDataProvider = (): DataProvider => ({
-  getList: async <TData extends BaseRecord = BaseRecord>({resource, pagination, filters}: GetListParams): Promise<GetListResponse<TData>> => {
+  getList: async <TData extends BaseRecord = BaseRecord>({
+                                                           resource,
+                                                           pagination,
+                                                           filters,
+                                                         }: GetListParams): Promise<GetListResponse<TData>> => {
     const identities: IIdentifier[] = await agent.didManagerFind()
     const data: TData[] = identities.map(identity => ({...(identity as any)}))
     return {
@@ -55,7 +58,10 @@ export const identifiersDataProvider = (): DataProvider => ({
       total: data.length,
     }
   },
-  getOne: async <TData extends BaseRecord = BaseRecord>({resource, id}: GetOneParams): Promise<GetOneResponse<TData>> => {
+  getOne: async <TData extends BaseRecord = BaseRecord>({
+                                                          resource,
+                                                          id,
+                                                        }: GetOneParams): Promise<GetOneResponse<TData>> => {
     const identities: IIdentifier[] = await agent.didManagerFind()
     const identity = identities.find(i => i.did === id)
 
@@ -64,15 +70,15 @@ export const identifiersDataProvider = (): DataProvider => ({
     }
 
     const result: IdentifierRecord = {...identity, id: identity.did}
-    return { data: asIdentifierData<TData>(result) }
+    return {data: asIdentifierData<TData>(result)}
   },
 
   // @ts-ignore
   create: async <TData extends BaseRecord & IIdentifier, TVars extends CreateVariables>({
-    resource,
-    variables,
-    meta,
-  }: CreateParams<TVars>): Promise<CreateResponse<TData>> => {
+                                                                                          resource,
+                                                                                          variables,
+                                                                                          meta,
+                                                                                        }: CreateParams<TVars>): Promise<CreateResponse<TData>> => {
     const {kms = KeyManagementSystem.LOCAL, keys = [], method, identifier: kmIdentifier} = variables
     const clientId = process?.env?.NEXT_PUBLIC_CLIENT_ID ?? `${window.location.protocol}//${window.location.hostname}`
     const network = kmIdentifier?.network
@@ -184,18 +190,18 @@ export const identifiersDataProvider = (): DataProvider => ({
     }
   },
   createMany: async <TData extends BaseRecord = BaseRecord, TVariables = {}>({
-    resource,
-    variables,
-    meta,
-  }: CreateManyParams<TVariables>): Promise<CreateManyResponse<TData>> => {
+                                                                               resource,
+                                                                               variables,
+                                                                               meta,
+                                                                             }: CreateManyParams<TVariables>): Promise<CreateManyResponse<TData>> => {
     // TODO CWALL-244 implement
     return {data: []}
   },
   update: async <TData extends BaseRecord = BaseRecord, TVariables = {}>({
-    resource,
-    id,
-    variables,
-  }: UpdateParams<TVariables>): Promise<UpdateResponse<TData>> => {
+                                                                           resource,
+                                                                           id,
+                                                                           variables,
+                                                                         }: UpdateParams<TVariables>): Promise<UpdateResponse<TData>> => {
     const updateVars = variables as UpdateVariables
     const identities: IIdentifier[] = await agent.didManagerFind()
     const identifier = identities.find(i => i.did === id)
@@ -212,40 +218,101 @@ export const identifiersDataProvider = (): DataProvider => ({
     // Update alias if provided
     if (updateVars.alias && updateVars.alias !== identifier.alias) {
       try {
-        // Note: This assumes the agent has a method to update the alias
-        // You may need to implement this in your agent if it doesn't exist
         await agent.didManagerSetAlias({
           did: identifier.did,
           alias: updateVars.alias,
         })
-        identifier.alias = updateVars.alias
       } catch (error) {
         console.error('Error updating alias:', error)
         return Promise.reject(Error(`Failed to update alias: ${error}`))
       }
     }
 
-    // For did:web path updates, this would typically require:
-    // 1. Updating the DID document location
-    // 2. Re-publishing the DID document to the new path
-    // This is a more complex operation that may need backend support
-    if (updateVars.web?.path) {
-      console.log(`Path update requested: ${updateVars.web.path}`)
-      // TODO: Implement path update logic when backend support is available
-    }
-
     if (updateVars.selectedKeyId) {
-      console.log(`Key selection updated: ${updateVars.selectedKeyId}`)
-      // TODO: Implement key assignment logic if needed
+      try {
+        // Remove existing keys from the identifier
+        for (const key of identifier.keys) {
+          console.log(`Removing key ${key.kid}`)
+          await agent.didManagerRemoveKey(
+            {
+              did: identifier.did,
+              kid: key.kid,
+              options: {},
+            },
+          )
+        }
+
+        // Get the new key from the key manager
+        const key = await agent.keyManagerGet({kid: updateVars.selectedKeyId})
+
+        if (!key) {
+          return Promise.reject(Error(`Key with kid ${updateVars.selectedKeyId} not found in key manager`))
+        }
+
+        // Add the selected key to the identifier's DID document
+        await agent.didManagerAddKey(
+          {
+            did: identifier.did,
+            key: key,
+            options: {},
+          },
+        )
+
+        // TODO
+        console.warn('TODO: controllerKeyId not updated - selected key will not persist across reloads')
+
+      } catch (error) {
+        console.error('Error replacing key:', error)
+        return Promise.reject(Error(`Failed to replace key: ${error}`))
+      }
     }
 
-    const result: IdentifierRecord = {...identifier, id: identifier.did}
-    return { data: asIdentifierData<TData>(result) }
+    // Update services if provided
+    if (updateVars.services) {
+      try {
+        // Remove all existing services
+        if (identifier.services && identifier.services.length > 0) {
+          for (const service of identifier.services) {
+            await agent.didManagerRemoveService({
+              did: identifier.did,
+              id: service.id,
+            })
+          }
+        }
+
+        // Add new services
+        console.log('updateVars.services', updateVars.services)
+        for (const service of updateVars.services) {
+          console.log(`didManagerAddService Service ID: ${service.id}`)
+          await agent.didManagerAddService({
+            did: identifier.did,
+            service: {
+              id: service.id,
+              type: service.type,
+              serviceEndpoint: service.serviceEndpoint,
+            },
+          })
+        }
+      } catch (error) {
+        console.error('Error updating services:', error)
+        return Promise.reject(Error(`Failed to update services: ${error}`))
+      }
+    }
+
+    const updatedIdentifier = await agent.didManagerGet({did: identifier.did})
+
+    // Update the controllerKeyId to match the selected key
+    if (updateVars.selectedKeyId && updatedIdentifier.keys.length > 0) {
+      updatedIdentifier.controllerKeyId = updateVars.selectedKeyId
+    }
+
+    const result: IdentifierRecord = {...updatedIdentifier, id: updatedIdentifier.did}
+    return {data: asIdentifierData<TData>(result)}
   },
   deleteOne: async <TData extends BaseRecord = BaseRecord, TVariables = {}>({
-    resource,
-    id,
-  }: DeleteOneParams<TVariables>): Promise<DeleteOneResponse<TData>> => {
+                                                                              resource,
+                                                                              id,
+                                                                            }: DeleteOneParams<TVariables>): Promise<DeleteOneResponse<TData>> => {
     // TODO CWALL-244 implement
     return {
       data: {} as TData,

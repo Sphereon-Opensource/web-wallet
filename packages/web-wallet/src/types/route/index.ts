@@ -86,3 +86,8 @@ export enum CreateIdentifierRoute {
   SERVICE_ENDPOINTS = 'service_endpoints',
   SUMMARY = 'summary',
 }
+
+export enum EditIdentifierRoute {
+  KEYS = 'keys',
+  SERVICE_ENDPOINTS = 'service_endpoints',
+}
