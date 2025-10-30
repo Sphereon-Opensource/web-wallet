@@ -11,14 +11,14 @@ class KeyTableItem {
   type: string
   alias?: string
   identifierAlias?: string
-  kmsProvider?: string
+  kms?: string
   actions: string
 
-  constructor(data: {kid: string; type: string; alias?: string; identifierAlias?: string; kmsProvider?: string; actions: string}) {
+  constructor(data: {kid: string; type: string; alias?: string; identifierAlias?: string; kms?: string; actions: string}) {
     this.kid = data.kid
     this.type = data.type
     this.alias = data.alias
-    this.kmsProvider = data.kmsProvider
+    this.kms = data.kms
     this.identifierAlias = data.identifierAlias
     this.actions = data.actions
   }
@@ -31,7 +31,7 @@ class KeyTableItem {
       kid: key.kid,
       identifierAlias: identifier?.alias,
       type: key.type,
-      kmsProvider: key.meta?.providerName,
+      kms: key.kms,
       //todo
       /**
        * this should come from the key itself. probably we need to revisit this during CWALL-211. according to Niels: Not for every implementation a kid will be equal to an alias
@@ -136,8 +136,8 @@ const KeysList: FC<Props> = ({allowAddKey = true}: Props): ReactElement => {
       },
     },
     {
-      accessor: 'kmsProvider',
-      label: translate('key_fields_kms_provider'),
+      accessor: 'kms',
+      label: translate('key_fields_kms'),
       type: TableCellType.TEXT,
       columnOptions: {
         columnWidth: 200,
