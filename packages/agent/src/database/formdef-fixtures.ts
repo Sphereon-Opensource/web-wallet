@@ -232,18 +232,18 @@ export async function addFormDefs(directory: string): Promise<void> {
   const fixturesContent = await fs.readFile(configPath, 'utf-8')
   const fixtures: Fixtures = JSON.parse(fixturesContent)
 
-  const ds = await getDbConnection(DB_CONNECTION_NAME)
-  const qr = ds.createQueryRunner()
-  await qr.connect()
-  await qr.startTransaction()
+  const dataSource = await getDbConnection(DB_CONNECTION_NAME)
+  const queryRunner = dataSource.createQueryRunner()
+  await queryRunner.connect()
+  await queryRunner.startTransaction()
 
   try {
     // 1. Get or create form step (by formId)
-    const formStepId = await getOrCreateFormStep(qr, fixtures.formId)
+    const formStepId = await getOrCreateFormStep(queryRunner, fixtures.formId)
 
     // 2. Get or create form definition linked to this form step
     await getOrCreateFormDefinitionAndLink(
-      qr,
+      queryRunner,
       formStepId,
       fixtures.formId,
       fixtures.formName,
@@ -253,17 +253,17 @@ export async function addFormDefs(directory: string): Promise<void> {
 
     // 3. Process metadata sets: merge keys and schemas
     for (const set of fixtures.metadataSets ?? []) {
-      const setId = await getOrCreateMetadataSet(qr, set.name)
+      const setId = await getOrCreateMetadataSet(queryRunner, set.name)
 
       // Upsert keys with their values
       for (const key of set.keys ?? []) {
-        await upsertKeyWithValues(qr, setId, key)
+        await upsertKeyWithValues(queryRunner, setId, key)
       }
 
       // Upsert schemas and link to form step
       for (const sch of set.schemas ?? []) {
         await upsertSchemaAndLinkToStep(
-          qr,
+          queryRunner,
           directory,
           formStepId,
           fixtures.entityType,
@@ -275,33 +275,33 @@ export async function addFormDefs(directory: string): Promise<void> {
       }
     }
 
-    await qr.commitTransaction()
+    await queryRunner.commitTransaction()
   } catch (e) {
-    await qr.rollbackTransaction()
+    await queryRunner.rollbackTransaction()
     throw e
   } finally {
-    await qr.release()
+    await queryRunner.release()
   }
 }
 
 export async function removeMetadataSet(setName: string): Promise<void> {
-  const ds = await getDbConnection(DB_CONNECTION_NAME)
-  const qr = ds.createQueryRunner()
-  await qr.connect()
-  await qr.startTransaction()
+  const dataSource = await getDbConnection(DB_CONNECTION_NAME)
+  const queryRunner = dataSource.createQueryRunner()
+  await queryRunner.connect()
+  await queryRunner.startTransaction()
 
   try {
-    const set = await qr.query(`SELECT id
+    const set = await queryRunner.query(`SELECT id
                                 FROM meta_data_set
                                 WHERE name = $1`, [setName])
     if (set.length === 0) {
-      await qr.rollbackTransaction()
+      await queryRunner.rollbackTransaction()
       return
     }
     const setId = set[0].id
 
     // Get schema definitions linked to this metadata set
-    const schemas = await qr.query(
+    const schemas = await queryRunner.query(
       `SELECT id
        FROM schema_definition
        WHERE meta_data_set_id = $1`,
@@ -310,7 +310,7 @@ export async function removeMetadataSet(setName: string): Promise<void> {
 
     // Delete junction table links first (form_step_to_schema_definition)
     for (const schema of schemas) {
-      await qr.query(
+      await queryRunner.query(
         `DELETE
          FROM form_step_to_schema_definition
          WHERE schema_definition_id = $1`,
@@ -319,7 +319,7 @@ export async function removeMetadataSet(setName: string): Promise<void> {
     }
 
     // Now delete schema definitions
-    await qr.query(
+    await queryRunner.query(
       `DELETE
        FROM schema_definition
        WHERE meta_data_set_id = $1`,
@@ -327,11 +327,11 @@ export async function removeMetadataSet(setName: string): Promise<void> {
     )
 
     // Delete values
-    const keys = await qr.query(`SELECT id
+    const keys = await queryRunner.query(`SELECT id
                                  FROM meta_data_keys
                                  WHERE set_id = $1`, [setId])
     for (const k of keys) {
-      await qr.query(
+      await queryRunner.query(
         `DELETE
          FROM meta_data_values
          WHERE key_id = $1`,
@@ -340,7 +340,7 @@ export async function removeMetadataSet(setName: string): Promise<void> {
     }
 
     // Delete keys
-    await qr.query(
+    await queryRunner.query(
       `DELETE
        FROM meta_data_keys
        WHERE set_id = $1`,
@@ -348,18 +348,18 @@ export async function removeMetadataSet(setName: string): Promise<void> {
     )
 
     // Delete metadata set
-    await qr.query(
+    await queryRunner.query(
       `DELETE
        FROM meta_data_set
        WHERE id = $1`,
       [setId],
     )
 
-    await qr.commitTransaction()
+    await queryRunner.commitTransaction()
   } catch (e) {
-    await qr.rollbackTransaction()
+    await queryRunner.rollbackTransaction()
     throw e
   } finally {
-    await qr.release()
+    await queryRunner.release()
   }
 }
