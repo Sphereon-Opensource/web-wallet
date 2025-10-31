@@ -276,9 +276,9 @@ export async function addFormDefs(directory: string): Promise<void> {
     }
 
     await queryRunner.commitTransaction()
-  } catch (e) {
+  } catch (error) {
     await queryRunner.rollbackTransaction()
-    throw e
+    throw error
   } finally {
     await queryRunner.release()
   }
@@ -356,9 +356,9 @@ export async function removeMetadataSet(setName: string): Promise<void> {
     )
 
     await queryRunner.commitTransaction()
-  } catch (e) {
+  } catch (error) {
     await queryRunner.rollbackTransaction()
-    throw e
+    throw error
   } finally {
     await queryRunner.release()
   }
