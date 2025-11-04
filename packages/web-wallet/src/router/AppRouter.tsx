@@ -198,7 +198,7 @@ const AppRouter: React.FC = () => {
                 <Route path={CreateIdentifierRoute.TYPE} element={<CreateIdentifierSelectTypeContent />} />
                 <Route path={CreateIdentifierRoute.KEYS} element={<CreateIdentifierKeysContent />} />
                 <Route path={CreateIdentifierRoute.SERVICE_ENDPOINTS}
-                       element={<CreateIdentifierAddServiceEndpointContent />} />
+                       element={<CreateIdentifierAddServiceEndpointContent mode="create"/>} />
                 <Route path={CreateIdentifierRoute.SUMMARY} element={<CreateIdentifierSummaryContent />} />
               </Route>
               <Route
@@ -210,7 +210,7 @@ const AppRouter: React.FC = () => {
                 }>
                 <Route path={EditIdentifierRoute.KEYS} element={<EditIdentifierContent />} />
                 <Route path={EditIdentifierRoute.SERVICE_ENDPOINTS}
-                       element={<CreateIdentifierAddServiceEndpointContent />} />
+                       element={<CreateIdentifierAddServiceEndpointContent mode="edit"/>} />
               </Route>
             </Route>
             <Route path={KeyManagementRoute.KEYS}>

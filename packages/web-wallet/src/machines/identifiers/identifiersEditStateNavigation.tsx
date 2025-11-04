@@ -157,26 +157,28 @@ export const IdentifiersEditContextProvider = (props: {children: React.ReactNode
       console.log('Setting identifierData to:', formData)
       setIdentifierData(formData)
     }
-  }, [identifierForEdit, identifierData])
+  }, [identifierForEdit])
 
   useEffect(() => {
     void editIdentifierNavigationListener(step, navigate)
+  }, [step, navigate])
 
+  useEffect(() => {
     const handlePopstate = (): void => {
-      const nextStep = step - maxAutoSteps
-      if (step > 0) {
-        setStep(nextStep)
-      }
+      const path = window.location.pathname
 
-      if (nextStep === 0) {
+      if (path.includes(EditIdentifierRoute.SERVICE_ENDPOINTS)) {
+        setStep(2)
+      } else if (path.includes(EditIdentifierRoute.KEYS)) {
+        setStep(1)
+      } else {
+        // Not on an edit step, navigate back to list
         navigate(`${MainRoute.KEY_MANAGEMENT}/${KeyManagementRoute.IDENTIFIERS}`)
       }
     }
     window.addEventListener('popstate', handlePopstate)
-    return (): void => {
-      window.removeEventListener('popstate', handlePopstate)
-    }
-  }, [step])
+    return () => window.removeEventListener('popstate', handlePopstate)
+  }, [navigate])
 
   useEffect(() => {
     if (step === 1) {
