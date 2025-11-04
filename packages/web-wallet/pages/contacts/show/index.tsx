@@ -98,12 +98,20 @@ const ShowContactDetails: FC = (): ReactElement => {
     const credentialIssuer = (() => {
       const identities = partyData?.data.identities ?? [];
 
-      const httpsUrlIdentity = identities.find(
+      const httpsUrlIdentities = identities.filter(
         identity =>
           identity.roles.includes(CredentialRole.ISSUER) &&
           identity.identifier?.type === 'url' &&
           identity.identifier?.correlationId?.startsWith('https')
       );
+
+      // Pick the one with the longest url
+      const httpsUrlIdentity = httpsUrlIdentities.reduce((longest, current) => {
+        if (!longest) return current;
+        return current.identifier?.correlationId?.length > longest.identifier?.correlationId?.length
+          ? current
+          : longest;
+      }, undefined as typeof identities[number] | undefined);
 
       const urlIdentity = identities.find(
         identity =>
