@@ -98,17 +98,24 @@ const ShowContactDetails: FC = (): ReactElement => {
     const credentialIssuer = (() => {
       const identities = partyData?.data.identities ?? [];
 
-      const preferredIdentity = identities.find(
+      const httpsUrlIdentity = identities.find(
+        identity =>
+          identity.roles.includes(CredentialRole.ISSUER) &&
+          identity.identifier?.type === 'url' &&
+          identity.identifier?.correlationId?.startsWith('https')
+      );
+
+      const urlIdentity = identities.find(
         identity =>
           identity.roles.includes(CredentialRole.ISSUER) &&
           identity.identifier?.type === 'url'
       );
 
-      const fallbackIdentity = identities.find(identity =>
+      const anyIssuer = identities.find(identity =>
         identity.roles.includes(CredentialRole.ISSUER)
       );
 
-      const chosen = preferredIdentity ?? fallbackIdentity;
+      const chosen = httpsUrlIdentity ?? urlIdentity ?? anyIssuer;
 
       const correlationId = chosen?.identifier?.correlationId?.replace('did:web:', 'https://');
 
