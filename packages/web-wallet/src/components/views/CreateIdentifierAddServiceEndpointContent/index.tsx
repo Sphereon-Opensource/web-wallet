@@ -20,13 +20,7 @@ const CreateIdentifierAddServiceEndpointContent: FC<Props> = ({mode}): ReactElem
   const isEditMode = mode === 'edit'
   const [formKey, setFormKey] = React.useState(0)
 
-  // Use appropriate context based on mode
-  let context
-  if (isEditMode) {
-    context = useIdentifiersEditContext()
-  } else {
-    context = useIdentifierCreateOutletContext()
-  }
+  const context = isEditMode ? useIdentifiersEditContext() : useIdentifierCreateOutletContext()
 
   const {
     serviceEndpoints,

@@ -134,16 +134,8 @@ export const IdentifiersEditContextProvider = (props: {children: React.ReactNode
       const provider = identifier.provider || ''
       const method = provider.replace('did:', '') || identifier.did.split(':')[1]
 
-      console.log('Setting up form with identifier:', identifier)
-      console.log('Identifier keys:', identifier.keys)
-      console.log('Identifier controllerKeyId:', identifier.controllerKeyId)
-
       // Find the key that matches controllerKeyId
       const selectedKey = identifier.keys?.find(key => key.kid === identifier.controllerKeyId)
-
-      console.log('Selected key found:', selectedKey)
-      console.log('Selected key kid:', selectedKey?.kid)
-
       const formData = {
         data: {
           type: 'did',
@@ -154,7 +146,6 @@ export const IdentifiersEditContextProvider = (props: {children: React.ReactNode
         errors: [],
       }
 
-      console.log('Setting identifierData to:', formData)
       setIdentifierData(formData)
     }
   }, [identifierForEdit])

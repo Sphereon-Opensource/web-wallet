@@ -5,15 +5,9 @@ process.env.I18NEXT_DEFAULT_CONFIG_PATH = `./next-i18next.config.mjs`
 const nextConfig = {
   i18n: i18nNextConfig.i18n,
 
-  transpilePackages: ['@sphereon/ui-components.ssi-react', '@sphereon/ssi-sdk.ebsi-support', '@sphereon/ssi-sdk.oid4vci-holder'],
+  transpilePackages: ['@sphereon/ui-components.ssi-react', '@sphereon/ssi-sdk.ebsi-support'],
 
-  webpack(config, { isServer, dev }) {
-    // Disable minification in development mode
-    if (dev) {
-      config.optimization.minimize = false;
-      config.optimization.minimizer = []
-    }
-
+  webpack(config, { isServer }) {
     if (!isServer) {
       config.resolve.alias = {
         ...config.resolve.alias,
