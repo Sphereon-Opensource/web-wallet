@@ -71,7 +71,7 @@ type Props = {
   credentialRole: CredentialRole
 }
 
-async function getUnifiedVC(rawDocument) {
+async function getUnifiedVC(rawDocument: any) {
   const wrappedCredential = CredentialMapper.toWrappedVerifiableCredential(rawDocument, {hasher: defaultHasher})
   let uniformVerifiableCredential: IVerifiableCredential
   if (CredentialMapper.isSdJwtDecodedCredential(wrappedCredential.credential)) {
