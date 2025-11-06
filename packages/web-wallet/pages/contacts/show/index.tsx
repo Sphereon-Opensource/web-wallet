@@ -106,12 +106,13 @@ const ShowContactDetails: FC = (): ReactElement => {
       );
 
       // Pick the one with the longest url
-      const httpsUrlIdentity = httpsUrlIdentities.reduce((longest, current) => {
-        if (!longest) return current;
-        return current.identifier?.correlationId?.length > longest.identifier?.correlationId?.length
-          ? current
-          : longest;
-      }, undefined as typeof identities[number] | undefined);
+      const httpsUrlIdentity = httpsUrlIdentities.length > 0
+            ? httpsUrlIdentities.reduce((longest, current) =>
+                (current.identifier?.correlationId?.length ?? 0) > (longest.identifier?.correlationId?.length ?? 0)
+                    ? current
+                    : longest
+            )
+            : undefined;
 
       const urlIdentity = identities.find(
         identity =>
