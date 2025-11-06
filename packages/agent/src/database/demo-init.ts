@@ -1,6 +1,7 @@
 import {
-  DB_TYPE
+  DB_TYPE,
 } from '../environment-vars'
+
 console.log(`Database type '${DB_TYPE}' is being used`) // This forces the env to be loaded before typeorm
 
 import {addContactsRWS} from './demo-data/rws/contact-fixtures'
@@ -10,8 +11,8 @@ import {addFormDefsBelastingdienst} from './demo-data/belastingdienst/formdef-fi
 import * as process from 'node:process'
 import * as fs from 'node:fs/promises'
 import * as path from 'node:path'
-import {addFormDefs} from './formdef-fixtures'
-import {addFormDefsGeneric} from "./demo-data/generic/formdef-fixtures";
+import {addFormDefs, removeMetadataSet} from './formdef-fixtures'
+import {addFormDefsGeneric} from './demo-data/generic/formdef-fixtures'
 
 // Define allowed fixture and demo values
 const allowedFixtureVals = ['contacts', 'formdefs'] as const
@@ -42,9 +43,7 @@ async function handleDemo(fixtureType: FixtureType, demo: Demo) {
             break
           default:
             throw new Error(
-              `Unsupported demo type for contacts: "${demo}". Allowed demos: ${allowedDemoVals.join(
-                ', ',
-              )}`,
+              `Unsupported demo type for contacts: "${demo}". Allowed demos: ${allowedDemoVals.join(', ')}`,
             )
         }
         break
@@ -90,9 +89,7 @@ async function handleDemo(fixtureType: FixtureType, demo: Demo) {
         break
       default:
         throw new Error(
-          `Unsupported fixture type: "${fixtureType}". Allowed types: ${allowedFixtureVals.join(
-            ', ',
-          )}`,
+          `Unsupported fixture type: "${fixtureType}". Allowed types: ${allowedFixtureVals.join(', ')}`,
         )
     }
 
@@ -143,6 +140,7 @@ function examples() {
   console.log('  pnpm demo:init contacts konkuk')
   console.log('  pnpm demo:init formdefs konkuk')
   console.log('  pnpm demo:init formdefs /path/to/agent/fixtures/forms')
+  console.log('  pnpm demo:init formdefs --remove-set=PID')
 }
 
 /**
@@ -151,39 +149,40 @@ function examples() {
  * @returns An object containing fixture and demo.
  */
 function parseArgs(args?: string[]): {fixture: FixtureType; demo: Demo} {
-  // todo: We really should use a lib for commands/args
   if (!args || args.length !== 2) {
     console.log(
-      `Expected exactly two arguments: fixture and demo. Fixture values one of: "${allowedFixtureVals.join(
-        '", "',
-      )}", demo values can be one of: "${allowedDemoVals.join(
-        '", "',
-      )}" or a directory path.`,
+      `Expected exactly two arguments: fixture and demo. Fixture values one of: "${allowedFixtureVals.join('", "')}", demo values can be one of: "${allowedDemoVals.join('", "')}" or a directory path.`,
     )
     examples()
     process.exit(1)
   }
 
   const fixture = args[0].toLowerCase()
-  const demo = args[1].toLowerCase()
+  const demo = args[1]
 
-  if (
-    !allowedFixtureVals.includes(fixture as FixtureType) ||
-    (!allowedDemoVals.includes(demo as PredefinedDemo) && !isValidPath(demo))
-  ) {
-    console.log(`Invalid arguments.`)
+  // Check if demo is a predefined value (case-insensitive)
+  const demoLower = demo.toLowerCase()
+  const isPredefined = allowedDemoVals.includes(demoLower as PredefinedDemo)
+
+  if (!allowedFixtureVals.includes(fixture as FixtureType)) {
+    console.log(`Invalid fixture type: "${fixture}".`)
     console.log(
-      `Allowed fixture types: "${allowedFixtureVals.join(
-        '", "',
-      )}". Allowed demos: "${allowedDemoVals.join(
-        '", "',
-      )}" or a valid directory path.`,
+      `Allowed fixture types: "${allowedFixtureVals.join('", "')}". Allowed demos: "${allowedDemoVals.join('", "')}" or a valid directory path.`,
     )
     examples()
     process.exit(1)
   }
 
-  return {fixture: fixture as FixtureType, demo}
+  if (!isPredefined && !isValidPath(demo)) {
+    console.log(`Invalid demo: "${demo}".`)
+    console.log(
+      `Allowed demos: "${allowedDemoVals.join('", "')}" or a valid directory path.`,
+    )
+    examples()
+    process.exit(1)
+  }
+
+  return {fixture: fixture as FixtureType, demo: isPredefined ? demoLower : demo}
 }
 
 /**
@@ -203,6 +202,31 @@ function isValidPath(p: string): boolean {
 async function main() {
   const args = process.argv
   const filteredArgs = args.filter((val) => val !== '--').slice(2)
+
+  // Check for --remove-set flag
+  const removeArgIndex = filteredArgs.findIndex((a: string) => a.startsWith('--remove-set='))
+  if (removeArgIndex !== -1) {
+    const removeArg = filteredArgs[removeArgIndex]
+    const setName = removeArg.split('=')[1]
+    if (!setName) {
+      throw new Error('--remove-set requires a name')
+    }
+
+    // Remove the flag from args for parsing
+    const argsWithoutFlag = filteredArgs.filter((_, i) => i !== removeArgIndex)
+
+    // Expect "formdefs" as first arg
+    if (argsWithoutFlag.length !== 1 || argsWithoutFlag[0].toLowerCase() !== 'formdefs') {
+      console.log('Usage: pnpm demo:init formdefs --remove-set=<name>')
+      examples()
+      process.exit(1)
+    }
+
+    await removeMetadataSet(setName)
+    console.log(`Removed metadata set '${setName}'.`)
+    return
+  }
+
   const {fixture, demo} = parseArgs(filteredArgs)
   await handleDemo(fixture, demo)
 }

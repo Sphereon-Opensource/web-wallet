@@ -5,145 +5,354 @@ import path from 'path'
 import {getDbConnection} from './databaseService'
 import {DB_CONNECTION_NAME} from '../environment-vars'
 
-interface Schema {
-  schemaType: string
-  schemaFile: string
-}
+type Schema = {schemaType: string; schemaFile: string}
+type Key = {key: string; valueType: string; values: any[]}
+type MetadataSet = {name: string; keys: Key[]; schemas?: Schema[]}
 
-interface Key {
-  key: string
-  valueType: string
-  values: any[]
-}
-
-interface MetadataSet {
-  name: string
-  keys: Key[]
-  schemas: Schema[]
-}
-
-interface FormFixtures {
+type Fixtures = {
   entityType: string
   formName: string
-  formDescription: string
+  formDescription?: string
   formId: string
-  machineId: string | null | undefined
+  machineId?: string
   metadataSets: MetadataSet[]
 }
 
-export async function addFormDefs(directory: string) {
-  // Path to form-fixtures.json
-  const configPath = path.join(directory, 'form-fixtures.json')
+async function getOrCreateFormStep(queryRunner: any, formId: string): Promise<number> {
+  const existing = await queryRunner.query(
+    `SELECT id
+     FROM form_step
+     WHERE form_id = $1`,
+    [formId],
+  )
+  if (existing.length > 0) {
+    return existing[0].id
+  }
 
-  // Read and parse the configuration file
-  const configContent = await fs.readFile(configPath, 'utf-8')
-  const fixtures: FormFixtures = JSON.parse(configContent)
+  const resp = await queryRunner.query(
+    `INSERT INTO form_step(tenant_id, form_id, step_nr, "order")
+     VALUES ($1, $2, $3, $4) RETURNING id`,
+    [null, formId, 1, 1],
+  )
+  return resp[0].id
+}
 
-  const ds = await getDbConnection(DB_CONNECTION_NAME)
+async function getOrCreateFormDefinitionAndLink(
+  queryRunner: any,
+  formStepId: number,
+  formId: string,
+  formName: string,
+  formDescription: string | null,
+  machineId: string | null,
+): Promise<number> {
+  // Find form_definition linked to this form_step via the junction table
+  let rows = await queryRunner.query(
+    `SELECT fd.id, fd.name, fd.description, fd.machine_id
+     FROM form_definition fd
+              JOIN form_def_to_form_step fds ON fds.form_definition_id = fd.id
+     WHERE fds.form_step_id = $1`,
+    [formStepId],
+  )
+  let formDefId: number
 
-  const queryRunner = ds.createQueryRunner()
-  await queryRunner.connect()
-  await queryRunner.startTransaction()
-
-  try {
-    // Insert Form Step
-    let response = await queryRunner.query(
-      `INSERT INTO form_step(tenant_id, form_id, step_nr, "order")
-       VALUES ($1, $2, $3, $4) RETURNING id`,
-      [null, fixtures.formId, 1, 1],
-    )
-    const formStepId = response[0].id
-
-    // Process each Metadata Set
-    for (const metadataSet of fixtures.metadataSets) {
-      // Insert Metadata Set
-      response = await queryRunner.query(
-        `INSERT INTO meta_data_set(tenant_id, name)
-         VALUES ($1, $2) RETURNING id`,
-        [null, metadataSet.name],
+  if (rows.length > 0) {
+    formDefId = rows[0].id
+    // Update if any fields changed
+    if (rows[0].name !== formName ||
+      (rows[0].description ?? null) !== (formDescription ?? null) ||
+      (rows[0].machine_id ?? null) !== (machineId ?? null)) {
+      await queryRunner.query(
+        `UPDATE form_definition
+         SET name = $2,
+             description = $3,
+             machine_id = $4
+         WHERE id = $1`,
+        [formDefId, formName, formDescription ?? null, machineId ?? null],
       )
-      const setId = response[0].id
-
-      // Insert Keys and Values
-      for (const key of metadataSet.keys) {
-        // Insert Key
-        response = await queryRunner.query(
-          `INSERT INTO meta_data_keys(set_id, key, value_type)
-           VALUES ($1, $2, $3) RETURNING id`,
-          [setId, key.key, key.valueType],
-        )
-        const keyId = response[0].id
-
-        // Insert Values
-        const valuePromises = key.values.map((value, index) => {
-          const textValue = typeof value === 'string' ? value : null
-          const numberValue = typeof value === 'number' ? value : null
-          const booleanValue = typeof value === 'boolean' ? value : null
-          const timestampValue = value instanceof Date ? value.toISOString() : null
-
-          return queryRunner.query(
-            `INSERT INTO meta_data_values(key_id, index, text_value, number_value, boolean_value, timestamp_value)
-             VALUES ($1, $2, $3, $4, $5, $6)`,
-            [keyId, index, textValue, numberValue, booleanValue, timestampValue],
-          )
-        })
-
-        try {
-          await Promise.all(valuePromises)
-        } catch (valueError) {
-          console.error(`Error inserting meta_data_values for key_id: ${keyId}`, valueError)
-          throw valueError
-        }
-      }
-
-      // Insert Schemas
-      for (const schema of metadataSet.schemas) {
-        // Resolve the schema file path
-        const schemaPath = path.join(directory, schema.schemaFile)
-
-        // Import the schema JSON
-        const schemaContent = await fs.readFile(schemaPath, 'utf-8')
-        const schemaJson = JSON.parse(schemaContent)
-
-        // Insert Schema Definition
-        response = await queryRunner.query(
-          `INSERT INTO schema_definition (tenant_id, extends_id, correlation_id, schema_type, entity_type, schema,
-                                          meta_data_set_id)
-           VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
-          [
-            null,
-            null,
-            metadataSet.name, // Assuming correlation_id is the metadata set name
-            schema.schemaType,
-            fixtures.entityType,
-            JSON.stringify(schemaJson),
-            setId,
-          ],
-        )
-        const schemaDefId = response[0].id
-
-        // Link Schema Definition to Form Step
-        await queryRunner.query(
-          `INSERT INTO form_step_to_schema_definition(form_step_id, schema_definition_id)
-           VALUES ($1, $2)`,
-          [formStepId, schemaDefId],
-        )
-      }
     }
-
-    // Insert Form Definition
-    response = await queryRunner.query(
+  } else {
+    // Create new form_definition
+    const resp = await queryRunner.query(
       `INSERT INTO form_definition(tenant_id, name, description, machine_id)
        VALUES ($1, $2, $3, $4) RETURNING id`,
-      [null, fixtures.formName, fixtures.formDescription, fixtures.machineId ?? null],
+      [null, formName, formDescription ?? null, machineId ?? null],
     )
-    const formDefId = response[0].id
+    formDefId = resp[0].id
 
-    // Link Form Definition to Form Step
+    // Link to form_step
     await queryRunner.query(
       `INSERT INTO form_def_to_form_step(form_definition_id, form_step_id)
        VALUES ($1, $2)`,
       [formDefId, formStepId],
+    )
+  }
+  return formDefId
+}
+
+async function upsertSchemaAndLinkToStep(
+  queryRunner: any,
+  directory: string,
+  formStepId: number,
+  entityType: string,
+  schemaType: string,
+  schemaFile: string,
+  correlationId: string,
+  metadataSetId: number,
+): Promise<void> {
+  // Read schema file
+  const schemaPath = path.join(directory, schemaFile)
+  const schemaContent = await fs.readFile(schemaPath, 'utf-8')
+  const schemaJson = JSON.parse(schemaContent)
+
+  // Check if schema already exists
+  let rows = await queryRunner.query(
+    `SELECT id
+     FROM schema_definition
+     WHERE schema_type = $1
+       AND correlation_id = $2
+       AND entity_type = $3`,
+    [schemaType, correlationId, entityType],
+  )
+  let schemaDefId: number
+  if (rows.length > 0) {
+    schemaDefId = rows[0].id
+    // Update schema content and metadata set link
+    await queryRunner.query(
+      `UPDATE schema_definition
+       SET schema           = $2,
+           meta_data_set_id = $3
+       WHERE id = $1`,
+      [schemaDefId, JSON.stringify(schemaJson), metadataSetId],
+    )
+  } else {
+    const resp = await queryRunner.query(
+      `INSERT INTO schema_definition(tenant_id, extends_id, correlation_id, schema_type,
+                                     entity_type, schema, meta_data_set_id)
+       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
+      [null, null, correlationId, schemaType, entityType, JSON.stringify(schemaJson), metadataSetId],
+    )
+    schemaDefId = resp[0].id
+  }
+
+  // Link to form step (idempotent)
+  const link = await queryRunner.query(
+    `SELECT 1
+     FROM form_step_to_schema_definition
+     WHERE form_step_id = $1
+       AND schema_definition_id = $2`,
+    [formStepId, schemaDefId],
+  )
+  if (link.length === 0) {
+    await queryRunner.query(
+      `INSERT INTO form_step_to_schema_definition(form_step_id, schema_definition_id)
+       VALUES ($1, $2)`,
+      [formStepId, schemaDefId],
+    )
+  }
+}
+
+async function getOrCreateMetadataSet(queryRunner: any, setName: string): Promise<number> {
+  const rows = await queryRunner.query(
+    `SELECT id
+     FROM meta_data_set
+     WHERE name = $1`,
+    [setName],
+  )
+  if (rows.length > 0) {
+    return rows[0].id
+  }
+
+  const resp = await queryRunner.query(
+    `INSERT INTO meta_data_set(tenant_id, name)
+     VALUES ($1, $2) RETURNING id`,
+    [null, setName],
+  )
+  return resp[0].id
+}
+
+async function upsertKeyWithValues(
+  queryRunner: any,
+  setId: number,
+  keyObj: {key: string; valueType: string; values: any[]},
+): Promise<void> {
+  // Find existing key
+  let rows = await queryRunner.query(
+    `SELECT id, value_type
+     FROM meta_data_keys
+     WHERE set_id = $1
+       AND key = $2`,
+    [setId, keyObj.key],
+  )
+
+  let keyId: number
+  if (rows.length > 0) {
+    keyId = rows[0].id
+    // Update value type if changed
+    if (rows[0].value_type !== keyObj.valueType) {
+      await queryRunner.query(
+        `UPDATE meta_data_keys
+         SET value_type = $2
+         WHERE id = $1`,
+        [keyId, keyObj.valueType],
+      )
+    }
+    // Delete old values to replace with new ones
+    await queryRunner.query(`DELETE
+                             FROM meta_data_values
+                             WHERE key_id = $1`, [keyId])
+  } else {
+    const resp = await queryRunner.query(
+      `INSERT INTO meta_data_keys(set_id, key, value_type)
+       VALUES ($1, $2, $3) RETURNING id`,
+      [setId, keyObj.key, keyObj.valueType],
+    )
+    keyId = resp[0].id
+  }
+
+  // Insert new values
+  for (let i = 0; i < (keyObj.values ?? []).length; i++) {
+    const v = keyObj.values[i]
+    const textValue = typeof v === 'string' ? v : null
+    const numberValue = typeof v === 'number' ? v : null
+    const booleanValue = typeof v === 'boolean' ? v : null
+    const timestampValue = (v && typeof v === 'object' && typeof v.toISOString === 'function')
+      ? v.toISOString()
+      : null
+
+    await queryRunner.query(
+      `INSERT INTO meta_data_values(key_id, index, text_value, number_value, boolean_value, timestamp_value)
+       VALUES ($1, $2, $3, $4, $5, $6)`,
+      [keyId, i, textValue, numberValue, booleanValue, timestampValue],
+    )
+  }
+}
+
+export async function addFormDefs(directory: string): Promise<void> {
+  const configPath = path.join(directory, 'form-fixtures.json')
+  const fixturesContent = await fs.readFile(configPath, 'utf-8')
+  const fixtures: Fixtures = JSON.parse(fixturesContent)
+
+  const dataSource = await getDbConnection(DB_CONNECTION_NAME)
+  const queryRunner = dataSource.createQueryRunner()
+  await queryRunner.connect()
+  await queryRunner.startTransaction()
+
+  try {
+    // 1. Get or create form step (by formId)
+    const formStepId = await getOrCreateFormStep(queryRunner, fixtures.formId)
+
+    // 2. Get or create form definition linked to this form step
+    await getOrCreateFormDefinitionAndLink(
+      queryRunner,
+      formStepId,
+      fixtures.formId,
+      fixtures.formName,
+      fixtures.formDescription ?? null,
+      fixtures.machineId ?? null,
+    )
+
+    // 3. Process metadata sets: merge keys and schemas
+    for (const set of fixtures.metadataSets ?? []) {
+      const setId = await getOrCreateMetadataSet(queryRunner, set.name)
+
+      // Upsert keys with their values
+      for (const key of set.keys ?? []) {
+        await upsertKeyWithValues(queryRunner, setId, key)
+      }
+
+      // Upsert schemas and link to form step
+      for (const sch of set.schemas ?? []) {
+        await upsertSchemaAndLinkToStep(
+          queryRunner,
+          directory,
+          formStepId,
+          fixtures.entityType,
+          sch.schemaType,
+          sch.schemaFile,
+          set.name, // Use metadata set name as correlation_id
+          setId,
+        )
+      }
+    }
+
+    await queryRunner.commitTransaction()
+  } catch (error) {
+    await queryRunner.rollbackTransaction()
+    throw error
+  } finally {
+    await queryRunner.release()
+  }
+}
+
+export async function removeMetadataSet(setName: string): Promise<void> {
+  const dataSource = await getDbConnection(DB_CONNECTION_NAME)
+  const queryRunner = dataSource.createQueryRunner()
+  await queryRunner.connect()
+  await queryRunner.startTransaction()
+
+  try {
+    const set = await queryRunner.query(`SELECT id
+                                FROM meta_data_set
+                                WHERE name = $1`, [setName])
+    if (set.length === 0) {
+      await queryRunner.rollbackTransaction()
+      return
+    }
+    const setId = set[0].id
+
+    // Get schema definitions linked to this metadata set
+    const schemas = await queryRunner.query(
+      `SELECT id
+       FROM schema_definition
+       WHERE meta_data_set_id = $1`,
+      [setId],
+    )
+
+    // Delete junction table links first (form_step_to_schema_definition)
+    for (const schema of schemas) {
+      await queryRunner.query(
+        `DELETE
+         FROM form_step_to_schema_definition
+         WHERE schema_definition_id = $1`,
+        [schema.id],
+      )
+    }
+
+    // Now delete schema definitions
+    await queryRunner.query(
+      `DELETE
+       FROM schema_definition
+       WHERE meta_data_set_id = $1`,
+      [setId],
+    )
+
+    // Delete values
+    const keys = await queryRunner.query(`SELECT id
+                                 FROM meta_data_keys
+                                 WHERE set_id = $1`, [setId])
+    for (const k of keys) {
+      await queryRunner.query(
+        `DELETE
+         FROM meta_data_values
+         WHERE key_id = $1`,
+        [k.id],
+      )
+    }
+
+    // Delete keys
+    await queryRunner.query(
+      `DELETE
+       FROM meta_data_keys
+       WHERE set_id = $1`,
+      [setId],
+    )
+
+    // Delete metadata set
+    await queryRunner.query(
+      `DELETE
+       FROM meta_data_set
+       WHERE id = $1`,
+      [setId],
     )
 
     await queryRunner.commitTransaction()
@@ -151,6 +360,6 @@ export async function addFormDefs(directory: string) {
     await queryRunner.rollbackTransaction()
     throw error
   } finally {
-    await ds.destroy()
+    await queryRunner.release()
   }
 }
