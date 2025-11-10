@@ -6,7 +6,7 @@ import {PartyOrigin, PartyTypeType} from '@sphereon/ssi-sdk.data-store-types'
 import {fontColors} from '@sphereon/ui-components.core'
 import {SSICheckbox, PrimaryButton, SecondaryButton, TextInputField} from '@sphereon/ui-components.ssi-react'
 import {addParty} from '@/src/services/contactService'
-import {CONTACT_ALIAS_MAX_LENGTH} from '@/src/agent/environment'
+import {getContactAliasMaxLength} from '@/src/agent/environment'
 import {NavigationEventListenerType, OID4VCINavigationEventListenerType} from '@typings'
 import style from './index.module.css'
 import {staticPropsWithSST} from '@/src/i18n/server'
@@ -79,7 +79,7 @@ const AddContactPage: React.FC = (): ReactElement => {
             placeholder={translate('contact_name_placeholder')}
             onChangeValue={onAliasChange}
             initialValue={contactName}
-            maxLength={CONTACT_ALIAS_MAX_LENGTH}
+            maxLength={getContactAliasMaxLength()}
           />
         </div>
         <SSICheckbox

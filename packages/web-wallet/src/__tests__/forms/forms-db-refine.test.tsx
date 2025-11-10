@@ -19,7 +19,7 @@ const buildMachineView = (crudFormProps: CrudFormProps<MachineDTO>) => {
   const queryClient = new QueryClient()
   return render(
     <QueryClientProvider client={queryClient}>
-      <Refine dataProvider={supabaseDataProvider(supabaseServiceClient)}>
+      <Refine dataProvider={supabaseDataProvider(supabaseServiceClient())}>
         <MachineForm {...crudFormProps} />
       </Refine>
     </QueryClientProvider>,
@@ -30,7 +30,7 @@ const buildDeleteView = (deleteFormProps: DeleteFormProps) => {
   const queryClient = new QueryClient()
   return render(
     <QueryClientProvider client={queryClient}>
-      <Refine dataProvider={supabaseDataProvider(supabaseServiceClient)}>
+      <Refine dataProvider={supabaseDataProvider(supabaseServiceClient())}>
         <DeleteForm {...deleteFormProps} />
       </Refine>
     </QueryClientProvider>,

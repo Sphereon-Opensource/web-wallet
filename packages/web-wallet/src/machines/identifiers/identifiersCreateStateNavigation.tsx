@@ -18,7 +18,7 @@ import {
 } from '@typings'
 import {IdentifiersCreateContext} from '@typings/machine/identifiers/create'
 import {CoreActions, JsonFormsCore} from '@jsonforms/core'
-import agent from '@agent'
+import { getAgent } from '@agent'
 
 const createIdentifierNavigationListener = async (step: number, navigate: any): Promise<void> => {
   switch (step) {
@@ -84,7 +84,7 @@ export const IdentifiersCreateContextProvider = (props: any): JSX.Element => {
   ) => {
     const newState = defaultReducer(state, action)
     if (!state?.data) {
-      agent.didManagerGetProviders().then(method => {
+      getAgent().didManagerGetProviders().then(method => {
         const agentMethods = method.map(did => did.replace('did:', '').toLowerCase())
         const schemaMethods = state.schema?.properties?.['method']?.oneOf?.map(oneOf => oneOf.const.toLowerCase() as string) ?? []
         console.log(`TODO: filter against Agent methods: ${agentMethods.join(',')}, schema: ${schemaMethods.join(',')}`)
@@ -98,7 +98,7 @@ export const IdentifiersCreateContextProvider = (props: any): JSX.Element => {
         method: props?.method?.default,
         network: props?.['network']?.default,
         web: {
-          hostName: process?.env?.NEXT_PUBLIC_CLIENT_ID ?? process?.env?.NEXTAUTH_URL ?? '',
+          hostName: process?.env?.BROWSER_PUBLIC_CLIENT_ID ?? process?.env?.NEXTAUTH_URL ?? '',
           path: '/.well-known',
         },
         ebsi: {

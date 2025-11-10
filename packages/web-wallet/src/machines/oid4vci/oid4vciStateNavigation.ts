@@ -27,7 +27,7 @@ import {
 } from '@typings'
 import {toNonPersistedCredentialSummary} from '@sphereon/ui-components.credential-branding'
 import {AuthorizationCodeState} from '@/pages/oid4vci/AuthorizationCodeUrl'
-import agent from '@agent'
+import { getAgent } from '@agent'
 import {OID4VCI_STATE_STORAGE_KEY} from '@/app'
 import {IdentityOrigin} from '@sphereon/ssi-sdk.data-store-types'
 import {CredentialRole} from '@sphereon/ssi-types'
@@ -142,7 +142,7 @@ const navigateAuthorizationCodeURL = async (args: OID4VCINavigationArgs): Promis
   const issuerName: string = getIssuerName(correlationId, serverMetadata!.credentialIssuerMetadata)
 
   if (!contactAlias || contactAlias.trim() == '') {
-    const contact = await agent.oid4vciHolderGetContact({serverMetadata})
+    const contact = await getAgent().oid4vciHolderGetContact({serverMetadata})
     contactAlias = contact?.contact?.displayName ?? issuerName
   }
 

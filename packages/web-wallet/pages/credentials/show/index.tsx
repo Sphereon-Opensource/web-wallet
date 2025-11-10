@@ -18,7 +18,7 @@ import type {NaturalPerson, Organization, Party} from '@sphereon/ssi-sdk.data-st
 import {PartyTypeType} from '@sphereon/ssi-sdk.data-store-types'
 import {useParams} from 'react-router-dom'
 import {staticPropsWithSST} from '@/src/i18n/server'
-import agent from '@agent'
+import { getAgent } from '@agent'
 
 import {CredentialSummary, toCredentialSummary} from '@sphereon/ui-components.credential-branding'
 import {DigitalCredential} from '@sphereon/ssi-sdk.credential-store'
@@ -30,6 +30,7 @@ import {
   sdJwtDecodedCredentialToUniformCredential, SdJwtDecodedVerifiableCredential,
 } from '@sphereon/ssi-types'
 import {defaultHasher} from '@sphereon/ssi-sdk.core'
+import {getEnv} from '@/src/services/env'
 
 enum CredentialDetailsTabRoute {
   INFO = 'info',
@@ -65,7 +66,7 @@ type DocumentItem = {
   actions: string
 }
 
-const truncationLength: number = process.env.NEXT_PUBLIC_TRUNCATION_LENGTH ? Number(process.env.NEXT_PUBLIC_TRUNCATION_LENGTH) : 8
+const truncationLength: number = getEnv('BROWSER_PUBLIC_TRUNCATION_LENGTH') ? Number(getEnv('BROWSER_PUBLIC_TRUNCATION_LENGTH')) : 8
 
 type Props = {
   credentialRole: CredentialRole
@@ -110,17 +111,17 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
       const {hash, issuerCorrelationId, subjectCorrelationId, rawDocument} = credentialResult.data.data
 
       try {
-        const issuerParties: Party[] = await agent.cmGetContacts({
+        const issuerParties: Party[] = await getAgent().cmGetContacts({
           filter: [{identities: {identifier: {correlationId: issuerCorrelationId}}}],
         })
 
         const subjectParties = subjectCorrelationId
-          ? await agent.cmGetContacts({
+          ? await getAgent().cmGetContacts({
             filter: [{identities: {identifier: {correlationId: subjectCorrelationId}}}],
           })
           : []
 
-        const credentialBrandings = await agent.ibGetCredentialBranding({
+        const credentialBrandings = await getAgent().ibGetCredentialBranding({
           filter: [{vcHash: hash}],
         })
 

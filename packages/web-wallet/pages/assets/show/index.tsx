@@ -19,6 +19,7 @@ import {CredentialStatus, fontColors} from '@sphereon/ui-components.core'
 import QRCodeModal, {QRValueResult} from 'src/components/modals/QRCodeModal'
 import {qrValueGenerator} from '../../../src/services/credentials/CredentialService'
 import {staticPropsWithSST} from '@/src/i18n/server'
+import {getEnv} from '@/src/services/env'
 
 function ShowAssetDetails() {
   const translate = useTranslate()
@@ -148,16 +149,16 @@ function ShowAssetDetails() {
             <div className={style.detailsCredentialCardCaption}>{translate('asset_details_credential_card_caption')}</div>
             <SSICredentialCardView
               header={{
-                credentialTitle: credential?.name ?? credential?.credentialSubject?.items?.[0]?.name ?? process.env.NEXT_PUBLIC_TEMP_CREDENTIAL_TITLE,
+                credentialTitle: credential?.name ?? credential?.credentialSubject?.items?.[0]?.name ?? getEnv('BROWSER_PUBLIC_TEMP_CREDENTIAL_TITLE'),
                 credentialSubtitle:
                   credential?.description ??
                   credential?.credentialSubject?.items?.[0]?.description ??
-                  process.env.NEXT_PUBLIC_TEMP_CREDENTIAL_SUBTITLE,
+                  getEnv('BROWSER_PUBLIC_TEMP_CREDENTIAL_SUBTITLE'),
                 logo:
                   typeof credential?.issuer === 'object' && credential?.issuer?.branding?.logo
                     ? credential?.issuer?.branding?.logo
                     : {
-                        uri: process.env.NEXT_PUBLIC_TEMP_CREDENTIAL_LOGO,
+                        uri: getEnv('BROWSER_PUBLIC_TEMP_CREDENTIAL_LOGO'),
                         dimensions: {
                           width: 327,
                           height: 186,
@@ -168,18 +169,18 @@ function ShowAssetDetails() {
                 issuerName:
                   typeof credential?.issuer === 'object' && credential?.issuer?.name
                     ? credential?.issuer?.name
-                    : process.env.NEXT_PUBLIC_TEMP_CREDENTIAL_ISSUER_NAME,
+                    : getEnv('BROWSER_PUBLIC_TEMP_CREDENTIAL_ISSUER_NAME'),
               }}
               footer={{
                 expirationDate: credential?.expirationDate ? +new Date(credential.expirationDate) : undefined,
-                credentialStatus: process.env.NEXT_PUBLIC_TEMP_CREDENTIAL_STATUS as CredentialStatus,
+                credentialStatus: getEnv('BROWSER_PUBLIC_TEMP_CREDENTIAL_STATUS') as CredentialStatus,
               }}
               display={{
                 backgroundImage:
                   typeof credential?.issuer === 'object' && credential?.issuer?.branding?.backgroundImage
                     ? credential?.issuer?.branding?.backgroundImage
                     : {
-                        uri: process.env.NEXT_PUBLIC_TEMP_CREDENTIAL_BACKGROUND_IMAGE,
+                        uri: getEnv('BROWSER_PUBLIC_TEMP_CREDENTIAL_BACKGROUND_IMAGE'),
                         dimensions: {
                           width: 327,
                           height: 186,

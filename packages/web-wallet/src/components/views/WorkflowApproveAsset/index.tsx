@@ -7,6 +7,7 @@ import styles from './index.module.css'
 import {VerifiableCredential} from '@veramo/core'
 import {KeyValuePair} from '@typings'
 import {CredentialStatus, fontColors} from '@sphereon/ui-components.core'
+import {getEnv} from '@/src/services/env'
 
 type Props = {
   titleCaption: string
@@ -83,13 +84,13 @@ const WorkflowApproveAsset: FC<Props> = (props: Props): ReactElement => {
                       <SSICredentialCardView
                         header={{
                           credentialTitle:
-                            credential?.name ?? credential?.credentialSubject?.items?.[0]?.name ?? process.env.NEXT_PUBLIC_TEMP_CREDENTIAL_TITLE,
+                            credential?.name ?? credential?.credentialSubject?.items?.[0]?.name ?? getEnv('BROWSER_PUBLIC_TEMP_CREDENTIAL_TITLE'),
                           credentialSubtitle:
                             credential?.description ??
                             credential?.credentialSubject?.items?.[0]?.description ??
-                            process.env.NEXT_PUBLIC_TEMP_CREDENTIAL_SUBTITLE,
+                            getEnv('BROWSER_PUBLIC_TEMP_CREDENTIAL_SUBTITLE'),
                           logo: issuer?.branding?.logo ?? {
-                            uri: process.env.NEXT_PUBLIC_TEMP_CREDENTIAL_LOGO,
+                            uri: getEnv('BROWSER_PUBLIC_TEMP_CREDENTIAL_LOGO'),
                             dimensions: {
                               width: 327,
                               height: 186,
@@ -97,15 +98,15 @@ const WorkflowApproveAsset: FC<Props> = (props: Props): ReactElement => {
                           },
                         }}
                         body={{
-                          issuerName: issuer?.name ?? process.env.NEXT_PUBLIC_TEMP_CREDENTIAL_ISSUER_NAME,
+                          issuerName: issuer?.name ?? getEnv('BROWSER_PUBLIC_TEMP_CREDENTIAL_ISSUER_NAME'),
                         }}
                         footer={{
                           expirationDate: credential?.expirationDate ? +new Date(credential.expirationDate) : undefined,
-                          credentialStatus: process.env.NEXT_PUBLIC_TEMP_CREDENTIAL_STATUS as CredentialStatus,
+                          credentialStatus: getEnv('BROWSER_PUBLIC_TEMP_CREDENTIAL_STATUS') as CredentialStatus,
                         }}
                         display={{
                           backgroundImage: issuer?.branding?.backgroundImage ?? {
-                            uri: process.env.NEXT_PUBLIC_TEMP_CREDENTIAL_BACKGROUND_IMAGE,
+                            uri: getEnv('BROWSER_PUBLIC_TEMP_CREDENTIAL_BACKGROUND_IMAGE'),
                             dimensions: {
                               width: 327,
                               height: 186,

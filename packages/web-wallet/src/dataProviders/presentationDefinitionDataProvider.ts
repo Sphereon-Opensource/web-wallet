@@ -14,7 +14,7 @@ import {
   UpdateParams,
   UpdateResponse,
 } from '@refinedev/core'
-import agent from '@agent'
+import { getAgent } from '@agent'
 import type {DcqlQueryItem, FindDcqlQueryArgs} from '@sphereon/ssi-sdk.data-store-types'
 import type {DcqlQueryItemFilter} from '@sphereon/ssi-sdk.data-store-types'
 import {DataResource} from '@typings'
@@ -63,7 +63,7 @@ export const presentationDefinitionDataProvider = (): DataProvider => ({
       fetchOptions.showVersionHistory = meta.variables.showVersionHistory
     }
 
-    const items: DcqlQueryItem[] = await agent.pdmGetDefinitions({filter: findArgs, opts: fetchOptions})
+    const items: DcqlQueryItem[] = await getAgent().pdmGetDefinitions({filter: findArgs, opts: fetchOptions})
     // FIXME CWALL-234 there should be a better way for this but i could not find any yet without refine.dev not complaining
     const data: TData[] = items.map(item => ({...(item as any)}))
 
@@ -74,7 +74,7 @@ export const presentationDefinitionDataProvider = (): DataProvider => ({
   },
   getOne: async <TData extends BaseRecord = BaseRecord>({resource, id}: GetOneParams): Promise<GetOneResponse<TData>> => {
     assertResource(resource)
-    const item: DcqlQueryItem = await agent.pdmGetDefinition({itemId: id as string})
+    const item: DcqlQueryItem = await getAgent().pdmGetDefinition({itemId: id as string})
     return {
       data: item as unknown as TData,
     }
@@ -84,7 +84,7 @@ export const presentationDefinitionDataProvider = (): DataProvider => ({
     variables,
   }: CreateParams<TVariables>): Promise<CreateResponse<TData>> => {
     assertResource(resource)
-    const item: DcqlQueryItem = await agent.pdmPersistDefinition({definitionItem: variables as DcqlQueryItem})
+    const item: DcqlQueryItem = await getAgent().pdmPersistDefinition({definitionItem: variables as DcqlQueryItem})
     return {
       data: item as unknown as TData,
     }
@@ -95,7 +95,7 @@ export const presentationDefinitionDataProvider = (): DataProvider => ({
     variables,
   }: UpdateParams<TVariables>): Promise<UpdateResponse<TData>> => {
     assertResource(resource)
-    const item: DcqlQueryItem = await agent.pdmPersistDefinition({definitionItem: variables as DcqlQueryItem})
+    const item: DcqlQueryItem = await getAgent().pdmPersistDefinition({definitionItem: variables as DcqlQueryItem})
     return {
       data: item as unknown as TData,
     }
@@ -105,7 +105,7 @@ export const presentationDefinitionDataProvider = (): DataProvider => ({
     id,
   }: DeleteOneParams<TVariables>): Promise<DeleteOneResponse<TData>> => {
     assertResource(resource)
-    await agent.pdmDeleteDefinition({itemId: id as string})
+    await getAgent().pdmDeleteDefinition({itemId: id as string})
     return {
       data: {} as TData,
     }
@@ -115,7 +115,7 @@ export const presentationDefinitionDataProvider = (): DataProvider => ({
     const filter: FindDcqlQueryArgs = params.ids.map(id => {
       return {id: id as string}
     })
-    await agent.pdmDeleteDefinitions({
+    await getAgent().pdmDeleteDefinitions({
       filter: filter,
     })
     return {

@@ -41,12 +41,12 @@ const nextConfig = {
       /*JWKS proxy to agent*/
       {
         source: '/.well-known/jwks/:path*',
-        destination: `${process.env.NEXT_PUBLIC_AGENT_BASE_URL}/.well-known/jwks/:path*`,
+        destination: `${process.env.BROWSER_PUBLIC_AGENT_BASE_URL}/.well-known/jwks/:path*`,
       },
       /*DID: WEB proxy to agent*/
       {
         source: '/:path*/did.json',
-        destination: `${process.env.NEXT_PUBLIC_AGENT_BASE_URL}/:path*/did.json`,
+        destination: `${process.env.BROWSER_PUBLIC_AGENT_BASE_URL}/:path*/did.json`,
       },
     ]
   },

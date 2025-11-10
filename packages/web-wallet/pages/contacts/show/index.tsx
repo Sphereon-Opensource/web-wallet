@@ -9,7 +9,7 @@ import {oid4vciCredentialLocaleBrandingFrom} from '@sphereon/ssi-sdk.oid4vci-hol
 import PageHeaderBar from '@components/bars/PageHeaderBar'
 import {staticPropsWithSST} from '@/src/i18n/server'
 import {CredentialConfigurationSupported, CredentialConfigurationSupportedV1_0_15, CredentialsSupportedDisplay} from '@sphereon/oid4vci-common'
-import agent from '@agent'
+import { getAgent } from '@agent'
 import style from './index.module.css'
 import {CredentialCatalogItem} from '@typings'
 import CredentialCatalogView from '@components/views/CredentialCatalogView'
@@ -74,7 +74,7 @@ const ShowContactDetails: FC = (): ReactElement => {
         credentialBranding[configId] = await Promise.all(
           (credentialsConfigSupported.display ?? []).map(
             async (display: CredentialsSupportedDisplay): Promise<IBasicCredentialLocaleBranding> =>
-              await agent.ibCredentialLocaleBrandingFrom({localeBranding: await oid4vciCredentialLocaleBrandingFrom({credentialDisplay: display})}),
+              await getAgent().ibCredentialLocaleBrandingFrom({localeBranding: await oid4vciCredentialLocaleBrandingFrom({credentialDisplay: display})}),
           ),
         )
       }),
