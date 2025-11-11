@@ -30,7 +30,7 @@ import {
   sdJwtDecodedCredentialToUniformCredential, SdJwtDecodedVerifiableCredential,
 } from '@sphereon/ssi-types'
 import {defaultHasher} from '@sphereon/ssi-sdk.core'
-import {getEnv} from '@/src/services/env'
+import {getEnv, getEnvInt} from '@/src/services/env'
 
 enum CredentialDetailsTabRoute {
   INFO = 'info',
@@ -66,8 +66,6 @@ type DocumentItem = {
   actions: string
 }
 
-const truncationLength: number = getEnv('BROWSER_PUBLIC_TRUNCATION_LENGTH') ? Number(getEnv('BROWSER_PUBLIC_TRUNCATION_LENGTH')) : 8
-
 type Props = {
   credentialRole: CredentialRole
 }
@@ -93,6 +91,7 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
   const translate = useTranslate()
   const params = useParams()
   const {id} = params
+  const truncationLength: number = getEnvInt('BROWSER_PUBLIC_TRUNCATION_LENGTH', 8)
   const [credentialSummary, setCredentialSummary] = useState<CredentialSummary | undefined>(undefined)
   const credentialResult = useOne<DigitalCredential, HttpError>({
     resource: DataResource.CREDENTIALS,
