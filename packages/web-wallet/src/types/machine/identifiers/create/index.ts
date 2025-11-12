@@ -8,6 +8,14 @@ export type IdentifierParams = {
   type: string
 }
 
+export type AddKeyFormData = {
+  action: 'generate' | 'select'
+  type?: string
+  alias?: string
+  selectedKeyId?: string
+  purposes?: string[]
+}
+
 export type IdentifiersCreateContextType = UIContextType & {
   identifierData?: JSONFormState<KeyManagementIdentifier>
   onIdentifierDataChange: (data: JSONFormState<KeyManagementIdentifier>) => Promise<void>
@@ -18,6 +26,7 @@ export type IdentifiersCreateContextType = UIContextType & {
   onSetKeys: Dispatch<React.SetStateAction<Array<IdentifierKey>>>
   keyData?: JSONFormState // TODO CWALL-245 would be nice if we can add a generic
   onKeyDataChange: (data: JSONFormState) => Promise<void>
+  keySchema?: any
   serviceEndpoints: Array<IdentifierServiceEndpoint>
   onSetServiceEndpoints: Dispatch<React.SetStateAction<Array<IdentifierServiceEndpoint>>>
   serviceEndpointData?: JSONFormState // TODO CWALL-245 would be nice if we can add a generic

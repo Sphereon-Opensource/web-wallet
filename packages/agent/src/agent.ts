@@ -20,7 +20,7 @@ import {
   IS_PDM_API_ENABLED,
   IS_STATUS_LIST_ENABLED,
   IS_VC_API_ENABLED,
-  OID4VP_DEFINITIONS,
+  OID4VP_DEFINITIONS, REST_KMS_APPLICATION_ID, REST_KMS_BASE_URL, REST_KMS_PROVIDER_ID,
   STATUS_LIST_API_BASE_PATH,
   STATUS_LIST_CORRELATION_ID,
   STATUS_LIST_ID,
@@ -47,6 +47,7 @@ import {DIDManager} from '@veramo/did-manager'
 import {DIDResolverPlugin} from '@veramo/did-resolver'
 import {SphereonKeyManager} from '@sphereon/ssi-sdk-ext.key-manager'
 import {SecretBox} from '@veramo/kms-local'
+import {RestKeyManagementSystem} from '@sphereon/ssi-sdk.kms-rest'
 import {SphereonKeyManagementSystem} from '@sphereon/ssi-sdk-ext.kms-local'
 import {
   createDidProviders,
@@ -159,6 +160,11 @@ const plugins: IAgentPlugin[] = [
     store: new KeyStore(dbConnection),
     kms: {
       local: new SphereonKeyManagementSystem(privateKeyStore),
+      rest: new RestKeyManagementSystem({
+        applicationId: REST_KMS_APPLICATION_ID,
+        baseUrl: REST_KMS_BASE_URL,
+        providerId: REST_KMS_PROVIDER_ID,
+      }),
     },
   }),
   new DIDManager({

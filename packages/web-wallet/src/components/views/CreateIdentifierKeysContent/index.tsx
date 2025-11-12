@@ -13,8 +13,11 @@ import {createAjv} from '@jsonforms/core'
 
 const CreateIdentifierKeysContent: FC = (): ReactElement => {
   const translate = useTranslate()
-  const {keys, onSetKeys, onKeyDataChange, keyData, capabilitiesInfo, identifierKeyMiddleware} = useIdentifierCreateOutletContext()
+  const {keys, onSetKeys, onKeyDataChange, keyData, capabilitiesInfo, identifierKeyMiddleware, keySchema} = useIdentifierCreateOutletContext()
   const ajv = createAjv({useDefaults: 'empty', coerceTypes: true})
+
+  // Use dynamic schema if available, otherwise fall back to static schema
+  const schema = keySchema || addKeySchema
 
   const onAddKey = async (): Promise<void> => {
     const type = keyData?.data?.type
@@ -71,7 +74,7 @@ const CreateIdentifierKeysContent: FC = (): ReactElement => {
             </div>
             <FormView
               data={keyData?.data}
-              schema={addKeySchema}
+              schema={schema}
               uiSchema={addKeyUISchema}
               onFormStateChange={onKeyDataChange}
               middleware={identifierKeyMiddleware}
@@ -99,7 +102,7 @@ const CreateIdentifierKeysContent: FC = (): ReactElement => {
                 <div className={style.addTitleCaption}>{translate('create_identifier_keys_add_key_title')}</div>
                 <FormView
                   data={keyData?.data}
-                  schema={addKeySchema}
+                  schema={schema}
                   uiSchema={addKeyUISchema}
                   onFormStateChange={onKeyDataChange}
                   middleware={identifierKeyMiddleware}

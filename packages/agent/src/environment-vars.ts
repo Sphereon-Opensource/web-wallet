@@ -133,3 +133,7 @@ export const OID4VP_RP_OPTIONS_PATH = `${CONF_PATH}/oid4vp_options`
 export const OID4VP_RP_METADATA_PATH = `${CONF_PATH}/oid4vp_metadata`
 
 export const IS_PDM_API_ENABLED = toBoolean(process.env.PDM_API_ENABLED, true)
+
+export const REST_KMS_BASE_URL = env('REST_KMS_BASE_URL', ENV_VAR_PREFIX) ?? 'http://localhost:8080'
+export const REST_KMS_PROVIDER_ID = env('REST_KMS_PROVIDER_ID', ENV_VAR_PREFIX)
+export const REST_KMS_APPLICATION_ID = env('REST_KMS_APPLICATION_ID', ENV_VAR_PREFIX) ?? 'cloud-kms'

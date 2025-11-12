@@ -15,7 +15,7 @@ import {
   UpdateResponse,
 } from '@refinedev/core'
 import {DID_PREFIX} from '@sphereon/ssi-sdk-ext.did-utils'
-import {getAgent} from '@agent'
+import {getAgent, getAgentContext} from '@agent'
 import {IdentifierKey, IdentifierServiceEndpoint, KeyManagementIdentifier, KeyManagementSystem} from '@typings'
 import {IIdentifier} from '@veramo/core'
 import type {EbsiAccessTokenOpts, EbsiEnvironment} from '@sphereon/ssi-sdk.ebsi-support'
@@ -253,7 +253,7 @@ export const identifiersDataProvider = (): DataProvider => ({
           accessTokenOpts: ebsiAccessTokenOpts,
         },
         // @ts-ignore
-        agentContext,
+        getAgentContext(),
       )
     }
 
