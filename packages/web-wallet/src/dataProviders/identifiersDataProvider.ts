@@ -15,7 +15,7 @@ import {
   UpdateResponse,
 } from '@refinedev/core'
 import {DID_PREFIX} from '@sphereon/ssi-sdk-ext.did-utils'
-import {getAgentContext, getAgent} from '@agent'
+import {getAgent, getAgentContext} from '@agent'
 import {IdentifierKey, IdentifierServiceEndpoint, KeyManagementIdentifier, KeyManagementSystem} from '@typings'
 import {IIdentifier} from '@veramo/core'
 import type {EbsiAccessTokenOpts, EbsiEnvironment} from '@sphereon/ssi-sdk.ebsi-support'
@@ -151,7 +151,8 @@ export const identifiersDataProvider = (): DataProvider => ({
                                                                                           variables,
                                                                                           meta,
                                                                                         }: CreateParams<TVars>): Promise<CreateResponse<TData>> => {
-    const {kms = KeyManagementSystem.LOCAL, keys = [], method, identifier: kmIdentifier} = variables
+    const {keys = [], method, identifier: kmIdentifier} = variables
+    let {kms = KeyManagementSystem.LOCAL} = variables
     const clientId = process?.env?.BROWSER_PUBLIC_CLIENT_ID ?? `${window.location.protocol}//${window.location.hostname}`
     const network = kmIdentifier?.network
     const ebsi = kmIdentifier?.ebsi
@@ -184,15 +185,36 @@ export const identifiersDataProvider = (): DataProvider => ({
         alias += suffix
         console.log(`DID Web: ${alias}, path: ${path}`)
       }
-      options['keys'] = keys.map(idKey => {
-        return {
-          key: {
+
+      // Process keys - fetch existing ones or prepare for generation
+      options['keys'] = await Promise.all(
+        keys.map(async (idKey: IdentifierKey) => {
+          // If the key has a kid, fetch it from the key manager
+          if (idKey.kid) {
+            const existingKey = await getAgent().keyManagerGet({kid: idKey.kid})
+            kms = existingKey.kms
+            return {
+              key: {
+                ...existingKey,
+                meta: {
+                  ...existingKey.meta,
+                  purposes: idKey.purposes,
+                },
+              },
+              type: existingKey.type,
+            }
+
+          }
+          // Otherwise, prepare for key generation
+          return {
+            key: {
+              type: idKey.type,
+              meta: {purposes: idKey.purposes},
+            },
             type: idKey.type,
-            meta: {purposes: idKey.purposes},
-          },
-          type: idKey.type,
-        }
-      })
+          }
+        }),
+      )
     } else if (method === 'ebsi') {
       const ebsiKeys = keys.filter(key => key.readonly)
       const methodSpecificId = generateEbsiMethodSpecificId()

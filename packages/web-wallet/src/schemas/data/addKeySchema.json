@@ -41,7 +41,13 @@
     },
     "selectedKeyId": {
       "type": "string",
-      "title": "Key"
+      "title": "Key",
+      "oneOf": [
+        {
+          "const": "test",
+          "title": "Test"
+        }
+      ]
     },
     "purposes": {
       "type": "array",
