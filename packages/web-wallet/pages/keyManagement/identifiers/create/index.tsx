@@ -28,6 +28,7 @@ const IdentifierCreatePage: FC = () => {
     maxInteractiveSteps,
     identifierMiddleware,
     identifierKeyMiddleware,
+    keySchema,
   } = useIdentifiersCreateMachine()
 
   const steps = [
@@ -76,6 +77,7 @@ const IdentifierCreatePage: FC = () => {
               identifierMiddleware,
               identifierKeyMiddleware,
               capabilitiesInfo,
+              keySchema,
             }}
           />
           <div className={style.buttonsContainer}>

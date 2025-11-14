@@ -5,9 +5,9 @@ process.env.I18NEXT_DEFAULT_CONFIG_PATH = `./next-i18next.config.mjs`
 const nextConfig = {
   i18n: i18nNextConfig.i18n,
 
-  transpilePackages: ['@sphereon/ui-components.ssi-react', '@sphereon/ssi-sdk.ebsi-support'],
+  transpilePackages: ['@sphereon/ui-components.ssi-react', '@sphereon/ssi-sdk.ebsi-support', '@veramo/did-manager'],
 
-  webpack(config, { isServer }) {
+  webpack(config, { dev, isServer }) {
     if (!isServer) {
       config.resolve.alias = {
         ...config.resolve.alias,
@@ -24,6 +24,10 @@ const nextConfig = {
         events: false,
         dns: false,
       }
+    }
+
+    if (dev) {
+      config.devtool = 'cheap-module-source-map' // or 'cheap-module-source-map'
     }
     return config
   },
