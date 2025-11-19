@@ -123,3 +123,25 @@ export class CredentialTableItem {
     })
   }
 }
+
+export type CredentialSchemaClaimType = "object" | "string" | "number" | "boolean" | "array"
+
+export type CredentialSchemaClaim = {
+  claimName: string
+  type: CredentialSchemaClaimType
+  required?: boolean
+  properties?: Array<CredentialSchemaClaim>
+}
+
+export type CredentialSchema  = {
+  type: string
+  properties?: Record<string, any>
+  required?: Array<string>
+}
+
+export type CredentialUISchema = {
+  type: string
+  label?: string
+  scope?: string
+  elements?: Array<CredentialUISchema>
+}

@@ -1,0 +1,217 @@
+{
+  "title": "Personal Identification Data (PID)",
+  "description": "Schema for Personal Identification Data Credential",
+  "type": "object",
+  "properties": {
+    "issuing_authority": {
+      "description": "Name of the authority that issued the PID",
+      "type": "string",
+      "default": "FIDES Demo Authority"
+    },
+    "issuing_authority_id": {
+      "description": "Unique identifier of the issuing authority",
+      "type": "string",
+      "default": "FIDES-NL-001"
+    },
+    "issuing_country": {
+      "description": "Alpha-2 country code, as defined in ISO 3166-1, of the issuing country or territory",
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 2,
+      "default": "NL"
+    },
+    "issuing_jurisdiction": {
+      "description": "Jurisdiction that issued the PID",
+      "type": "string",
+      "default": "Netherlands"
+    },
+    "issuance_date": {
+      "description": "Date of issuance",
+      "type": "string",
+      "format": "date",
+      "default": "now"
+    },
+    "given_name": {
+      "description": "Given name(s) of the person",
+      "type": "string"
+    },
+    "family_name": {
+      "description": "Family name(s) of the person",
+      "type": "string"
+    },
+    "birth_date": {
+      "description": "Date of birth",
+      "type": "string",
+      "format": "date"
+    },
+    "birth_place": {
+      "description": "Place of birth",
+      "type": "string"
+    },
+    "birth_city": {
+      "description": "City of birth",
+      "type": "string"
+    },
+    "birth_state": {
+      "description": "State or province of birth",
+      "type": "string"
+    },
+    "birth_country": {
+      "description": "Country of birth (Alpha-2 ISO 3166-1)",
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 2
+    },
+    "nationality": {
+      "description": "Nationality (Alpha-2 ISO 3166-1)",
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 2
+    },
+    "gender": {
+      "description": "Gender of the person",
+      "type": "string",
+      "enum": [
+        "Male",
+        "Female",
+        "Other",
+        "Unspecified"
+      ]
+    },
+    "age_over_18": {
+      "description": "Indicator if person is over 18 years old",
+      "type": "boolean",
+      "default": false
+    },
+    "age_over_21": {
+      "description": "Indicator if person is over 21 years old",
+      "type": "boolean",
+      "default": false
+    },
+    "age_in_years": {
+      "description": "Age in years",
+      "type": "integer",
+      "minimum": 0
+    },
+    "age_birth_year": {
+      "description": "Year of birth",
+      "type": "integer",
+      "minimum": 1900
+    },
+    "document_number": {
+      "description": "Document number of the identification document",
+      "type": "string"
+    },
+    "administrative_number": {
+      "description": "Administrative number (e.g., citizen service number)",
+      "type": "string"
+    },
+    "given_name_birth": {
+      "description": "Given name(s) at birth",
+      "type": "string"
+    },
+    "family_name_birth": {
+      "description": "Family name(s) at birth",
+      "type": "string"
+    },
+    "resident_address": {
+      "description": "Full residential address",
+      "type": "string"
+    },
+    "resident_street": {
+      "description": "Street name of residence",
+      "type": "string"
+    },
+    "resident_house_number": {
+      "description": "House number of residence",
+      "type": "string"
+    },
+    "resident_city": {
+      "description": "City of residence",
+      "type": "string"
+    },
+    "resident_state": {
+      "description": "State or province of residence",
+      "type": "string"
+    },
+    "resident_postal_code": {
+      "description": "Postal code of residence",
+      "type": "string"
+    },
+    "resident_country": {
+      "description": "Country of residence (Alpha-2 ISO 3166-1)",
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 2
+    },
+    "status_list": {
+      "description": "Status list information for credential status verification",
+      "type": "object",
+      "properties": {
+        "uri": {
+          "description": "URI of the status list",
+          "type": "string",
+          "format": "uri",
+          "default": "https://agent.hrv-notarissen.demo.sphereon.com/vc/status-lists/1"
+        },
+        "idx": {
+          "description": "Index in the status list",
+          "type": "string",
+          "default": "0"
+        }
+      },
+      "required": [
+        "uri",
+        "idx"
+      ]
+    },
+    "disclosureFrame": {
+      "description": "Frame defining which fields can be selectively disclosed",
+      "type": "object",
+      "properties": {
+        "_sd": {
+          "description": "Array of field names that can be selectively disclosed",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "given_name",
+            "family_name",
+            "birth_date",
+            "birth_place",
+            "birth_city",
+            "birth_state",
+            "birth_country",
+            "nationality",
+            "gender",
+            "age_over_18",
+            "age_over_21",
+            "age_in_years",
+            "age_birth_year",
+            "document_number",
+            "administrative_number",
+            "given_name_birth",
+            "family_name_birth",
+            "resident_address",
+            "resident_street",
+            "resident_house_number",
+            "resident_city",
+            "resident_state",
+            "resident_postal_code",
+            "resident_country",
+            "issuing_country",
+            "issuing_jurisdiction"
+          ]
+        }
+      }
+    }
+  },
+  "required": [
+    "given_name",
+    "family_name",
+    "birth_date",
+    "birth_place",
+    "nationality"
+  ]
+}

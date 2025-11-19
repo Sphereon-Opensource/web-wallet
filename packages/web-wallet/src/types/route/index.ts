@@ -11,6 +11,7 @@ export enum MainRoute {
   SUB_CREATE = 'create',
   SUB_EDIT = 'edit',
   SUB_ID = ':id',
+  DESIGNER = 'designer',
   OID4VCI = '/oid4vci',
   KEY_MANAGEMENT = '/key-management',
   QUERY_MANAGEMENT = '/query-management',
@@ -46,6 +47,10 @@ export enum DetailRoute {
 export enum IssueCredentialRoute {
   DETAILS = 'details',
   ISSUE_METHOD = 'method',
+}
+
+export enum CredentialDesignerRoute {
+  CLAIMS = 'claims'
 }
 
 export enum OID4VCIRoute {

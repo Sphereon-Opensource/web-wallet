@@ -21,7 +21,7 @@ import GetAssetSummaryContent from 'src/components/views/GetAssetSummaryContent'
 import GetPublishAssetContent from 'src/components/views/GetPublishAssetContent'
 import CredentialsListPage from '../../pages/credentials'
 import CredentialsCreatePage from '../../pages/credentials/create'
-import {CredentialsCreateContextProvider} from '@machines/credentials/credentialsCreateStateNavigation'
+import {CredentialsCreateContextProvider} from '@machines/credentials/credentialCreateStateNavigation'
 import IssueCredentialEnterDetailsContent from '@components/views/IssueCredentialEnterDetailsContent'
 import IssueCredentialIssueMethodContent from '@components/views/IssueCredentialIssueMethodContent'
 import ShowCredentialDetails from '../../pages/credentials/show'
@@ -55,6 +55,7 @@ import {
   OID4VCIRoute,
   SIOPV2Route,
   OrganizationContactCreationRoute,
+  CredentialDesignerRoute,
 } from '@typings'
 import CreateIdentifierKeysContent from '@components/views/CreateIdentifierKeysContent'
 import CreateIdentifierAddServiceEndpointContent from '@components/views/CreateIdentifierAddServiceEndpointContent'
@@ -67,6 +68,9 @@ import Siopv2ErrorPage from '@/pages/siopv2/error'
 import {NavigationProvider} from './NavigationContext'
 import { CredentialRole } from '@sphereon/ssi-types'
 import ShowContactDetails from '@/pages/contacts/show'
+import CredentialDesignerContextProvider from '@machines/credentials/credentialDesignerStateNavigation'
+import CredentialDesignerCreatePage from '@/pages/credentials/design/create'
+import CredentialDesignClaimsContent from '@components/views/CredentialDesignClaimsContent'
 
 const KeycloakLoginPage = (props: PropsWithChildren<any>) => {
   const {mutate: login} = useLogin()
@@ -149,6 +153,20 @@ const AppRouter: React.FC = () => {
               }>
               <Route path={IssueCredentialRoute.DETAILS} element={<IssueCredentialEnterDetailsContent />} />
               <Route path={IssueCredentialRoute.ISSUE_METHOD} element={<IssueCredentialIssueMethodContent />} />
+            </Route>
+            <Route path={MainRoute.DESIGNER}>
+              <Route
+                path={MainRoute.SUB_CREATE}
+                element={
+                  <CredentialDesignerContextProvider>
+                    <CredentialDesignerCreatePage />
+                  </CredentialDesignerContextProvider>
+                }>
+                    <Route path={CredentialDesignerRoute.CLAIMS} element={
+                        <CredentialDesignClaimsContent />
+                    }
+                />
+              </Route>
             </Route>
             <Route path={MainRoute.SUB_ID} element={<ShowCredentialDetails credentialRole={CredentialRole.HOLDER} />} />
           </Route>

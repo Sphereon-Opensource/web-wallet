@@ -1,0 +1,159 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Label",
+      "text": "Personal Identification Data (PID)"
+    },
+    {
+      "type": "Group",
+      "label": "Personal Information",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "Given Name",
+          "scope": "#/properties/given_name"
+        },
+        {
+          "type": "Control",
+          "label": "Family Name",
+          "scope": "#/properties/family_name"
+        },
+        {
+          "type": "Control",
+          "label": "Given Name at Birth",
+          "scope": "#/properties/given_name_birth"
+        },
+        {
+          "type": "Control",
+          "label": "Family Name at Birth",
+          "scope": "#/properties/family_name_birth"
+        },
+        {
+          "type": "Control",
+          "label": "Gender",
+          "scope": "#/properties/gender"
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Birth Information",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "Date of Birth",
+          "scope": "#/properties/birth_date"
+        },
+        {
+          "type": "Control",
+          "label": "Place of Birth",
+          "scope": "#/properties/birth_place"
+        },
+        {
+          "type": "Control",
+          "label": "City of Birth",
+          "scope": "#/properties/birth_city"
+        },
+        {
+          "type": "Control",
+          "label": "State of Birth",
+          "scope": "#/properties/birth_state"
+        },
+        {
+          "type": "Control",
+          "label": "Country of Birth",
+          "scope": "#/properties/birth_country"
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Nationality & Age",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "Nationality",
+          "scope": "#/properties/nationality"
+        },
+        {
+          "type": "Control",
+          "label": "Age in Years",
+          "scope": "#/properties/age_in_years"
+        },
+        {
+          "type": "Control",
+          "label": "Birth Year",
+          "scope": "#/properties/age_birth_year"
+        },
+        {
+          "type": "Control",
+          "label": "Age Over 18",
+          "scope": "#/properties/age_over_18"
+        },
+        {
+          "type": "Control",
+          "label": "Age Over 21",
+          "scope": "#/properties/age_over_21"
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Document Information",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "Document Number",
+          "scope": "#/properties/document_number"
+        },
+        {
+          "type": "Control",
+          "label": "Administrative Number",
+          "scope": "#/properties/administrative_number"
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Residential Address",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "Full Address",
+          "scope": "#/properties/resident_address"
+        },
+        {
+          "type": "Control",
+          "label": "Street",
+          "scope": "#/properties/resident_street"
+        },
+        {
+          "type": "Control",
+          "label": "House Number",
+          "scope": "#/properties/resident_house_number"
+        },
+        {
+          "type": "Control",
+          "label": "City",
+          "scope": "#/properties/resident_city"
+        },
+        {
+          "type": "Control",
+          "label": "State",
+          "scope": "#/properties/resident_state"
+        },
+        {
+          "type": "Control",
+          "label": "Postal Code",
+          "scope": "#/properties/resident_postal_code"
+        },
+        {
+          "type": "Control",
+          "label": "Country",
+          "scope": "#/properties/resident_country"
+        }
+      ]
+    }
+  ]
+}
