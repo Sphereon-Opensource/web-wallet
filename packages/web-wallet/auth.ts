@@ -19,7 +19,7 @@ const determineDomain = (url: string) => {
     .join('.')
 }
 
-const useSecureCookies = true//process.env.NEXTAUTH_URL?.startsWith('https://')
+const useSecureCookies = process.env.NEXTAUTH_URL?.startsWith('https://')
 const cookiePrefix = useSecureCookies ? '__Secure-' : ''
 const hostName = determineDomain(process.env.NEXTAUTH_URL!)
 const isIp = isIP(process.env.NEXTAUTH_URL!)
