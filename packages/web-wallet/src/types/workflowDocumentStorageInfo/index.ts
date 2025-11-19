@@ -9,7 +9,7 @@ export class WorkflowDocumentStorageInfoDTO {
   uploaded_by_did: string
   storage_object_id: string
   storage_object_path: string
-  category: string
+  category: DocumentCategory
   type: string
   correlation_id: string
   file_name: string

@@ -1,10 +1,10 @@
 import {
   Asset,
   createAssetDescriptor,
+  getProcessOwnerDid,
   IInEdge,
   IOutEdge,
   IWorkflowStepDescriptor,
-  PROCESS_OWNER_DID,
   WorkflowDTOType,
   WorkflowEntity,
   WorkflowEntityType,
@@ -42,7 +42,7 @@ export async function newCreateAssetWorkflowEntities(
   },
 ): Promise<IWorkflowStepData> {
   const workflowEntity = new WorkflowEntity()
-  workflowEntity.owner_id = PROCESS_OWNER_DID
+  workflowEntity.owner_id = getProcessOwnerDid()
   workflowEntity.created_at = new Date().toISOString()
   workflowEntity.asset_id = asset.id
 
@@ -50,7 +50,7 @@ export async function newCreateAssetWorkflowEntities(
   if (wfRes.error || !wfRes.data || wfRes.data.length == 0) {
     throw new Error('Adding workflow failed: ' + wfRes.error)
   }
-  const workflowId = wfRes.data[0]['id']
+  const workflowId = wfRes.data[0]['id'] as string
   workflowEntity.id = workflowId
 
   /*const res = await create.mutate({
@@ -78,8 +78,8 @@ export async function newCreateAssetWorkflowEntities(
   workflowStepEntity.message = createAssetDescriptor.message
   workflowStepEntity.action = createAssetDescriptor.action!
   workflowStepEntity.created_at = new Date().toISOString()
-  workflowStepEntity.sender_id = PROCESS_OWNER_DID
-  workflowStepEntity.recipient_id = PROCESS_OWNER_DID
+  workflowStepEntity.sender_id = getProcessOwnerDid()
+  workflowStepEntity.recipient_id = getProcessOwnerDid()
   workflowStepEntity.workflow_id = workflowId
 
   const stepRes = await supabaseServiceClient().from('workflow_step').insert(workflowStepEntity).select('id')

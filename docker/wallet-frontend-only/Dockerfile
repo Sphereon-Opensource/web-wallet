@@ -1,5 +1,15 @@
 # Stage 1: Builder
 FROM node:20-alpine AS builder
+RUN apk add --no-cache \
+    build-base \
+    pkgconf \
+    cairo-dev \
+    pango-dev \
+    jpeg-dev \
+    giflib-dev \
+    librsvg-dev \
+    sed
+
 WORKDIR /app
 
 # Install dependencies needed for native modules
@@ -12,14 +22,13 @@ RUN apk add --no-cache \
 # Install pnpm globally
 RUN npm install -g pnpm@latest
 
-# Copy package files
-COPY package.json pnpm-lock.yaml* ./
+# Copy source files
+COPY . .
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile
 
-# Copy source files
-COPY . .
+WORKDIR /app/packages/web-wallet
 
 # Add standalone output to next.config.mjs for Docker build
 RUN sed -i "s/const nextConfig = {/const nextConfig = {\n  output: 'standalone',/" next.config.mjs
@@ -48,10 +57,10 @@ COPY --from=builder /app/package.json /app/pnpm-lock.yaml* ./
 RUN pnpm install --prod --frozen-lockfile && \
     pnpm store prune
 
-# Copy built application from builder
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/packages/web-wallet/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/packages/web-wallet/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/packages/web-wallet/public ./public
+
 
 USER nextjs
 

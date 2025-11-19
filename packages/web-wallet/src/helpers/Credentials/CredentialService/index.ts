@@ -1,5 +1,5 @@
 import {CredentialPayload} from '@veramo/core'
-import {agentContext, getAgent} from '@agent'
+import {getAgent, getAgentContext} from '@agent'
 import {
   ActionType,
   DefaultActionSubType,
@@ -13,7 +13,7 @@ import {
 import {EventLogger, EventLoggerBuilder} from '@sphereon/ssi-sdk.core'
 
 const logger: EventLogger = new EventLoggerBuilder()
-  .withContext(agentContext)
+  .withContext(getAgentContext())
   .withLogLevel(LogLevel.INFO)
   .withSystem(System.CREDENTIALS)
   .withSubSystem(SubSystem.VC_PERSISTENCE)

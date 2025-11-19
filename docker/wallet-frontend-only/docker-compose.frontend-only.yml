@@ -8,13 +8,13 @@ services:
     env_file:
       - .env
     tty: true
+    image: sphereon-wallet-frontend
     build:
       context: ../../
       dockerfile: ./docker/wallet-frontend-only/Dockerfile
       args:
         progress: plain
         no-cache: true
-        BROWSER_PUBLIC_AGENT_BASE_URL:
     ports:
       - "3001:3001"
     x-develop:
