@@ -45,6 +45,7 @@ export class CredentialTableItem {
   status: CredentialStatus
   actions: string
   miniCardView: CredentialMiniCardViewProps
+  linkedVpId?: string
 
   constructor(data: {
     id?: string
@@ -58,6 +59,7 @@ export class CredentialTableItem {
     subject: Party | undefined
     raw: string
     status: CredentialStatus
+    linkedVpId?: string
     credentialCardViewProps: CredentialMiniCardViewProps
   }) {
     this.id = data.id
@@ -73,6 +75,7 @@ export class CredentialTableItem {
     this.status = data.status
     this.actions = 'actions'
     this.miniCardView = data.credentialCardViewProps
+    this.linkedVpId = data.linkedVpId
   }
 
   static from(credential: DigitalCredential, parties: Party[], credentialSummary?: CredentialSummary): CredentialTableItem {
@@ -118,6 +121,7 @@ export class CredentialTableItem {
       issuer: issuerPartyIdentity.party,
       subject: subjectParty,
       raw: credential.rawDocument,
+      linkedVpId: credential.linkedVpId,
       status,
       credentialCardViewProps,
     })

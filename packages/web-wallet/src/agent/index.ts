@@ -40,6 +40,7 @@ import {SDJwtPlugin, sdJwtPluginContextMethods} from '@sphereon/ssi-sdk.sd-jwt'
 import {JwtService, jwtServiceContextMethods} from '@sphereon/ssi-sdk-ext.jwt-service'
 import {generateSalt, verifySDJWTSignature} from '@helpers/CryptoUtils'
 import {credentialValidationMethods} from '@sphereon/ssi-sdk.credential-validation'
+import {linkedVPManagerMethods} from '@sphereon/ssi-sdk.linked-vp'
 
 export const resolver = new Resolver({
   ...getDidKeyResolver(),
@@ -113,6 +114,7 @@ const plugins: IAgentPlugin[] = [
       'jwtCreateJwsJsonFlattenedSignature',
       'jwtCreateJwsCompactSignature',
       'jwtVerifyJwsCompactSignature',
+      ...linkedVPManagerMethods
     ],
   }),
   new OID4VCIHolder({

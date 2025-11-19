@@ -76,6 +76,7 @@ export const CONF_PATH = env('CONF_PATH', ENV_VAR_PREFIX) ? resolve(env('CONF_PA
 
 export const IS_WALLET_ENABLED = toBoolean(process.env.IS_WALLET_ENABLED, false)
 export const IS_OID4VP_ENABLED = toBoolean(process.env.OID4VP_ENABLED, true)
+export const IS_LINKED_VP_ENABLED = toBoolean(process.env.IS_LINKED_VP_ENABLED, false)
 
 export const IS_OID4VCI_ENABLED = toBoolean(process.env.OID4VCI_ENABLED, true)
 export const OID4VCI_API_BASE_URL = env('OID4VCI_API_BASE_URL', ENV_VAR_PREFIX) ?? `${INTERNAL_HOSTNAME_OR_IP}:${INTERNAL_PORT}/oid4vci`

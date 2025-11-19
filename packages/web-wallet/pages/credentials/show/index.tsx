@@ -18,7 +18,7 @@ import type {NaturalPerson, Organization, Party} from '@sphereon/ssi-sdk.data-st
 import {PartyTypeType} from '@sphereon/ssi-sdk.data-store-types'
 import {useParams} from 'react-router-dom'
 import {staticPropsWithSST} from '@/src/i18n/server'
-import { getAgent } from '@agent'
+import {getAgent} from '@agent'
 
 import {CredentialSummary, toCredentialSummary} from '@sphereon/ui-components.credential-branding'
 import {DigitalCredential} from '@sphereon/ssi-sdk.credential-store'
@@ -107,7 +107,7 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
         return
       }
 
-      const {hash, issuerCorrelationId, subjectCorrelationId, rawDocument} = credentialResult.data.data
+      const {hash, issuerCorrelationId, subjectCorrelationId, rawDocument, linkedVpId, linkedVpFrom} = credentialResult.data.data
 
       try {
         const issuerParties: Party[] = await getAgent().cmGetContacts({
@@ -132,6 +132,8 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
           branding: credentialBrandings.length ? credentialBrandings[0].localeBranding : undefined,
           issuer: issuerParties.length ? issuerParties[0] : undefined,
           subject: subjectParties.length ? subjectParties[0] : undefined,
+          linkedVpId,
+          linkedVpFrom,
         })
 
         setCredentialSummary(credentialSummary)
@@ -140,7 +142,7 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
       }
     }
 
-    fetchBranding()
+    void fetchBranding()
   }, [credentialResult.data])
 
   if (credentialResult.isLoading || partyResults.isLoading || !credentialSummary) {
@@ -171,6 +173,9 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
         ? credentialSummary.termsOfUse[0]
         : credentialSummary.termsOfUse
       : undefined
+    if(credentialSummary && credentialSummary.linkedVpFrom){
+      console.log('credentialSummary', credentialSummary)
+    }
     return (
       <div className={style.tabViewContentContainer}>
         <div className={style.verifiedInformationDataContainer}>
@@ -182,26 +187,43 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
             shouldExpandNodeInitially={true}
           />
         </div>
-        <SSICredentialCardView
-          header={{
-            credentialTitle: credentialTableItem.type,
-            logo: credentialSummary.branding?.logo,
-          }}
-          body={{
-            issuerName: credentialTableItem.issuer.contact.displayName,
-          }}
-          footer={{
-            credentialStatus: credentialTableItem.status,
-            expirationDate: credentialSummary.expirationDate,
-          }}
-          display={{
-            backgroundColor: credentialSummary.branding?.background?.color,
-            backgroundImage: credentialSummary.branding?.background?.image,
-            textColor: credentialSummary.branding?.text?.color,
-          }}
-        />
-      </div>
-    )
+        <div>
+          <SSICredentialCardView
+            header={{
+              credentialTitle: credentialTableItem.type,
+              logo: credentialSummary.branding?.logo,
+            }}
+            body={{
+              issuerName: credentialTableItem.issuer.contact.displayName,
+            }}
+            footer={{
+              credentialStatus: credentialTableItem.status,
+              expirationDate: credentialSummary.expirationDate,
+            }}
+            display={{
+              backgroundColor: credentialSummary.branding?.background?.color,
+              backgroundImage: credentialSummary.branding?.background?.image,
+              textColor: credentialSummary.branding?.text?.color,
+            }}
+          />
+          {credentialSummary && credentialSummary.linkedVpFrom && (
+            <div className={style.container}>
+              <table>
+                <tbody>
+                <tr>
+                  <td>{translate('credential_details_published_id_label')}</td>
+                  <td>{credentialSummary.linkedVpId}</td>
+                </tr>
+                <tr>
+                  <td>{translate('credential_details_published_since_label')}</td>
+                  <td>{new Date(credentialSummary.linkedVpFrom).toLocaleString()}</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </div>)
   }
 
   const getActivityContent = (): ReactElement => {

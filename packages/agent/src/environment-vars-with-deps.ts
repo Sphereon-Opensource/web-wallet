@@ -27,6 +27,7 @@ import {DidApiFeatures, DidWebServiceFeatures} from '@sphereon/ssi-sdk.uni-resol
 import {identifierResolutionContextMethods} from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {credentialValidationMethods} from '@sphereon/ssi-sdk.credential-validation'
 import {FederationMetadataImportArgs} from '@sphereon/ssi-sdk.oidf-metatdata-server'
+import {linkedVPManagerMethods} from '@sphereon/ssi-sdk.linked-vp'
 
 export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATURES', ENV_VAR_PREFIX)
   ? (env('REMOTE_SERVER_API_FEATURES', ENV_VAR_PREFIX)?.split(',') as string[])
@@ -64,6 +65,7 @@ export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATU
       'jwtCreateJwsJsonFlattenedSignature',
       'jwtCreateJwsCompactSignature',
       'jwtVerifyJwsCompactSignature',
+    ...linkedVPManagerMethods
     ]
 
 export const oid4vpInstanceOpts = loadJsonFiles<OID4VPInstanceOpts>({ path: OID4VP_RP_OPTIONS_PATH })

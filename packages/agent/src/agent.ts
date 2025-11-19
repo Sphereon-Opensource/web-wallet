@@ -15,6 +15,7 @@ import {
   IS_CONTACT_MANAGER_ENABLED,
   IS_FEDERATION_ENABLED,
   IS_JWKS_HOSTING_ENABLED,
+  IS_LINKED_VP_ENABLED,
   IS_OID4VCI_ENABLED,
   IS_OID4VP_ENABLED,
   IS_PDM_API_ENABLED,
@@ -24,8 +25,6 @@ import {
   REST_KMS_APPLICATION_ID,
   REST_KMS_BASE_URL,
   REST_KMS_PROVIDER_ID,
-  REST_KMS_TENANT_ID,
-  REST_KMS_USER_ID,
   STATUS_LIST_API_BASE_PATH,
   STATUS_LIST_CORRELATION_ID,
   STATUS_LIST_ID,
@@ -88,7 +87,7 @@ import {EventLogger} from '@sphereon/ssi-sdk.event-logger'
 import {RemoteServerApiServer} from '@sphereon/ssi-sdk.remote-server-rest-api'
 import {IssuanceBranding} from '@sphereon/ssi-sdk.issuance-branding'
 import {CredentialProofFormat, defaultHasher, LoggingEventType} from '@sphereon/ssi-types'
-import {createOID4VPRP, getDefaultOID4VPRPOptions} from './utils/oid4vp'
+import {createOID4VPRP, extractDidFromManagedIdentifier, getDefaultOID4VPRPOptions} from './utils/oid4vp'
 import {PresentationExchange} from '@sphereon/ssi-sdk.presentation-exchange'
 import {ISIOPv2RPRestAPIOpts, SIOPv2RPApiServer} from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-api'
 import {DidAuthSiopOpAuthenticator} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
@@ -105,6 +104,7 @@ import {
   DID_WEB_SERVICE_FEATURES,
   oid4vciInstanceOpts,
   oid4vciMetadataOpts,
+  oid4vpInstanceOpts,
   oid4vpMetadataOpts,
   REMOTE_SERVER_API_FEATURES,
   STATUS_LIST_API_FEATURES,
@@ -125,6 +125,12 @@ import {CredentialValidation} from '@sphereon/ssi-sdk.credential-validation'
 import {OIDFMetadataServer, OIDFMetadataStore} from '@sphereon/ssi-sdk.oidf-metatdata-server'
 import {IEndpointOpts} from '@sphereon/ssi-express-support'
 import {PdManagerApiServer} from '@sphereon/ssi-sdk.pd-manager-rest-api'
+import {LinkedVPManager} from '@sphereon/ssi-sdk.linked-vp'
+import {
+  ILinkedVPManagerAPIEndpointOpts,
+  LinkedVpApiServer,
+  LinkedVPManagerApiServerArgs,
+} from '@sphereon/ssi-sdk.linked-vp-rest-api'
 
 const cliMode: boolean = process.env.RUN_MODE === 'cli'
 
@@ -157,6 +163,12 @@ const jsonldProvider = new CredentialProviderJsonld({
 
 const vcdm2JoseProvider = new CredentialProviderVcdm2Jose()
 
+const holderDids: Record<string, string> = {}
+// FIXME we can have different identifiers for different queries
+const holderDid = extractDidFromManagedIdentifier(oid4vpInstanceOpts.asObject.default.rpOpts?.identifierOpts?.idOpts)
+if (holderDid) {
+  holderDids['default'] = holderDid
+}
 
 const plugins: IAgentPlugin[] = [
   new DataStore(dbConnection),
@@ -169,8 +181,10 @@ const plugins: IAgentPlugin[] = [
         applicationId: REST_KMS_APPLICATION_ID,
         baseUrl: REST_KMS_BASE_URL,
         providerId: REST_KMS_PROVIDER_ID,
-        tenantId: REST_KMS_TENANT_ID,
-        userId: REST_KMS_USER_ID,
+        /*
+                tenantId: REST_KMS_TENANT_ID,
+                userId: REST_KMS_USER_ID,
+        */
       }),
     },
   }),
@@ -211,6 +225,9 @@ const plugins: IAgentPlugin[] = [
     allDataSources: DataSources.singleInstance(),
   }),
   new CredentialValidation(),
+  new LinkedVPManager({
+    holderDids,
+  }),
 ]
 
 let oid4vpRP: SIOPv2RP | undefined
@@ -367,6 +384,16 @@ if (!cliMode) {
     }
     new SIOPv2RPApiServer({agent, expressSupport, opts})
     console.log('[OID4VP] SIOPv2 and OID4VP started: ' + (process.env.OID4VP_AGENT_BASE_URI ?? `http://localhost:${INTERNAL_PORT}`))
+
+    if (IS_LINKED_VP_ENABLED) {
+      new LinkedVpApiServer({
+        agent, expressSupport,
+        opts: {
+          enableFeatures: ['generate-presentation'],
+        },
+      })
+      console.log('[OID4VP] LinkedVP API server started: ' + (process.env.OID4VP_AGENT_BASE_URI ?? `http://localhost:${INTERNAL_PORT}`))
+    }
   }
 
   /**
