@@ -152,6 +152,7 @@ const addLinkListeners = (linkHandlers: LinkHandlers, context: IAgentContext<any
         new RegExp('https?:\\/\\/.*\\?.*credential_offer=.+'),
         new RegExp('https?:\\/\\/.*\\?.*credential_offer_uri=.+'),
       ],
+      walletType: 'ORGANIZATIONAL', // TODO make configurable when we support a natural person web wallet
       authorizationRequestOpts: vciAuthorizationRequestOpts,
       stateNavigationListener: oid4vciStateNavigationListener,
       context,

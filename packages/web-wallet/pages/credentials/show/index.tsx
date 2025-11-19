@@ -5,7 +5,7 @@ import {
   ColumnHeader,
   CredentialMiniCardView,
   CredentialMiniCardViewProps,
-  JSONDataView,
+  JSONDataView, SSICheckmarkBadge,
   SSICredentialCardView,
   SSITableView,
   SSITabView,
@@ -207,12 +207,12 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
             }}
           />
           {credentialSummary && credentialSummary.linkedVpFrom && (
-            <div className={style.container}>
+            <div className={style.publishContainer}>
               <table>
                 <tbody>
                 <tr>
-                  <td>{translate('credential_details_published_id_label')}</td>
-                  <td>{credentialSummary.linkedVpId}</td>
+                  <td>{translate('credential_details_published_label')}</td>
+                  {credentialSummary.linkedVpId ? (<td><SSICheckmarkBadge /></td>) : (<text>-</text>)}
                 </tr>
                 <tr>
                   <td>{translate('credential_details_published_since_label')}</td>

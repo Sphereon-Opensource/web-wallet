@@ -225,9 +225,7 @@ const plugins: IAgentPlugin[] = [
     allDataSources: DataSources.singleInstance(),
   }),
   new CredentialValidation(),
-  new LinkedVPManager({
-    holderDids,
-  }),
+  new LinkedVPManager(),
 ]
 
 let oid4vpRP: SIOPv2RP | undefined
