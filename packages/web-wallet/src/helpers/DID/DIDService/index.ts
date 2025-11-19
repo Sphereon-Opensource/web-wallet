@@ -3,13 +3,13 @@ import {getDidApiCreateDidUrl, getDidApiDeactivateUrl} from '../../../agent/envi
 import {EventLogger, EventLoggerBuilder} from '@sphereon/ssi-sdk.core'
 import {DefaultActionSubType, LogLevel, ActionType, System, InitiatorType, SubSystem, LoggingEventType} from '@sphereon/ssi-types'
 
-import {agentContext} from '@agent'
+import {getAgentContext} from '@agent'
 import {parseDid} from '@sphereon/ssi-types'
 import {IdentifierMethod} from '@typings'
 import {IDIDState} from '@sphereon/did-uni-client/dist/types/types'
 
 const logger: EventLogger = new EventLoggerBuilder()
-  .withContext(agentContext)
+  .withContext(getAgentContext())
   .withLogLevel(LogLevel.INFO)
   .withSystem(System.IDENTITY)
   .withSubSystem(SubSystem.DID_PROVIDER)

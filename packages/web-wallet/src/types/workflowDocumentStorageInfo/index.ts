@@ -1,4 +1,4 @@
-import {DocumentCategory, DocumentType} from '@typings'
+import {DocumentCategory} from '@typings'
 import {formatDate} from '@sphereon/ui-components.ssi-react'
 
 export class WorkflowDocumentStorageInfoDTO {
@@ -24,7 +24,7 @@ export class WorkflowDocumentStorageInfo {
   storage_object_id: string
   storage_object_path: string
   category: DocumentCategory
-  type: DocumentType
+  type: string
   correlation_id: string
 
   static toDTO(entity: WorkflowDocumentStorageInfo): WorkflowDocumentStorageInfoDTO {

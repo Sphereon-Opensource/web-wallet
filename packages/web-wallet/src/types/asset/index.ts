@@ -17,3 +17,10 @@ export type Asset = {
   contact_id: string
   [x: string]: any
 }
+
+export enum DocumentCategory {
+  REPORTS = 'reports',
+  CERTIFICATES = 'certificates',
+  OTHER = 'other',
+  VCS = 'vcs',
+}
