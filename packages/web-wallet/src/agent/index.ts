@@ -54,7 +54,7 @@ let _agent: TAgent<TAgentTypes> | null = null
 let _agentContext: IAgentContext<TAgentTypes> | null = null
 
 const createAgentInstance = (): TAgent<TAgentTypes> => {
-const plugins: IAgentPlugin[] = [
+const getPlugins = ():IAgentPlugin[] => [
   new DIDResolverPlugin({
     resolver,
   }),
@@ -134,7 +134,7 @@ const plugins: IAgentPlugin[] = [
 ]
 
   return createAgent<TAgentTypes>({
-  plugins,
+  plugins: getPlugins(),
 })
 }
 
