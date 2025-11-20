@@ -21,6 +21,7 @@ import {IIdentifier} from '@veramo/core'
 import type {EbsiAccessTokenOpts, EbsiEnvironment} from '@sphereon/ssi-sdk.ebsi-support'
 import {generateEbsiMethodSpecificId} from '@sphereon/ssi-sdk.ebsi-support'
 import {CredentialRole} from '@sphereon/ssi-types'
+import {getEnv} from '@/src/services/env'
 
 // TODO CWALL-244 further implement
 
@@ -153,7 +154,7 @@ export const identifiersDataProvider = (): DataProvider => ({
                                                                                         }: CreateParams<TVars>): Promise<CreateResponse<TData>> => {
     const {keys = [], method, identifier: kmIdentifier} = variables
     let {kms = KeyManagementSystem.LOCAL} = variables
-    const clientId = process?.env?.BROWSER_PUBLIC_CLIENT_ID ?? `${window.location.protocol}//${window.location.hostname}`
+    const clientId = getEnv('BROWSER_PUBLIC_CLIENT_ID') ?? `${window.location.protocol}//${window.location.hostname}`
     const network = kmIdentifier?.network
     const ebsi = kmIdentifier?.ebsi
     let alias = variables.alias

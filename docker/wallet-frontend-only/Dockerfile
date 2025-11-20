@@ -1,77 +1,49 @@
+# ──────────────────────────────────────────────────────────────
 # Stage 1: Builder
-FROM node:20-alpine AS builder
-RUN apk add --no-cache \
-    build-base \
-    pkgconf \
-    cairo-dev \
-    pango-dev \
-    jpeg-dev \
-    giflib-dev \
-    librsvg-dev \
-    sed
+# ──────────────────────────────────────────────────────────────
+FROM node:20-bullseye AS builder
+SHELL ["/bin/bash", "-c"]
 
-WORKDIR /app
+WORKDIR /opt/wallet/frontend
 
-# Install dependencies needed for native modules
-RUN apk add --no-cache \
-    libc6-compat \
-    python3 \
-    make \
-    g++
+RUN npm -g install pnpm@10
 
-# Install pnpm globally
-RUN npm install -g pnpm@latest
+# Copy monorepo workspace files
+COPY packages packages
+COPY patches patches
+COPY *.json .
+COPY *.yaml .
 
-# Copy source files
-COPY . .
+RUN rm -rf packages/agent || true
 
-# Install dependencies
-RUN pnpm install --frozen-lockfile
+# Install dependencies and build web-wallet
+WORKDIR /opt/wallet/frontend/packages/web-wallet
 
-WORKDIR /app/packages/web-wallet
+# Full install (Refine needs full node_modules, including dev deps)
+RUN pnpm install
 
-# Add standalone output to next.config.mjs for Docker build
-RUN sed -i "s/const nextConfig = {/const nextConfig = {\n  output: 'standalone',/" next.config.mjs
+# Build using Refine (this runs `refine build`)
+RUN pnpm build
 
-# Build the application
-ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
-RUN pnpm run build
-
+# ──────────────────────────────────────────────────────────────
 # Stage 2: Runner
-FROM node:20-alpine AS runner
-WORKDIR /app
+# ──────────────────────────────────────────────────────────────
+FROM node:20-bullseye AS runner
+SHELL ["/bin/bash", "-c"]
 
-# Install pnpm in runner
-RUN corepack enable && corepack prepare pnpm@latest --activate
+WORKDIR /opt/wallet/frontend
+
+# Install pnpm to run scripts like `pnpm start:prod`
+RUN npm -g install pnpm@10
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
-ENV HUSKY=0
-
-# Create non-root user
-RUN addgroup --system --gid 1001 nodejs && \
-    adduser --system --uid 1001 nextjs
-
-
-# Install production-only dependencies
-COPY --from=builder /app/package.json ./
-COPY --from=builder /app/pnpm-lock.yaml* ./
-COPY --from=builder /app/patches ./patches
-RUN pnpm install --prod --frozen-lockfile && pnpm store prune
-
-COPY --from=builder --chown=nextjs:nodejs /app/packages/web-wallet/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/packages/web-wallet/.next/static ./.next/static
-COPY --from=builder --chown=nextjs:nodejs /app/packages/web-wallet/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/packages/web-wallet/.next/standalone/packages/web-wallet ./
-
-
-
-USER nextjs
-
-EXPOSE 3001
-
 ENV PORT=3001
-ENV HOSTNAME="0.0.0.0"
 
-CMD ["node", "server.js"]
+# Copy everything built in the builder stage, including node_modules,
+# .next, packages, patches, etc. This is what Refine expects.
+COPY --from=builder /opt/wallet/frontend /opt/wallet/frontend
+
+WORKDIR /opt/wallet/frontend/packages/web-wallet
+
+ENTRYPOINT ["pnpm", "start:prod"]
