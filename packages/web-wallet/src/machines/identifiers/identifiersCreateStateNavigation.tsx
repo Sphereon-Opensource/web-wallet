@@ -18,7 +18,12 @@ import {
 } from '@typings'
 import {IdentifiersCreateContext} from '@typings/machine/identifiers/create'
 import {CoreActions, JsonFormsCore} from '@jsonforms/core'
-import { getAgent } from '@agent'
+import {getAgent} from '@agent'
+import {TKeyType} from '@veramo/core'
+import {getEnv} from '@/src/services/env'
+
+// Supported key types - adjust based on your requirements
+const SUPPORTED_KEY_TYPES: TKeyType[] = ['Ed25519', 'Secp256k1', 'Secp256r1', 'X25519', 'RSA']
 
 const createIdentifierNavigationListener = async (step: number, navigate: any): Promise<void> => {
   switch (step) {
@@ -98,7 +103,7 @@ export const IdentifiersCreateContextProvider = (props: any): JSX.Element => {
         method: props?.method?.default,
         network: props?.['network']?.default,
         web: {
-          hostName: process?.env?.BROWSER_PUBLIC_CLIENT_ID ?? process?.env?.NEXTAUTH_URL ?? '',
+          hostName: getEnv('BROWSER_PUBLIC_CLIENT_ID') ?? getEnv('NEXTAUTH_URL') ?? '',
           path: '/.well-known',
         },
         ebsi: {

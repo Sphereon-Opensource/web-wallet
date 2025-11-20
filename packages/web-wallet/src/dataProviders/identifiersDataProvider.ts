@@ -15,12 +15,13 @@ import {
   UpdateResponse,
 } from '@refinedev/core'
 import {DID_PREFIX} from '@sphereon/ssi-sdk-ext.did-utils'
-import agent, {agentContext} from '@agent'
+import {getAgent} from '@agent'
 import {IdentifierKey, IdentifierServiceEndpoint, KeyManagementIdentifier, KeyManagementSystem} from '@typings'
 import {IIdentifier} from '@veramo/core'
 import type {EbsiAccessTokenOpts, EbsiEnvironment} from '@sphereon/ssi-sdk.ebsi-support'
 import {generateEbsiMethodSpecificId} from '@sphereon/ssi-sdk.ebsi-support'
 import {CredentialRole} from '@sphereon/ssi-types'
+import {getEnv} from '@/src/services/env'
 
 // TODO CWALL-244 further implement
 
@@ -152,7 +153,7 @@ export const identifiersDataProvider = (): DataProvider => ({
                                                                                           meta,
                                                                                         }: CreateParams<TVars>): Promise<CreateResponse<TData>> => {
     const {kms = KeyManagementSystem.LOCAL, keys = [], method, identifier: kmIdentifier} = variables
-    const clientId = process?.env?.BROWSER_PUBLIC_CLIENT_ID ?? `${window.location.protocol}//${window.location.hostname}`
+    const clientId = getEnv('BROWSER_PUBLIC_CLIENT_ID') ?? `${window.location.protocol}//${window.location.hostname}`
     const network = kmIdentifier?.network
     const ebsi = kmIdentifier?.ebsi
     let alias = variables.alias
