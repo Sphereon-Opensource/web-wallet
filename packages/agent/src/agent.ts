@@ -25,6 +25,7 @@ import {
   REST_KMS_APPLICATION_ID,
   REST_KMS_BASE_URL,
   REST_KMS_PROVIDER_ID,
+  REST_KMS_TENANT_ID,
   STATUS_LIST_API_BASE_PATH,
   STATUS_LIST_CORRELATION_ID,
   STATUS_LIST_ID,
@@ -181,8 +182,8 @@ const plugins: IAgentPlugin[] = [
         applicationId: REST_KMS_APPLICATION_ID,
         baseUrl: REST_KMS_BASE_URL,
         providerId: REST_KMS_PROVIDER_ID,
+        tenantId: REST_KMS_TENANT_ID,
         /*
-                tenantId: REST_KMS_TENANT_ID,
                 userId: REST_KMS_USER_ID,
         */
       }),

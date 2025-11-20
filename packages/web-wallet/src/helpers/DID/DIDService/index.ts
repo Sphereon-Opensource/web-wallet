@@ -8,13 +8,19 @@ import {parseDid} from '@sphereon/ssi-types'
 import {IdentifierMethod} from '@typings'
 import {IDIDState} from '@sphereon/did-uni-client/dist/types/types'
 
-const logger: EventLogger = new EventLoggerBuilder()
-  .withContext(getAgentContext())
-  .withLogLevel(LogLevel.INFO)
-  .withSystem(System.IDENTITY)
-  .withSubSystem(SubSystem.DID_PROVIDER)
-  .withInitiatorType(InitiatorType.SYSTEM)
-  .build()
+let _eventLogger: EventLogger | undefined
+const getLogger = (): EventLogger => {
+  if (!_eventLogger) {
+    _eventLogger = new EventLoggerBuilder()
+      .withContext(getAgentContext())
+      .withLogLevel(LogLevel.INFO)
+      .withSystem(System.IDENTITY)
+      .withSubSystem(SubSystem.DID_PROVIDER)
+      .withInitiatorType(InitiatorType.SYSTEM)
+      .build()
+  }
+  return _eventLogger
+}
 
 export const createDID = async (opts?: {didMethod: string}): Promise<string> => {
   const {didMethod} = {...opts}
@@ -26,7 +32,7 @@ export const createDID = async (opts?: {didMethod: string}): Promise<string> => 
 
   const did = uniRegistrar.didState.didDocument!.id
 
-  await logger.logEvent({
+  await getLogger().logEvent({
     type: LoggingEventType.AUDIT,
     data: {
       description: `did ${parseDid(did).method} created`,

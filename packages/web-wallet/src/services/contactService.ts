@@ -7,16 +7,22 @@ import {getAgentBaseUrl} from '../agent/environment'
 import type {Party as RealParty, Party, PartyType} from '@sphereon/ssi-sdk.data-store-types'
 import {AddContactArgs} from '@sphereon/ssi-sdk.contact-manager'
 
-const logger: EventLogger = new EventLoggerBuilder()
-  .withContext(getAgentContext())
-  .withLogLevel(LogLevel.INFO)
-  .withSystem(System.CONTACT)
-  .withSubSystem(SubSystem.CONTACT_MANAGER)
-  .withInitiatorType(InitiatorType.SYSTEM)
-  .build()
+let _eventLogger: EventLogger | undefined
+const getLogger = (): EventLogger => {
+  if (!_eventLogger) {
+    _eventLogger = new EventLoggerBuilder()
+      .withContext(getAgentContext())
+      .withLogLevel(LogLevel.INFO)
+      .withSystem(System.CONTACT)
+      .withSubSystem(SubSystem.CONTACT_MANAGER)
+      .withInitiatorType(InitiatorType.SYSTEM)
+      .build()
+  }
+  return _eventLogger
+}
 
 export async function storeContact(naturalPersonData: NaturalPersonData, contactType?: PartyType): Promise<Party> {
-  await logger.logEvent({
+  await getLogger().logEvent({
     type: LoggingEventType.AUDIT,
     data: {
       level: LogLevel.TRACE,
@@ -68,7 +74,7 @@ export async function storeContact(naturalPersonData: NaturalPersonData, contact
     await storePartyRelationship(naturalPersonData.organization.id, persistedParty.id)
   }
 
-  await logger.logEvent({
+  await getLogger().logEvent({
     type: LoggingEventType.AUDIT,
     data: {
       description: 'contact created',
