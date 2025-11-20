@@ -7,11 +7,11 @@ const nextConfig = {
 
   transpilePackages: ['@sphereon/ui-components.ssi-react', '@sphereon/ssi-sdk.ebsi-support', '@veramo/did-manager'],
 
-  webpack(config, { dev, isServer }) {
+  webpack(config, {dev, isServer}) {
     if (!isServer) {
       config.resolve.alias = {
         ...config.resolve.alias,
-        typeorm: 'typeorm/browser'
+        typeorm: 'typeorm/browser',
       }
       config.resolve.fallback = {
         ...config.resolve.fallback,
@@ -39,18 +39,15 @@ const nextConfig = {
       fileName: false,
     },
   },
-
   async rewrites() {
     return [
-      /*JWKS proxy to agent*/
       {
         source: '/.well-known/jwks/:path*',
-        destination: `${process.env.BROWSER_PUBLIC_AGENT_BASE_URL}/.well-known/jwks/:path*`,
+        destination: '/api/proxy/jwks/:path*',
       },
-      /*DID: WEB proxy to agent*/
       {
         source: '/:path*/did.json',
-        destination: `${process.env.BROWSER_PUBLIC_AGENT_BASE_URL}/:path*/did.json`,
+        destination: '/api/proxy/did/:path*/did.json',
       },
     ]
   },

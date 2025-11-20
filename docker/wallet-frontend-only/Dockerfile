@@ -47,19 +47,24 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV HUSKY=0
 
 # Create non-root user
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
-# Copy only production dependencies
-COPY --from=builder /app/package.json /app/pnpm-lock.yaml* ./
-RUN pnpm install --prod --frozen-lockfile && \
-    pnpm store prune
+
+# Install production-only dependencies
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/pnpm-lock.yaml* ./
+COPY --from=builder /app/patches ./patches
+RUN pnpm install --prod --frozen-lockfile && pnpm store prune
 
 COPY --from=builder --chown=nextjs:nodejs /app/packages/web-wallet/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/packages/web-wallet/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/packages/web-wallet/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/packages/web-wallet/.next/standalone/packages/web-wallet ./
+
 
 
 USER nextjs
