@@ -5,8 +5,9 @@ import {
   ColumnHeader,
   CredentialMiniCardView,
   CredentialMiniCardViewProps,
-  JSONDataView, SSICheckmarkBadge,
+  JSONDataView,
   SSICredentialCardView,
+  SSISwitchItem,
   SSITableView,
   SSITabView,
   TableCellType,
@@ -19,6 +20,7 @@ import {PartyTypeType} from '@sphereon/ssi-sdk.data-store-types'
 import {useParams} from 'react-router-dom'
 import {staticPropsWithSST} from '@/src/i18n/server'
 import {getAgent} from '@agent'
+import PublishLinkedVPModal from '@components/modals/PublishLinkedVP'
 
 import {CredentialSummary, toCredentialSummary} from '@sphereon/ui-components.credential-branding'
 import {DigitalCredential} from '@sphereon/ssi-sdk.credential-store'
@@ -27,10 +29,11 @@ import {
   CredentialMapper,
   CredentialRole,
   IVerifiableCredential,
-  sdJwtDecodedCredentialToUniformCredential, SdJwtDecodedVerifiableCredential,
+  sdJwtDecodedCredentialToUniformCredential,
+  SdJwtDecodedVerifiableCredential,
 } from '@sphereon/ssi-types'
 import {defaultHasher} from '@sphereon/ssi-sdk.core'
-import {getEnv, getEnvInt} from '@/src/services/env'
+import {getEnvInt} from '@/src/services/env'
 
 enum CredentialDetailsTabRoute {
   INFO = 'info',
@@ -98,8 +101,11 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
     id,
     meta: {variables: {credentialRole: credentialRole}},
   })
+  const {refetch: refetchCredential} = credentialResult
 
   const partyResults = useList<Party, HttpError>({resource: 'parties'})
+  const [showCreateSharedIdModal, setShowCreateSharedIdModal] = useState(false)
+
 
   useEffect(() => {
     const fetchBranding = async () => {
@@ -107,7 +113,14 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
         return
       }
 
-      const {hash, issuerCorrelationId, subjectCorrelationId, rawDocument, linkedVpId, linkedVpFrom} = credentialResult.data.data
+      const {
+        hash,
+        issuerCorrelationId,
+        subjectCorrelationId,
+        rawDocument,
+        linkedVpId,
+        linkedVpFrom,/*, linkedVpUntil*/
+      } = credentialResult.data.data
 
       try {
         const issuerParties: Party[] = await getAgent().cmGetContacts({
@@ -132,8 +145,7 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
           branding: credentialBrandings.length ? credentialBrandings[0].localeBranding : undefined,
           issuer: issuerParties.length ? issuerParties[0] : undefined,
           subject: subjectParties.length ? subjectParties[0] : undefined,
-          linkedVpId,
-          linkedVpFrom,
+          ...(linkedVpId && linkedVpFrom && {linkedVp: {linkedVpId, linkedVpFrom}}),
         })
 
         setCredentialSummary(credentialSummary)
@@ -164,6 +176,54 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
     ...(credentialSummary?.branding?.background?.image && {backgroundImage: credentialSummary?.branding?.background?.image}),
     ...(credentialSummary?.branding?.background?.color && {backgroundColor: credentialSummary?.branding?.background?.color}),
   }
+
+  const onTogglePublished = async (checked: boolean) => {
+    if (checked) {
+      setShowCreateSharedIdModal(true)
+    } else if (credentialSummary.linkedVp) {
+      await getAgent().lvpUnpublishCredential({linkedVpId: credentialSummary.linkedVp.linkedVpId})
+      await refetchCredential()
+    }
+  }
+
+  const handlePublishVP = async (linkedVpId: string, linkedVpFrom?: Date, linkedVpUntil?: Date): Promise<void> => {
+    try {
+      const credentialId = credentialResult.data.data.id
+
+      await getAgent().lvpPublishCredential({
+        digitalCredentialId: credentialId,
+        linkedVpId,
+        linkedVpFrom,
+        linkedVpUntil,
+      })
+
+      setShowCreateSharedIdModal(false)
+      await refetchCredential()
+    } catch (error) {
+      console.error('Failed to publish credential:', error)
+      // Handle error appropriately
+    }
+  }
+
+  const handleCloseModal = async (): Promise<void> => {
+    setShowCreateSharedIdModal(false)
+  }
+
+  const buildLinkedVPInfo = (): ReactElement | undefined => {
+    if (!credentialSummary.linkedVp) {
+      return undefined
+    }
+
+    return (
+      <div>
+        <div>{translate('credential_details_published_since_label')}: {new Date(credentialSummary.linkedVp.linkedVpFrom).toLocaleString()}</div>
+        {credentialSummary.linkedVp.linkedVpUntil && (
+          <div>{translate('credential_details_published_until_label')}: {new Date(credentialSummary.linkedVp.linkedVpUntil).toLocaleString()}</div>
+        )}
+      </div>
+    )
+  }
+
   const getVerifiedInformationContent = (): ReactElement => {
     const filteredSubject: Record<string, any> = Object.fromEntries(
       credentialSummary.properties.filter(prop => prop.label !== 'subject').map(detail => [detail.label, detail.value]),
@@ -173,9 +233,7 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
         ? credentialSummary.termsOfUse[0]
         : credentialSummary.termsOfUse
       : undefined
-    if(credentialSummary && credentialSummary.linkedVpFrom){
-      console.log('credentialSummary', credentialSummary)
-    }
+
     return (
       <div className={style.tabViewContentContainer}>
         <div className={style.verifiedInformationDataContainer}>
@@ -206,20 +264,14 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
               textColor: credentialSummary.branding?.text?.color,
             }}
           />
-          {credentialSummary && credentialSummary.linkedVpFrom && (
+          {credentialSummary && (
             <div className={style.publishContainer}>
-              <table>
-                <tbody>
-                <tr>
-                  <td>{translate('credential_details_published_label')}</td>
-                  {credentialSummary.linkedVpId ? (<td><SSICheckmarkBadge /></td>) : (<text>-</text>)}
-                </tr>
-                <tr>
-                  <td>{translate('credential_details_published_since_label')}</td>
-                  <td>{new Date(credentialSummary.linkedVpFrom).toLocaleString()}</td>
-                </tr>
-                </tbody>
-              </table>
+              <SSISwitchItem
+                label={translate('credential_details_published_label')}
+                checked={!!(credentialSummary.linkedVp?.linkedVpId)}
+                onChange={onTogglePublished}
+                tooltip={buildLinkedVPInfo()}
+              />
             </div>
           )}
         </div>
@@ -487,6 +539,12 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
         <CredentialMiniCardView {...credentialCardViewProps} />
       </div>
       <SSITabView routes={routes} />
+      {showCreateSharedIdModal && (
+        <PublishLinkedVPModal
+          onClose={handleCloseModal}
+          onSubmit={handlePublishVP}
+        />
+      )}
     </div>
   )
 }

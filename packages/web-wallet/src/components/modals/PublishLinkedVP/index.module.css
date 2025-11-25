@@ -1,0 +1,227 @@
+.overlay {
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(217, 217, 217, 0.6);
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+.container {
+    width: 652px;
+    max-height: 90vh;
+    border-radius: 24px;
+    background-color: #FBFBFB;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.headerContainer {
+    display: flex;
+    flex-direction: row;
+    padding-left: 49px;
+    padding-right: 15px;
+    padding-top: 16px;
+}
+
+.headerCaptionContainer {
+    flex-grow: 1;
+    padding-top: 34px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.headerCloseContainer {
+    padding-top: 0;
+}
+
+.closeButton {
+    display: flex;
+    aspect-ratio: 1;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+}
+
+.titleCaption {
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 36px;
+    color: #303030;
+}
+
+.subTitleCaption {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 0.14px;
+    color: #303030;
+}
+
+.contentContainer {
+    padding: 24px 49px 32px 49px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.formField {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.fieldLabel {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: 0.14px;
+    color: #303030;
+}
+
+.textInput {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #C4C4C4;
+    border-radius: 4px;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 0.14px;
+    color: #303030;
+    background-color: #FFFFFF;
+}
+
+.textInput:focus {
+    outline: none;
+    border: 2px solid #7276F7
+}
+
+.textInput::placeholder {
+    color: #79747E;
+}
+
+.errorText {
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    color: #D74500;
+    margin-top: 4px;
+}
+
+.helperText {
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 0.12px;
+    color: #49454F;
+    margin-top: 8px;
+}
+
+.requirementsList {
+    margin: 8px 0 0 20px;
+    padding: 0;
+}
+
+.requirementsList li {
+    margin-bottom: 4px;
+}
+
+.switchContainer {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+}
+
+.switchLabel {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    gap: 12px;
+}
+
+.switchInput {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.switchSlider {
+    position: relative;
+    width: 52px;
+    height: 32px;
+    background-color: #E3E3E3;
+    border-radius: 16px;
+    transition: background-color 0.3s;
+}
+
+.switchSlider::before {
+    content: "";
+    position: absolute;
+    height: 24px;
+    width: 24px;
+    left: 4px;
+    top: 4px;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform 0.3s;
+}
+
+.switchInput:checked + .switchSlider {
+    background-color: #6750A4;
+}
+
+.switchInput:checked + .switchSlider::before {
+    transform: translateX(20px);
+}
+
+.switchText {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 0.14px;
+    color: #303030;
+}
+
+.buttonContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    justify-content: flex-end;
+    margin-top: 16px;
+}
+
+.cancelButton {
+    min-width: 120px;
+    padding: 10px 24px;
+    border: 2px solid #79747E;
+    border-radius: 100px;
+    background-color: transparent;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: 0.14px;
+    color: #6750A4;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.cancelButton:hover {
+    background-color: rgba(103, 80, 164, 0.08);
+}

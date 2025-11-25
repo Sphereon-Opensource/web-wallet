@@ -5,7 +5,7 @@ process.env.I18NEXT_DEFAULT_CONFIG_PATH = `./next-i18next.config.mjs`
 const nextConfig = {
   i18n: i18nNextConfig.i18n,
 
-  transpilePackages: ['@sphereon/ui-components.ssi-react', '@sphereon/ssi-sdk.ebsi-support', '@veramo/did-manager'],
+  transpilePackages: ['@sphereon/ui-components.ssi-react', '@sphereon/ssi-sdk.ebsi-support', '@veramo/did-manager', '@sphereon/ssi-sdk.oid4vci-holder'],
 
   webpack(config, {dev, isServer}) {
     if (!isServer) {

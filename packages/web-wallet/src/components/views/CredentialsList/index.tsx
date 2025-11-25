@@ -106,8 +106,12 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
               branding: filteredCredentialBrandings.length ? filteredCredentialBrandings[0].localeBranding : undefined,
               issuer: issuerPartyIdentity?.party,
               subject: subjectPartyIdentity?.party,
-              linkedVpId: credential.linkedVpId,
-              linkedVpFrom: credential.linkedVpFrom,
+              ...(credential.linkedVpId && credential.linkedVpFrom && {
+                linkedVp: {
+                  linkedVpId: credential.linkedVpId,
+                  linkedVpFrom: credential.linkedVpFrom,
+                },
+              }),
             })
 
             return CredentialTableItem.from(credential, partyData.data, credentialSummary)
