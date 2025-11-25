@@ -119,7 +119,8 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
         subjectCorrelationId,
         rawDocument,
         linkedVpId,
-        linkedVpFrom,/*, linkedVpUntil*/
+        linkedVpFrom,
+        linkedVpUntil,
       } = credentialResult.data.data
 
       try {
@@ -145,7 +146,7 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
           branding: credentialBrandings.length ? credentialBrandings[0].localeBranding : undefined,
           issuer: issuerParties.length ? issuerParties[0] : undefined,
           subject: subjectParties.length ? subjectParties[0] : undefined,
-          ...(linkedVpId && linkedVpFrom && {linkedVp: {linkedVpId, linkedVpFrom}}),
+          ...(linkedVpId && linkedVpFrom && {linkedVp: {linkedVpId, linkedVpFrom, linkedVpUntil}}),
         })
 
         setCredentialSummary(credentialSummary)
