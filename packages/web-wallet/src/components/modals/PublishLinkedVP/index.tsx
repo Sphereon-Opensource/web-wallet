@@ -1,7 +1,7 @@
 import React, {FC, ReactElement, useState, useEffect} from 'react'
 import {createPortal} from 'react-dom'
 import {useTranslate} from '@refinedev/core'
-import {PrimaryButton, SSISwitchItem} from '@sphereon/ui-components.ssi-react'
+import {PrimaryButton, SecondaryButton, SSISwitchItem} from '@sphereon/ui-components.ssi-react'
 import CrossIcon from '@components/assets/icons/CrossIcon'
 import TextInputField from '@components/fields/TextInputField'
 import style from './index.module.css'
@@ -261,9 +261,7 @@ const PublishLinkedVPModal: FC<Props> = (props: Props): ReactElement | null => {
           )}
 
           <div className={style.buttonContainer}>
-            <button className={style.cancelButton} onClick={handleCancel}>
-              {translate('action_cancel_label')}
-            </button>
+            <SecondaryButton caption={translate('action_cancel_label')} onClick={handleCancel} />
             <PrimaryButton
               style={{minWidth: 180}}
               caption={translate('action_create_label')}
