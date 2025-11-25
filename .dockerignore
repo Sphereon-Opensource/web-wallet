@@ -1,4 +1,12 @@
-dist/
+# Node modules (at any depth)
+**/node_modules/
+
+# Build outputs
+**/dist/
+**/.next/
+
+# Environment files
+**/.env*
 
 # Version control
 .github/
@@ -6,7 +14,7 @@ dist/
 .husky
 
 # Logs
-logs/
+**/logs/
 
 # IDE files
 .idea/
@@ -17,17 +25,9 @@ logs/
 # Docker files themselves
 docker/
 
-# Environment files
-.env*
-!.env.example
-
 # Temporary files
 **/tmp/
 **/temp/
-
-# Node modules
-node_modules/
-
 
 # Other unnecessary files
 docs/
