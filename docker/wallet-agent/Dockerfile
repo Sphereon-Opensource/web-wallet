@@ -12,7 +12,6 @@ COPY *.yaml .
 RUN pnpm install -r
 
 RUN rm -rf packages/agent/conf/examples
-RUN rm packages/agent/.env*
 
 WORKDIR /opt/agent/packages/agent
 RUN pnpm build

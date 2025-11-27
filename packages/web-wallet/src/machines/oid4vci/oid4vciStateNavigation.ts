@@ -286,6 +286,8 @@ export const oid4vciStateNavigationListener = async (oid4vciMachine: OID4VCIMach
   } else if (state.matches(OID4VCIMachineStates.verifyPin)) {
     return navigatePINVerification({oid4vciMachine, state, onNext, onBack, abortController})
   } else if (state.matches(OID4VCIMachineStates.initiateAuthorizationRequest)) {
+    console.log('==== initiateAuthorizationRequest', state);
+
     return navigateAuthorizationCodeURL({oid4vciMachine, state, onNext, onBack, abortController})
   } else if (state.matches(OID4VCIMachineStates.reviewCredentials)) {
     return navigateReviewCredentials({
