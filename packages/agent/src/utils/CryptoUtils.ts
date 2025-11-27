@@ -22,11 +22,39 @@ export const getCryptoDigestAlgorithm = (algorithm: string): string => {
 }
 
 export const verifySDJWTSignature = async <T>(data: string, signature: string, key: JsonWebKey): Promise<Awaited<Promise<boolean>>> => {
-  let { alg, crv } = key
-  if (alg === 'ES256' || (alg === undefined && crv === 'P-256')) alg = 'ECDSA' // FIXME Funke
-  const publicKey = await crypto.subtle.importKey('jwk', key, { name: alg, namedCurve: crv } as EcKeyImportParams, true, ['verify'])
+  const {alg, crv, kty} = key
+
+  let algorithm: RsaHashedImportParams | EcKeyImportParams
+  let algorithmName: string
+
+  if (kty === 'RSA') {
+    algorithmName = alg || 'RSASSA-PKCS1-v1_5'
+    algorithm = {
+      name: algorithmName,
+      hash: 'SHA-256',
+    }
+  } else if (kty === 'EC') {
+    let ecAlg = alg
+    if (ecAlg === 'ES256' || (ecAlg === undefined && crv === 'P-256')) {
+      ecAlg = 'ECDSA' // FIXME Funke
+    }
+    algorithmName = ecAlg as string
+    algorithm = {
+      name: algorithmName,
+      namedCurve: crv,
+    } as EcKeyImportParams
+  } else {
+    return Promise.reject(Error(`Unsupported key type: ${kty}`))
+  }
+
+  const publicKey = await crypto.subtle.importKey('jwk', key, algorithm, true, ['verify'])
 
   return Promise.resolve(
-    crypto.subtle.verify({ name: alg as string, hash: 'SHA-256' }, publicKey, Buffer.from(signature, 'base64'), Buffer.from(data)),
+    crypto.subtle.verify(
+      {name: algorithmName, hash: 'SHA-256'},
+      publicKey,
+      Buffer.from(signature, 'base64'),
+      Buffer.from(data),
+    ),
   )
 }
