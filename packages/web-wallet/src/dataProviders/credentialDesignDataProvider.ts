@@ -42,7 +42,7 @@ export const credentialDesignDataProvider = (): DataProvider => ({
     meta,
   }: CreateParams<TVariables>): Promise<CreateResponse<TData>> => {
     // @ts-ignore
-    const { credentialName, schema, uiSchema } = variables
+    const { credentialName, credentialFormat, schema, uiSchema, branding } = variables
 
     let formStepId
     const formStepResult = await supabaseServiceClient
@@ -69,20 +69,37 @@ export const credentialDesignDataProvider = (): DataProvider => ({
     ]).single()
     const setId = (metaDataSetResult.data as any).id
 
-    const metaDataKeysResult  = await supabaseServiceClient.from('meta_data_keys').insert([
+    const credentialTypeMetaDataKeysResult  = await supabaseServiceClient.from('meta_data_keys').insert([
       {
         set_id: setId,
         key: 'credentialType',
         value_type: 'Text'
       }
     ]).single()
-    const keyId = (metaDataKeysResult.data as any).id
+    const credentialTypeKeyId = (credentialTypeMetaDataKeysResult.data as any).id
 
     await supabaseServiceClient.from('meta_data_values').insert([
       {
-        key_id: keyId,
+        key_id: credentialTypeKeyId,
         index: 0,
         text_value: 'VerifiableCredential'
+      }
+    ])
+
+    const credentialFormatMetaDataKeysResult  = await supabaseServiceClient.from('meta_data_keys').insert([
+      {
+        set_id: setId,
+        key: 'credentialFormat',
+        value_type: 'Text'
+      }
+    ]).single()
+    const credentialFormatKeyId = (credentialFormatMetaDataKeysResult.data as any).id
+
+    await supabaseServiceClient.from('meta_data_values').insert([
+      {
+        key_id: credentialFormatKeyId,
+        index: 0,
+        text_value: credentialFormat
       }
     ])
 
@@ -117,12 +134,24 @@ export const credentialDesignDataProvider = (): DataProvider => ({
       }
     ])
 
+    const credentialDesignBranding = {
+      logo_url: branding.logoUrl,
+      background_url: branding.backgroundUrl,
+      logo_color: branding.logoColor,
+      background_color: branding.backgroundColor,
+      meta_data_set_id: setId
+    }
+
+    await supabaseServiceClient.from('credential_design_branding').insert([
+      credentialDesignBranding
+    ])
+
     return {
       // FIXME CWALL-242 there should be a better way for this but i could not find any yet without refine.dev not complaining
       data: {...({ // TODO SSISDK-86 implement proper return
           formStepId,
           setId,
-          keyId,
+          keyId: credentialTypeKeyId,
           schema: schemaDefinition,
           uiSchema: uiSchemaDefinition
         } as any)} as TData,

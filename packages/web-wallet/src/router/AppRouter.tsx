@@ -70,7 +70,9 @@ import { CredentialRole } from '@sphereon/ssi-types'
 import ShowContactDetails from '@/pages/contacts/show'
 import CredentialDesignerContextProvider from '@machines/credentials/credentialDesignerStateNavigation'
 import CredentialDesignerCreatePage from '@/pages/credentials/design/create'
-import CredentialDesignClaimsContent from '@components/views/CredentialDesignClaimsContent'
+import CredentialDesignerClaimsContent from '@components/views/CredentialDesignerClaimsContent'
+import CredentialDesignerDetailsContent from '@components/views/CredentialDesignerDetailsContent';
+import CredentialDesignerVisualDesignContent from '@components/views/CredentialDesignerVisualDesignContent';
 
 const KeycloakLoginPage = (props: PropsWithChildren<any>) => {
   const {mutate: login} = useLogin()
@@ -162,10 +164,9 @@ const AppRouter: React.FC = () => {
                     <CredentialDesignerCreatePage />
                   </CredentialDesignerContextProvider>
                 }>
-                    <Route path={CredentialDesignerRoute.CLAIMS} element={
-                        <CredentialDesignClaimsContent />
-                    }
-                />
+                    <Route path={CredentialDesignerRoute.DETAILS} element={ <CredentialDesignerDetailsContent /> } />
+                    <Route path={CredentialDesignerRoute.VISUAL_DESIGN} element={ <CredentialDesignerVisualDesignContent /> } />
+                    <Route path={CredentialDesignerRoute.CLAIMS} element={ <CredentialDesignerClaimsContent /> } />
               </Route>
             </Route>
             <Route path={MainRoute.SUB_ID} element={<ShowCredentialDetails credentialRole={CredentialRole.HOLDER} />} />

@@ -50,7 +50,9 @@ export enum IssueCredentialRoute {
 }
 
 export enum CredentialDesignerRoute {
-  CLAIMS = 'claims'
+  CLAIMS = 'claims',
+  DETAILS = 'details',
+  VISUAL_DESIGN = 'visual-design',
 }
 
 export enum OID4VCIRoute {

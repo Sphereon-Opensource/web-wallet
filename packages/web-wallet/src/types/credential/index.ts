@@ -136,6 +136,7 @@ export type CredentialSchemaClaim = {
 export type CredentialSchema  = {
   type: string
   properties?: Record<string, any>
+  items?: CredentialSchema | CredentialSchema[];
   required?: Array<string>
 }
 
@@ -145,3 +146,15 @@ export type CredentialUISchema = {
   scope?: string
   elements?: Array<CredentialUISchema>
 }
+
+export type ClaimMetadata = Record<
+  string,
+  {
+    display: {
+      label: string;
+      description: string;
+      lang: string;
+      imageSize?: { width: number; height: number };
+    };
+  }
+>;
