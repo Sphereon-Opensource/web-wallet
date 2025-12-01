@@ -1,7 +1,7 @@
 import {ClaimsDescriptionV1_0_15, CredentialConfigurationSupportedV1_0_15} from '@sphereon/oid4vci-common'
 import {CredentialSchema, ToCredentialConfigurationArgs} from '@typings'
-import agent from '@agent'
-import {NEXT_PUBLIC_ISSUER_CORRELATION_ID} from '@/src/agent/environment'
+import {getAgent} from '@agent'
+import {getIssuerCorrelationId} from '@/src/agent/environment'
 
 export function schemaToClaims(
   schema: CredentialSchema,
@@ -54,35 +54,54 @@ export function schemaToClaims(
 }
 
 export const toCredentialConfiguration = (args: ToCredentialConfigurationArgs): CredentialConfigurationSupportedV1_0_15 => {
-  const { schema, branding } = args
+  const {schema, branding, options} = args
   const {
-    format,
     scope,
     cryptographicBindingMethodsSupported = ['did:web', 'did:jwk'],
     credentialSigningAlgValuesSupported = ['ES256'],
     proofTypesSupported,
-    vct,
-  } = args.options
-  return {
-    format,
+  } = options
+
+  const baseConfig = {
     scope,
     cryptographic_binding_methods_supported: cryptographicBindingMethodsSupported,
     cryptographic_suites_supported: credentialSigningAlgValuesSupported,
     proof_types_supported: proofTypesSupported,
-    vct,
-    ...(branding && { display: Array.isArray(branding) ? branding : [branding] }),
-    claims: schemaToClaims(schema)
+    ...(branding && {display: Array.isArray(branding) ? branding : [branding]}),
+    claims: schemaToClaims(schema),
   }
+
+  if (options.format === 'dc+sd-jwt' || options.format === 'vc+sd-jwt') {
+    return {format: 'dc+sd-jwt', vct: options.vct, ...baseConfig}
+  }
+
+  if (options.format === 'jwt_vc_json' || options.format === 'jwt_vc') {
+    return {format: options.format, credential_definition: {type: options.types}, ...baseConfig}
+  }
+
+  if (options.format === 'ldp_vc' || options.format === 'jwt_vc_json-ld') {
+    return {format: options.format, credential_definition: options.credentialDefinition, ...baseConfig}
+  }
+
+  if (options.format === 'mso_mdoc') {
+    return {format: options.format, doctype: options.doctype, ...baseConfig}
+  }
+
+  throw Error(`Unsupported format type ${options.format}`);
 }
 
 export const updateOid4vciMetadata = async (credentialName: string, credentialConfiguration: CredentialConfigurationSupportedV1_0_15): Promise<void> => {
-  const metadata = await agent.oid4vciStoreGetMetadata({metadataType: 'issuer', correlationId: NEXT_PUBLIC_ISSUER_CORRELATION_ID})
+  const issuerCorrelationId = getIssuerCorrelationId()
+  if(!issuerCorrelationId) {
+    return Promise.reject('Env var BROWSER_PUBLIC_ISSUER_CORRELATION_ID is missing')
+  }
+  const metadata = await getAgent().oid4vciStoreGetMetadata({metadataType: 'issuer', correlationId: issuerCorrelationId})
   const name = credentialName.trim().toLowerCase().replace(/\s+/g, "-")
 
   if (metadata) {
-    await agent.oid4vciStorePersistMetadata({
+    await getAgent().oid4vciStorePersistMetadata({
       metadataType: 'issuer',
-      correlationId: NEXT_PUBLIC_ISSUER_CORRELATION_ID,
+      correlationId: issuerCorrelationId,
       metadata: {
         ...metadata,
         credential_configurations_supported: {
