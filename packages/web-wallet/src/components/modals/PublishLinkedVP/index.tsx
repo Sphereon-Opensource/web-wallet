@@ -1,4 +1,4 @@
-import React, {FC, ReactElement, useState, useEffect} from 'react'
+import React, {FC, ReactElement, useEffect, useState} from 'react'
 import {createPortal} from 'react-dom'
 import {useTranslate} from '@refinedev/core'
 import {PrimaryButton, SecondaryButton, SSISwitchItem} from '@sphereon/ui-components.ssi-react'
@@ -20,7 +20,7 @@ const PublishLinkedVPModal: FC<Props> = (props: Props): ReactElement | null => {
   const [linkedVpId, setLinkedVpId] = useState(generateLinkedVpId())
   const [shareFromSpecificDate, setShareFromSpecificDate] = useState(false)
   const [linkedVpFrom, setLinkedVpFrom] = useState<Date | undefined>(undefined)
-  const [shareUntilSpecificDate, setShareUntilSpecificDate] = useState(false)
+  const [shareIndefinitely, setShareIndefinitely] = useState(true)
   const [linkedVpUntil, setLinkedVpUntil] = useState<Date | undefined>(undefined)
   const [errors, setErrors] = useState<{linkedVpId?: string; linkedVpFrom?: string; linkedVpUntil?: string}>({})
   const linkedVpIdInputRef = React.useRef<HTMLInputElement>(null)
@@ -46,10 +46,10 @@ const PublishLinkedVPModal: FC<Props> = (props: Props): ReactElement | null => {
   }, [shareFromSpecificDate])
 
   useEffect(() => {
-    if (shareUntilSpecificDate && linkedVpUntilInputRef.current) {
+    if (!shareIndefinitely && linkedVpUntilInputRef.current) {
       linkedVpUntilInputRef.current.focus()
     }
-  }, [shareUntilSpecificDate])
+  }, [shareIndefinitely])
 
   const validateLinkedVpId = (id: string): boolean => {
     if (!id.trim()) {
@@ -78,17 +78,17 @@ const PublishLinkedVPModal: FC<Props> = (props: Props): ReactElement | null => {
   }
 
   const validateLinkedVpUntil = (date: Date | undefined): boolean => {
-    if (shareUntilSpecificDate && !date) {
+    if (!shareIndefinitely && !date) {
       setErrors(prev => ({...prev, linkedVpUntil: translate('create_shared_id_date_required_error')}))
       return false
     }
 
-    if (shareUntilSpecificDate && date && shareFromSpecificDate && linkedVpFrom && date <= linkedVpFrom) {
+    if (!shareIndefinitely && date && shareFromSpecificDate && linkedVpFrom && date <= linkedVpFrom) {
       setErrors(prev => ({...prev, linkedVpUntil: translate('create_shared_id_date_until_before_from_error')}))
       return false
     }
 
-    if (shareUntilSpecificDate && date && !shareFromSpecificDate && date <= new Date()) {
+    if (!shareIndefinitely && date && !shareFromSpecificDate && date <= new Date()) {
       setErrors(prev => ({...prev, linkedVpUntil: translate('create_shared_id_date_past_error')}))
       return false
     }
@@ -109,7 +109,7 @@ const PublishLinkedVPModal: FC<Props> = (props: Props): ReactElement | null => {
     await onSubmit(
       linkedVpId,
       shareFromSpecificDate ? linkedVpFrom : undefined,
-      shareUntilSpecificDate ? linkedVpUntil : undefined,
+      shareIndefinitely ? undefined : linkedVpUntil,
     )
   }
 
@@ -174,91 +174,89 @@ const PublishLinkedVPModal: FC<Props> = (props: Props): ReactElement | null => {
             </div>
           </div>
 
-          <SSISwitchItem
-            label={shareFromSpecificDate
-              ? translate('create_shared_id_share_from_specific_date_label')
-              : translate('create_shared_id_share_from_now_label')
-            }
-            checked={shareFromSpecificDate}
-            onChange={(checked: boolean) => {
-              setShareFromSpecificDate(checked)
-              if (!checked) {
-                setErrors(prev => ({...prev, linkedVpFrom: undefined}))
-              } else {
-                validateLinkedVpFrom(linkedVpFrom)
-              }
-            }}
-          />
-
-          {shareFromSpecificDate && (
-            <div className={style.datePickerFormField}>
-              <TextInputField
-                ref={linkedVpFromInputRef}
-                label={{
-                  caption: translate('create_shared_id_sharing_from_label'),
-                  className: style.fieldLabel,
-                }}
-                value={linkedVpFrom ? linkedVpFrom.toISOString().slice(0, 16) : ''}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  const newDate = e.target.value ? new Date(e.target.value) : undefined
-                  setLinkedVpFrom(newDate)
-                  if (errors.linkedVpFrom) {
-                    validateLinkedVpFrom(newDate)
-                  }
-                  // Revalidate until date if it exists
-                  if (shareUntilSpecificDate && linkedVpUntil) {
-                    validateLinkedVpUntil(linkedVpUntil)
-                  }
-                }}
-                onBlur={async () => {
+          <div className={style.switchFormField} onMouseDown={(e) => e.preventDefault()}>
+            <SSISwitchItem
+              label={translate('create_shared_id_share_from_specific_date_label')}
+              checked={shareFromSpecificDate}
+              onChange={(checked: boolean) => {
+                setShareFromSpecificDate(checked)
+                if (!checked) {
+                  setErrors(prev => ({...prev, linkedVpFrom: undefined}))
+                } else {
                   validateLinkedVpFrom(linkedVpFrom)
-                }}
-                type="datetime-local"
-              />
-              {errors.linkedVpFrom && <div className={style.errorText}>{errors.linkedVpFrom}</div>}
-            </div>
-          )}
+                }
+              }}
+            />
 
-          <SSISwitchItem
-            label={shareUntilSpecificDate
-              ? translate('create_shared_id_share_until_specific_date_label')
-              : translate('create_shared_id_share_indefinitely_label')
-            }
-            checked={shareUntilSpecificDate}
-            onChange={(checked: boolean) => {
-              setShareUntilSpecificDate(checked)
-              if (!checked) {
-                setErrors(prev => ({...prev, linkedVpUntil: undefined}))
-              } else {
-                validateLinkedVpUntil(linkedVpUntil)
-              }
-            }}
-          />
+            {shareFromSpecificDate && (
+              <div className={style.datePickerFormField}>
+                <TextInputField
+                  ref={linkedVpFromInputRef}
+                  label={{
+                    caption: translate('create_shared_id_sharing_from_label'),
+                    className: style.fieldLabel,
+                  }}
+                  value={linkedVpFrom ? linkedVpFrom.toISOString().slice(0, 16) : ''}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    const newDate = e.target.value ? new Date(e.target.value) : undefined
+                    setLinkedVpFrom(newDate)
+                    if (errors.linkedVpFrom) {
+                      validateLinkedVpFrom(newDate)
+                    }
+                    // Revalidate until date if it exists
+                    if (!shareIndefinitely && linkedVpUntil) {
+                      validateLinkedVpUntil(linkedVpUntil)
+                    }
+                  }}
+                  onBlur={async () => {
+                    validateLinkedVpFrom(linkedVpFrom)
+                  }}
+                  type="datetime-local"
+                />
+                {errors.linkedVpFrom && <div className={style.errorText}>{errors.linkedVpFrom}</div>}
+              </div>
+            )}
+          </div>
 
-          {shareUntilSpecificDate && (
-            <div className={style.datePickerFormField}>
-              <TextInputField
-                ref={linkedVpUntilInputRef}
-                label={{
-                  caption: translate('create_shared_id_sharing_until_label'),
-                  className: style.fieldLabel,
-                }}
-                value={linkedVpUntil ? linkedVpUntil.toISOString().slice(0, 16) : ''}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  const newDate = e.target.value ? new Date(e.target.value) : undefined
-                  setLinkedVpUntil(newDate)
-                  if (errors.linkedVpUntil) {
-                    validateLinkedVpUntil(newDate)
-                  }
-                }}
-                onBlur={async () => {
+          <div className={style.switchFormField} onMouseDown={(e) => e.preventDefault()}>
+            <SSISwitchItem
+              label={translate('create_shared_id_share_indefinitely_label')}
+              checked={shareIndefinitely}
+              onChange={(checked: boolean) => {
+                setShareIndefinitely(checked)
+                if (checked) {
+                  setErrors(prev => ({...prev, linkedVpUntil: undefined}))
+                } else {
                   validateLinkedVpUntil(linkedVpUntil)
-                }}
-                type="datetime-local"
-              />
-              {errors.linkedVpUntil && <div className={style.errorText}>{errors.linkedVpUntil}</div>}
-            </div>
-          )}
+                }
+              }}
+            />
+
+            {!shareIndefinitely && (
+              <div className={style.datePickerFormField}>
+                <TextInputField
+                  ref={linkedVpUntilInputRef}
+                  label={{
+                    caption: translate('create_shared_id_sharing_until_label'),
+                    className: style.fieldLabel,
+                  }}
+                  value={linkedVpUntil ? linkedVpUntil.toISOString().slice(0, 16) : ''}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    const newDate = e.target.value ? new Date(e.target.value) : undefined
+                    setLinkedVpUntil(newDate)
+                    if (errors.linkedVpUntil) {
+                      validateLinkedVpUntil(newDate)
+                    }
+                  }}
+                  onBlur={async () => {
+                    validateLinkedVpUntil(linkedVpUntil)
+                  }}
+                  type="datetime-local"
+                />
+                {errors.linkedVpUntil && <div className={style.errorText}>{errors.linkedVpUntil}</div>}
+              </div>
+            )}
+          </div>
 
           <div className={style.buttonContainer}>
             <SecondaryButton caption={translate('action_cancel_label')} onClick={handleCancel} />

@@ -51,7 +51,7 @@ import {DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore} from '@ver
 import {DIDManager} from '@veramo/did-manager'
 import {DIDResolverPlugin} from '@veramo/did-resolver'
 import {SphereonKeyManager} from '@sphereon/ssi-sdk-ext.key-manager'
-import {SecretBox} from '@veramo/kms-local'
+import {KeyManagementSystem, SecretBox} from '@veramo/kms-local'
 import {RestKeyManagementSystem} from '@sphereon/ssi-sdk.kms-rest'
 import {SphereonKeyManagementSystem} from '@sphereon/ssi-sdk-ext.kms-local'
 import {
@@ -132,6 +132,7 @@ import {
   LinkedVpApiServer,
   LinkedVPManagerApiServerArgs,
 } from '@sphereon/ssi-sdk.linked-vp-rest-api'
+import {AbstractKeyManagementSystem} from '@veramo/key-manager'
 
 const cliMode: boolean = process.env.RUN_MODE === 'cli'
 
@@ -171,23 +172,31 @@ if (holderDid) {
   holderDids['default'] = holderDid
 }
 
+function buildKmsMap() {
+  const kmsMap: Record<string, KeyManagementSystem | AbstractKeyManagementSystem> = {
+    local: new SphereonKeyManagementSystem(privateKeyStore),
+  }
+
+  if(REST_KMS_BASE_URL) {
+    kmsMap['Digidentity KMS'] = new RestKeyManagementSystem({
+      applicationId: REST_KMS_APPLICATION_ID,
+      baseUrl: REST_KMS_BASE_URL,
+      providerId: REST_KMS_PROVIDER_ID,
+      tenantId: REST_KMS_TENANT_ID,
+      /*
+              userId: REST_KMS_USER_ID,
+      */
+    })
+  }
+  return kmsMap
+}
+
 const plugins: IAgentPlugin[] = [
   new DataStore(dbConnection),
   new DataStoreORM(dbConnection),
   new SphereonKeyManager({
     store: new KeyStore(dbConnection),
-    kms: {
-      local: new SphereonKeyManagementSystem(privateKeyStore),
-      'Digidentity KMS': new RestKeyManagementSystem({ // FIXME register each kms within the remote rest KMS?
-        applicationId: REST_KMS_APPLICATION_ID,
-        baseUrl: REST_KMS_BASE_URL,
-        providerId: REST_KMS_PROVIDER_ID,
-        tenantId: REST_KMS_TENANT_ID,
-        /*
-                userId: REST_KMS_USER_ID,
-        */
-      }),
-    },
+    kms: buildKmsMap(),
   }),
   new DIDManager({
     store: new DIDStore(dbConnection),
