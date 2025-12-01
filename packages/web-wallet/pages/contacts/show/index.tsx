@@ -95,15 +95,53 @@ const ShowContactDetails: FC = (): ReactElement => {
       return
     }
 
-    const credentialIssuer = partyData?.data.identities
-      .find(identity => identity.roles.includes(CredentialRole.ISSUER))
-      ?.identifier.correlationId?.replace('did:web:', 'https://')
+    const credentialIssuer = (() => {
+      const identities = partyData?.data.identities ?? [];
+
+      const httpsUrlIdentities = identities.filter(
+        identity =>
+          identity.roles.includes(CredentialRole.ISSUER) &&
+          identity.identifier?.type === 'url' &&
+          identity.identifier?.correlationId?.startsWith('https')
+      );
+
+      // Pick the one with the longest url
+      const httpsUrlIdentity = httpsUrlIdentities.length > 0
+            ? httpsUrlIdentities.reduce((longest, current) =>
+                (current.identifier?.correlationId?.length ?? 0) > (longest.identifier?.correlationId?.length ?? 0)
+                    ? current
+                    : longest
+            )
+            : undefined;
+
+      const urlIdentity = identities.find(
+        identity =>
+          identity.roles.includes(CredentialRole.ISSUER) &&
+          identity.identifier?.type === 'url'
+      );
+
+      const anyIssuer = identities.find(identity =>
+        identity.roles.includes(CredentialRole.ISSUER)
+      );
+
+      const chosen = httpsUrlIdentity ?? urlIdentity ?? anyIssuer;
+
+      const correlationId = chosen?.identifier?.correlationId?.replace('did:web:', 'https://');
+
+      return correlationId
+        ? correlationId.startsWith('http')
+          ? correlationId
+          : `https://${correlationId}`
+        : undefined;
+    })();
+
     if (!credentialIssuer) {
       return
     }
 
     OpenID4VCIClient.fromCredentialIssuer({
       credentialIssuer,
+      createAuthorizationRequestURL: false
     }).then(setOpenID4VCIClient).catch(error => {console.error(error); return})
   }, [id, isLoading])
 
@@ -188,7 +226,7 @@ const ShowContactDetails: FC = (): ReactElement => {
       title: translate('contact_details_activity_tab_label'),
       content: getActivityContent,
     },
-    ...(!party.roles.includes(CredentialRole.ISSUER)
+    ...(party.roles.includes(CredentialRole.ISSUER)
       ? [
           {
             key: ContactDetailsTabRoute.CREDENTIAL_CATALOG,
