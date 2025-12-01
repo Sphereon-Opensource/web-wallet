@@ -9,4 +9,5 @@ export enum DataResource {
   IDENTIFIERS = 'key-management/identifiers',
   KEYS = 'KEYS',
   QUERIES = 'QUERIES',
+  CREDENTIAL_DESIGNS = 'CREDENTIAL_DESIGNS',
 }

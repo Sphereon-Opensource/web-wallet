@@ -62,6 +62,7 @@ export const authOptions: NextAuthConfig = {
       return session
     },
   },
+
   /*
       cookies: {
         sessionToken: {

@@ -2,7 +2,7 @@ import React, {FC, ReactElement} from 'react'
 import {useTranslate} from '@refinedev/core'
 import {ColumnHeader, CredentialMiniCardViewProps, SSITableView, TableCellType, ValueSelection} from '@sphereon/ui-components.ssi-react'
 import {CredentialStatus} from '@sphereon/ui-components.core'
-import {useCredentialsOutletContext} from '@machines/credentials/credentialsCreateStateNavigation'
+import {useCredentialsOutletContext} from '@machines/credentials/credentialCreateStateNavigation'
 import styles from './index.module.css'
 
 type CredentialDetails = {
