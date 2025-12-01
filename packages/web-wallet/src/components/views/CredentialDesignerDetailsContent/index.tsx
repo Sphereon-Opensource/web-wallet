@@ -23,6 +23,7 @@ const CredentialDesignerDetailsContent: FC = (): ReactElement => {
   })
 
   const onCredentialFormInputChange = async (state: JSONFormState): Promise<void> => {
+    state.data.display_name = state.data.display_name?.trim()
     onCredentialDesignerDetailsFormDataChange?.(state)
   }
 
@@ -30,9 +31,9 @@ const CredentialDesignerDetailsContent: FC = (): ReactElement => {
   if (credentialDesigns.isError) return <div>Error: {credentialDesigns.error.message}</div>
 
   const ajv = getFormViewAjv()
-  if (!ajv.getKeyword('uniqueCredentialName')) {
+  if (!ajv.getKeyword('uniqueValue')) {
     ajv.addKeyword({
-      keyword: 'uniqueCredentialName',
+      keyword: 'uniqueValue',
       type: 'string',
       validate: (_: string, data: string) => {
         return !credentialDesigns.data?.data.some(credentialDesign => credentialDesign.name === data)
@@ -40,36 +41,46 @@ const CredentialDesignerDetailsContent: FC = (): ReactElement => {
       errors: true
     })
   }
+  if (!ajv.getKeyword('isNotEmpty')) {
+    ajv.addKeyword({
+      keyword: 'isNotEmpty',
+      type: 'string',
+      validate: (_: string, data: string) => {
+        return data.trim() !== ''
+      },
+      errors: true
+    })
+  }
 
-    const advancedValidator = (content: string): string | null => {
-        try {
-            const data = JSON.parse(content)
+  const advancedValidator = (content: string): string | null => {
+    try {
+      const data = JSON.parse(content)
 
-            if (typeof data["display_name"] !== "string" || data["display_name"].trim() === "") {
-                return 'Missing display_name'
-            }
+      if (typeof data["display_name"] !== "string" || data["display_name"].trim() === "") {
+        return 'Missing display_name'
+      }
 
-            if (typeof data["format"] !== "string" || data["format"].trim() === "") {
-                return 'Missing format'
-            }
-            const allowedFormats = [
-                "jwt_vc",
-                "ldp_vc",
-                "vc+jwt",
-                "dc+sd-jwt",
-                "jwt",
-                "ldp",
-                "mso_mdoc"
-            ] as const
-            if (!allowedFormats.includes(data.format)) {
-                return 'Invalid format'
-            }
+      if (typeof data["format"] !== "string" || data["format"].trim() === "") {
+        return 'Missing format'
+      }
+      const allowedFormats = [
+        "jwt_vc",
+        "ldp_vc",
+        "vc+jwt",
+        "dc+sd-jwt",
+        "jwt",
+        "ldp",
+        "mso_mdoc"
+      ] as const
+      if (!allowedFormats.includes(data.format)) {
+        return 'Invalid format'
+      }
 
-            return null
-        } catch (error) {
-            return error instanceof Error ? error.message : 'Validation failed'
-        }
+      return null
+    } catch (error) {
+      return error instanceof Error ? error.message : 'Validation failed'
     }
+  }
 
   const getDefaultContent = (): ReactElement => {
     return <div className={style.container}>
