@@ -7,8 +7,7 @@ export type ToCredentialConfigurationArgs = {
   branding?: CredentialsSupportedDisplay[] | undefined
 }
 
-export type CredentialConfigurationOptions = { // TODO type
-  //id: string // TODO optional and what it is?
+export type CredentialConfigurationOptions = {
   format: OID4VCICredentialFormat | string
   scope?: string
   cryptographicBindingMethodsSupported?: Array<string>
