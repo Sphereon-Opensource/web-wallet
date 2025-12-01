@@ -61,12 +61,12 @@ const CredentialDesignerClaimsContent: FC = (): ReactElement => {
   const routes: Array<TabViewRoute> = [
     {
       key: "default",
-      title: "Visual Editor",
+      title: translate('design_credential_visual_mode_label'),
       content: getDefaultContent,
     },
     {
       key: "advanced",
-      title: "Advanced Editor",
+      title: translate('design_credential_advanced_mode_label'),
       content: getDefaultAdvancedContent,
     }
   ]

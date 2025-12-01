@@ -144,17 +144,17 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
         console.warn(credentialDesignerDetailsFormData?.errors)
       }
     } else if (step === 2) {
-      const disabled = (credentialDesignerVisualDesignFormData?.errors?.length ?? 0) > 0 // TODO
+      const disabled = (credentialDesignerVisualDesignFormData?.errors?.length ?? 0) > 0
 
       setDisabled(disabled)
       if (disabled) {
         console.warn(credentialDesignerVisualDesignFormData?.errors)
       }
     } else if (step === 3) {
-      const disabled = false
-        //advancedMode ? ((credentialDesignerClaimsFormData?.errors?.length ?? 0) > 0 ||
-        //!noEmptyPropertiesRecursive(credentialDesignerClaimsFormData?.data?.credentialClaims ?? [])) : false // TODO
-
+      const disabled = !advancedMode
+        ? ((credentialDesignerClaimsFormData?.errors?.length ?? 0) > 0 || !noEmptyPropertiesRecursive(credentialDesignerClaimsFormData?.data?.credentialClaims ?? []))
+        : false
+      
       setDisabled(disabled)
       if (disabled) {
         console.warn(credentialDesignerClaimsFormData?.errors)
@@ -185,7 +185,7 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
     if (nextStep <= maxInteractiveSteps) {
       setStep(nextStep)
     } else if (credentialDesignerClaimsFormData?.data && credentialDesignerDetailsFormData.data) {
-      await buildCredentialSchemas(credentialDesignerClaimsFormData.data) //.credentialClaims
+      await buildCredentialSchemas(credentialDesignerClaimsFormData.data)
         .then(buildResult => {
           storeCredentialSchema({
             credentialName: credentialDesignerDetailsFormData.data.display_name,
@@ -247,7 +247,7 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
   ): Promise<{schema: CredentialSchema; uiSchema: CredentialUISchema | Array<CredentialUISchema>}> => {
 
     const schema: CredentialSchema = "credentialClaims" in claims ? buildCredentialSchema(claims.credentialClaims) : claims
-    const uiSchema = "credentialClaims" in claims ? buildCredentialUISchema(claims.credentialClaims) : buildCredentialUISchema2(claims)
+    const uiSchema = "credentialClaims" in claims ? buildCredentialUISchema(claims.credentialClaims) : buildCredentialUISchemaAdvanced(claims)
 
     return {schema, uiSchema}
   }
@@ -308,7 +308,7 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
       : elements
   }
 
-  const buildCredentialUISchema2 = (
+  const buildCredentialUISchemaAdvanced = (
     schema: CredentialSchema,
     basePath: string = '#/properties',
     isRoot: boolean = true,
@@ -323,7 +323,7 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
           elements.push({
             type: 'Group',
             label: propName,
-            elements: buildCredentialUISchema2(
+            elements: buildCredentialUISchemaAdvanced(
               propSchema,
               `${currentPath}/properties`,
               false,
