@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "properties": {
+    "alias": {
+      "type": "string",
+      "title": "Alias name"
+    },
+    "selectedKeyId": {
+      "type": "string",
+      "title": "Key",
+      "oneOf": []
+    }
+  },
+  "required": [
+    "alias"
+  ]
+}

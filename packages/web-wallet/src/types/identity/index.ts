@@ -23,6 +23,7 @@ export type KeyManagementIdentifier = {
   alias?: string
   value: string
   origin: IdentifierOrigin
+  selectedKeyId?: string
 }
 
 export type DidWeb = {

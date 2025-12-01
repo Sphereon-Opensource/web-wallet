@@ -1,0 +1,18 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Control",
+      "label": "Alias name",
+      "scope": "#/properties/alias"
+    },
+    {
+      "type": "Control",
+      "label": "Select Key",
+      "scope": "#/properties/selectedKeyId",
+      "options": {
+        "autocomplete": true
+      }
+    }
+  ]
+}
