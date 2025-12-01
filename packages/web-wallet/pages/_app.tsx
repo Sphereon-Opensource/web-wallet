@@ -14,11 +14,12 @@ import AppRouter from '../src/router/AppRouter'
 import {BrowserRouter} from 'react-router-dom'
 import {getAuthProvider} from '@helpers/AuthProvider'
 import {supabaseServiceClient} from '@helpers/SupabaseClient'
-import {ContactRoute, DataProvider, DataResource, KeyManagementRoute, MainRoute} from '@typings'
+import {ContactRoute, CredentialDesignerRoute, DataProvider, DataResource, KeyManagementRoute, MainRoute} from '@typings'
 import {keysDataProvider} from '@/src/dataProviders/keysDataProvider'
 import {identifiersDataProvider} from '@/src/dataProviders/identifiersDataProvider'
 import {presentationDefinitionDataProvider} from '@/src/dataProviders/presentationDefinitionDataProvider'
 import {credentialDataProvider} from '@/src/dataProviders/credentialDataProvider'
+import {credentialDesignDataProvider} from '@/src/dataProviders/credentialDesignDataProvider'
 import '../src/styles/global.css'
 import styles from './App.module.css'
 import '../app/constants'
@@ -117,6 +118,11 @@ const _app = (props: React.PropsWithChildren<unknown>) => {
       edit: `${MainRoute.QUERY_MANAGEMENT}/${MainRoute.SUB_EDIT}/${MainRoute.SUB_ID}`,
       meta: {dataProviderName: DataProvider.QUERIES},
     },
+    {
+      name: DataResource.CREDENTIAL_DESIGNS,
+      create: `${MainRoute.DESIGNER}/${MainRoute.SUB_CREATE}`,
+      meta: {dataProviderName: DataProvider.CREDENTIAL_DESIGNS},
+    },
   ]
 
   const dataProviders = {
@@ -126,6 +132,7 @@ const _app = (props: React.PropsWithChildren<unknown>) => {
     [DataProvider.KEYS]: keysDataProvider(),
     [DataProvider.IDENTIFIERS]: identifiersDataProvider(),
     [DataProvider.QUERIES]: presentationDefinitionDataProvider(),
+    [DataProvider.CREDENTIAL_DESIGNS]: credentialDesignDataProvider(),
   }
 
   return (

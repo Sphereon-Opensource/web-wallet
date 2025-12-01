@@ -60,9 +60,8 @@ const navigateAddContact = async (args: OID4VCINavigationArgs): Promise<void> =>
     return Promise.reject(Error('Missing serverMetadata in context'))
   }
 
-  const issuerUrl: URL = new URL(serverMetadata.issuer)
-  const correlationId: string = `${issuerUrl.protocol}//${issuerUrl.hostname}`
-  const issuerName: string = getIssuerName(correlationId, serverMetadata.credentialIssuerMetadata)
+  const correlationId = serverMetadata.issuer
+  const issuerName = getIssuerName(correlationId, serverMetadata.credentialIssuerMetadata)
   const onConsentChange = (event: any): void => {
     abortController.abort()
     oid4vciMachine.send({
@@ -102,7 +101,7 @@ const navigateAddContact = async (args: OID4VCINavigationArgs): Promise<void> =>
         origin: IdentityOrigin.EXTERNAL,
         identifier: {
           type: CorrelationIdentifierType.URL,
-          correlationId: issuerUrl.hostname,
+          correlationId,
         },
         // TODO WAL-476 add support for correct connection
         connection: {

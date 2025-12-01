@@ -1,6 +1,6 @@
 import React, {FC, ReactElement} from 'react'
 import {CredentialIssuanceWizardView} from '@sphereon/ui-components.ssi-react'
-import {useCredentialsOutletContext} from '@machines/credentials/credentialsCreateStateNavigation'
+import {useCredentialsOutletContext} from '@machines/credentials/credentialCreateStateNavigation'
 import {useForms} from '@helpers/forms'
 
 const IssueCredentialEnterDetailsContent: FC = (): ReactElement => {
