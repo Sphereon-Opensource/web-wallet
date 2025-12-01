@@ -46,6 +46,18 @@ export const roleConfig:Array<RoleData> = [
       },
       {
         type: "group",
+        label: "Credential design",
+        items: [
+          {
+            type: "item",
+            label: "Design",
+            icon: "design",
+            path: "/credentials/designer/create"
+          }
+        ]
+      },
+      {
+        type: "group",
         label: "Contacts",
         items: [
           {

@@ -15,7 +15,6 @@ import {toCredentialSummary} from '@sphereon/ui-components.credential-branding'
 import {UniqueDigitalCredential} from '@sphereon/ssi-sdk.credential-store'
 import {VerifiableCredential} from '@veramo/core'
 import {CredentialRole} from '@sphereon/ssi-types'
-import {DcqlClaim} from '@typings'
 import {DcqlCredentialQuery} from 'dcql'
 
 const debug: Debugger = Debug('sphereon:cloud-wallet:CredentialSelectionView')

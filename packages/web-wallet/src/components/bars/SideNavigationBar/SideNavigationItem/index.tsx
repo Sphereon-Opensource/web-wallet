@@ -12,6 +12,7 @@ import AddContactIcon from '@sphereon/ui-components.ssi-react/dist/components/as
 import IdentifierIcon from '@sphereon/ui-components.ssi-react/dist/components/assets/icons/Identifier'
 import ManagementIcon from '@sphereon/ui-components.ssi-react/dist/components/assets/icons/Management'
 import KeyIcon from '@sphereon/ui-components.ssi-react/dist/components/assets/icons/Key'
+import UXIcon from '@sphereon/ui-components.ssi-react/dist/components/assets/icons/UX'
 
 type Props = {
     label: string
@@ -49,6 +50,8 @@ const SideNavigationItem: FC<Props> = (props: Props): ReactElement => {
         return <ManagementIcon size={20}/>
       case 'key':
         return <KeyIcon size={24}/>
+      case 'design':
+        return <UXIcon size={18}/>
       default:
         return <div/>
     }
