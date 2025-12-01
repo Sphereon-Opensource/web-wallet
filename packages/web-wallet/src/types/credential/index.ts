@@ -146,15 +146,3 @@ export type CredentialUISchema = {
   scope?: string
   elements?: Array<CredentialUISchema>
 }
-
-export type ClaimMetadata = Record<
-  string,
-  {
-    display: {
-      label: string;
-      description: string;
-      lang: string;
-      imageSize?: { width: number; height: number };
-    };
-  }
->;

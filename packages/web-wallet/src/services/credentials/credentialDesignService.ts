@@ -1,6 +1,7 @@
 import {ClaimsDescriptionV1_0_15, CredentialConfigurationSupportedV1_0_15} from '@sphereon/oid4vci-common'
 import {CredentialSchema, ToCredentialConfigurationArgs} from '@typings'
 import agent from '@agent'
+import {NEXT_PUBLIC_ISSUER_CORRELATION_ID} from '@/src/agent/environment'
 
 export function schemaToClaims(
   schema: CredentialSchema,
@@ -75,14 +76,13 @@ export const toCredentialConfiguration = (args: ToCredentialConfigurationArgs): 
 }
 
 export const updateOid4vciMetadata = async (credentialName: string, credentialConfiguration: CredentialConfigurationSupportedV1_0_15): Promise<void> => {
-  const metadata = await agent.oid4vciStoreGetMetadata({metadataType: 'issuer', correlationId: 'http://localhost:5010/oid4vci'}) // TODO
-
+  const metadata = await agent.oid4vciStoreGetMetadata({metadataType: 'issuer', correlationId: NEXT_PUBLIC_ISSUER_CORRELATION_ID})
   const name = credentialName.trim().toLowerCase().replace(/\s+/g, "-")
 
   if (metadata) {
     await agent.oid4vciStorePersistMetadata({
       metadataType: 'issuer',
-      correlationId: 'http://localhost:5010/oid4vci',
+      correlationId: NEXT_PUBLIC_ISSUER_CORRELATION_ID,
       metadata: {
         ...metadata,
         credential_configurations_supported: {
