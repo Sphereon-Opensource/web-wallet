@@ -2,6 +2,7 @@ import {CredentialRole} from '@sphereon/ssi-sdk.credential-store';
 import {EbsiAccessTokenOpts} from '@sphereon/ssi-sdk.ebsi-support/src/did/types';
 import { getAgent } from '@agent';
 import {RegisterDidOnLedgerArgs} from '@typings';
+import {getEnv} from '@/src/services/env'
 
 export const registerDidEbsiOnLedger = async (args: RegisterDidOnLedgerArgs): Promise<void> => {
     const { credentialIssuer, did } = args
@@ -12,7 +13,7 @@ export const registerDidEbsiOnLedger = async (args: RegisterDidOnLedgerArgs): Pr
     }
 
     const identifier  = await getAgent().didManagerGet({ did })
-    const clientId = process?.env?.BROWSER_PUBLIC_CLIENT_ID ?? `${window.location.protocol}//${window.location.hostname}`
+    const clientId = getEnv('BROWSER_PUBLIC_CLIENT_ID') ?? `${window.location.protocol}//${window.location.hostname}`
     const jwksUri = `${clientId}/.well-known/jwks/dids/${identifier.did}`
     const accessTokenOpts: EbsiAccessTokenOpts = {
         attestationToOnboardCredentialRole: CredentialRole.HOLDER,

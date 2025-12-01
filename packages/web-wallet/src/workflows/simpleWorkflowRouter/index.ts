@@ -73,10 +73,10 @@ export async function newCreateAssetWorkflowEntities(
 
   const workflowStepEntity = new WorkflowStepEntity()
   workflowStepEntity.status = WorkflowStatus.New
-  workflowStepEntity.code = createAssetDescriptor.step
-  workflowStepEntity.message = createAssetDescriptor.message
-  workflowStepEntity.message = createAssetDescriptor.message
-  workflowStepEntity.action = createAssetDescriptor.action!
+  workflowStepEntity.code = createAssetDescriptor().step
+  workflowStepEntity.message = createAssetDescriptor().message
+  workflowStepEntity.message = createAssetDescriptor().message
+  workflowStepEntity.action = createAssetDescriptor().action!
   workflowStepEntity.created_at = new Date().toISOString()
   workflowStepEntity.sender_id = PROCESS_OWNER_DID
   workflowStepEntity.recipient_id = PROCESS_OWNER_DID
@@ -115,7 +115,7 @@ export async function startCreateWorkflow(assetId: string) {
 export function getWorkflowDescriptor(step: WorkflowStepCode | number): IWorkflowStepDescriptor {
   // @ts-ignore
   const stepType: WorkflowStepCode = WorkflowStepCode[WorkflowStepCode[step]]
-  const descriptor = workflowStepDescriptors[stepType]!
+  const descriptor = workflowStepDescriptors()[stepType]!
   return descriptor
 }
 
