@@ -154,7 +154,6 @@ export const CredentialsCreateContextProvider = (props: any): JSX.Element => {
   const onIssueMethodChange = async (issueMethod: ValueSelection): Promise<void> => {
     setIssueMethod(issueMethod)
   }
-console.log('=== credentialFormData', credentialFormData)
   return (
     <CredentialsCreateContext.Provider
       value={{
