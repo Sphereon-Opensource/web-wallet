@@ -21,9 +21,10 @@ import {
 import {IdentifiersCreateContext} from '@typings/machine/identifiers/create'
 import {CoreActions, JsonFormsCore} from '@jsonforms/core'
 import {getAgent} from '@agent'
-import {ManagedKeyInfo, TKeyType} from '@veramo/core'
+import {TKeyType} from '@veramo/core'
 import {getEnv} from '@/src/services/env'
 
+// Supported key types - adjust based on your requirements
 const SUPPORTED_KEY_TYPES: TKeyType[] = ['Ed25519', 'Secp256k1', 'Secp256r1', 'X25519', 'RSA']
 
 const createIdentifierNavigationListener = async (step: number, navigate: any): Promise<void> => {
