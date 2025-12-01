@@ -41,6 +41,8 @@ export const credentialDesignDataProvider = (): DataProvider => ({
     variables,
     meta,
   }: CreateParams<TVariables>): Promise<CreateResponse<TData>> => {
+    // TODO SSISDK-88 create transaction solution
+
     // @ts-ignore
     const { credentialName, credentialFormat, schema, uiSchema, branding } = variables
 
