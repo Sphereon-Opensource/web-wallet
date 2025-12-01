@@ -7,6 +7,10 @@
         {
           "const": "generate",
           "title": "Generate new key"
+        },
+        {
+          "const": "select",
+          "title": "Select existing key"
         }
       ],
       "default": "generate"
@@ -35,20 +39,13 @@
     "alias": {
       "type": "string"
     },
-    "key": {
+    "selectedKeyId": {
       "type": "string",
+      "title": "Key",
       "oneOf": [
         {
-          "const": "key1",
-          "title": "Key 1"
-        },
-        {
-          "const": "key2",
-          "title": "Key 2"
-        },
-        {
-          "const": "key3",
-          "title": "Key 3"
+          "const": "test",
+          "title": "Test"
         }
       ]
     },
@@ -82,5 +79,27 @@
       "minItems": 1
     }
   },
+  "required": ["action"],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "action": { "const": "generate" }
+        }
+      },
+      "then": {
   "required": ["type", "purposes"]
+}
+    },
+    {
+      "if": {
+        "properties": {
+          "action": { "const": "select" }
+        }
+      },
+      "then": {
+        "required": ["selectedKeyId"]
+      }
+    }
+  ]
 }

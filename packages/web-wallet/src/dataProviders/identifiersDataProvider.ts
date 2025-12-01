@@ -15,12 +15,13 @@ import {
   UpdateResponse,
 } from '@refinedev/core'
 import {DID_PREFIX} from '@sphereon/ssi-sdk-ext.did-utils'
-import agent, {agentContext} from '@agent'
+import {getAgent, getAgentContext} from '@agent'
 import {IdentifierKey, IdentifierServiceEndpoint, KeyManagementIdentifier, KeyManagementSystem} from '@typings'
 import {IIdentifier} from '@veramo/core'
 import type {EbsiAccessTokenOpts, EbsiEnvironment} from '@sphereon/ssi-sdk.ebsi-support'
 import {generateEbsiMethodSpecificId} from '@sphereon/ssi-sdk.ebsi-support'
 import {CredentialRole} from '@sphereon/ssi-types'
+import {getEnv} from '@/src/services/env'
 
 // TODO CWALL-244 further implement
 
@@ -46,7 +47,7 @@ const asIdentifierData = <T extends BaseRecord>(data: IdentifierRecord): T => (d
 
 const updateAlias = async (did: string, newAlias: string): Promise<void> => {
   try {
-    await agent.didManagerSetAlias({did, alias: newAlias})
+    await getAgent().didManagerSetAlias({did, alias: newAlias})
   } catch (error) {
     console.error('Error updating alias:', error)
     return Promise.reject(Error(`Failed to update alias: ${error}`))
@@ -58,7 +59,7 @@ const replaceIdentifierKey = async (did: string, currentKeys: any[], newKeyId: s
     // Remove existing keys from the identifier
     for (const key of currentKeys) {
       console.log(`Removing key ${key.kid}`)
-      await agent.didManagerRemoveKey({
+      await getAgent().didManagerRemoveKey({
         did,
         kid: key.kid,
         options: {},
@@ -66,13 +67,13 @@ const replaceIdentifierKey = async (did: string, currentKeys: any[], newKeyId: s
     }
 
     // Get the new key from the key manager
-    const key = await agent.keyManagerGet({kid: newKeyId})
+    const key = await getAgent().keyManagerGet({kid: newKeyId})
     if (!key) {
       return Promise.reject(Error(`Key with kid ${newKeyId} not found in key manager`))
     }
 
     // Add the selected key to the identifier's DID document
-    await agent.didManagerAddKey({
+    await getAgent().didManagerAddKey({
       did,
       key,
       options: {},
@@ -91,7 +92,7 @@ const replaceServices = async (did: string, currentServices: any[], newServices:
     // Remove all existing services
     if (currentServices && currentServices.length > 0) {
       for (const service of currentServices) {
-        await agent.didManagerRemoveService({
+        await getAgent().didManagerRemoveService({
           did,
           id: service.id,
         })
@@ -102,7 +103,7 @@ const replaceServices = async (did: string, currentServices: any[], newServices:
     console.log('updateVars.services', newServices)
     for (const service of newServices) {
       console.log(`didManagerAddService Service ID: ${service.id}`)
-      await agent.didManagerAddService({
+      await getAgent().didManagerAddService({
         did,
         service: {
           id: service.id,
@@ -123,7 +124,7 @@ export const identifiersDataProvider = (): DataProvider => ({
                                                            pagination,
                                                            filters,
                                                          }: GetListParams): Promise<GetListResponse<TData>> => {
-    const identities: IIdentifier[] = await agent.didManagerFind()
+    const identities: IIdentifier[] = await getAgent().didManagerFind()
     const data: TData[] = identities.map(identity => ({...(identity as any)}))
     return {
       data,
@@ -134,7 +135,7 @@ export const identifiersDataProvider = (): DataProvider => ({
                                                           resource,
                                                           id,
                                                         }: GetOneParams): Promise<GetOneResponse<TData>> => {
-    const identities: IIdentifier[] = await agent.didManagerFind()
+    const identities: IIdentifier[] = await getAgent().didManagerFind()
     const identity = identities.find(i => i.did === id)
 
     if (!identity) {
@@ -151,8 +152,9 @@ export const identifiersDataProvider = (): DataProvider => ({
                                                                                           variables,
                                                                                           meta,
                                                                                         }: CreateParams<TVars>): Promise<CreateResponse<TData>> => {
-    const {kms = KeyManagementSystem.LOCAL, keys = [], method, identifier: kmIdentifier} = variables
-    const clientId = process?.env?.NEXT_PUBLIC_CLIENT_ID ?? `${window.location.protocol}//${window.location.hostname}`
+    const {keys = [], method, identifier: kmIdentifier} = variables
+    let {kms = KeyManagementSystem.LOCAL} = variables
+    const clientId = getEnv('BROWSER_PUBLIC_CLIENT_ID') ?? `${window.location.protocol}//${window.location.hostname}`
     const network = kmIdentifier?.network
     const ebsi = kmIdentifier?.ebsi
     let alias = variables.alias
@@ -184,15 +186,36 @@ export const identifiersDataProvider = (): DataProvider => ({
         alias += suffix
         console.log(`DID Web: ${alias}, path: ${path}`)
       }
-      options['keys'] = keys.map(idKey => {
-        return {
-          key: {
+
+      // Process keys - fetch existing ones or prepare for generation
+      options['keys'] = await Promise.all(
+        keys.map(async (idKey: IdentifierKey) => {
+          // If the key has a kid, fetch it from the key manager
+          if (idKey.kid) {
+            const existingKey = await getAgent().keyManagerGet({kid: idKey.kid})
+            kms = existingKey.kms
+            return {
+              key: {
+                ...existingKey,
+                meta: {
+                  ...existingKey.meta,
+                  purposes: idKey.purposes,
+                },
+              },
+              type: existingKey.type,
+            }
+
+          }
+          // Otherwise, prepare for key generation
+          return {
+            key: {
+              type: idKey.type,
+              meta: {purposes: idKey.purposes},
+            },
             type: idKey.type,
-            meta: {purposes: idKey.purposes},
-          },
-          type: idKey.type,
-        }
-      })
+          }
+        }),
+      )
     } else if (method === 'ebsi') {
       const ebsiKeys = keys.filter(key => key.readonly)
       const methodSpecificId = generateEbsiMethodSpecificId()
@@ -236,7 +259,7 @@ export const identifiersDataProvider = (): DataProvider => ({
       }
     }
 
-    const identifier = await agent.didManagerCreate({
+    const identifier = await getAgent().didManagerCreate({
       kms,
       alias,
       provider: `${DID_PREFIX}${method}`,
@@ -246,13 +269,13 @@ export const identifiersDataProvider = (): DataProvider => ({
     if (method === 'ebsi' && ebsiLedgerOperation && ebsiAccessTokenOpts) {
       console.log(`EBSI Ledger operation`)
 
-      await agent.ebsiCreateDidOnLedger(
+      await getAgent().ebsiCreateDidOnLedger(
         {
           identifier,
           accessTokenOpts: ebsiAccessTokenOpts,
         },
         // @ts-ignore
-        agentContext,
+        getAgentContext(),
       )
     }
 
@@ -275,7 +298,7 @@ export const identifiersDataProvider = (): DataProvider => ({
                                                                            variables,
                                                                          }: UpdateParams<TVariables>): Promise<UpdateResponse<TData>> => {
     const updateVars = variables as UpdateVariables
-    const identities: IIdentifier[] = await agent.didManagerFind()
+    const identities: IIdentifier[] = await getAgent().didManagerFind()
     const identifier = identities.find(i => i.did === id)
 
     if (!identifier) {
@@ -302,7 +325,7 @@ export const identifiersDataProvider = (): DataProvider => ({
         await replaceServices(identifier.did, identifier.services || [], updateVars.services)
       }
 
-      const updatedIdentifier = await agent.didManagerGet({did: identifier.did})
+      const updatedIdentifier = await getAgent().didManagerGet({did: identifier.did})
 
       // Update the controllerKeyId to match the selected key
       if (updateVars.selectedKeyId && updatedIdentifier.keys.length > 0) {

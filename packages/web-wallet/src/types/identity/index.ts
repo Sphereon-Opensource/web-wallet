@@ -52,6 +52,7 @@ export type IdentifierKey = {
   action?: 'generate'
   type: TKeyType
   alias?: string
+  kid?: string
   purposes: Array<string>
   capability: IdentifierKeyCapability
   readonly: boolean

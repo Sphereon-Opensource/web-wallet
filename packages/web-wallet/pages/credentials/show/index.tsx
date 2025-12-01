@@ -18,13 +18,19 @@ import type {NaturalPerson, Organization, Party} from '@sphereon/ssi-sdk.data-st
 import {PartyTypeType} from '@sphereon/ssi-sdk.data-store-types'
 import {useParams} from 'react-router-dom'
 import {staticPropsWithSST} from '@/src/i18n/server'
-import agent from '@agent'
+import { getAgent } from '@agent'
 
 import {CredentialSummary, toCredentialSummary} from '@sphereon/ui-components.credential-branding'
 import {DigitalCredential} from '@sphereon/ssi-sdk.credential-store'
 import {VerifiableCredential} from '@veramo/core'
-import {CredentialMapper, CredentialRole} from '@sphereon/ssi-types'
+import {
+  CredentialMapper,
+  CredentialRole,
+  IVerifiableCredential,
+  sdJwtDecodedCredentialToUniformCredential, SdJwtDecodedVerifiableCredential,
+} from '@sphereon/ssi-types'
 import {defaultHasher} from '@sphereon/ssi-sdk.core'
+import {getEnv, getEnvInt} from '@/src/services/env'
 
 enum CredentialDetailsTabRoute {
   INFO = 'info',
@@ -60,10 +66,24 @@ type DocumentItem = {
   actions: string
 }
 
-const truncationLength: number = process.env.NEXT_PUBLIC_TRUNCATION_LENGTH ? Number(process.env.NEXT_PUBLIC_TRUNCATION_LENGTH) : 8
-
 type Props = {
   credentialRole: CredentialRole
+}
+
+async function getUnifiedVC(rawDocument: any) {
+  const wrappedCredential = CredentialMapper.toWrappedVerifiableCredential(rawDocument, {hasher: defaultHasher})
+  let uniformVerifiableCredential: IVerifiableCredential
+  if (CredentialMapper.isSdJwtDecodedCredential(wrappedCredential.credential)) {
+    return sdJwtDecodedCredentialToUniformCredential(
+      wrappedCredential.credential as SdJwtDecodedVerifiableCredential,
+    )
+  } else if (CredentialMapper.isSdJwtEncoded(wrappedCredential.credential)) {
+    const asyncHasher = (data: string | ArrayBuffer, algorithm: string) => Promise.resolve(defaultHasher(data, algorithm))
+    const decodedSdJwt = await CredentialMapper.decodeSdJwtVcAsync(wrappedCredential.credential, asyncHasher)
+    return sdJwtDecodedCredentialToUniformCredential(decodedSdJwt as SdJwtDecodedVerifiableCredential)
+  } else {
+    return wrappedCredential.credential as IVerifiableCredential
+  }
 }
 
 const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
@@ -71,6 +91,7 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
   const translate = useTranslate()
   const params = useParams()
   const {id} = params
+  const truncationLength: number = getEnvInt('BROWSER_PUBLIC_TRUNCATION_LENGTH', 8)
   const [credentialSummary, setCredentialSummary] = useState<CredentialSummary | undefined>(undefined)
   const credentialResult = useOne<DigitalCredential, HttpError>({
     resource: DataResource.CREDENTIALS,
@@ -82,32 +103,30 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
 
   useEffect(() => {
     const fetchBranding = async () => {
-      if (!credentialResult.data?.data) return
+      if (!credentialResult.data?.data) {
+        return
+      }
 
       const {hash, issuerCorrelationId, subjectCorrelationId, rawDocument} = credentialResult.data.data
 
       try {
-        const issuerParties: Party[] = await agent.cmGetContacts({
+        const issuerParties: Party[] = await getAgent().cmGetContacts({
           filter: [{identities: {identifier: {correlationId: issuerCorrelationId}}}],
         })
 
         const subjectParties = subjectCorrelationId
-          ? await agent.cmGetContacts({
-              filter: [{identities: {identifier: {correlationId: subjectCorrelationId}}}],
-            })
+          ? await getAgent().cmGetContacts({
+            filter: [{identities: {identifier: {correlationId: subjectCorrelationId}}}],
+          })
           : []
 
-        const credentialBrandings = await agent.ibGetCredentialBranding({
-          filter: [
-            {
-              vcHash: hash,
-            },
-          ],
+        const credentialBrandings = await getAgent().ibGetCredentialBranding({
+          filter: [{vcHash: hash}],
         })
 
-        const wrappedCredential = CredentialMapper.toWrappedVerifiableCredential(rawDocument, {hasher: defaultHasher})  // FIXME
+        const uniformVerifiableCredential = await getUnifiedVC(rawDocument)
         const credentialSummary: CredentialSummary = await toCredentialSummary({
-          verifiableCredential: wrappedCredential.decoded as VerifiableCredential,   // FIXME
+          verifiableCredential: uniformVerifiableCredential as VerifiableCredential,
           hash,
           credentialRole,
           branding: credentialBrandings.length ? credentialBrandings[0].localeBranding : undefined,
@@ -144,11 +163,9 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
     ...(credentialSummary?.branding?.background?.color && {backgroundColor: credentialSummary?.branding?.background?.color}),
   }
   const getVerifiedInformationContent = (): ReactElement => {
-    const wrappedCredential = CredentialMapper.toWrappedVerifiableCredential(credentialResult.data.data.rawDocument, {hasher: defaultHasher})
-    const credentialSubject = wrappedCredential.decoded.credentialSubject
-    if (credentialSubject && 'id' in credentialSubject && credentialSubject.id.startsWith('did:')) {
-      delete credentialSubject.id
-    }
+    const filteredSubject: Record<string, any> = Object.fromEntries(
+      credentialSummary.properties.filter(prop => prop.label !== 'subject').map(detail => [detail.label, detail.value]),
+    )
     const termsOfUse = credentialSummary.termsOfUse?.length
       ? credentialSummary.termsOfUse.length === 1
         ? credentialSummary.termsOfUse[0]
@@ -158,7 +175,10 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
       <div className={style.tabViewContentContainer}>
         <div className={style.verifiedInformationDataContainer}>
           <JSONDataView
-            data={{type: credentialSummary.title, issuer: credentialSummary.issuer, ...(termsOfUse && {termsOfUse}), ...credentialSubject}}
+            data={{
+              type: credentialSummary.title,
+              issuer: credentialSummary.issuer, ...(termsOfUse && {termsOfUse}), ...filteredSubject,
+            }}
             shouldExpandNodeInitially={true}
           />
         </div>

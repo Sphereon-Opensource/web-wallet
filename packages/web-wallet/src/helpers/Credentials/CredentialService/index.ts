@@ -24,7 +24,7 @@ export async function issueVerifiableCredential(credential: CredentialPayload) {
     },
   })
 
-  const resp = await agent.vcApiClientIssueCredential({credential})
+  const resp = await getAgent().vcApiClientIssueCredential({credential})
   let vc = resp
   if ('verifiableCredential' in resp) {
     vc = resp.verifiableCredential

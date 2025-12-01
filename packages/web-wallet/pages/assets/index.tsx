@@ -7,7 +7,7 @@ import {Asset, CredentialReference, DataResource} from '@typings'
 import style from './index.module.css'
 import {VerifiableCredential} from '@veramo/core'
 import {getMatchingIdentity} from '@helpers/IdentityFilters'
-import {ID_TRUNCATION_LENGTH} from '@/src/agent/environment'
+import {getIdTruncationLength} from '@/src/agent/environment'
 import type {Party} from '@sphereon/ssi-sdk.data-store-types'
 import {staticPropsWithSST} from '@/src/i18n/server'
 
@@ -96,7 +96,7 @@ const AssetsListPage: React.FC = () => {
       columnOptions: {
         columnWidth: 60,
         cellOptions: {
-          truncationLength: ID_TRUNCATION_LENGTH,
+          truncationLength: getIdTruncationLength(),
           enableHover: true,
         },
       },

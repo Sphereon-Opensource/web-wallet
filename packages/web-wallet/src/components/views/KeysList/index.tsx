@@ -30,6 +30,7 @@ class KeyTableItem {
     return new KeyTableItem({
       kid: key.kid,
       identifierAlias: identifier?.alias,
+      alias: key.meta?.alias,
       type: key.type,
       kms: key.kms,
       //todo

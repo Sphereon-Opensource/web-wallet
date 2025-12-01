@@ -20,7 +20,7 @@ import debug from 'debug'
 import {InformationRequestPageState} from '@/pages/siopv2/informationRequest'
 import {Format} from '@sphereon/pex-models'
 import {IdentityOrigin} from '@sphereon/ssi-sdk.data-store-types'
-import agent from '@agent'
+import { getAgent } from '@agent'
 import {ConnectionType, CorrelationIdentifierType, PartyOrigin, PartyTypeType} from '@sphereon/ssi-sdk.data-store-types'
 import { CredentialRole } from '@sphereon/ssi-types'
 
@@ -205,7 +205,7 @@ const addContact = async (siopv2Machine: Siopv2MachineInterpreter, machineState:
   ]
 
   try {
-    const party = await agent.cmAddContact({
+    const party = await getAgent().cmAddContact({
       legalName: contactName,
       displayName: contactName,
       identities,

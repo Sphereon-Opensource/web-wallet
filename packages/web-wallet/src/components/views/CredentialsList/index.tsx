@@ -4,7 +4,7 @@ import {ColumnHeader, Row, SSITableView, TableCellType} from '@sphereon/ui-compo
 import {ButtonIcon} from '@sphereon/ui-components.core'
 import {Button, CredentialTableItem, DataProvider, DataResource} from '@typings'
 import {getCredentialIssuerNameAndAlias, toCredentialSummary} from '@sphereon/ui-components.credential-branding'
-import agent from '@agent'
+import { getAgent } from '@agent'
 import {
   CorrelationIdentifierType,
   CredentialCorrelationType,
@@ -89,7 +89,7 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
 
       const digitalCredentials = credentialData.data as Array<DigitalCredential>
       try {
-        const credentialBrandings = await agent.ibGetCredentialBranding()
+        const credentialBrandings = await getAgent().ibGetCredentialBranding()
         const newCredentialTableItems = await Promise.all(
           digitalCredentials.map(async (credential: DigitalCredential) => {
             const filteredCredentialBrandings = credentialBrandings.filter(cb => cb.vcHash === credential.hash)
@@ -281,7 +281,7 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
       },
     ]
 
-    const parties: Array<Party> = await agent.cmGetContacts({
+    const parties: Array<Party> = await getAgent().cmGetContacts({
       filter,
     })
 
@@ -349,7 +349,7 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
     const rawCredential = await file.text()
     const uniformCredential = CredentialMapper.toUniformCredential(rawCredential, {hasher: defaultHasher})
 
-    const verificationResult = await agent.verifyCredential({
+    const verificationResult = await getAgent().verifyCredential({
       credential: uniformCredential as W3CVerifiableCredential,
       fetchRemoteContexts: true,
       policies: {

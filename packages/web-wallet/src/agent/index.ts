@@ -3,15 +3,21 @@ import {eventLoggerAuditMethods} from '@sphereon/ssi-sdk.event-logger'
 import {sphereonKeyManagerMethods} from '@sphereon/ssi-sdk-ext.key-manager'
 import {VcApiIssuerClient} from '@sphereon/ssi-sdk.w3c-vc-api-issuer-rest-client'
 import {QrCodeProvider} from '@sphereon/ssi-sdk.qr-code-generator'
-import {defaultHasher, LinkHandlerEventType, LinkHandlerPlugin, LinkHandlers, LogLinkHandler} from '@sphereon/ssi-sdk.core'
+import {
+  defaultHasher,
+  LinkHandlerEventType,
+  LinkHandlerPlugin,
+  LinkHandlers,
+  LogLinkHandler,
+} from '@sphereon/ssi-sdk.core'
 import {OID4VCIRestClient} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-client'
-import {createAgent, IAgentContext, IAgentPlugin} from '@veramo/core'
+import {createAgent, IAgentContext, IAgentPlugin, TAgent} from '@veramo/core'
 import {getResolver as getDidKeyResolver} from '@sphereon/ssi-sdk-ext.did-resolver-key'
 import {DIDResolverPlugin} from '@veramo/did-resolver'
 import {AgentRestClient} from '@veramo/remote-client'
 import {Resolver} from 'did-resolver'
 import {ebsiSupportMethods} from '@sphereon/ssi-sdk.ebsi-support'
-import {AGENT_BASE_URL, OID4VCI_API_URL, VC_API_GET_CREDENTIAL_ISSUE_URL} from './environment'
+import {getAgentBaseUrl, getVcApiCredentialIssueUrl, getVcApiUrl} from './environment'
 import {OID4VCIHolder, oid4vciHolderContextMethods, OID4VCIHolderLinkHandler} from '@sphereon/ssi-sdk.oid4vci-holder'
 import {contactManagerMethods} from '@sphereon/ssi-sdk.contact-manager'
 import {issuanceBrandingMethods} from '@sphereon/ssi-sdk.issuance-branding'
@@ -19,7 +25,7 @@ import {pdManagerMethods} from '@sphereon/ssi-sdk.pd-manager'
 import {getResolver as getDidWebResolver} from 'web-did-resolver'
 import {oid4vciStateNavigationListener} from '@machines/oid4vci/oid4vciStateNavigation'
 import {AuthorizationRequestOpts, PARMode} from '@sphereon/oid4vci-common'
-import {CLIENT_ID, OID4VCI_CODE_URL_REGEX, OID4VCI_DEFAULT_REDIRECT_URI} from '@/app'
+import {getClientId, getOid4vciDefaultRedirectUri, OID4VCI_CODE_URL_REGEX} from '@/app'
 import {TAgentTypes} from '@typings'
 import {
   DidAuthSiopOpAuthenticator,
@@ -44,16 +50,20 @@ export const resolver = new Resolver({
 
 export const linkHandlers: LinkHandlers = new LinkHandlers().add(new LogLinkHandler())
 
+let _agent: TAgent<TAgentTypes> | null = null
+let _agentContext: IAgentContext<TAgentTypes> | null = null
+
+const createAgentInstance = (): TAgent<TAgentTypes> => {
 const plugins: IAgentPlugin[] = [
   new DIDResolverPlugin({
     resolver,
   }),
   new VcApiIssuerClient({
-    issueUrl: VC_API_GET_CREDENTIAL_ISSUE_URL,
+    issueUrl: getVcApiCredentialIssueUrl(),
     authorizationToken: 'test',
   }),
   new OID4VCIRestClient({
-    baseUrl: OID4VCI_API_URL,
+    baseUrl: getVcApiUrl(),
     authentication: {
       enabled: false,
     },
@@ -61,7 +71,7 @@ const plugins: IAgentPlugin[] = [
   new DidAuthSiopOpAuthenticator(),
   new QrCodeProvider(),
   new AgentRestClient({
-    url: AGENT_BASE_URL,
+    url: getAgentBaseUrl(),
     enabledMethods: [
       ...issuanceBrandingMethods,
       ...eventLoggerAuditMethods,
@@ -123,17 +133,15 @@ const plugins: IAgentPlugin[] = [
   }),
 ]
 
-const agent = createAgent<TAgentTypes>({
+  return createAgent<TAgentTypes>({
   plugins,
 })
-
-export default agent
-export const agentContext = {...agent.context, agent}
+}
 
 const addLinkListeners = (linkHandlers: LinkHandlers, context: IAgentContext<any>): void => {
   const vciAuthorizationRequestOpts = {
-    redirectUri: OID4VCI_DEFAULT_REDIRECT_URI,
-    clientId: CLIENT_ID,
+    redirectUri: getOid4vciDefaultRedirectUri(),
+    clientId: getClientId(),
     // fixme: Set back to auto. We only do this because of a bug in PAR handling Walt.id
     parMode: PARMode.NEVER,
   } satisfies AuthorizationRequestOpts
@@ -157,4 +165,19 @@ const addLinkListeners = (linkHandlers: LinkHandlers, context: IAgentContext<any
   ])
 }
 
-addLinkListeners(linkHandlers, agentContext)
+export const getAgent = (): TAgent<TAgentTypes> => {
+  if (!_agent) {
+    _agent = createAgentInstance()
+    _agentContext = {..._agent.context, agent: _agent}
+    addLinkListeners(linkHandlers, _agentContext)
+  }
+  return _agent
+}
+
+export const getAgentContext = (): IAgentContext<TAgentTypes> & {agent: TAgent<TAgentTypes>} => {
+  if (!_agentContext) {
+    getAgent() // This will initialize both
+  }
+  return _agentContext!
+}
+

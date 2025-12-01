@@ -1,5 +1,5 @@
 import {DIDRegistrationResult, UniRegistrar} from '@sphereon/did-uni-client'
-import {DID_API_CREATE_DID_URL, DID_API_DEACTIVATE_DID_URL} from '../../../agent/environment'
+import {getDidApiCreateDidUrl, getDidApiDeactivateUrl} from '../../../agent/environment'
 import {EventLogger, EventLoggerBuilder} from '@sphereon/ssi-sdk.core'
 import {DefaultActionSubType, LogLevel, ActionType, System, InitiatorType, SubSystem, LoggingEventType} from '@sphereon/ssi-types'
 
@@ -18,7 +18,7 @@ const logger: EventLogger = new EventLoggerBuilder()
 
 export const createDID = async (opts?: {didMethod: string}): Promise<string> => {
   const {didMethod} = {...opts}
-  const uniRegistrar = await new UniRegistrar().setCreateURL(DID_API_CREATE_DID_URL).create(didMethod ?? 'jwk', {
+  const uniRegistrar = await new UniRegistrar().setCreateURL(getDidApiCreateDidUrl()).create(didMethod ?? 'jwk', {
     options: {
       storeSecrets: true,
     },
@@ -41,7 +41,7 @@ export const createDID = async (opts?: {didMethod: string}): Promise<string> => 
 }
 
 export const deactivateDid = async (did: string): Promise<string> => {
-  const result: DIDRegistrationResult = await new UniRegistrar().setDeactivateURL(DID_API_DEACTIVATE_DID_URL).deactivate(did, {
+  const result: DIDRegistrationResult = await new UniRegistrar().setDeactivateURL(getDidApiDeactivateUrl()).deactivate(did, {
     options: {
       storeSecrets: true,
     },

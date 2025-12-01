@@ -2,7 +2,7 @@ import {CredentialPayload} from '@veramo/core'
 import {JsonSchema} from '@jsonforms/core'
 import {QRValueResult} from '@components/modals/QRCodeModal'
 import {IOID4VCIClientCreateOfferUriResponse, IOID4VCIClientCreateOfferUriRequestArgs} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-client'
-import agent from '@agent'
+import { getAgent } from '@agent'
 import Debug, {Debugger} from 'debug'
 import {CommonCredentialOfferFormat} from '@sphereon/oid4vci-common'
 import {v4 as uuidv4} from 'uuid'
@@ -128,7 +128,7 @@ export async function createOID4VCIOffer(
   }
   credentialTypes = credentialTypes.filter(type => type !== 'VerifiableCredential') // We don't need VerifiableCredential in the QR
 
-  const uriData: IOID4VCIClientCreateOfferUriResponse = await agent.oid4vciClientCreateOfferUri({
+  const uriData: IOID4VCIClientCreateOfferUriResponse = await getAgent().oid4vciClientCreateOfferUri({
     credential_configuration_ids: credentialTypes,
     grants: {
       'urn:ietf:params:oauth:grant-type:pre-authorized_code': {

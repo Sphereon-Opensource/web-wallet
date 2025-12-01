@@ -1,7 +1,9 @@
 import React, {useCallback, useEffect, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
-import {useCreate, useCreateMany} from '@refinedev/core'
+import {useCreate, useCreateMany, useList} from '@refinedev/core'
 import {JSONFormState} from '@sphereon/ui-components.ssi-react'
+import addKeySchema from '../../../src/schemas/data/addKeySchema.json' assert {type: 'json'}
+
 import {
   calculateUIKeyCapabilitiesInfo,
   CreateIdentifierRoute,
@@ -18,7 +20,12 @@ import {
 } from '@typings'
 import {IdentifiersCreateContext} from '@typings/machine/identifiers/create'
 import {CoreActions, JsonFormsCore} from '@jsonforms/core'
-import agent from '@agent'
+import {getAgent} from '@agent'
+import {TKeyType} from '@veramo/core'
+import {getEnv} from '@/src/services/env'
+
+// Supported key types - adjust based on your requirements
+const SUPPORTED_KEY_TYPES: TKeyType[] = ['Ed25519', 'Secp256k1', 'Secp256r1', 'X25519', 'RSA']
 
 const createIdentifierNavigationListener = async (step: number, navigate: any): Promise<void> => {
   switch (step) {
@@ -46,10 +53,59 @@ export const IdentifiersCreateContextProvider = (props: any): JSX.Element => {
   const [identifierData, setIdentifierData] = useState<JSONFormState<KeyManagementIdentifier>>()
   const [keys, setKeys] = useState<Array<IdentifierKey>>([])
   const [keyData, setKeyData] = useState<JSONFormState | undefined>()
+  const [keySchema, setKeySchema] = useState<any>(addKeySchema)
   const [serviceEndpoints, setServiceEndpoints] = useState<Array<IdentifierServiceEndpoint>>([])
   const [serviceEndpointData, setServiceEndpointData] = useState<JSONFormState | undefined>()
   const maxInteractiveSteps = 4
   const maxAutoSteps: number = 1
+
+  // Fetch available keys from the key manager
+  const {data: keysData, isLoading: isLoadingKeys} = useList<ManagedKeyInfo>({
+    resource: DataResource.KEYS,
+    pagination: {
+      mode: 'off',
+    },
+  })
+
+  // Update key schema with filtered keys
+  useEffect(() => {
+    if (keysData?.data) {
+      let filteredKeys = keysData.data
+
+      // Filter based on identifier method if needed
+      if (identifierData?.data?.method) {
+        const method = identifierData.data.method
+        // Add method-specific filtering logic here if needed
+        // For example, for did:web you might want to filter by supported key types
+        if (method === 'web') {
+          filteredKeys = keysData.data.filter((key: ManagedKeyInfo) =>
+            SUPPORTED_KEY_TYPES.includes(key.type),
+          )
+        }
+      }
+
+      // Create oneOf options for the dropdown
+      const keyOptions = filteredKeys.map((key: ManagedKeyInfo) => ({
+        const: key.kid,
+        title: `${key.meta?.alias || key.kid} (${key.type})`,
+      }))
+
+      // Update schema with dynamic options
+      const updatedSchema = {
+        ...addKeySchema,
+        properties: {
+          ...addKeySchema.properties,
+          selectedKeyId: {
+            type: 'string',
+              title: 'Key',
+            oneOf: keyOptions,
+          },
+        },
+      }
+
+      setKeySchema(updatedSchema)
+    }
+  }, [keysData, identifierData?.data?.method])
 
   const identifierKeyMiddleware = (
     state: Omit<JsonFormsCore, 'data'> & {data: IdentifierKey},
@@ -84,7 +140,7 @@ export const IdentifiersCreateContextProvider = (props: any): JSX.Element => {
   ) => {
     const newState = defaultReducer(state, action)
     if (!state?.data) {
-      agent.didManagerGetProviders().then(method => {
+      getAgent().didManagerGetProviders().then(method => {
         const agentMethods = method.map(did => did.replace('did:', '').toLowerCase())
         const schemaMethods = state.schema?.properties?.['method']?.oneOf?.map(oneOf => oneOf.const.toLowerCase() as string) ?? []
         console.log(`TODO: filter against Agent methods: ${agentMethods.join(',')}, schema: ${schemaMethods.join(',')}`)
@@ -98,7 +154,7 @@ export const IdentifiersCreateContextProvider = (props: any): JSX.Element => {
         method: props?.method?.default,
         network: props?.['network']?.default,
         web: {
-          hostName: process?.env?.NEXT_PUBLIC_CLIENT_ID ?? process?.env?.NEXTAUTH_URL ?? '',
+          hostName: getEnv('BROWSER_PUBLIC_CLIENT_ID') ?? getEnv('NEXTAUTH_URL') ?? '',
           path: '/.well-known',
         },
         ebsi: {
@@ -320,6 +376,7 @@ export const IdentifiersCreateContextProvider = (props: any): JSX.Element => {
         onSetKeys,
         keyData,
         onKeyDataChange,
+        keySchema,
         serviceEndpoints,
         onSetServiceEndpoints: setServiceEndpoints,
         serviceEndpointData,

@@ -24,6 +24,14 @@
           "type": "Control",
           "label": "Alias",
           "scope": "#/properties/alias"
+        },
+        {
+          "type": "Label",
+          "text": "Purposes"
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/purposes"
         }
       ],
       "rule": {
@@ -41,36 +49,19 @@
       "elements": [
         {
           "type": "Control",
-          "label": "Key",
-          "scope": "#/properties/key"
-        }
-      ],
-      "rule": {
-        "effect": "SHOW",
-        "condition": {
-          "scope": "#/properties/action",
-          "schema": {"const": "select"}
+          "label": "Select Key",
+          "scope": "#/properties/selectedKeyId",
+          "options": {
+            "autocomplete": true
         }
       }
-    },
-    {
-      "type": "VerticalLayout",
-      "elements": [
-        {
-          "type": "Label",
-          "text": "Purposes"
-        },
-        {
-          "type": "Control",
-          "scope": "#/properties/purposes"
-        }
       ],
       "rule": {
         "effect": "SHOW",
         "condition": {
           "scope": "#/properties/action",
           "schema": {
-            "const": "generate"
+            "const": "select"
           }
         }
       }

@@ -15,11 +15,7 @@ import {
 } from '@typings'
 import {IdentifiersEditContext} from '@typings/machine/identifiers/edit'
 import {CoreActions, JsonFormsCore} from '@jsonforms/core'
-import {IIdentifier, ManagedKeyInfo, TKeyType} from '@veramo/core'
-
-
-// Supported key types for did:web
-const DID_WEB_SUPPORTED_KEY_TYPES: TKeyType[] = ['Ed25519', 'Secp256k1', 'Secp256r1', 'X25519']
+import {IIdentifier, ManagedKeyInfo} from '@veramo/core'
 
 const editIdentifierNavigationListener = async (step: number, navigate: any): Promise<void> => {
   switch (step) {
@@ -63,19 +59,9 @@ export const IdentifiersEditContextProvider = (props: {children: React.ReactNode
   useEffect(() => {
     if (keysData?.data && identifierForEdit?.data) {
       const identifier = identifierForEdit.data
-      const method = (identifier.provider || '').replace('did:', '') || identifier.did.split(':')[1]
-
-      let filteredKeys = keysData.data
-
-      // Filter out unsupported key types for did:web
-      if (method === 'web') {
-        filteredKeys = keysData.data.filter((key: ManagedKeyInfo) =>
-          DID_WEB_SUPPORTED_KEY_TYPES.includes(key.type),
-        )
-      }
 
       // Create oneOf options for the dropdown
-      const keyOptions = filteredKeys.map((key: ManagedKeyInfo) => ({
+      const keyOptions = keysData.data.map((key: ManagedKeyInfo) => ({
         const: key.kid,
         title: `${key.meta?.alias || key.kid} (${key.type})`,
       }))

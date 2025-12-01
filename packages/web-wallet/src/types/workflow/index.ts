@@ -3,12 +3,15 @@ import {getMatchingIdentity} from '@helpers/IdentityFilters'
 import {TranslateFn} from '../type-commons'
 import type {Identity, Party} from '@sphereon/ssi-sdk.data-store-types'
 import {formatDate} from '@sphereon/ui-components.ssi-react'
+import {getEnv} from '@/src/services/env'
 
-export const PROCESS_OWNER_DID =
-  process.env.NEXT_PUBLIC_PROCESS_OWNER_DID ??
-  'did:jwk:eyJhbGciOiJFUzI1NiIsInVzZSI6InNpZyIsImt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiWjY3eEc3UFZUUHBDdlp3UjVlR2pteHhqQjdlb2M1cWdYbm9LMloxR2R6YyIsInkiOiJ1ZkpCc3BlNTV5WkZXVWN1T21GRUMtX3NEVE1nVXRndF8tbmV2WHd4UVdZIn0'
-export const SUPPLIER_DID = process.env.NEXT_PUBLIC_SUPPLIER_DID ?? 'did:web:localhost:stonebase'
-export const TESTER_DID = process.env.NEXT_PUBLIC_TESTER_DID ?? 'did:web:localhost:sgs'
+export const getProcessOwnerDid = () =>
+  getEnv('BROWSER_PUBLIC_PROCESS_OWNER_DID') ??
+  'did:jwk:eyJhbGciOiJFUzI1NiIsInVzZSI6InNpZyIsImt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiWjY3eEc3UFZUUHBDdlp3UjVlR2pteHhqQjdlb2M1cWdYbm9LMloxR2R6YyIsInkiOiJ1ZkpCc3BlNTV5WkZXVWN1T21GRUMtX3MOET1nVXRndF8tbmV2WHd4UVdZIn0'
+
+export const getSupplierDid = () => getEnv('BROWSER_PUBLIC_SUPPLIER_DID') ?? 'did:web:localhost:stonebase'
+
+export const getTesterDid = () => getEnv('BROWSER_PUBLIC_TESTER_DID') ?? 'did:web:localhost:sgs'
 
 export type ActorRole = 'Supplier' | 'Tester' | 'ProcessOwner'
 
@@ -98,508 +101,537 @@ export interface StepInstanceData {
   sender?: string
 }
 
-export const createAssetDescriptor: IWorkflowStepDescriptor = {
-  step: WorkflowStepCode.CREATE_ASSET,
-  titleCaption: 'create_asset_title', // not used for create asset
-  action: 'create_asset_action',
-  actionType: WorkflowActionType.CREATE_ASSET,
-  message: 'create_asset_message',
-  inEdge: [
-    {
-      onIn: () => console.log('on in called for create asset'),
-      inStatus: WorkflowStatus.New,
-      sender: PROCESS_OWNER_DID,
-      outEdge: [
-        {
-          onOut: () => console.log('on out called for create asset -> request cert of origin'),
-          create: [
-            {
-              sender: PROCESS_OWNER_DID,
-              recipients: PROCESS_OWNER_DID,
-              step: WorkflowStepCode.ATTACH_CERT_OF_ORIGIN,
-              status: WorkflowStatus.New,
-            },
-            {
-              sender: PROCESS_OWNER_DID,
-              recipients: SUPPLIER_DID,
-              status: WorkflowStatus.Pending,
-              step: WorkflowStepCode.APPROVE_ASSET,
-            },
-          ],
-          update: [
-            {
-              sender: PROCESS_OWNER_DID,
-              recipients: PROCESS_OWNER_DID,
-              step: WorkflowStepCode.CREATE_ASSET,
-              status: WorkflowStatus.Approved,
-            },
-          ],
-        },
-      ],
-    },
-  ],
-}
-export const approveAssetDescriptor: IWorkflowStepDescriptor = {
-  step: WorkflowStepCode.APPROVE_ASSET,
-  message: 'approve_asset_message',
-  action: 'approve_asset_action',
-  actionType: WorkflowActionType.APPROVE_ASSET,
-  titleCaption: 'approve_asset_title',
-  inEdge: [
-    {
-      onIn: () => console.log('on in called approve asset'),
-      inStatus: WorkflowStatus.Pending,
-      sender: PROCESS_OWNER_DID,
-
-      outEdge: [
-        {
-          onOut: () => console.log('on out called approve asset'),
-          update: [
-            {
-              sender: SUPPLIER_DID,
-              recipients: PROCESS_OWNER_DID,
-              status: WorkflowStatus.Approved,
-              step: WorkflowStepCode.APPROVE_ASSET,
-            },
-            // Not really needed
-            {
-              sender: SUPPLIER_DID,
-              recipients: SUPPLIER_DID,
-              status: WorkflowStatus.Approved,
-              step: WorkflowStepCode.APPROVE_ASSET,
-            },
-          ],
-        },
-      ],
-    },
-  ],
+export const createAssetDescriptor = (): IWorkflowStepDescriptor => {
+  return {
+    step: WorkflowStepCode.CREATE_ASSET,
+    titleCaption: 'create_asset_title', // not used for create asset
+    action: 'create_asset_action',
+    actionType: WorkflowActionType.CREATE_ASSET,
+    message: 'create_asset_message',
+    inEdge: [
+      {
+        onIn: () => console.log('on in called for create asset'),
+        inStatus: WorkflowStatus.New,
+        sender: getProcessOwnerDid(),
+        outEdge: [
+          {
+            onOut: () => console.log('on out called for create asset -> request cert of origin'),
+            create: [
+              {
+                sender: getProcessOwnerDid(),
+                recipients: getProcessOwnerDid(),
+                step: WorkflowStepCode.ATTACH_CERT_OF_ORIGIN,
+                status: WorkflowStatus.New,
+              },
+              {
+                sender: getProcessOwnerDid(),
+                recipients: getSupplierDid(),
+                status: WorkflowStatus.Pending,
+                step: WorkflowStepCode.APPROVE_ASSET,
+              },
+            ],
+            update: [
+              {
+                sender: getProcessOwnerDid(),
+                recipients: getProcessOwnerDid(),
+                step: WorkflowStepCode.CREATE_ASSET,
+                status: WorkflowStatus.Approved,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  }
 }
 
-export const attachCertOfOriginDescriptor: IWorkflowStepDescriptor = {
-  step: WorkflowStepCode.ATTACH_CERT_OF_ORIGIN,
-  titleCaption: 'attach_cert_of_origin_title',
-  message: 'attach_cert_of_origin_message',
-  action: 'attach_cer_of_origin_action',
-  actionType: WorkflowActionType.ATTACH_DOCUMENT,
-  document: {
-    category: DocumentCategory.CERTIFICATES,
-    type: DocumentType.CERTIFICATE_OF_ORIGIN,
-  },
-  inEdge: [
-    {
-      onIn: () => console.log('on in called attach cert of origin'),
-      sender: PROCESS_OWNER_DID,
-      inStatus: WorkflowStatus.New,
-      outEdge: [
-        {
-          update: [
-            {
-              sender: PROCESS_OWNER_DID,
-              recipients: PROCESS_OWNER_DID,
-              step: WorkflowStepCode.ATTACH_CERT_OF_ORIGIN,
-              status: WorkflowStatus.Approved,
-            },
-          ],
-          create: [
-            {
-              sender: PROCESS_OWNER_DID,
-              recipients: SUPPLIER_DID,
-              step: WorkflowStepCode.APPROVE_CERT_OF_ORIGIN,
-              status: WorkflowStatus.Pending,
-            },
-          ],
-          onOut: () => console.log('on out called attach cert of origin'),
-        },
-      ],
-    },
-  ],
+export const approveAssetDescriptor = (): IWorkflowStepDescriptor => {
+  return {
+    step: WorkflowStepCode.APPROVE_ASSET,
+    message: 'approve_asset_message',
+    action: 'approve_asset_action',
+    actionType: WorkflowActionType.APPROVE_ASSET,
+    titleCaption: 'approve_asset_title',
+    inEdge: [
+      {
+        onIn: () => console.log('on in called approve asset'),
+        inStatus: WorkflowStatus.Pending,
+        sender: getProcessOwnerDid(),
+
+        outEdge: [
+          {
+            onOut: () => console.log('on out called approve asset'),
+            update: [
+              {
+                sender: getSupplierDid(),
+                recipients: getProcessOwnerDid(),
+                status: WorkflowStatus.Approved,
+                step: WorkflowStepCode.APPROVE_ASSET,
+              },
+              // Not really needed
+              {
+                sender: getSupplierDid(),
+                recipients: getSupplierDid(),
+                status: WorkflowStatus.Approved,
+                step: WorkflowStepCode.APPROVE_ASSET,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  }
 }
 
-export const approveCertOfOriginDescriptor: IWorkflowStepDescriptor = {
-  step: WorkflowStepCode.APPROVE_CERT_OF_ORIGIN,
-  message: 'approve_cert_of_origin_message',
-  action: 'approve_cert_of_origin_action',
-  actionType: WorkflowActionType.APPROVE_DOCUMENT,
-  titleCaption: 'approve_cert_of_origin_title',
-  inEdge: [
-    {
-      onIn: () => console.log('on in called approve cert of origin'),
-      inStatus: WorkflowStatus.Pending,
-      sender: PROCESS_OWNER_DID,
-
-      outEdge: [
-        {
-          onOut: () => console.log('on out called approve cert of origin'),
-          create: [
-            {
-              sender: PROCESS_OWNER_DID,
-              recipients: SUPPLIER_DID,
-              status: WorkflowStatus.New,
-              step: WorkflowStepCode.ATTACH_QUALITY_PLAN,
-            },
-          ],
-          update: [
-            {
-              sender: SUPPLIER_DID,
-              recipients: PROCESS_OWNER_DID,
-              status: WorkflowStatus.Approved,
-              step: WorkflowStepCode.APPROVE_CERT_OF_ORIGIN,
-            },
-          ],
-        },
-      ],
+export const attachCertOfOriginDescriptor = (): IWorkflowStepDescriptor => {
+  return {
+    step: WorkflowStepCode.ATTACH_CERT_OF_ORIGIN,
+    titleCaption: 'attach_cert_of_origin_title',
+    message: 'attach_cert_of_origin_message',
+    action: 'attach_cer_of_origin_action',
+    actionType: WorkflowActionType.ATTACH_DOCUMENT,
+    document: {
+      category: DocumentCategory.CERTIFICATES,
+      type: DocumentType.CERTIFICATE_OF_ORIGIN,
     },
-  ],
+    inEdge: [
+      {
+        onIn: () => console.log('on in called attach cert of origin'),
+        sender: getProcessOwnerDid(),
+        inStatus: WorkflowStatus.New,
+        outEdge: [
+          {
+            update: [
+              {
+                sender: getProcessOwnerDid(),
+                recipients: getProcessOwnerDid(),
+                step: WorkflowStepCode.ATTACH_CERT_OF_ORIGIN,
+                status: WorkflowStatus.Approved,
+              },
+            ],
+            create: [
+              {
+                sender: getProcessOwnerDid(),
+                recipients: getSupplierDid(),
+                step: WorkflowStepCode.APPROVE_CERT_OF_ORIGIN,
+                status: WorkflowStatus.Pending,
+              },
+            ],
+            onOut: () => console.log('on out called attach cert of origin'),
+          },
+        ],
+      },
+    ],
+  }
 }
 
-export const attachQualityPlanDescriptor: IWorkflowStepDescriptor = {
-  step: WorkflowStepCode.ATTACH_QUALITY_PLAN,
-  titleCaption: 'attach_quality_plan_title',
-  message: 'attach_quality_plan_message',
-  action: 'attach_quality_plan_action',
-  actionType: WorkflowActionType.ATTACH_DOCUMENT,
-  document: {
-    category: DocumentCategory.REPORTS,
-    type: DocumentType.QUALITY_PLAN,
-  },
-  inEdge: [
-    {
-      onIn: () => console.log('on in called attach quality plan'),
-      sender: PROCESS_OWNER_DID,
-      inStatus: WorkflowStatus.New,
-      outEdge: [
-        {
-          update: [
-            {
-              sender: PROCESS_OWNER_DID,
-              recipients: SUPPLIER_DID,
-              step: WorkflowStepCode.ATTACH_QUALITY_PLAN,
-              status: WorkflowStatus.Approved,
-            },
-          ],
-          create: [
-            {
-              sender: SUPPLIER_DID,
-              recipients: PROCESS_OWNER_DID,
-              step: WorkflowStepCode.APPROVE_QUALITY_PLAN,
-              status: WorkflowStatus.Pending,
-            },
-          ],
-          onOut: () => console.log('on out called attach quality plan'),
-        },
-      ],
-    },
-  ],
+export const approveCertOfOriginDescriptor = (): IWorkflowStepDescriptor => {
+  return {
+    step: WorkflowStepCode.APPROVE_CERT_OF_ORIGIN,
+    message: 'approve_cert_of_origin_message',
+    action: 'approve_cert_of_origin_action',
+    actionType: WorkflowActionType.APPROVE_DOCUMENT,
+    titleCaption: 'approve_cert_of_origin_title',
+    inEdge: [
+      {
+        onIn: () => console.log('on in called approve cert of origin'),
+        inStatus: WorkflowStatus.Pending,
+        sender: getProcessOwnerDid(),
+
+        outEdge: [
+          {
+            onOut: () => console.log('on out called approve cert of origin'),
+            create: [
+              {
+                sender: getProcessOwnerDid(),
+                recipients: getSupplierDid(),
+                status: WorkflowStatus.New,
+                step: WorkflowStepCode.ATTACH_QUALITY_PLAN,
+              },
+            ],
+            update: [
+              {
+                sender: getSupplierDid(),
+                recipients: getProcessOwnerDid(),
+                status: WorkflowStatus.Approved,
+                step: WorkflowStepCode.APPROVE_CERT_OF_ORIGIN,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  }
 }
 
-export const approveQualityPlanDescriptor: IWorkflowStepDescriptor = {
-  step: WorkflowStepCode.APPROVE_QUALITY_PLAN,
-  message: 'approve_quality_plan_message',
-  action: 'approve_quality_plan_action',
-  actionType: WorkflowActionType.APPROVE_DOCUMENT,
-  titleCaption: 'approve_quality_plan_title',
-  inEdge: [
-    {
-      onIn: () => console.log('on in called approve quality plan'),
-      inStatus: WorkflowStatus.Pending,
-      sender: PROCESS_OWNER_DID,
-
-      outEdge: [
-        {
-          onOut: () => console.log('on out called approve quality plan'),
-          update: [
-            {
-              sender: PROCESS_OWNER_DID,
-              recipients: SUPPLIER_DID,
-              status: WorkflowStatus.Approved,
-              step: WorkflowStepCode.APPROVE_QUALITY_PLAN,
-            },
-          ],
-          create: [
-            {
-              sender: PROCESS_OWNER_DID,
-              recipients: TESTER_DID,
-              step: WorkflowStepCode.ATTACH_INSPECTION_CERTS,
-              status: WorkflowStatus.Pending,
-            },
-          ],
-        },
-      ],
+export const attachQualityPlanDescriptor = (): IWorkflowStepDescriptor => {
+  return {
+    step: WorkflowStepCode.ATTACH_QUALITY_PLAN,
+    titleCaption: 'attach_quality_plan_title',
+    message: 'attach_quality_plan_message',
+    action: 'attach_quality_plan_action',
+    actionType: WorkflowActionType.ATTACH_DOCUMENT,
+    document: {
+      category: DocumentCategory.REPORTS,
+      type: DocumentType.QUALITY_PLAN,
     },
-  ],
+    inEdge: [
+      {
+        onIn: () => console.log('on in called attach quality plan'),
+        sender: getProcessOwnerDid(),
+        inStatus: WorkflowStatus.New,
+        outEdge: [
+          {
+            update: [
+              {
+                sender: getProcessOwnerDid(),
+                recipients: getSupplierDid(),
+                step: WorkflowStepCode.ATTACH_QUALITY_PLAN,
+                status: WorkflowStatus.Approved,
+              },
+            ],
+            create: [
+              {
+                sender: getSupplierDid(),
+                recipients: getProcessOwnerDid(),
+                step: WorkflowStepCode.APPROVE_QUALITY_PLAN,
+                status: WorkflowStatus.Pending,
+              },
+            ],
+            onOut: () => console.log('on out called attach quality plan'),
+          },
+        ],
+      },
+    ],
+  }
 }
 
-export const attachInspectionCertsDescriptor: IWorkflowStepDescriptor = {
-  step: WorkflowStepCode.ATTACH_INSPECTION_CERTS,
-  titleCaption: 'attach_inspection_certs_title',
-  message: 'attach_inspection_certs_message',
-  action: 'attach_inspection_certs_action',
-  actionType: WorkflowActionType.ATTACH_DOCUMENT,
-  document: {
-    category: DocumentCategory.CERTIFICATES,
-    type: DocumentType.INSPECTION_CERT,
-  },
-  inEdge: [
-    {
-      onIn: () => console.log('on in called attach inspection certs'),
-      sender: PROCESS_OWNER_DID,
-      inStatus: WorkflowStatus.Pending,
-      outEdge: [
-        {
-          update: [
-            {
-              sender: TESTER_DID,
-              recipients: TESTER_DID,
-              step: WorkflowStepCode.ATTACH_INSPECTION_CERTS,
-              status: WorkflowStatus.Approved,
-            },
-          ],
-          create: [
-            {
-              sender: TESTER_DID,
-              recipients: PROCESS_OWNER_DID,
-              step: WorkflowStepCode.APPROVE_INSPECTION_CERTS,
-              status: WorkflowStatus.Pending,
-            },
-          ],
-          onOut: () => console.log('on out called attach inspection certs'),
-        },
-      ],
-    },
-  ],
+export const approveQualityPlanDescriptor = (): IWorkflowStepDescriptor => {
+  return {
+    step: WorkflowStepCode.APPROVE_QUALITY_PLAN,
+    message: 'approve_quality_plan_message',
+    action: 'approve_quality_plan_action',
+    actionType: WorkflowActionType.APPROVE_DOCUMENT,
+    titleCaption: 'approve_quality_plan_title',
+    inEdge: [
+      {
+        onIn: () => console.log('on in called approve quality plan'),
+        inStatus: WorkflowStatus.Pending,
+        sender: getProcessOwnerDid(),
+
+        outEdge: [
+          {
+            onOut: () => console.log('on out called approve quality plan'),
+            update: [
+              {
+                sender: getProcessOwnerDid(),
+                recipients: getSupplierDid(),
+                status: WorkflowStatus.Approved,
+                step: WorkflowStepCode.APPROVE_QUALITY_PLAN,
+              },
+            ],
+            create: [
+              {
+                sender: getProcessOwnerDid(),
+                recipients: getTesterDid(),
+                step: WorkflowStepCode.ATTACH_INSPECTION_CERTS,
+                status: WorkflowStatus.Pending,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  }
 }
 
-export const approveInspectionCertsDescriptor: IWorkflowStepDescriptor = {
-  step: WorkflowStepCode.APPROVE_INSPECTION_CERTS,
-  message: 'approve_inspection_certs_message',
-  action: 'approve_inspection_certs_action',
-  actionType: WorkflowActionType.APPROVE_DOCUMENT,
-  titleCaption: 'approve_inspection_certs_title',
-  inEdge: [
-    {
-      onIn: () => console.log('on in called approve inspection certs'),
-      inStatus: WorkflowStatus.Pending,
-      sender: TESTER_DID,
-      outEdge: [
-        {
-          onOut: () => console.log('on out called approve inspection certs'),
-          update: [
-            {
-              sender: PROCESS_OWNER_DID,
-              recipients: SUPPLIER_DID,
-              status: WorkflowStatus.Approved,
-              step: WorkflowStepCode.APPROVE_INSPECTION_CERTS,
-            },
-          ],
-          create: [
-            {
-              sender: PROCESS_OWNER_DID,
-              recipients: SUPPLIER_DID,
-              step: WorkflowStepCode.APPROVE_SHIPPING,
-              status: WorkflowStatus.Done,
-            },
-            {
-              sender: PROCESS_OWNER_DID,
-              recipients: SUPPLIER_DID,
-              step: WorkflowStepCode.ATTACH_BILL_OF_LADING,
-              status: WorkflowStatus.New,
-            },
-          ],
-        },
-      ],
+export const attachInspectionCertsDescriptor = (): IWorkflowStepDescriptor => {
+  return {
+    step: WorkflowStepCode.ATTACH_INSPECTION_CERTS,
+    titleCaption: 'attach_inspection_certs_title',
+    message: 'attach_inspection_certs_message',
+    action: 'attach_inspection_certs_action',
+    actionType: WorkflowActionType.ATTACH_DOCUMENT,
+    document: {
+      category: DocumentCategory.CERTIFICATES,
+      type: DocumentType.INSPECTION_CERT,
     },
-  ],
+    inEdge: [
+      {
+        onIn: () => console.log('on in called attach inspection certs'),
+        sender: getProcessOwnerDid(),
+        inStatus: WorkflowStatus.Pending,
+        outEdge: [
+          {
+            update: [
+              {
+                sender: getTesterDid(),
+                recipients: getTesterDid(),
+                step: WorkflowStepCode.ATTACH_INSPECTION_CERTS,
+                status: WorkflowStatus.Approved,
+              },
+            ],
+            create: [
+              {
+                sender: getTesterDid(),
+                recipients: getProcessOwnerDid(),
+                step: WorkflowStepCode.APPROVE_INSPECTION_CERTS,
+                status: WorkflowStatus.Pending,
+              },
+            ],
+            onOut: () => console.log('on out called attach inspection certs'),
+          },
+        ],
+      },
+    ],
+  }
 }
 
-export const attachBillOfLadingDescriptor: IWorkflowStepDescriptor = {
-  step: WorkflowStepCode.ATTACH_BILL_OF_LADING,
-  titleCaption: 'attach_bill_of_lading_title',
-  message: 'attach_bill_of_lading_message',
-  action: 'attach_bill_of_lading_action',
-  actionType: WorkflowActionType.ATTACH_DOCUMENT,
-  document: {
-    category: DocumentCategory.OTHER,
-    type: DocumentType.BILL_OF_LADING,
-  },
-  inEdge: [
-    {
-      onIn: () => console.log('on in called attach bill of lading'),
-      sender: PROCESS_OWNER_DID,
-      inStatus: WorkflowStatus.New,
-      outEdge: [
-        {
-          update: [
-            {
-              sender: SUPPLIER_DID,
-              recipients: PROCESS_OWNER_DID,
-              step: WorkflowStepCode.ATTACH_BILL_OF_LADING,
-              status: WorkflowStatus.Approved,
-            },
-          ],
-          create: [
-            {
-              sender: SUPPLIER_DID,
-              recipients: TESTER_DID,
-              step: WorkflowStepCode.ATTACH_PORT_INSPECTION_REPORTS,
-              status: WorkflowStatus.Pending,
-            },
-          ],
-          onOut: () => console.log('on out called attach quality plan'),
-        },
-      ],
-    },
-  ],
+export const approveInspectionCertsDescriptor = (): IWorkflowStepDescriptor => {
+  return {
+    step: WorkflowStepCode.APPROVE_INSPECTION_CERTS,
+    message: 'approve_inspection_certs_message',
+    action: 'approve_inspection_certs_action',
+    actionType: WorkflowActionType.APPROVE_DOCUMENT,
+    titleCaption: 'approve_inspection_certs_title',
+    inEdge: [
+      {
+        onIn: () => console.log('on in called approve inspection certs'),
+        inStatus: WorkflowStatus.Pending,
+        sender: getTesterDid(),
+        outEdge: [
+          {
+            onOut: () => console.log('on out called approve inspection certs'),
+            update: [
+              {
+                sender: getProcessOwnerDid(),
+                recipients: getSupplierDid(),
+                status: WorkflowStatus.Approved,
+                step: WorkflowStepCode.APPROVE_INSPECTION_CERTS,
+              },
+            ],
+            create: [
+              {
+                sender: getProcessOwnerDid(),
+                recipients: getSupplierDid(),
+                step: WorkflowStepCode.APPROVE_SHIPPING,
+                status: WorkflowStatus.Done,
+              },
+              {
+                sender: getProcessOwnerDid(),
+                recipients: getSupplierDid(),
+                step: WorkflowStepCode.ATTACH_BILL_OF_LADING,
+                status: WorkflowStatus.New,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  }
 }
 
-export const attachPortInspectionReportsDescriptor: IWorkflowStepDescriptor = {
-  step: WorkflowStepCode.ATTACH_PORT_INSPECTION_REPORTS,
-  titleCaption: 'attach_port_inspection_reports_title',
-  message: 'attach_port_inspection_reports_message',
-  action: 'attach_port_inspection_reports_action',
-  actionType: WorkflowActionType.ATTACH_DOCUMENT,
-  document: {
-    category: DocumentCategory.CERTIFICATES,
-    type: DocumentType.INSPECTION_LOCAL,
-  },
-  inEdge: [
-    {
-      onIn: () => console.log('on in called attach port inspection reports'),
-      sender: TESTER_DID,
-      inStatus: WorkflowStatus.Pending,
-      outEdge: [
-        {
-          update: [
-            {
-              sender: TESTER_DID,
-              recipients: PROCESS_OWNER_DID,
-              step: WorkflowStepCode.ATTACH_PORT_INSPECTION_REPORTS,
-              status: WorkflowStatus.Approved,
-            },
-          ],
-          create: [
-            {
-              sender: SUPPLIER_DID,
-              recipients: PROCESS_OWNER_DID,
-              step: WorkflowStepCode.APPROVE_LOCAL,
-              status: WorkflowStatus.New,
-            },
-          ],
-          onOut: () => console.log('on out called attach quality plan'),
-        },
-      ],
+export const attachBillOfLadingDescriptor = (): IWorkflowStepDescriptor => {
+  return {
+    step: WorkflowStepCode.ATTACH_BILL_OF_LADING,
+    titleCaption: 'attach_bill_of_lading_title',
+    message: 'attach_bill_of_lading_message',
+    action: 'attach_bill_of_lading_action',
+    actionType: WorkflowActionType.ATTACH_DOCUMENT,
+    document: {
+      category: DocumentCategory.OTHER,
+      type: DocumentType.BILL_OF_LADING,
     },
-  ],
+    inEdge: [
+      {
+        onIn: () => console.log('on in called attach bill of lading'),
+        sender: getProcessOwnerDid(),
+        inStatus: WorkflowStatus.New,
+        outEdge: [
+          {
+            update: [
+              {
+                sender: getSupplierDid(),
+                recipients: getProcessOwnerDid(),
+                step: WorkflowStepCode.ATTACH_BILL_OF_LADING,
+                status: WorkflowStatus.Approved,
+              },
+            ],
+            create: [
+              {
+                sender: getSupplierDid(),
+                recipients: getTesterDid(),
+                step: WorkflowStepCode.ATTACH_PORT_INSPECTION_REPORTS,
+                status: WorkflowStatus.Pending,
+              },
+            ],
+            onOut: () => console.log('on out called attach quality plan'),
+          },
+        ],
+      },
+    ],
+  }
 }
 
-export const approvePortInspectionReportsDescriptor: IWorkflowStepDescriptor = {
-  step: WorkflowStepCode.APPROVE_PORT_INSPECTION_REPORTS,
-  titleCaption: 'approve_port_inspection_reports_title',
-  message: 'approve_port_inspection_reports_message',
-  action: 'approve_port_inspection_reports_action',
-  actionType: WorkflowActionType.APPROVE_DOCUMENT,
-  inEdge: [
-    {
-      onIn: () => console.log('on in called approve port inspection reports'),
-      sender: TESTER_DID,
-      inStatus: WorkflowStatus.New,
-      outEdge: [
-        {
-          update: [
-            {
-              sender: PROCESS_OWNER_DID,
-              recipients: SUPPLIER_DID,
-              step: WorkflowStepCode.APPROVE_PORT_INSPECTION_REPORTS,
-              status: WorkflowStatus.Approved,
-            },
-          ],
-          create: [
-            {
-              sender: SUPPLIER_DID,
-              recipients: PROCESS_OWNER_DID,
-              step: WorkflowStepCode.APPROVE_LOCAL,
-              status: WorkflowStatus.New,
-            },
-          ],
-          onOut: () => console.log('on out calledapprove port inspection reports'),
-        },
-      ],
+export const attachPortInspectionReportsDescriptor = (): IWorkflowStepDescriptor => {
+  return {
+    step: WorkflowStepCode.ATTACH_PORT_INSPECTION_REPORTS,
+    titleCaption: 'attach_port_inspection_reports_title',
+    message: 'attach_port_inspection_reports_message',
+    action: 'attach_port_inspection_reports_action',
+    actionType: WorkflowActionType.ATTACH_DOCUMENT,
+    document: {
+      category: DocumentCategory.CERTIFICATES,
+      type: DocumentType.INSPECTION_LOCAL,
     },
-  ],
+    inEdge: [
+      {
+        onIn: () => console.log('on in called attach port inspection reports'),
+        sender: getTesterDid(),
+        inStatus: WorkflowStatus.Pending,
+        outEdge: [
+          {
+            update: [
+              {
+                sender: getTesterDid(),
+                recipients: getProcessOwnerDid(),
+                step: WorkflowStepCode.ATTACH_PORT_INSPECTION_REPORTS,
+                status: WorkflowStatus.Approved,
+              },
+            ],
+            create: [
+              {
+                sender: getSupplierDid(),
+                recipients: getProcessOwnerDid(),
+                step: WorkflowStepCode.APPROVE_LOCAL,
+                status: WorkflowStatus.New,
+              },
+            ],
+            onOut: () => console.log('on out called attach quality plan'),
+          },
+        ],
+      },
+    ],
+  }
 }
 
-export const approveLocalDescriptor: IWorkflowStepDescriptor = {
-  step: WorkflowStepCode.APPROVE_LOCAL,
-  message: 'approve_local_message',
-  action: 'approve_local_action',
-  actionType: WorkflowActionType.APPROVE_DOCUMENT,
-  titleCaption: 'approve_local_title',
-  inEdge: [
-    {
-      onIn: () => console.log('on in called approve local'),
-      inStatus: WorkflowStatus.Pending,
-      sender: TESTER_DID,
+export const approvePortInspectionReportsDescriptor = (): IWorkflowStepDescriptor => {
+  return {
+    step: WorkflowStepCode.APPROVE_PORT_INSPECTION_REPORTS,
+    titleCaption: 'approve_port_inspection_reports_title',
+    message: 'approve_port_inspection_reports_message',
+    action: 'approve_port_inspection_reports_action',
+    actionType: WorkflowActionType.APPROVE_DOCUMENT,
+    inEdge: [
+      {
+        onIn: () => console.log('on in called approve port inspection reports'),
+        sender: getTesterDid(),
+        inStatus: WorkflowStatus.New,
+        outEdge: [
+          {
+            update: [
+              {
+                sender: getProcessOwnerDid(),
+                recipients: getSupplierDid(),
+                step: WorkflowStepCode.APPROVE_PORT_INSPECTION_REPORTS,
+                status: WorkflowStatus.Approved,
+              },
+            ],
+            create: [
+              {
+                sender: getSupplierDid(),
+                recipients: getProcessOwnerDid(),
+                step: WorkflowStepCode.APPROVE_LOCAL,
+                status: WorkflowStatus.New,
+              },
+            ],
+            onOut: () => console.log('on out calledapprove port inspection reports'),
+          },
+        ],
+      },
+    ],
+  }
+}
 
-      outEdge: [
-        {
-          onOut: () => console.log('on out called approve local'),
-          update: [
-            {
-              sender: PROCESS_OWNER_DID,
-              recipients: SUPPLIER_DID,
-              status: WorkflowStatus.Approved,
-              step: WorkflowStepCode.APPROVE_LOCAL,
-            },
-          ],
-        },
-      ],
-    },
-  ],
+export const approveLocalDescriptor = (): IWorkflowStepDescriptor => {
+  return {
+    step: WorkflowStepCode.APPROVE_LOCAL,
+    message: 'approve_local_message',
+    action: 'approve_local_action',
+    actionType: WorkflowActionType.APPROVE_DOCUMENT,
+    titleCaption: 'approve_local_title',
+    inEdge: [
+      {
+        onIn: () => console.log('on in called approve local'),
+        inStatus: WorkflowStatus.Pending,
+        sender: getTesterDid(),
+
+        outEdge: [
+          {
+            onOut: () => console.log('on out called approve local'),
+            update: [
+              {
+                sender: getProcessOwnerDid(),
+                recipients: getSupplierDid(),
+                status: WorkflowStatus.Approved,
+                step: WorkflowStepCode.APPROVE_LOCAL,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  }
 }
 
 // We cannot handle this one. So we set it to Approved
-export const approveShippingDescriptor: IWorkflowStepDescriptor = {
-  step: WorkflowStepCode.APPROVE_LOCAL,
-  message: 'approve_shipping_message',
-  action: 'approve_shipping_action',
-  actionType: WorkflowActionType.APPROVE_DOCUMENT,
-  titleCaption: 'approve_shipping_title',
-  inEdge: [
-    {
-      onIn: () => console.log('on in called approve local'),
-      inStatus: WorkflowStatus.Pending,
-      sender: TESTER_DID,
+export const approveShippingDescriptor = (): IWorkflowStepDescriptor => {
+  return {
+    step: WorkflowStepCode.APPROVE_LOCAL,
+    message: 'approve_shipping_message',
+    action: 'approve_shipping_action',
+    actionType: WorkflowActionType.APPROVE_DOCUMENT,
+    titleCaption: 'approve_shipping_title',
+    inEdge: [
+      {
+        onIn: () => console.log('on in called approve local'),
+        inStatus: WorkflowStatus.Pending,
+        sender: getTesterDid(),
 
-      outEdge: [
-        {
-          onOut: () => console.log('on out called approve local'),
-          update: [
-            {
-              sender: PROCESS_OWNER_DID,
-              recipients: SUPPLIER_DID,
-              status: WorkflowStatus.Approved,
-              step: WorkflowStepCode.APPROVE_LOCAL,
-            },
-          ],
-        },
-      ],
-    },
-  ],
+        outEdge: [
+          {
+            onOut: () => console.log('on out called approve local'),
+            update: [
+              {
+                sender: getProcessOwnerDid(),
+                recipients: getSupplierDid(),
+                status: WorkflowStatus.Approved,
+                step: WorkflowStepCode.APPROVE_LOCAL,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  }
 }
 
-export const workflowStepDescriptors: Record<WorkflowStepCode, IWorkflowStepDescriptor | undefined> = {
-  [WorkflowStepCode.CREATE_ASSET]: createAssetDescriptor,
-  [WorkflowStepCode.APPROVE_ASSET]: approveAssetDescriptor,
-  [WorkflowStepCode.ATTACH_CERT_OF_ORIGIN]: attachCertOfOriginDescriptor,
-  [WorkflowStepCode.APPROVE_CERT_OF_ORIGIN]: approveCertOfOriginDescriptor,
-  [WorkflowStepCode.ATTACH_QUALITY_PLAN]: attachQualityPlanDescriptor,
-  [WorkflowStepCode.APPROVE_QUALITY_PLAN]: approveQualityPlanDescriptor,
-  [WorkflowStepCode.ATTACH_INSPECTION_CERTS]: attachInspectionCertsDescriptor,
-  [WorkflowStepCode.APPROVE_INSPECTION_CERTS]: approveInspectionCertsDescriptor,
-  [WorkflowStepCode.APPROVE_SHIPPING]: approveShippingDescriptor,
-  [WorkflowStepCode.ATTACH_BILL_OF_LADING]: attachBillOfLadingDescriptor,
-  [WorkflowStepCode.ATTACH_PORT_INSPECTION_REPORTS]: attachPortInspectionReportsDescriptor,
-  [WorkflowStepCode.APPROVE_PORT_INSPECTION_REPORTS]: approvePortInspectionReportsDescriptor,
-  [WorkflowStepCode.APPROVE_LOCAL]: approveLocalDescriptor,
+export const workflowStepDescriptors = (): Record<WorkflowStepCode, IWorkflowStepDescriptor | undefined> => {
+  return {
+    [WorkflowStepCode.CREATE_ASSET]: createAssetDescriptor(),
+    [WorkflowStepCode.APPROVE_ASSET]: approveAssetDescriptor(),
+    [WorkflowStepCode.ATTACH_CERT_OF_ORIGIN]: attachCertOfOriginDescriptor(),
+    [WorkflowStepCode.APPROVE_CERT_OF_ORIGIN]: approveCertOfOriginDescriptor(),
+    [WorkflowStepCode.ATTACH_QUALITY_PLAN]: attachQualityPlanDescriptor(),
+    [WorkflowStepCode.APPROVE_QUALITY_PLAN]: approveQualityPlanDescriptor(),
+    [WorkflowStepCode.ATTACH_INSPECTION_CERTS]: attachInspectionCertsDescriptor(),
+    [WorkflowStepCode.APPROVE_INSPECTION_CERTS]: approveInspectionCertsDescriptor(),
+    [WorkflowStepCode.APPROVE_SHIPPING]: approveShippingDescriptor(),
+    [WorkflowStepCode.ATTACH_BILL_OF_LADING]: attachBillOfLadingDescriptor(),
+    [WorkflowStepCode.ATTACH_PORT_INSPECTION_REPORTS]: attachPortInspectionReportsDescriptor(),
+    [WorkflowStepCode.APPROVE_PORT_INSPECTION_REPORTS]: approvePortInspectionReportsDescriptor(),
+    [WorkflowStepCode.APPROVE_LOCAL]: approveLocalDescriptor(),
+  }
 }
 
 export class WorkflowEntity {
@@ -802,3 +834,5 @@ export interface ILatestWorkflowStepDTO {
     action: string
 }
 */
+
+
