@@ -154,7 +154,7 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
       const disabled = !advancedMode
         ? ((credentialDesignerClaimsFormData?.errors?.length ?? 0) > 0 || !noEmptyPropertiesRecursive(credentialDesignerClaimsFormData?.data?.credentialClaims ?? []))
         : false
-      
+
       setDisabled(disabled)
       if (disabled) {
         console.warn(credentialDesignerClaimsFormData?.errors)
@@ -245,9 +245,8 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
   const buildCredentialSchemas = async (
     claims: any
   ): Promise<{schema: CredentialSchema; uiSchema: CredentialUISchema | Array<CredentialUISchema>}> => {
-
     const schema: CredentialSchema = "credentialClaims" in claims ? buildCredentialSchema(claims.credentialClaims) : claims
-    const uiSchema = "credentialClaims" in claims ? buildCredentialUISchema(claims.credentialClaims) : buildCredentialUISchemaAdvanced(claims)
+    const uiSchema = "credentialClaims" in claims ? buildCredentialUISchema(claims.credentialClaims) : buildCredentialUISchema(claims)
 
     return {schema, uiSchema}
   }
@@ -275,75 +274,58 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
     }
   }
 
+  const normalizeSchemaInput = (input: any): Array<{ name: string; schema: any }> => {
+    if (Array.isArray(input)) {
+      return input.map((claim) => ({
+        name: claim.claimName,
+        schema: claim
+      }))
+    }
+
+    if (input?.type === 'object' && input?.properties && !Array.isArray(input.properties)) {
+      return Object.entries(input.properties).map(([name, schema]) => ({
+        name,
+        schema
+      }))
+    }
+
+    return []
+  }
+
   const buildCredentialUISchema = (
-    claims: Array<CredentialSchemaClaim>,
+    input: any,
     basePath: string = '#/properties',
     isRoot: boolean = true,
   ): CredentialUISchema | Array<CredentialUISchema> => {
-    const elements: Array<CredentialUISchema> = []
 
-    claims.forEach((claim): void => {
-      const currentPath = `${basePath}/${claim.claimName}`
+    const elements: CredentialUISchema[] = []
+    const normalized = normalizeSchemaInput(input)
 
-      if (claim.type === 'object' && claim.properties) {
+    normalized.forEach(({ name, schema }) => {
+      const path = `${basePath}/${name}`
+      const isObject = schema.type === 'object' && schema.properties
+
+      if (isObject) {
+        const nextInput = Array.isArray(schema.properties)
+          ? schema.properties
+          : schema
+
         elements.push({
           type: 'Group',
-          label: claim.claimName,
-          elements: buildCredentialUISchema(claim.properties, `${currentPath}/properties`, false) as Array<CredentialUISchema>,
+          label: name,
+          elements: buildCredentialUISchema(nextInput, `${path}/properties`, false) as CredentialUISchema[]
         })
       } else {
         elements.push({
           type: 'Control',
-          label: claim.claimName,
-          scope: currentPath,
+          label: name,
+          scope: path
         })
       }
     })
 
     return isRoot
-      ? {
-          type: 'VerticalLayout',
-          elements,
-        }
-      : elements
-  }
-
-  const buildCredentialUISchemaAdvanced = (
-    schema: CredentialSchema,
-    basePath: string = '#/properties',
-    isRoot: boolean = true,
-  ): CredentialUISchema | Array<CredentialUISchema> => {
-    const elements: CredentialUISchema[] = []
-
-    if (schema.type === 'object' && schema.properties) {
-      Object.entries(schema.properties).forEach(([propName, propSchema]) => {
-        const currentPath = `${basePath}/${propName}`
-
-        if (propSchema.type === 'object' && propSchema.properties) {
-          elements.push({
-            type: 'Group',
-            label: propName,
-            elements: buildCredentialUISchemaAdvanced(
-              propSchema,
-              `${currentPath}/properties`,
-              false,
-            ) as CredentialUISchema[],
-          })
-        } else {
-          elements.push({
-            type: 'Control',
-            label: propName,
-            scope: currentPath,
-          })
-        }
-      })
-    }
-
-    return isRoot
-      ? {
-        type: 'VerticalLayout',
-        elements,
-      }
+      ? { type: 'VerticalLayout', elements }
       : elements
   }
 
