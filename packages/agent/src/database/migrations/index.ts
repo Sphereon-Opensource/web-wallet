@@ -1,4 +1,5 @@
 import { CreateWebWallet1700163641000 } from './postgres/1700163641000-CreateWebWallet'
+import { AddCredentialDesignBranding1763717017000 } from './postgres/1763717017000-AddCredentialDesignBranding'
 import { DB_TYPE, IS_WALLET_ENABLED } from '../../environment-vars'
 
 if (IS_WALLET_ENABLED && !DB_TYPE.includes('postgres')) {
@@ -6,7 +7,12 @@ if (IS_WALLET_ENABLED && !DB_TYPE.includes('postgres')) {
 }
 
 // Individual migrations per purpose. Allows parties to not run migrations and thus create/update tables if they are not using a particular feature (yet)
-export const WorkflowMigrations = IS_WALLET_ENABLED ? [CreateWebWallet1700163641000] : []
+export const WorkflowMigrations = IS_WALLET_ENABLED
+  ? [
+    CreateWebWallet1700163641000,
+    AddCredentialDesignBranding1763717017000
+  ]
+  : []
 
 // All migrations together
 export const WebWalletMigrations = [...WorkflowMigrations]

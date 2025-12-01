@@ -121,3 +121,4 @@ export type MenuIcon =
   | "identifier"
   | "management"
   | "key"
+  | "design"
