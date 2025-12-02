@@ -3,23 +3,22 @@ import {useNavigate} from 'react-router-dom'
 import {useCreate, useCreateMany} from '@refinedev/core'
 import {JSONFormState} from '@sphereon/ui-components.ssi-react'
 import {
+  calculateUIKeyCapabilitiesInfo,
   CreateIdentifierRoute,
   DataResource,
   generateReadOnlyUIKeysForAdd,
-  calculateUIKeyCapabilitiesInfo,
   IdentifierCapabilities,
+  IdentifierCapability,
   IdentifierKey,
   IdentifierServiceEndpoint,
   KeyManagementIdentifier,
   KeyManagementRoute,
   MainRoute,
   UIKeyCapabilitiesInfo,
-  IdentifierCapability,
 } from '@typings'
 import {IdentifiersCreateContext} from '@typings/machine/identifiers/create'
 import {CoreActions, JsonFormsCore} from '@jsonforms/core'
 import agent from '@agent'
-import {NEXT_URL} from 'next/dist/client/components/app-router-headers'
 
 const createIdentifierNavigationListener = async (step: number, navigate: any): Promise<void> => {
   switch (step) {

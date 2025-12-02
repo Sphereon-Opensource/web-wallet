@@ -1,8 +1,8 @@
 import React, {FC, ReactElement} from 'react'
 import short from 'short-uuid'
-import {useTranslate, useNavigation, useList, HttpError} from '@refinedev/core'
+import {HttpError, useDeleteMany, useList, useNavigation, useTranslate} from '@refinedev/core'
 import {ButtonIcon} from '@sphereon/ui-components.core'
-import {ColumnHeader, SSITableView, TableCellType} from '@sphereon/ui-components.ssi-react'
+import {ColumnHeader, Row, SSITableView, TableCellType} from '@sphereon/ui-components.ssi-react'
 import {DataResource, KeyManagementIdentifier} from '@typings'
 import {IIdentifier} from '@veramo/core'
 import {getDidMethodFromDID} from '@helpers/DID/DIDService'
@@ -11,8 +11,14 @@ type Props = {
   allowAddNewIdentifier?: boolean
 }
 
+type KeyManagementIdentifierWithActions = KeyManagementIdentifier & {
+  actions: string
+}
+
 const mapIdentifierData = (identifierData?: IIdentifier[]): KeyManagementIdentifier[] => {
-  if (!identifierData) return []
+  if (!identifierData) {
+    return []
+  }
   return identifierData.map(identifier => ({
     type: 'did',
     method: getDidMethodFromDID(identifier.did),
@@ -25,11 +31,13 @@ const mapIdentifierData = (identifierData?: IIdentifier[]): KeyManagementIdentif
 const IdentifiersList: FC<Props> = (props: Props): ReactElement => {
   const {allowAddNewIdentifier = true} = props
   const translate = useTranslate()
-  const {create} = useNavigation()
+  const {create, edit} = useNavigation()
+  const {mutateAsync: deleteIdentifiers} = useDeleteMany<IIdentifier[], HttpError>()
   const {
     data: identifierData,
     isError: isIdentifierListError,
     isLoading: isIdentifierListLoading,
+    refetch,
   } = useList<IIdentifier, HttpError>({
     resource: DataResource.IDENTIFIERS,
   })
@@ -39,6 +47,7 @@ const IdentifiersList: FC<Props> = (props: Props): ReactElement => {
   if (identifierData?.isLoading) {
     return <div>{translate('data_provider_loading_message')}</div>
   }
+
   const keyManagementIdentifiers: KeyManagementIdentifier[] = mapIdentifierData(identifierData?.data)
 
   const truncationLength: number = 20
@@ -47,7 +56,32 @@ const IdentifiersList: FC<Props> = (props: Props): ReactElement => {
     create(DataResource.IDENTIFIERS)
   }
 
-  const columns: ColumnHeader<KeyManagementIdentifier>[] = [
+  const onEditIdentifier = async (row: Row<KeyManagementIdentifierWithActions>): Promise<void> => {
+    const did = row.original.value
+    if (!did.startsWith('did:web')) {
+      return
+    }
+    // Use the DID as the identifier for the edit route
+    edit(DataResource.IDENTIFIERS, did)
+  }
+
+  const onDeleteIdentifier = async (row: Row<KeyManagementIdentifierWithActions>): Promise<void> => {
+    await deleteIdentifiers(
+      {
+        resource: DataResource.IDENTIFIERS,
+        ids: [row.original.value],
+      },
+      {
+        onError: error => {
+          throw new Error(`Failed to delete identifier: ${JSON.stringify(error)}`)
+        },
+      },
+    )
+
+    await refetch()
+  }
+
+  const columns: ColumnHeader<KeyManagementIdentifierWithActions>[] = [
     {
       accessor: 'type',
       label: translate('identifiers_overview_column_type_label'),
@@ -92,6 +126,27 @@ const IdentifiersList: FC<Props> = (props: Props): ReactElement => {
         columnWidth: 120,
       },
     },
+    {
+      accessor: 'actions',
+      label: translate('identifiers_overview_column_actions_label'),
+      type: TableCellType.ACTIONS,
+      columnOptions: {
+        cellOptions: {
+          actions: [
+            {
+              caption: translate('identifiers_overview_fields_actions_edit'),
+              icon: ButtonIcon.EDIT,
+              onClick: onEditIdentifier,
+            },
+            {
+              caption: translate('identifiers_overview_fields_actions_delete'),
+              icon: ButtonIcon.DELETE,
+              onClick: onDeleteIdentifier,
+            },
+          ],
+        },
+      },
+    },
   ]
 
   const buildActionList = () => {
@@ -106,8 +161,15 @@ const IdentifiersList: FC<Props> = (props: Props): ReactElement => {
     return actions
   }
 
+  const data = keyManagementIdentifiers.map(value => ({...value, actions: ''}))
+
   return (
-    <SSITableView<KeyManagementIdentifier> key={short.generate()} data={keyManagementIdentifiers} columns={columns} actions={buildActionList()} />
+    <SSITableView<KeyManagementIdentifierWithActions>
+      key={short.generate()}
+      data={data}
+      columns={columns}
+      actions={buildActionList()}
+    />
   )
 }
 
