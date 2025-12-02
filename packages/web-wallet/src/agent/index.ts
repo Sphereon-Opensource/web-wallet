@@ -80,6 +80,7 @@ const plugins: IAgentPlugin[] = [
       ...identifierResolutionContextMethods,
       ...credentialValidationMethods,
       ...oid4vciStoreMethods,
+      'oid4vciRefreshInstanceMetadata',
       'createSdJwtVc',
       'createSdJwtPresentation',
       'verifySdJwtVc',

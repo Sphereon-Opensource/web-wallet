@@ -31,6 +31,7 @@ import {DidApiFeatures, DidWebServiceFeatures} from '@sphereon/ssi-sdk.uni-resol
 import {identifierResolutionContextMethods} from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {credentialValidationMethods} from '@sphereon/ssi-sdk.credential-validation'
 import {FederationMetadataImportArgs} from '@sphereon/ssi-sdk.oidf-metatdata-server'
+import { oid4vciIssuerMethods } from '@sphereon/ssi-sdk.oid4vci-issuer'
 
 export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATURES', ENV_VAR_PREFIX)
   ? (env('REMOTE_SERVER_API_FEATURES', ENV_VAR_PREFIX)?.split(',') as string[])
@@ -50,6 +51,7 @@ export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATU
       ...identifierResolutionContextMethods,
       ...credentialValidationMethods,
       ...oid4vciStoreMethods,
+      ...oid4vciIssuerMethods,
       'crsGetUniqueCredentials', // FIXME in SSI_SDK
       // fixme: import from respective modules
       'createSdJwtVc',
