@@ -19,7 +19,7 @@ import {supabaseServiceClient} from '@helpers/SupabaseClient'
 export const credentialDesignDataProvider = (): DataProvider => ({
   getList: async <TData extends BaseRecord = BaseRecord>({resource, pagination, filters, sort}: GetListParams): Promise<GetListResponse<TData>> => {
     // TODO SSISDK-86 implement, currently doing a quick fetch here to get the names of the designs
-    const credentialDesigns = await supabaseServiceClient
+    const credentialDesigns = await supabaseServiceClient()
       .from('meta_data_set')
       .select('*')
 
@@ -47,7 +47,7 @@ export const credentialDesignDataProvider = (): DataProvider => ({
     const { credentialName, credentialFormat, schema, uiSchema, branding } = variables
 
     let formStepId
-    const formStepResult = await supabaseServiceClient
+    const formStepResult = await supabaseServiceClient()
       .from('form_step')
       .select('*')
       .eq('form_id', 'credentialIssuanceWizard').single()
@@ -58,7 +58,7 @@ export const credentialDesignDataProvider = (): DataProvider => ({
         step_nr: 1,
         order: 1
       }
-      const result  = await supabaseServiceClient.from('form_step').insert([
+      const result  = await supabaseServiceClient().from('form_step').insert([
         formStep
       ]).single()
       formStepId = (result.data as any).id
@@ -66,12 +66,12 @@ export const credentialDesignDataProvider = (): DataProvider => ({
       formStepId = formStepResult.data.id
     }
 
-    const metaDataSetResult  = await supabaseServiceClient.from('meta_data_set').insert([
+    const metaDataSetResult  = await supabaseServiceClient().from('meta_data_set').insert([
       { name: credentialName }
     ]).single()
     const setId = (metaDataSetResult.data as any).id
 
-    const credentialTypeMetaDataKeysResult  = await supabaseServiceClient.from('meta_data_keys').insert([
+    const credentialTypeMetaDataKeysResult  = await supabaseServiceClient().from('meta_data_keys').insert([
       {
         set_id: setId,
         key: 'credentialType',
@@ -80,7 +80,7 @@ export const credentialDesignDataProvider = (): DataProvider => ({
     ]).single()
     const credentialTypeKeyId = (credentialTypeMetaDataKeysResult.data as any).id
 
-    await supabaseServiceClient.from('meta_data_values').insert([
+    await supabaseServiceClient().from('meta_data_values').insert([
       {
         key_id: credentialTypeKeyId,
         index: 0,
@@ -88,7 +88,7 @@ export const credentialDesignDataProvider = (): DataProvider => ({
       }
     ])
 
-    const credentialFormatMetaDataKeysResult  = await supabaseServiceClient.from('meta_data_keys').insert([
+    const credentialFormatMetaDataKeysResult  = await supabaseServiceClient().from('meta_data_keys').insert([
       {
         set_id: setId,
         key: 'credentialFormat',
@@ -97,7 +97,7 @@ export const credentialDesignDataProvider = (): DataProvider => ({
     ]).single()
     const credentialFormatKeyId = (credentialFormatMetaDataKeysResult.data as any).id
 
-    await supabaseServiceClient.from('meta_data_values').insert([
+    await supabaseServiceClient().from('meta_data_values').insert([
       {
         key_id: credentialFormatKeyId,
         index: 0,
@@ -121,11 +121,11 @@ export const credentialDesignDataProvider = (): DataProvider => ({
       meta_data_set_id: setId
     }
 
-    const schemaDefinitionResult = await supabaseServiceClient.from('schema_definition').insert([
+    const schemaDefinitionResult = await supabaseServiceClient().from('schema_definition').insert([
       schemaDefinition, uiSchemaDefinition
     ])
 
-    await supabaseServiceClient.from('form_step_to_schema_definition').insert([
+    await supabaseServiceClient().from('form_step_to_schema_definition').insert([
       {
         form_step_id: formStepId,
         schema_definition_id: (schemaDefinitionResult.data?.[0] as any).id
@@ -144,7 +144,7 @@ export const credentialDesignDataProvider = (): DataProvider => ({
       meta_data_set_id: setId
     }
 
-    await supabaseServiceClient.from('credential_design_branding').insert([
+    await supabaseServiceClient().from('credential_design_branding').insert([
       credentialDesignBranding
     ])
 
