@@ -92,6 +92,6 @@ export const updateOid4vciMetadata = async (credentialName: string, credentialCo
       }
     })
     .then(() => agent.oid4vciRefreshInstanceMetadata({ credentialIssuer: NEXT_PUBLIC_ISSUER_CORRELATION_ID }))
-    .catch(() => Promise.reject(Error('Failed to update oid4vci metadata')))
+    .catch((e) => Promise.reject(Error(`Failed to update oid4vci metadata. ${e.message}`)))
   }
 }
