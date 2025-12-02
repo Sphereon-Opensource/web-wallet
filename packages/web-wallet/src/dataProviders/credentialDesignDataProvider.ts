@@ -15,6 +15,7 @@ import {
   UpdateResponse,
 } from '@refinedev/core'
 import {supabaseServiceClient} from '@helpers/SupabaseClient'
+import {toPascalCase} from '@helpers/StringUtils'
 
 export const credentialDesignDataProvider = (): DataProvider => ({
   getList: async <TData extends BaseRecord = BaseRecord>({resource, pagination, filters, sort}: GetListParams): Promise<GetListResponse<TData>> => {
@@ -85,6 +86,11 @@ export const credentialDesignDataProvider = (): DataProvider => ({
         key_id: credentialTypeKeyId,
         index: 0,
         text_value: 'VerifiableCredential'
+      },
+      {
+        key_id: credentialTypeKeyId,
+        index: 1,
+        text_value: toPascalCase(credentialName)
       }
     ])
 
