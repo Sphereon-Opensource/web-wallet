@@ -440,13 +440,13 @@ if (!cliMode) {
       opts: {
         // TODO: This does limit hosting to the frontend only, whilst the agent could be behind multiple reverse proxy
         // Reason is that nextjs rewrites return the internal IP address instead of the original
-        // ...(process?.env?.NEXT_PUBLIC_CLIENT_ID && {hostname: process.env.NEXT_PUBLIC_CLIENT_ID.replace('https://', '').replace('http://', '')}),
+        // ...(process?.env?.BROWSER_PUBLIC_CLIENT_ID && {hostname: process.env.BROWSER_PUBLIC_CLIENT_ID.replace('https://', '').replace('http://', '')}),
         globalAuth,
         endpointOpts: {
           enabled: DID_WEB_SERVICE_FEATURES.includes('did-web-global-resolution'),
           // TODO: This does limit hosting to the frontend only, whilst the agent could be behind multiple reverse proxy
           // Reason is that nextjs rewrites return the internal IP address instead of the original
-          ...(process?.env?.NEXT_PUBLIC_CLIENT_ID && {hostname: process.env.NEXT_PUBLIC_CLIENT_ID.replace('https://', '').replace('http://', '')}),
+          ...(process?.env?.BROWSER_PUBLIC_CLIENT_ID && {hostname: process.env.BROWSER_PUBLIC_CLIENT_ID.replace('https://', '').replace('http://', '')}),
         },
         enableFeatures: DID_WEB_SERVICE_FEATURES,
       },
