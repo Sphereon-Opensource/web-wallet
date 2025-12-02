@@ -51,7 +51,7 @@ export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATU
     'didManagerAddKey',
     'didManagerAddService',
     'didManagerRemoveService',
-
+    ...oid4vciIssuerMethods,
     'createVerifiablePresentation',
     ...ebsiSupportMethods,
     ...issuanceBrandingMethods,
