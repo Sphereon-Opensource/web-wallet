@@ -7,6 +7,7 @@ import {CredentialMapper} from '@sphereon/ssi-types'
 import {IVerifiableCredential} from '@sphereon/ssi-types'
 import {DigitalCredential} from '@sphereon/ssi-sdk.credential-store'
 import {contextToString} from '@helpers/Credentials/CredentialsHelper'
+import {CredentialPayload} from '@veramo/core'
 
 export type Credential = {
   hash: string
@@ -31,6 +32,7 @@ export enum IssueMethod {
   QR_CODE = 'qrCode',
   WALLET_URL = 'walletUrl',
 }
+
 export class CredentialTableItem {
   id?: string
   hash: string
@@ -149,4 +151,11 @@ export type CredentialUISchema = {
   label?: string
   scope?: string
   elements?: Array<CredentialUISchema>
+}
+
+export type CredentialGenerationMethod = 'TEMPLATE' | 'JSON_SCHEMA'
+export type CredentialSupplierConfigWithHashOrId = {hashOrId: string}
+export type CredentialSupplierConfigWithCredentialPayload = {
+  credentialPayload: CredentialPayload | Partial<CredentialPayload>,
+  credentialGenerationMethod: CredentialGenerationMethod
 }

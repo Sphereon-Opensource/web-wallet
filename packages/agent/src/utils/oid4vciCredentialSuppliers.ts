@@ -7,14 +7,19 @@ import {
 import {TemplateVCGenerator} from './templateManager'
 import {CredentialRequestV1_0_15, OID4VCICredentialFormat} from '@sphereon/oid4vci-common'
 import {CONF_PATH} from '../environment-vars'
-import {CredentialSupplierConfigWithTemplateSupport} from '../types'
+import {
+  CredentialSupplierConfigWithCredentialPayload,
+  CredentialSupplierConfigWithHashOrId,
+  CredentialSupplierConfigWithTemplateSupport,
+} from '../types'
 import {normalizeFilePath} from './generic'
 import agent from '../agent'
 import {
   CredentialMapper,
   CredentialRole,
   ICredential,
-  OriginalVerifiableCredential, SdJwtDecodedVerifiableCredentialPayload,
+  OriginalVerifiableCredential,
+  SdJwtDecodedVerifiableCredentialPayload,
   W3CVerifiableCredential,
 } from '@sphereon/ssi-types'
 import {CredentialPayload} from '@veramo/core'
@@ -36,7 +41,8 @@ class TemplateCredentialDataSupplier {
 
   // TODO Refactor, this is the TemplateCredentialDataSupplier & defaultCredentialDataSupplier smacked together
   public async generateCredentialData(args: CredentialDataSupplierArgs): Promise<CredentialDataSupplierResult> {
-    const {credentialDataSupplierInput, credentialRequest} = args
+    const {credentialRequest} = args
+    const credentialDataSupplierInput = args.credentialDataSupplierInput as CredentialSupplierConfigWithCredentialPayload | CredentialSupplierConfigWithHashOrId
     if (!credentialDataSupplierInput) {
       throw Error(`Agent needs a credential data supplier input upfront`)
     }
@@ -89,33 +95,34 @@ class TemplateCredentialDataSupplier {
         }
       }
       credential = credentialPayload as ICredential
-    }
 
-    // FIXME!!! Temp hack to see that the credential data is probably coming from the web wallet's JSON schema generator already providing a valid credential payload
-    if (!credential || typeof credential === 'string' || (!('disclosureFrame' in credential) && !('statusList' in credential))) {
-      const credentialSupplierConfig = args.credentialSupplierConfig as CredentialSupplierConfigWithTemplateSupport
-      const requestedConfigId = (credentialRequest as CredentialRequestV1_0_15).credential_configuration_id
-      if (credentialSupplierConfig.template_mappings) {
-        const templateMapping = credentialSupplierConfig.template_mappings.find((mapping) => {
-          if (!mapping.credential_config_ids) {
-            throw Error('credential_config_ids field not found in template mapping')
-          }
-          return requestedConfigId && mapping.credential_config_ids.includes(requestedConfigId)
-        })
 
-        if (templateMapping) {
-          const templatePath = normalizeFilePath(
-            CONF_PATH,
-            credentialSupplierConfig.templates_base_dir,
-            templateMapping.template_path,
-          )
-          credential = templateVCGenerator.generateCredential(templatePath, credential ?? args.credentialDataSupplierInput)
-          if (!credential) {
-            throw new Error(`Credential generation failed for template ${templatePath}`)
-          }
-          return {
-            format: (templateMapping.format || args.format) as OID4VCICredentialFormat,
-            credential: this.formatCredential(credential, (templateMapping.format || args.format) as OID4VCICredentialFormat) as ICredential,
+      // FIXME!!! Temp hack to see that the credential data is probably coming from the web wallet's JSON schema generator already providing a valid credential payload
+      if (credentialDataSupplierInput.credentialGenerationMethod !== 'JSON_SCHEMA') { // TODO === CredentialGenerationMethod.TEMPLATE when demo's fixed
+        const credentialSupplierConfig = args.credentialSupplierConfig as CredentialSupplierConfigWithTemplateSupport
+        const requestedConfigId = (credentialRequest as CredentialRequestV1_0_15).credential_configuration_id
+        if (credentialSupplierConfig.template_mappings) {
+          const templateMapping = credentialSupplierConfig.template_mappings.find((mapping) => {
+            if (!mapping.credential_config_ids) {
+              throw Error('credential_config_ids field not found in template mapping')
+            }
+            return requestedConfigId && mapping.credential_config_ids.includes(requestedConfigId)
+          })
+
+          if (templateMapping) {
+            const templatePath = normalizeFilePath(
+              CONF_PATH,
+              credentialSupplierConfig.templates_base_dir,
+              templateMapping.template_path,
+            )
+            credential = templateVCGenerator.generateCredential(templatePath, credential ?? args.credentialDataSupplierInput)
+            if (!credential) {
+              throw new Error(`Credential generation failed for template ${templatePath}`)
+            }
+            return {
+              format: (templateMapping.format || args.format) as OID4VCICredentialFormat,
+              credential: this.formatCredential(credential, (templateMapping.format || args.format) as OID4VCICredentialFormat) as ICredential,
+            }
           }
         }
         throw new Error(`No template mapping found for config id ${requestedConfigId}`)
