@@ -248,9 +248,6 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
     const schema: CredentialSchema = "credentialClaims" in claims ? buildCredentialSchema(claims.credentialClaims) : claims
     const uiSchema = "credentialClaims" in claims ? buildCredentialUISchema(claims.credentialClaims) : buildCredentialUISchema(claims)
 
-    console.log(`SCHEMA: ${JSON.stringify(schema)}`)
-    console.log(`UI SCHEMA: ${JSON.stringify(uiSchema)}`)
-
     return {schema, uiSchema}
   }
 
