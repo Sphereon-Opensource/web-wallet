@@ -13,6 +13,19 @@ type Props = {
 
 const generateLinkedVpId = (): string => `lvp-${Math.random().toString(36).substring(2, 15)}`
 
+/**
+ * Converts a Date object to a datetime-local input format string (YYYY-MM-DDThh:mm)
+ * This preserves the date/time in the user's local timezone without shifting
+ */
+const toDateTimeLocalString = (date: Date): string => {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+  return `${year}-${month}-${day}T${hours}:${minutes}`
+}
+
 const PublishLinkedVPModal: FC<Props> = (props: Props): ReactElement | null => {
   const {onClose, onSubmit} = props
   const translate = useTranslate()
@@ -196,7 +209,7 @@ const PublishLinkedVPModal: FC<Props> = (props: Props): ReactElement | null => {
                     caption: translate('create_shared_id_sharing_from_label'),
                     className: style.fieldLabel,
                   }}
-                  value={linkedVpFrom ? linkedVpFrom.toISOString().slice(0, 16) : ''}
+                  value={linkedVpFrom ? toDateTimeLocalString(linkedVpFrom) : ''}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     const newDate = e.target.value ? new Date(e.target.value) : undefined
                     setLinkedVpFrom(newDate)
@@ -240,7 +253,7 @@ const PublishLinkedVPModal: FC<Props> = (props: Props): ReactElement | null => {
                     caption: translate('create_shared_id_sharing_until_label'),
                     className: style.fieldLabel,
                   }}
-                  value={linkedVpUntil ? linkedVpUntil.toISOString().slice(0, 16) : ''}
+                  value={linkedVpUntil ? toDateTimeLocalString(linkedVpUntil) : ''}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     const newDate = e.target.value ? new Date(e.target.value) : undefined
                     setLinkedVpUntil(newDate)

@@ -5,8 +5,8 @@ import {SupabaseClient} from '@supabase/supabase-js'
 const getSupabaseUrl = (): string => getEnv('BROWSER_PUBLIC_SUPABASE_URL') ?? 'http://localhost:8000'
 
 // Service key
-const getSupabaseServiceKey = ():string =>
-  getEnv('BROWSER_PUBLIC_SUPABASE_SERVICE_KEY') ??
+const getSupabaseAnonKey = ():string =>
+  getEnv('BROWSER_PUBLIC_SUPABASE_ANON_KEY') ?? getEnv('BROWSER_PUBLIC_SUPABASE_SERVICE_KEY') ??
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJzZXJ2aWNlX3JvbGUiLAogICAgImlzcyI6ICJzdXBhYmFzZS1kZW1vIiwKICAgICJpYXQiOiAxNjQxNzY5MjAwLAogICAgImV4cCI6IDE3OTk1MzU2MDAKfQ.DaYlNEoUrrEn2Ig7tqibS-PHK5vgusbcbo7X36XVt4Q'
 
 let _supabaseServiceClient:SupabaseClient<any, "public" extends keyof any ? "public" : (string & keyof any), any>
@@ -14,7 +14,7 @@ let _supabaseStorageServiceClient: SupabaseClient<any, string, any>
 
 export const supabaseServiceClient = () => {
   if (!_supabaseServiceClient) {
-    _supabaseServiceClient = createClient(getSupabaseUrl(), getSupabaseServiceKey(), {
+    _supabaseServiceClient = createClient(getSupabaseUrl(), getSupabaseAnonKey(), {
       db: {
         schema: 'public',
       },
@@ -33,7 +33,7 @@ export const supabaseServiceClient = () => {
 
 export const supabaseStorageServiceClient = () => {
   if (!_supabaseStorageServiceClient) {
-    _supabaseStorageServiceClient = createClient(getSupabaseUrl(), getSupabaseServiceKey(), {
+    _supabaseStorageServiceClient = createClient(getSupabaseUrl(), getSupabaseAnonKey(), {
       db: {
         schema: 'storage',
       },

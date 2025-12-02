@@ -10,31 +10,9 @@ import type { NextRequest } from 'next/server'
 export const config = {
   matcher: [
     '/((?!api|_next/static|_next/image|favicon.ico).*)',
-    '/.well-known/jwks/:path*',
-    '/:path*/did.json',
   ],
 }
 export function middleware(request: NextRequest) {
-  const { pathname, search } = request.nextUrl
-
-  // JWKS proxy
-  if (pathname.startsWith('/.well-known/jwks/')) {
-    const agentBaseUrl = process.env.BROWSER_PUBLIC_AGENT_BASE_URL
-    if (agentBaseUrl) {
-      const targetUrl = `${agentBaseUrl}${pathname}${search}`
-      return NextResponse.rewrite(targetUrl)
-    }
-  }
-
-  // DID:WEB proxy
-  if (pathname.endsWith('/did.json')) {
-    const agentBaseUrl = process.env.BROWSER_PUBLIC_AGENT_BASE_URL
-    if (agentBaseUrl) {
-      const targetUrl = `${agentBaseUrl}${pathname}${search}`
-      return NextResponse.rewrite(targetUrl)
-    }
-  }
-
   return NextResponse.next()
 }
 
