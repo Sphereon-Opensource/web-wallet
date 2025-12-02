@@ -23,7 +23,6 @@ const CredentialDesignerDetailsContent: FC = (): ReactElement => {
   })
 
   const onCredentialFormInputChange = async (state: JSONFormState): Promise<void> => {
-    state.data.display_name = state.data.display_name?.trim()
     onCredentialDesignerDetailsFormDataChange?.(state)
   }
 
@@ -37,16 +36,6 @@ const CredentialDesignerDetailsContent: FC = (): ReactElement => {
       type: 'string',
       validate: (_: string, data: string) => {
         return !credentialDesigns.data?.data.some(credentialDesign => credentialDesign.name === data)
-      },
-      errors: true
-    })
-  }
-  if (!ajv.getKeyword('isNotEmpty')) {
-    ajv.addKeyword({
-      keyword: 'isNotEmpty',
-      type: 'string',
-      validate: (_: string, data: string) => {
-        return data.trim() !== ''
       },
       errors: true
     })
