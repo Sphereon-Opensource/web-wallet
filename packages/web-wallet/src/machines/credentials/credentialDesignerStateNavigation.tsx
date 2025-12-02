@@ -258,6 +258,11 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
     claims.forEach((claim): void => {
       if (claim.type === 'object' && claim.properties) {
         properties[claim.claimName] = buildCredentialSchema(claim.properties)
+      } else if (claim.type === 'array') {
+        properties[claim.claimName] = {
+          type: 'array',
+          items: { type: 'string' }
+        }
       } else {
         properties[claim.claimName] = {type: claim.type}
       }
