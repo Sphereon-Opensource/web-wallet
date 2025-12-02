@@ -248,6 +248,9 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
     const schema: CredentialSchema = "credentialClaims" in claims ? buildCredentialSchema(claims.credentialClaims) : claims
     const uiSchema = "credentialClaims" in claims ? buildCredentialUISchema(claims.credentialClaims) : buildCredentialUISchema(claims)
 
+    console.log(`SCHEMA: ${JSON.stringify(schema)}`)
+    console.log(`UI SCHEMA: ${JSON.stringify(uiSchema)}`)
+
     return {schema, uiSchema}
   }
 
@@ -258,6 +261,11 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
     claims.forEach((claim): void => {
       if (claim.type === 'object' && claim.properties) {
         properties[claim.claimName] = buildCredentialSchema(claim.properties)
+      } else if (claim.type === 'array') {
+        properties[claim.claimName] = {
+          type: 'array',
+          items: { type: 'string' }
+        }
       } else {
         properties[claim.claimName] = {type: claim.type}
       }
