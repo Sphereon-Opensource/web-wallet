@@ -99,7 +99,7 @@ export const updateOid4vciMetadata = async (credentialName: string, credentialCo
   const name = credentialName.trim().toLowerCase().replace(/\s+/g, "-")
 
   if (metadata) {
-    await getAgent().oid4vciStorePersistMetadata({
+    return await getAgent().oid4vciStorePersistMetadata({
       metadataType: 'issuer',
       correlationId: issuerCorrelationId,
       metadata: {
@@ -110,5 +110,7 @@ export const updateOid4vciMetadata = async (credentialName: string, credentialCo
         }
       }
     })
+    .then(() => agent.oid4vciRefreshInstanceMetadata({ credentialIssuer: NEXT_PUBLIC_ISSUER_CORRELATION_ID }))
+    .catch(() => Promise.reject(Error('Failed to update oid4vci metadata')))
   }
 }

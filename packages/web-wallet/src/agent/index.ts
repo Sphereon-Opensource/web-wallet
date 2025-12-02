@@ -98,6 +98,7 @@ const getPlugins = ():IAgentPlugin[] => [
       'didManagerAddService',
       'didManagerRemoveService',
       ...oid4vciStoreMethods,
+      'oid4vciRefreshInstanceMetadata',
       'createSdJwtVc',
       'createSdJwtPresentation',
       'verifySdJwtVc',
