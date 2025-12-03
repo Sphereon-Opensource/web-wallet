@@ -1,26 +1,28 @@
 import {CredentialPayload} from '@veramo/core'
 import {JsonSchema} from '@jsonforms/core'
 import {QRValueResult} from '@components/modals/QRCodeModal'
-import {IOID4VCIClientCreateOfferUriResponse, IOID4VCIClientCreateOfferUriRequestArgs} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-client'
-import { getAgent } from '@agent'
+import {
+  IOID4VCIClientCreateOfferUriRequestArgs,
+  IOID4VCIClientCreateOfferUriResponse,
+} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-client'
+import {getAgent} from '@agent'
 import Debug, {Debugger} from 'debug'
 import {CommonCredentialOfferFormat} from '@sphereon/oid4vci-common'
 import {v4 as uuidv4} from 'uuid'
+import {CredentialSupplierConfigWithCredentialPayload, CredentialSupplierConfigWithHashOrId} from '@typings'
 
 const debug: Debugger = Debug('sphereon:cloud-wallet:credentialService')
 
-type WithHashOrId = {hashOrId: string}
-type WithCredentialPayload = {credentialPayload: CredentialPayload | Partial<CredentialPayload>}
 
 function isHashOrId(
   credentialDataSupplierInput: {hashOrId: string} | {credentialPayload: Partial<CredentialPayload>},
-): credentialDataSupplierInput is WithHashOrId {
+): credentialDataSupplierInput is CredentialSupplierConfigWithHashOrId {
   return 'hashOrId' in credentialDataSupplierInput && !!credentialDataSupplierInput.hashOrId
 }
 
 function isCredentialPayload(
   credentialDataSupplierInput: {hashOrId: string} | {credentialPayload: Partial<CredentialPayload>},
-): credentialDataSupplierInput is WithCredentialPayload {
+): credentialDataSupplierInput is CredentialSupplierConfigWithCredentialPayload {
   return 'credentialPayload' in credentialDataSupplierInput && !!credentialDataSupplierInput.credentialPayload
 }
 export const createCredentialPayloadWithSchema = (
@@ -78,7 +80,7 @@ function mergeSchemaDefaults(data: any, schema: JsonSchema): any {
 
 
 export async function qrValueGenerator(
-  credentialDataSupplierInput: WithHashOrId | WithCredentialPayload,
+  credentialDataSupplierInput: CredentialSupplierConfigWithHashOrId | CredentialSupplierConfigWithCredentialPayload,
   opts: {
     preAuthorizedCode?: string
     userPinRequired?: boolean
@@ -104,7 +106,7 @@ export async function qrValueGenerator(
 }
 
 export async function createOID4VCIOffer(
-  credentialDataSupplierInput: WithHashOrId | WithCredentialPayload,
+  credentialDataSupplierInput: CredentialSupplierConfigWithHashOrId | CredentialSupplierConfigWithCredentialPayload,
   opts: {
     preAuthorizedCode?: string
     userPinRequired?: boolean
