@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react'
+import React, {useCallback, useEffect, useMemo, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import {useCreate, useCreateMany, useList} from '@refinedev/core'
 import {JSONFormState} from '@sphereon/ui-components.ssi-react'
@@ -107,7 +107,7 @@ export const IdentifiersCreateContextProvider = (props: any): JSX.Element => {
     }
   }, [keysData, identifierData?.data?.method])
 
-  const identifierKeyMiddleware = (
+  const identifierKeyMiddleware = useCallback((
     state: Omit<JsonFormsCore, 'data'> & {data: IdentifierKey},
     action: CoreActions,
     defaultReducer: (
@@ -118,17 +118,19 @@ export const IdentifiersCreateContextProvider = (props: any): JSX.Element => {
     },
   ) => {
     const newState = defaultReducer(state, action)
-    if (!state?.data) {
-      state.data = {
-        ...newState?.data,
+    // Only initialize defaults if the data object doesn't have the required fields yet
+    // This prevents infinite re-render loops by not modifying data that's already initialized
+    if (newState?.data && !newState.data.hasOwnProperty('action')) {
+      newState.data = {
+        ...newState.data,
         action: newState.schema?.properties?.['action']?.default ?? 'generate',
-        purposes: ['assertionMethod', 'authentication'],
+        purposes: newState.data.purposes || ['assertionMethod', 'authentication'],
       }
     }
-    console.log(`identifier key middleware`, newState)
     return newState
-  }
-  const identifierMiddleware = (
+  }, [])
+
+  const identifierMiddleware = useCallback((
     state: Omit<JsonFormsCore, 'data'> & {data: KeyManagementIdentifier},
     action: CoreActions,
     defaultReducer: (
@@ -167,7 +169,7 @@ export const IdentifiersCreateContextProvider = (props: any): JSX.Element => {
       }
     }
     return newState
-  }
+  }, [])
 
   useEffect(() => {
     void createIdentifierNavigationListener(step, navigate)

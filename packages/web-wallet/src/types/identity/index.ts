@@ -54,7 +54,7 @@ export type IdentifierKey = {
   alias?: string
   kid?: string
   purposes: Array<string>
-  capability: IdentifierKeyCapability
+  capability?: IdentifierKeyCapability
   readonly: boolean
 }
 

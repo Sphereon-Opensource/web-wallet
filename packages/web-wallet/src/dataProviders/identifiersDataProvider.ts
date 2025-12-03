@@ -39,6 +39,7 @@ export type UpdateVariables = {
   alias?: string
   selectedKeyId?: string
   services?: Array<IdentifierServiceEndpoint>
+  keys?: Array<IdentifierKey>
 }
 
 type IdentifierRecord = BaseRecord & IIdentifier
@@ -84,6 +85,76 @@ const replaceIdentifierKey = async (did: string, currentKeys: any[], newKeyId: s
   } catch (error) {
     console.error('Error replacing key:', error)
     return Promise.reject(Error(`Failed to replace key: ${error}`))
+  }
+}
+
+const updateIdentifierKeys = async (did: string, currentKeys: any[], newKeys: IdentifierKey[]): Promise<void> => {
+  try {
+    // Get the list of current key kids
+    const currentKeyKids = new Set(currentKeys.map(k => k.kid))
+
+    // Get the list of new key kids (only those with kid set, meaning they already exist)
+    const newKeyKids = new Set(newKeys.filter(k => k.kid).map(k => k.kid))
+
+    // Keys to remove: in current but not in new
+    const keysToRemove = currentKeys.filter(k => !newKeyKids.has(k.kid))
+
+    // Keys to add: in new but not in current (or keys to generate)
+    const keysToAdd = newKeys.filter(k => !k.readonly || !currentKeyKids.has(k.kid!))
+
+    // Remove keys that are no longer needed
+    for (const key of keysToRemove) {
+      console.log(`Removing key ${key.kid}`)
+      await getAgent().didManagerRemoveKey({
+        did,
+        kid: key.kid,
+        options: {},
+      })
+    }
+
+    // Add new keys
+    for (const identifierKey of keysToAdd) {
+      if (identifierKey.kid) {
+        // Existing key - fetch from key manager and add to identifier
+        const key = await getAgent().keyManagerGet({kid: identifierKey.kid})
+        if (!key) {
+          console.warn(`Key with kid ${identifierKey.kid} not found in key manager, skipping`)
+          continue
+        }
+
+        console.log(`Adding existing key ${identifierKey.kid} to identifier`)
+        await getAgent().didManagerAddKey({
+          did,
+          key,
+          options: {},
+        })
+      } else {
+        // New key to generate
+        console.log(`Generating and adding new key of type ${identifierKey.type}`)
+
+        // Create the key first
+        const newKey = await getAgent().keyManagerCreate({
+          kms: 'local',
+          type: identifierKey.type,
+          meta: {
+            purposes: identifierKey.purposes,
+            alias: identifierKey.alias,
+          },
+        })
+
+        // Then add it to the identifier
+        await getAgent().didManagerAddKey({
+          did,
+          key: newKey,
+          options: {},
+        })
+      }
+    }
+
+    console.log(`Updated keys for identifier ${did}`)
+  } catch (error) {
+    console.error('Error updating identifier keys:', error)
+    return Promise.reject(Error(`Failed to update identifier keys: ${error}`))
   }
 }
 
@@ -316,7 +387,11 @@ export const identifiersDataProvider = (): DataProvider => ({
         await updateAlias(identifier.did, updateVars.alias)
       }
 
-      if (updateVars.selectedKeyId) {
+      // Update keys if provided
+      if (updateVars.keys) {
+        await updateIdentifierKeys(identifier.did, identifier.keys, updateVars.keys)
+      } else if (updateVars.selectedKeyId) {
+        // Legacy single key replacement
         await replaceIdentifierKey(identifier.did, identifier.keys, updateVars.selectedKeyId)
       }
 
@@ -327,7 +402,7 @@ export const identifiersDataProvider = (): DataProvider => ({
 
       const updatedIdentifier = await getAgent().didManagerGet({did: identifier.did})
 
-      // Update the controllerKeyId to match the selected key
+      // Update the controllerKeyId to match the selected key (legacy)
       if (updateVars.selectedKeyId && updatedIdentifier.keys.length > 0) {
         updatedIdentifier.controllerKeyId = updateVars.selectedKeyId
       }

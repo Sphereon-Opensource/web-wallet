@@ -1,6 +1,6 @@
 import React, {FC, ReactElement} from 'react'
 import {useTranslate} from '@refinedev/core'
-import {FormView, PrimaryButton, SecondaryButton} from '@sphereon/ui-components.ssi-react'
+import {FormView} from '@sphereon/ui-components.ssi-react'
 import {createAjv} from '@jsonforms/core'
 import editIdentifierUISchema from '../../../../src/schemas/ui/editIdentifierUISchema.json' assert {type: 'json'}
 import {useIdentifiersEditContext} from '@typings/machine/identifiers/edit'
