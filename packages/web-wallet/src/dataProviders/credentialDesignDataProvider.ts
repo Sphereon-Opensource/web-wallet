@@ -45,7 +45,7 @@ export const credentialDesignDataProvider = (): DataProvider => ({
     // TODO SSISDK-88 create transaction solution
 
     // @ts-ignore
-    const { credentialName, credentialFormat, schema, uiSchema, branding } = variables
+    const { identifier, credentialFormat, schema, uiSchema, branding } = variables
 
     let formStepId
     const formStepResult = await supabaseServiceClient
@@ -68,7 +68,7 @@ export const credentialDesignDataProvider = (): DataProvider => ({
     }
 
     const metaDataSetResult  = await supabaseServiceClient.from('meta_data_set').insert([
-      { name: credentialName }
+      { name: identifier }
     ]).single()
     const setId = (metaDataSetResult.data as any).id
 
@@ -90,7 +90,7 @@ export const credentialDesignDataProvider = (): DataProvider => ({
       {
         key_id: credentialTypeKeyId,
         index: 1,
-        text_value: toPascalCase(credentialName)
+        text_value: identifier
       }
     ])
 
@@ -112,7 +112,7 @@ export const credentialDesignDataProvider = (): DataProvider => ({
     ])
 
     const schemaDefinition = {
-      correlation_id: credentialName,
+      correlation_id: identifier,
       schema_type: 'Data',
       entity_type: 'VC',
       schema: JSON.stringify(schema),
@@ -120,7 +120,7 @@ export const credentialDesignDataProvider = (): DataProvider => ({
     }
 
     const uiSchemaDefinition = {
-      correlation_id: credentialName,
+      correlation_id: identifier,
       schema_type: 'UI_Form',
       entity_type: 'VC',
       schema: JSON.stringify(uiSchema),

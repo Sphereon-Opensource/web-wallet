@@ -54,30 +54,31 @@ export function schemaToClaims(
 }
 
 export const toCredentialConfiguration = (args: ToCredentialConfigurationArgs): CredentialConfigurationSupportedV1_0_15 => {
-  const { schema, branding } = args
+  const { identifier, schema, branding } = args
   const {
     format,
     scope,
     cryptographicBindingMethodsSupported = ['did:web', 'did:jwk'],
     credentialSigningAlgValuesSupported = ['ES256'],
-    proofTypesSupported,
-    vct,
+    proofTypesSupported
   } = args.options
+
+  const vct = args.options.vct ?? ((format === 'dc+sd-jwt' || format === 'vc+sd-jwt') ? identifier : undefined)
+
   return {
     format,
     scope,
     cryptographic_binding_methods_supported: cryptographicBindingMethodsSupported,
     cryptographic_suites_supported: credentialSigningAlgValuesSupported,
     proof_types_supported: proofTypesSupported,
-    vct,
+    ...(vct && { vct }),
     ...(branding && { display: Array.isArray(branding) ? branding : [branding] }),
     claims: schemaToClaims(schema)
   }
 }
 
-export const updateOid4vciMetadata = async (credentialName: string, credentialConfiguration: CredentialConfigurationSupportedV1_0_15): Promise<void> => {
+export const updateOid4vciMetadata = async (identifier: string, credentialConfiguration: CredentialConfigurationSupportedV1_0_15): Promise<void> => {
   const metadata = await agent.oid4vciStoreGetMetadata({metadataType: 'issuer', correlationId: NEXT_PUBLIC_ISSUER_CORRELATION_ID})
-  const name = credentialName.trim().toLowerCase().replace(/\s+/g, "-")
 
   if (metadata) {
     return agent.oid4vciStorePersistMetadata({
@@ -87,7 +88,7 @@ export const updateOid4vciMetadata = async (credentialName: string, credentialCo
         ...metadata,
         credential_configurations_supported: {
           ...metadata.credential_configurations_supported,
-          [name]: credentialConfiguration
+          [identifier]: credentialConfiguration
         }
       }
     })
