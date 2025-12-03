@@ -54,13 +54,15 @@ export function schemaToClaims(
 }
 
 export const toCredentialConfiguration = (args: ToCredentialConfigurationArgs): CredentialConfigurationSupportedV1_0_15 => {
-  const {schema, branding, options} = args
+  const {identifier,schema, branding, options} = args
   const {
+    format,
     scope,
     cryptographicBindingMethodsSupported = ['did:web', 'did:jwk'],
     credentialSigningAlgValuesSupported = ['ES256'],
     proofTypesSupported,
-  } = options
+
+  } = args.options
 
   const baseConfig = {
     scope,
@@ -72,7 +74,7 @@ export const toCredentialConfiguration = (args: ToCredentialConfigurationArgs): 
   }
 
   if (options.format === 'dc+sd-jwt' || options.format === 'vc+sd-jwt') {
-    return {format: 'dc+sd-jwt', vct: options.vct, ...baseConfig}
+    return {format: 'dc+sd-jwt', vct: args.options.vct, ...baseConfig}
   }
 
   if (options.format === 'jwt_vc_json' || options.format === 'jwt_vc') {
@@ -90,13 +92,12 @@ export const toCredentialConfiguration = (args: ToCredentialConfigurationArgs): 
   throw Error(`Unsupported format type ${options.format}`);
 }
 
-export const updateOid4vciMetadata = async (credentialName: string, credentialConfiguration: CredentialConfigurationSupportedV1_0_15): Promise<void> => {
+export const updateOid4vciMetadata = async (identifier: string, credentialConfiguration: CredentialConfigurationSupportedV1_0_15): Promise<void> => {
   const issuerCorrelationId = getIssuerCorrelationId()
   if(!issuerCorrelationId) {
     return Promise.reject('Env var BROWSER_PUBLIC_ISSUER_CORRELATION_ID is missing')
   }
   const metadata = await getAgent().oid4vciStoreGetMetadata({metadataType: 'issuer', correlationId: issuerCorrelationId})
-  const name = credentialName.trim().toLowerCase().replace(/\s+/g, "-")
 
   if (metadata) {
     return await getAgent().oid4vciStorePersistMetadata({
@@ -106,11 +107,11 @@ export const updateOid4vciMetadata = async (credentialName: string, credentialCo
         ...metadata,
         credential_configurations_supported: {
           ...metadata.credential_configurations_supported,
-          [name]: credentialConfiguration
+          [identifier]: credentialConfiguration
         }
       }
     })
-    .then(() => getAgent().oid4vciRefreshInstanceMetadata({ credentialIssuer: getIssuerCorrelationId() }))
-    .catch((e) => console.error('Failed to update oid4vci metadata', e))
+    .then(() => getAgent().oid4vciRefreshInstanceMetadata({ credentialIssuer: NEXT_PUBLIC_ISSUER_CORRELATION_ID }))
+    .catch((e) => Promise.reject(Error(`Failed to update oid4vci metadata. ${e.message}`)))
   }
 }

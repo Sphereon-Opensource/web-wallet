@@ -5,6 +5,7 @@ import {
 import {CredentialSchema} from '@/src/types'
 
 export type ToCredentialConfigurationArgs = {
+  identifier: string
   schema: CredentialSchema
   options: CredentialConfigurationOptions
   branding?: CredentialsSupportedDisplay[] | undefined
