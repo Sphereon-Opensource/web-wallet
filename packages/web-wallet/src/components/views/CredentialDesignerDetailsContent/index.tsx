@@ -45,8 +45,8 @@ const CredentialDesignerDetailsContent: FC = (): ReactElement => {
     try {
       const data = JSON.parse(content)
 
-      if (typeof data["display_name"] !== "string" || data["display_name"].trim() === "") {
-        return 'Missing display_name'
+      if (typeof data["identifier"] !== "string" || data["identifier"].trim() === "") {
+        return 'Missing identifier'
       }
 
       if (typeof data["format"] !== "string" || data["format"].trim() === "") {
