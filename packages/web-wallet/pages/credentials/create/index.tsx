@@ -9,6 +9,7 @@ import QRCodeModal, {QRValueResult} from 'src/components/modals/QRCodeModal'
 import {createCredentialPayloadWithSchema, qrValueGenerator} from '@/src/services/credentials/CredentialService'
 import {staticPropsWithSST} from '@/src/i18n/server'
 import WalletURLModal from '@components/modals/WalletURLModal'
+import {CredentialGenerationMethod} from '@typings'
 
 const CredentialsCreatePage: FC = () => {
   const translate = useTranslate()
@@ -53,7 +54,10 @@ const CredentialsCreatePage: FC = () => {
         ...credentialFormData.data
       },
     })
-    return qrValueGenerator({credentialPayload: payloadWithSchema.payload}, {credentials: credentialType.credentialType})
+    return qrValueGenerator({
+      credentialPayload: payloadWithSchema.payload,
+      credentialGenerationMethod: 'JSON_SCHEMA',
+    }, {credentials: credentialType.credentialType})
   }
 
   return (

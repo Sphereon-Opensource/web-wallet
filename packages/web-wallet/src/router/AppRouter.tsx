@@ -51,6 +51,7 @@ import {
   AssetCreateSubRoute,
   ContactRoute,
   CreateIdentifierRoute,
+  CredentialDesignerRoute,
   EditIdentifierRoute,
   IssueCredentialRoute,
   KeyManagementRoute,
@@ -59,7 +60,6 @@ import {
   OID4VCIRoute,
   OrganizationContactCreationRoute,
   SIOPV2Route,
-  CredentialDesignerRoute,
 } from '@typings'
 import CreateIdentifierKeysContent from '@components/views/CreateIdentifierKeysContent'
 import CreateIdentifierAddServiceEndpointContent from '@components/views/CreateIdentifierAddServiceEndpointContent'
@@ -73,13 +73,14 @@ import {NavigationProvider} from './NavigationContext'
 import {CredentialRole} from '@sphereon/ssi-types'
 import ShowContactDetails from '@/pages/contacts/show'
 import EditIdentifierContent from '@components/views/EditIdentifierContent'
+import EditIdentifierKeysContent from '@components/views/EditIdentifierKeysContent'
 import {IdentifiersEditContextProvider} from '@machines/identifiers/identifiersEditStateNavigation'
 import IdentifierEditPage from '@/pages/keyManagement/identifiers/edit'
 import CredentialDesignerContextProvider from '@machines/credentials/credentialDesignerStateNavigation'
 import CredentialDesignerCreatePage from '@/pages/credentials/design/create'
 import CredentialDesignerClaimsContent from '@components/views/CredentialDesignerClaimsContent'
-import CredentialDesignerDetailsContent from '@components/views/CredentialDesignerDetailsContent';
-import CredentialDesignerVisualDesignContent from '@components/views/CredentialDesignerVisualDesignContent';
+import CredentialDesignerDetailsContent from '@components/views/CredentialDesignerDetailsContent'
+import CredentialDesignerVisualDesignContent from '@components/views/CredentialDesignerVisualDesignContent'
 
 const KeycloakLoginPage = (props: PropsWithChildren<any>) => {
   const {mutate: login} = useLogin()
@@ -227,7 +228,8 @@ const AppRouter: React.FC = () => {
                     <IdentifierEditPage />
                   </IdentifiersEditContextProvider>
                 }>
-                <Route path={EditIdentifierRoute.KEYS} element={<EditIdentifierContent />} />
+                <Route path={EditIdentifierRoute.ALIAS} element={<EditIdentifierContent />} />
+                <Route path={EditIdentifierRoute.KEYS} element={<EditIdentifierKeysContent />} />
                 <Route path={EditIdentifierRoute.SERVICE_ENDPOINTS}
                        element={<CreateIdentifierAddServiceEndpointContent mode="edit"/>} />
               </Route>

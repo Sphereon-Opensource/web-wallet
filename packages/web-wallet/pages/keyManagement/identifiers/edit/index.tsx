@@ -27,13 +27,18 @@ const IdentifierEditPage: FC = () => {
 
   const steps = [
     {
-      title: translate('create_identifier_add_keys_step_title'),
-      description: translate('create_identifier_add_keys_step_description'),
+      title: translate('edit_identifier_alias_step_title'),
+      description: translate('edit_identifier_alias_step_description'),
       required: true,
     },
     {
-      title: translate('create_identifier_add_service_endpoint_step_title'),
-      description: translate('create_identifier_add_service_endpoint_step_description'),
+      title: translate('edit_identifier_keys_step_title'),
+      description: translate('edit_identifier_keys_step_description'),
+      required: true,
+    },
+    {
+      title: translate('edit_identifier_service_endpoints_step_title'),
+      description: translate('edit_identifier_service_endpoints_step_description'),
       required: false,
     },
   ]
