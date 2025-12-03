@@ -95,6 +95,15 @@ const CreateIdentifierKeysContent: FC = (): ReactElement => {
     const newKeys = [...keys, newKey]
     console.log(`Updated keys array:`, newKeys)
     onSetKeys(newKeys)
+
+    // Reset form fields but keep the action field to avoid middleware re-initialization
+    await onKeyDataChange({
+      data: {
+        action: 'generate', // Keep action to prevent middleware from resetting
+        purposes: ['assertionMethod', 'authentication'],
+      },
+      errors: [],
+    })
   }
 
   const onRemoveKey = async (id: string): Promise<void> => {
