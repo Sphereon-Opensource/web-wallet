@@ -104,7 +104,7 @@ export async function getContactType(typeName: string): Promise<PartyType> {
 }
 
 async function storeParty(data: AddNaturalPersonArgs): Promise<Party> {
-  const response = await fetch(`${getAgentBaseUrl}/parties`, {
+  const response = await fetch(`${getAgentBaseUrl()}/parties`, {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify(data),
