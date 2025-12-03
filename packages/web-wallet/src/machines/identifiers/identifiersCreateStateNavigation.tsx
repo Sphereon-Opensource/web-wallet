@@ -141,17 +141,19 @@ export const IdentifiersCreateContextProvider = (props: any): JSX.Element => {
     },
   ) => {
     const newState = defaultReducer(state, action)
-    if (!state?.data) {
+    // Only initialize defaults if the data object doesn't have the type field yet
+    // This prevents infinite re-render loops by not modifying data that's already initialized
+    if (newState?.data && !newState.data.hasOwnProperty('type')) {
       getAgent().didManagerGetProviders().then(method => {
         const agentMethods = method.map(did => did.replace('did:', '').toLowerCase())
-        const schemaMethods = state.schema?.properties?.['method']?.oneOf?.map(oneOf => oneOf.const.toLowerCase() as string) ?? []
+        const schemaMethods = newState.schema?.properties?.['method']?.oneOf?.map(oneOf => oneOf.const.toLowerCase() as string) ?? []
         console.log(`TODO: filter against Agent methods: ${agentMethods.join(',')}, schema: ${schemaMethods.join(',')}`)
         // TODO: Filter out the schema method to the agent enabled methods
       })
       const props = newState?.schema?.properties
       // Unfortunately setting the default value in the schema does not work for the first entry. Could be because of the name: 'type'
       newState.data = {
-        ...newState?.data,
+        ...newState.data,
         type: 'did',
         method: props?.method?.default,
         network: props?.['network']?.default,
