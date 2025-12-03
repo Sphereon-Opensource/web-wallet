@@ -69,15 +69,14 @@ export const toCredentialConfiguration = (args: ToCredentialConfigurationArgs): 
     cryptographic_binding_methods_supported: cryptographicBindingMethodsSupported,
     cryptographic_suites_supported: credentialSigningAlgValuesSupported,
     proof_types_supported: proofTypesSupported,
-    vct,
+    ...(vct && { vct }),
     ...(branding && { display: Array.isArray(branding) ? branding : [branding] }),
     claims: schemaToClaims(schema)
   }
 }
 
-export const updateOid4vciMetadata = async (credentialName: string, credentialConfiguration: CredentialConfigurationSupportedV1_0_15): Promise<void> => {
+export const updateOid4vciMetadata = async (identifier: string, credentialConfiguration: CredentialConfigurationSupportedV1_0_15): Promise<void> => {
   const metadata = await agent.oid4vciStoreGetMetadata({metadataType: 'issuer', correlationId: NEXT_PUBLIC_ISSUER_CORRELATION_ID})
-  const name = credentialName.trim().toLowerCase().replace(/\s+/g, "-")
 
   if (metadata) {
     return agent.oid4vciStorePersistMetadata({
@@ -87,7 +86,7 @@ export const updateOid4vciMetadata = async (credentialName: string, credentialCo
         ...metadata,
         credential_configurations_supported: {
           ...metadata.credential_configurations_supported,
-          [name]: credentialConfiguration
+          [identifier]: credentialConfiguration
         }
       }
     })

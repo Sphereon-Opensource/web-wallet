@@ -1,7 +1,7 @@
 import {CredentialSchema, CredentialUISchema} from '@/src/types'
 
 export type StoreCredentialSchemaArgs = {
-  credentialName: string
+  identifier: string
   credentialFormat: string
   schema: CredentialSchema
   uiSchema: CredentialUISchema | Array<CredentialUISchema>

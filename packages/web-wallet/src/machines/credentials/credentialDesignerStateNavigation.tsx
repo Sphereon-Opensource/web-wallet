@@ -188,7 +188,7 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
       await buildCredentialSchemas(credentialDesignerClaimsFormData.data)
         .then(buildResult => {
           storeCredentialSchema({
-            credentialName: credentialDesignerDetailsFormData.data.display_name,
+            identifier: credentialDesignerDetailsFormData.data.identifier,
             credentialFormat: credentialDesignerDetailsFormData.data.format,
             schema: buildResult.schema,
             uiSchema: buildResult.uiSchema,
@@ -212,7 +212,7 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
                 proofTypesSupported: credentialDesignerDetailsFormData.data.proof_types_supported,
               }
             })
-            void updateOid4vciMetadata(credentialDesignerDetailsFormData.data.display_name, credentialConfiguration)
+            void updateOid4vciMetadata(credentialDesignerDetailsFormData.data.identifier, credentialConfiguration)
           })
         })
         .then(() => navigate(MainRoute.CREDENTIALS)) // TODO when we have a credential design overview, we should navigate there
@@ -335,10 +335,10 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
   }
 
   const storeCredentialSchema = async (args: StoreCredentialSchemaArgs): Promise<void> => {
-    const {credentialName, credentialFormat, schema, uiSchema, branding} = args
+    const {identifier, credentialFormat, schema, uiSchema, branding} = args
     await mutateAsync({
       values: {
-        credentialName,
+        identifier,
         credentialFormat,
         schema,
         uiSchema,
