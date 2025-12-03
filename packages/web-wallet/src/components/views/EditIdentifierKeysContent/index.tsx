@@ -1,4 +1,4 @@
-import React, {FC, ReactElement} from 'react'
+import React, {FC, ReactElement, useMemo} from 'react'
 import {v4 as uuidv4} from 'uuid'
 import {useTranslate, useList} from '@refinedev/core'
 import {ButtonIcon} from '@sphereon/ui-components.core'
@@ -25,7 +25,9 @@ const EditIdentifierKeysContent: FC = (): ReactElement => {
     isLoading,
     identifier,
   } = useIdentifiersEditContext()
-  const ajv = createAjv({useDefaults: 'empty', coerceTypes: true})
+
+  // Memoize ajv instance to prevent re-creation on every render
+  const ajv = useMemo(() => createAjv({useDefaults: 'empty', coerceTypes: true}), [])
 
   // Fetch available keys from the key manager
   const {data: keysData} = useList<ManagedKeyInfo>({
