@@ -208,7 +208,7 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
                 format: credentialDesignerDetailsFormData.data.format,
                 scope: credentialDesignerDetailsFormData.data.scope,
                 credentialSigningAlgValuesSupported: credentialDesignerDetailsFormData.data.credential_signing_alg_values_supported,
-                vct: credentialDesignerDetailsFormData.data.vct,
+                vct: credentialDesignerDetailsFormData.data.vct ?? credentialDesignerDetailsFormData.data.identifier,
                 cryptographicBindingMethodsSupported: credentialDesignerDetailsFormData.data.cryptographic_binding_methods_supported,
                 proofTypesSupported: credentialDesignerDetailsFormData.data.proof_types_supported,
               }
