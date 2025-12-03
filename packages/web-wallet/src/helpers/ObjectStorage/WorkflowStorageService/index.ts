@@ -105,7 +105,7 @@ export class WorkflowStorageService {
       type: args.documentDescriptor.type,
       correlation_id: args.documentDescriptor.correlationId ?? uuid(),
     }
-    const docResult = await supabaseServiceClient.from('workflow_document').insert(documentInfo).select('id').single<{
+    const docResult = await supabaseServiceClient().from('workflow_document').insert(documentInfo).select('id').single<{
       id: string
     }>()
     if (docResult.error) {
@@ -124,7 +124,7 @@ export class WorkflowStorageService {
 
   async getStorageInfo(args: {correlationId: string}) {
     // todo: start working via object id that we also stored, so we can move files without impact
-    const queryResult = await supabaseServiceClient
+    const queryResult = await supabaseServiceClient()
       .from('workflow_document')
       .select('*')
       .eq('correlation_id', args.correlationId)

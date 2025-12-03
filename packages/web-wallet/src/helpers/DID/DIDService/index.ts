@@ -1,24 +1,30 @@
 import {DIDRegistrationResult, UniRegistrar} from '@sphereon/did-uni-client'
-import {DID_API_CREATE_DID_URL, DID_API_DEACTIVATE_DID_URL} from '../../../agent/environment'
+import {getDidApiCreateDidUrl, getDidApiDeactivateUrl} from '../../../agent/environment'
 import {EventLogger, EventLoggerBuilder} from '@sphereon/ssi-sdk.core'
 import {DefaultActionSubType, LogLevel, ActionType, System, InitiatorType, SubSystem, LoggingEventType} from '@sphereon/ssi-types'
 
-import {agentContext} from '@agent'
+import {getAgentContext} from '@agent'
 import {parseDid} from '@sphereon/ssi-types'
 import {IdentifierMethod} from '@typings'
 import {IDIDState} from '@sphereon/did-uni-client/dist/types/types'
 
-const logger: EventLogger = new EventLoggerBuilder()
-  .withContext(agentContext)
-  .withLogLevel(LogLevel.INFO)
-  .withSystem(System.IDENTITY)
-  .withSubSystem(SubSystem.DID_PROVIDER)
-  .withInitiatorType(InitiatorType.SYSTEM)
-  .build()
+let _eventLogger: EventLogger | undefined
+const getLogger = (): EventLogger => {
+  if (!_eventLogger) {
+    _eventLogger = new EventLoggerBuilder()
+      .withContext(getAgentContext())
+      .withLogLevel(LogLevel.INFO)
+      .withSystem(System.IDENTITY)
+      .withSubSystem(SubSystem.DID_PROVIDER)
+      .withInitiatorType(InitiatorType.SYSTEM)
+      .build()
+  }
+  return _eventLogger
+}
 
 export const createDID = async (opts?: {didMethod: string}): Promise<string> => {
   const {didMethod} = {...opts}
-  const uniRegistrar = await new UniRegistrar().setCreateURL(DID_API_CREATE_DID_URL).create(didMethod ?? 'jwk', {
+  const uniRegistrar = await new UniRegistrar().setCreateURL(getDidApiCreateDidUrl()).create(didMethod ?? 'jwk', {
     options: {
       storeSecrets: true,
     },
@@ -26,7 +32,7 @@ export const createDID = async (opts?: {didMethod: string}): Promise<string> => 
 
   const did = uniRegistrar.didState.didDocument!.id
 
-  await logger.logEvent({
+  await getLogger().logEvent({
     type: LoggingEventType.AUDIT,
     data: {
       description: `did ${parseDid(did).method} created`,
@@ -41,7 +47,7 @@ export const createDID = async (opts?: {didMethod: string}): Promise<string> => 
 }
 
 export const deactivateDid = async (did: string): Promise<string> => {
-  const result: DIDRegistrationResult = await new UniRegistrar().setDeactivateURL(DID_API_DEACTIVATE_DID_URL).deactivate(did, {
+  const result: DIDRegistrationResult = await new UniRegistrar().setDeactivateURL(getDidApiDeactivateUrl()).deactivate(did, {
     options: {
       storeSecrets: true,
     },

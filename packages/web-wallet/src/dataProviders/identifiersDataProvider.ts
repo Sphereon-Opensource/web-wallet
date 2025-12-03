@@ -15,12 +15,13 @@ import {
   UpdateResponse,
 } from '@refinedev/core'
 import {DID_PREFIX} from '@sphereon/ssi-sdk-ext.did-utils'
-import agent, {agentContext} from '@agent'
+import {getAgent, getAgentContext} from '@agent'
 import {IdentifierKey, IdentifierServiceEndpoint, KeyManagementIdentifier, KeyManagementSystem} from '@typings'
 import {IIdentifier} from '@veramo/core'
 import type {EbsiAccessTokenOpts, EbsiEnvironment} from '@sphereon/ssi-sdk.ebsi-support'
 import {generateEbsiMethodSpecificId} from '@sphereon/ssi-sdk.ebsi-support'
 import {CredentialRole} from '@sphereon/ssi-types'
+import {getEnv} from '@/src/services/env'
 
 // TODO CWALL-244 further implement
 
@@ -38,11 +39,155 @@ export type UpdateVariables = {
   alias?: string
   selectedKeyId?: string
   services?: Array<IdentifierServiceEndpoint>
+  keys?: Array<IdentifierKey>
 }
 
 type IdentifierRecord = BaseRecord & IIdentifier
 
 const asIdentifierData = <T extends BaseRecord>(data: IdentifierRecord): T => (data as unknown as T)
+
+const updateAlias = async (did: string, newAlias: string): Promise<void> => {
+  try {
+    await getAgent().didManagerSetAlias({did, alias: newAlias})
+  } catch (error) {
+    console.error('Error updating alias:', error)
+    return Promise.reject(Error(`Failed to update alias: ${error}`))
+  }
+}
+
+const replaceIdentifierKey = async (did: string, currentKeys: any[], newKeyId: string): Promise<void> => {
+  try {
+    // Remove existing keys from the identifier
+    for (const key of currentKeys) {
+      console.log(`Removing key ${key.kid}`)
+      await getAgent().didManagerRemoveKey({
+        did,
+        kid: key.kid,
+        options: {},
+      })
+    }
+
+    // Get the new key from the key manager
+    const key = await getAgent().keyManagerGet({kid: newKeyId})
+    if (!key) {
+      return Promise.reject(Error(`Key with kid ${newKeyId} not found in key manager`))
+    }
+
+    // Add the selected key to the identifier's DID document
+    await getAgent().didManagerAddKey({
+      did,
+      key,
+      options: {},
+    })
+
+    // TODO SSISDK-80
+    console.warn('TODO: controllerKeyId not updated - selected key will not persist across reloads')
+  } catch (error) {
+    console.error('Error replacing key:', error)
+    return Promise.reject(Error(`Failed to replace key: ${error}`))
+  }
+}
+
+const updateIdentifierKeys = async (did: string, currentKeys: any[], newKeys: IdentifierKey[]): Promise<void> => {
+  try {
+    // Get the list of current key kids
+    const currentKeyKids = new Set(currentKeys.map(k => k.kid))
+
+    // Get the list of new key kids (only those with kid set, meaning they already exist)
+    const newKeyKids = new Set(newKeys.filter(k => k.kid).map(k => k.kid))
+
+    // Keys to remove: in current but not in new
+    const keysToRemove = currentKeys.filter(k => !newKeyKids.has(k.kid))
+
+    // Keys to add: in new but not in current (or keys to generate)
+    const keysToAdd = newKeys.filter(k => !k.readonly || !currentKeyKids.has(k.kid!))
+
+    // Remove keys that are no longer needed
+    for (const key of keysToRemove) {
+      console.log(`Removing key ${key.kid}`)
+      await getAgent().didManagerRemoveKey({
+        did,
+        kid: key.kid,
+        options: {},
+      })
+    }
+
+    // Add new keys
+    for (const identifierKey of keysToAdd) {
+      if (identifierKey.kid) {
+        // Existing key - fetch from key manager and add to identifier
+        const key = await getAgent().keyManagerGet({kid: identifierKey.kid})
+        if (!key) {
+          console.warn(`Key with kid ${identifierKey.kid} not found in key manager, skipping`)
+          continue
+        }
+
+        console.log(`Adding existing key ${identifierKey.kid} to identifier`)
+        await getAgent().didManagerAddKey({
+          did,
+          key,
+          options: {},
+        })
+      } else {
+        // New key to generate
+        console.log(`Generating and adding new key of type ${identifierKey.type}`)
+
+        // Create the key first
+        const newKey = await getAgent().keyManagerCreate({
+          kms: 'local',
+          type: identifierKey.type,
+          meta: {
+            purposes: identifierKey.purposes,
+            alias: identifierKey.alias,
+          },
+        })
+
+        // Then add it to the identifier
+        await getAgent().didManagerAddKey({
+          did,
+          key: newKey,
+          options: {},
+        })
+      }
+    }
+
+    console.log(`Updated keys for identifier ${did}`)
+  } catch (error) {
+    console.error('Error updating identifier keys:', error)
+    return Promise.reject(Error(`Failed to update identifier keys: ${error}`))
+  }
+}
+
+const replaceServices = async (did: string, currentServices: any[], newServices: IdentifierServiceEndpoint[]): Promise<void> => {
+  try {
+    // Remove all existing services
+    if (currentServices && currentServices.length > 0) {
+      for (const service of currentServices) {
+        await getAgent().didManagerRemoveService({
+          did,
+          id: service.id,
+        })
+      }
+    }
+
+    // Add new services
+    console.log('updateVars.services', newServices)
+    for (const service of newServices) {
+      console.log(`didManagerAddService Service ID: ${service.id}`)
+      await getAgent().didManagerAddService({
+        did,
+        service: {
+          id: service.id,
+          type: service.type,
+          serviceEndpoint: service.serviceEndpoint,
+        },
+      })
+    }
+  } catch (error) {
+    console.error('Error updating services:', error)
+    return Promise.reject(Error(`Failed to update services: ${error}`))
+  }
+}
 
 export const identifiersDataProvider = (): DataProvider => ({
   getList: async <TData extends BaseRecord = BaseRecord>({
@@ -50,7 +195,7 @@ export const identifiersDataProvider = (): DataProvider => ({
                                                            pagination,
                                                            filters,
                                                          }: GetListParams): Promise<GetListResponse<TData>> => {
-    const identities: IIdentifier[] = await agent.didManagerFind()
+    const identities: IIdentifier[] = await getAgent().didManagerFind()
     const data: TData[] = identities.map(identity => ({...(identity as any)}))
     return {
       data,
@@ -61,7 +206,7 @@ export const identifiersDataProvider = (): DataProvider => ({
                                                           resource,
                                                           id,
                                                         }: GetOneParams): Promise<GetOneResponse<TData>> => {
-    const identities: IIdentifier[] = await agent.didManagerFind()
+    const identities: IIdentifier[] = await getAgent().didManagerFind()
     const identity = identities.find(i => i.did === id)
 
     if (!identity) {
@@ -78,8 +223,9 @@ export const identifiersDataProvider = (): DataProvider => ({
                                                                                           variables,
                                                                                           meta,
                                                                                         }: CreateParams<TVars>): Promise<CreateResponse<TData>> => {
-    const {kms = KeyManagementSystem.LOCAL, keys = [], method, identifier: kmIdentifier} = variables
-    const clientId = process?.env?.NEXT_PUBLIC_CLIENT_ID ?? `${window.location.protocol}//${window.location.hostname}`
+    const {keys = [], method, identifier: kmIdentifier} = variables
+    let {kms = KeyManagementSystem.LOCAL} = variables
+    const clientId = getEnv('BROWSER_PUBLIC_CLIENT_ID') ?? `${window.location.protocol}//${window.location.hostname}`
     const network = kmIdentifier?.network
     const ebsi = kmIdentifier?.ebsi
     let alias = variables.alias
@@ -111,15 +257,36 @@ export const identifiersDataProvider = (): DataProvider => ({
         alias += suffix
         console.log(`DID Web: ${alias}, path: ${path}`)
       }
-      options['keys'] = keys.map(idKey => {
-        return {
-          key: {
+
+      // Process keys - fetch existing ones or prepare for generation
+      options['keys'] = await Promise.all(
+        keys.map(async (idKey: IdentifierKey) => {
+          // If the key has a kid, fetch it from the key manager
+          if (idKey.kid) {
+            const existingKey = await getAgent().keyManagerGet({kid: idKey.kid})
+            kms = existingKey.kms
+            return {
+              key: {
+                ...existingKey,
+                meta: {
+                  ...existingKey.meta,
+                  purposes: idKey.purposes,
+                },
+              },
+              type: existingKey.type,
+            }
+
+          }
+          // Otherwise, prepare for key generation
+          return {
+            key: {
+              type: idKey.type,
+              meta: {purposes: idKey.purposes},
+            },
             type: idKey.type,
-            meta: {purposes: idKey.purposes},
-          },
-          type: idKey.type,
-        }
-      })
+          }
+        }),
+      )
     } else if (method === 'ebsi') {
       const ebsiKeys = keys.filter(key => key.readonly)
       const methodSpecificId = generateEbsiMethodSpecificId()
@@ -163,7 +330,7 @@ export const identifiersDataProvider = (): DataProvider => ({
       }
     }
 
-    const identifier = await agent.didManagerCreate({
+    const identifier = await getAgent().didManagerCreate({
       kms,
       alias,
       provider: `${DID_PREFIX}${method}`,
@@ -173,13 +340,13 @@ export const identifiersDataProvider = (): DataProvider => ({
     if (method === 'ebsi' && ebsiLedgerOperation && ebsiAccessTokenOpts) {
       console.log(`EBSI Ledger operation`)
 
-      await agent.ebsiCreateDidOnLedger(
+      await getAgent().ebsiCreateDidOnLedger(
         {
           identifier,
           accessTokenOpts: ebsiAccessTokenOpts,
         },
         // @ts-ignore
-        agentContext,
+        getAgentContext(),
       )
     }
 
@@ -202,7 +369,7 @@ export const identifiersDataProvider = (): DataProvider => ({
                                                                            variables,
                                                                          }: UpdateParams<TVariables>): Promise<UpdateResponse<TData>> => {
     const updateVars = variables as UpdateVariables
-    const identities: IIdentifier[] = await agent.didManagerFind()
+    const identities: IIdentifier[] = await getAgent().didManagerFind()
     const identifier = identities.find(i => i.did === id)
 
     if (!identifier) {
@@ -214,99 +381,37 @@ export const identifiersDataProvider = (): DataProvider => ({
       return Promise.reject(Error(`Only did:web identifiers can be updated`))
     }
 
-    // Update alias if provided
-    if (updateVars.alias && updateVars.alias !== identifier.alias) {
-      try {
-        await agent.didManagerSetAlias({
-          did: identifier.did,
-          alias: updateVars.alias,
-        })
-      } catch (error) {
-        console.error('Error updating alias:', error)
-        return Promise.reject(Error(`Failed to update alias: ${error}`))
+    try {
+      // Update alias if provided
+      if (updateVars.alias && updateVars.alias !== identifier.alias) {
+        await updateAlias(identifier.did, updateVars.alias)
       }
-    }
 
-    if (updateVars.selectedKeyId) {
-      try {
-        // Remove existing keys from the identifier
-        for (const key of identifier.keys) {
-          console.log(`Removing key ${key.kid}`)
-          await agent.didManagerRemoveKey(
-            {
-              did: identifier.did,
-              kid: key.kid,
-              options: {},
-            },
-          )
-        }
-
-        // Get the new key from the key manager
-        const key = await agent.keyManagerGet({kid: updateVars.selectedKeyId})
-
-        if (!key) {
-          return Promise.reject(Error(`Key with kid ${updateVars.selectedKeyId} not found in key manager`))
-        }
-
-        // Add the selected key to the identifier's DID document
-        await agent.didManagerAddKey(
-          {
-            did: identifier.did,
-            key: key,
-            options: {},
-          },
-        )
-
-        // TODO
-        console.warn('TODO: controllerKeyId not updated - selected key will not persist across reloads')
-
-      } catch (error) {
-        console.error('Error replacing key:', error)
-        return Promise.reject(Error(`Failed to replace key: ${error}`))
+      // Update keys if provided
+      if (updateVars.keys) {
+        await updateIdentifierKeys(identifier.did, identifier.keys, updateVars.keys)
+      } else if (updateVars.selectedKeyId) {
+        // Legacy single key replacement
+        await replaceIdentifierKey(identifier.did, identifier.keys, updateVars.selectedKeyId)
       }
-    }
 
-    // Update services if provided
-    if (updateVars.services) {
-      try {
-        // Remove all existing services
-        if (identifier.services && identifier.services.length > 0) {
-          for (const service of identifier.services) {
-            await agent.didManagerRemoveService({
-              did: identifier.did,
-              id: service.id,
-            })
-          }
-        }
-
-        // Add new services
-        console.log('updateVars.services', updateVars.services)
-        for (const service of updateVars.services) {
-          console.log(`didManagerAddService Service ID: ${service.id}`)
-          await agent.didManagerAddService({
-            did: identifier.did,
-            service: {
-              id: service.id,
-              type: service.type,
-              serviceEndpoint: service.serviceEndpoint,
-            },
-          })
-        }
-      } catch (error) {
-        console.error('Error updating services:', error)
-        return Promise.reject(Error(`Failed to update services: ${error}`))
+      // Update services if provided
+      if (updateVars.services) {
+        await replaceServices(identifier.did, identifier.services || [], updateVars.services)
       }
+
+      const updatedIdentifier = await getAgent().didManagerGet({did: identifier.did})
+
+      // Update the controllerKeyId to match the selected key (legacy)
+      if (updateVars.selectedKeyId && updatedIdentifier.keys.length > 0) {
+        updatedIdentifier.controllerKeyId = updateVars.selectedKeyId
+      }
+
+      const result: IdentifierRecord = {...updatedIdentifier, id: updatedIdentifier.did}
+      return {data: asIdentifierData<TData>(result)}
+    } catch (error) {
+      return Promise.reject(Error(`Failed to update identifier: ${error}`))
     }
-
-    const updatedIdentifier = await agent.didManagerGet({did: identifier.did})
-
-    // Update the controllerKeyId to match the selected key
-    if (updateVars.selectedKeyId && updatedIdentifier.keys.length > 0) {
-      updatedIdentifier.controllerKeyId = updateVars.selectedKeyId
-    }
-
-    const result: IdentifierRecord = {...updatedIdentifier, id: updatedIdentifier.did}
-    return {data: asIdentifierData<TData>(result)}
   },
   deleteOne: async <TData extends BaseRecord = BaseRecord, TVariables = {}>({
                                                                               resource,

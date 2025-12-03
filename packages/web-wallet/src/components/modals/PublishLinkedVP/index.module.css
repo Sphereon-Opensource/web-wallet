@@ -1,0 +1,130 @@
+.overlay {
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(217, 217, 217, 0.6);
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+.container {
+    width: 652px;
+    max-height: 90vh;
+    border-radius: 24px;
+    background-color: #FBFBFB;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.headerContainer {
+    display: flex;
+    flex-direction: row;
+    padding-left: 49px;
+    padding-right: 15px;
+    padding-top: 16px;
+}
+
+.headerCaptionContainer {
+    flex-grow: 1;
+    padding-top: 34px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.headerCloseContainer {
+    padding-top: 0;
+}
+
+.closeButton {
+    display: flex;
+    aspect-ratio: 1;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+}
+
+.titleCaption {
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 36px;
+    color: #303030;
+}
+
+.subTitleCaption {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 0.14px;
+    color: #303030;
+}
+
+.contentContainer {
+    padding: 24px 49px 32px 49px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.formField {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+.formField input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.errorText {
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    color: #D74500;
+    margin-top: 4px;
+}
+
+.helperText {
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 0.12px;
+    color: #49454F;
+    margin-top: 8px;
+}
+
+.requirementsList {
+    margin: 8px 0 0 20px;
+    padding: 0;
+}
+
+.requirementsList li {
+    margin-bottom: 4px;
+}
+
+.buttonContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    justify-content: space-between;
+    margin-top: 16px;
+}
+
+.switchFormField {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 50%;
+}

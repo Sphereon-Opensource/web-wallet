@@ -1,98 +1,117 @@
 import {ClaimsDescriptionV1_0_15, CredentialConfigurationSupportedV1_0_15} from '@sphereon/oid4vci-common'
 import {CredentialSchema, ToCredentialConfigurationArgs} from '@typings'
-import agent from '@agent'
-import {NEXT_PUBLIC_ISSUER_CORRELATION_ID} from '@/src/agent/environment'
+import {getAgent} from '@agent'
+import {getIssuerCorrelationId} from '@/src/agent/environment'
 
 export function schemaToClaims(
   schema: CredentialSchema,
-  basePath: Array<string | number | null> = []
+  basePath: Array<string | number | null> = [],
 ): ClaimsDescriptionV1_0_15[] {
-  const claims: ClaimsDescriptionV1_0_15[] = [];
+  const claims: ClaimsDescriptionV1_0_15[] = []
 
-  if (schema.type === "object" && schema.properties) {
-    const required = new Set(schema.required ?? []);
+  if (schema.type === 'object' && schema.properties) {
+    const required = new Set(schema.required ?? [])
 
     for (const [key, propSchema] of Object.entries(schema.properties)) {
-      const nextPath = [...basePath, key];
+      const nextPath = [...basePath, key]
 
       const isLeaf =
         !propSchema.properties &&
         !propSchema.items &&
-        propSchema.type !== "object" &&
-        propSchema.type !== "array";
+        propSchema.type !== 'object' &&
+        propSchema.type !== 'array'
 
       if (isLeaf) {
         claims.push({
           path: nextPath,
           mandatory: required.has(key),
-          display: [{ name: key }],
-        });
+          display: [{name: key}],
+        })
       } else {
-        const nestedClaims = schemaToClaims(propSchema, nextPath);
+        const nestedClaims = schemaToClaims(propSchema, nextPath)
         nestedClaims.forEach((c) => {
-          if (required.has(key)) c.mandatory = true;
-        });
+          if (required.has(key)) c.mandatory = true
+        })
 
-        claims.push(...nestedClaims);
+        claims.push(...nestedClaims)
       }
     }
   }
 
-  if (schema.type === "array" && schema.items) {
+  if (schema.type === 'array' && schema.items) {
     if (Array.isArray(schema.items)) {
       schema.items.forEach((itemSchema, idx) => {
-        const nextPath = [...basePath, idx];
-        claims.push(...schemaToClaims(itemSchema, nextPath));
-      });
+        const nextPath = [...basePath, idx]
+        claims.push(...schemaToClaims(itemSchema, nextPath))
+      })
     } else {
-      const nextPath = [...basePath, 0];
-      claims.push(...schemaToClaims(schema.items, nextPath));
+      const nextPath = [...basePath, 0]
+      claims.push(...schemaToClaims(schema.items, nextPath))
     }
   }
 
-  return claims;
+  return claims
 }
 
 export const toCredentialConfiguration = (args: ToCredentialConfigurationArgs): CredentialConfigurationSupportedV1_0_15 => {
-  const { identifier, schema, branding } = args
+  const {identifier, schema, branding, options} = args
   const {
-    format,
     scope,
     cryptographicBindingMethodsSupported = ['did:web', 'did:jwk'],
     credentialSigningAlgValuesSupported = ['ES256'],
-    proofTypesSupported
+    proofTypesSupported,
+
   } = args.options
 
-  const vct = args.options.vct ?? ((format === 'dc+sd-jwt' || format === 'vc+sd-jwt') ? identifier : undefined)
-
-  return {
-    format,
+  const baseConfig = {
     scope,
     cryptographic_binding_methods_supported: cryptographicBindingMethodsSupported,
     cryptographic_suites_supported: credentialSigningAlgValuesSupported,
     proof_types_supported: proofTypesSupported,
-    ...(vct && { vct }),
-    ...(branding && { display: Array.isArray(branding) ? branding : [branding] }),
-    claims: schemaToClaims(schema)
+    ...(branding && {display: Array.isArray(branding) ? branding : [branding]}),
+    claims: schemaToClaims(schema),
   }
+
+  switch (options.format) {
+    case 'dc+sd-jwt':
+    case 'vc+sd-jwt':
+      return {format: options.format, vct: options.vct, ...baseConfig}
+    case 'jwt_vc_json':
+    case 'jwt_vc':
+      return {format: options.format, credential_definition: {type: options.types}, ...baseConfig}
+    case 'ldp_vc':
+    case 'jwt_vc_json-ld':
+      return {format: options.format, credential_definition: options.credentialDefinition, ...baseConfig}
+    case 'mso_mdoc':
+      return {format: options.format, doctype: options.doctype, ...baseConfig}
+  }
+
+  throw Error(`Unsupported format type ${options.format}`)
 }
 
 export const updateOid4vciMetadata = async (identifier: string, credentialConfiguration: CredentialConfigurationSupportedV1_0_15): Promise<void> => {
-  const metadata = await agent.oid4vciStoreGetMetadata({metadataType: 'issuer', correlationId: NEXT_PUBLIC_ISSUER_CORRELATION_ID})
+  const issuerCorrelationId = getIssuerCorrelationId()
+  if (!issuerCorrelationId) {
+    return Promise.reject('Env var BROWSER_PUBLIC_ISSUER_CORRELATION_ID is missing')
+  }
+  const metadata = await getAgent().oid4vciStoreGetMetadata({
+    metadataType: 'issuer',
+    correlationId: issuerCorrelationId,
+  })
 
   if (metadata) {
-    return agent.oid4vciStorePersistMetadata({
+    return await getAgent().oid4vciStorePersistMetadata({
       metadataType: 'issuer',
-      correlationId: NEXT_PUBLIC_ISSUER_CORRELATION_ID,
+      correlationId: issuerCorrelationId,
       metadata: {
         ...metadata,
         credential_configurations_supported: {
           ...metadata.credential_configurations_supported,
-          [identifier]: credentialConfiguration
-        }
-      }
+          [identifier]: credentialConfiguration,
+        },
+      },
     })
-    .then(() => agent.oid4vciRefreshInstanceMetadata({ credentialIssuer: NEXT_PUBLIC_ISSUER_CORRELATION_ID }))
-    .catch((e) => Promise.reject(Error(`Failed to update oid4vci metadata. ${e.message}`)))
+      .then(() => getAgent().oid4vciRefreshInstanceMetadata({credentialIssuer: getIssuerCorrelationId()}))
+      .catch((e) => Promise.reject(Error(`Failed to update oid4vci metadata. ${e.message}`)))
   }
 }

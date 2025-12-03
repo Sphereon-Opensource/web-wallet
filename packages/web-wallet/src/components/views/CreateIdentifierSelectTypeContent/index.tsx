@@ -1,4 +1,4 @@
-import React, {FC, ReactElement} from 'react'
+import React, {FC, ReactElement, useMemo} from 'react'
 import {useTranslate} from '@refinedev/core'
 import {FormView} from '@sphereon/ui-components.ssi-react'
 import addIdentifierSchema from '../../../../src/schemas/data/addIdentifierSchema.json' assert {type: 'json'}
@@ -10,7 +10,9 @@ import {createAjv} from '@jsonforms/core'
 const CreateIdentifierSelectTypeContent: FC = (): ReactElement => {
   const translate = useTranslate()
   const {onIdentifierDataChange, identifierData, identifierMiddleware} = useIdentifierCreateOutletContext()
-  const ajv = createAjv({ coerceTypes: true })
+
+  // Memoize ajv instance to prevent re-creation on every render
+  const ajv = useMemo(() => createAjv({coerceTypes: true}), [])
 
   return (
     <div className={style.container}>

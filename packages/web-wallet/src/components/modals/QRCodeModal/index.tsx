@@ -3,10 +3,9 @@ import style from './index.module.css'
 import CrossIcon from '@components/assets/icons/CrossIcon'
 import {useTranslate} from '@refinedev/core'
 import {PrimaryButton} from '@sphereon/ui-components.ssi-react'
-import {CreateElementArgs, QRType, URIData, ValueResult} from '@sphereon/ssi-sdk.qr-code-generator'
-import agent from '../../../agent'
+import {CreateElementArgs, QRRenderingProps, QRType, URIData, ValueResult} from '@sphereon/ssi-sdk.qr-code-generator'
+import {getAgent} from '../../../agent'
 import {RotateLoader} from 'react-spinners'
-import {QRRenderingProps} from '@sphereon/ssi-sdk.qr-code-generator'
 import Debug, {Debugger} from 'debug'
 
 const debug: Debugger = Debug('sphereon:ui-components:qr')
@@ -59,7 +58,7 @@ const QRCodeModal: FC<Props> = (props: Props): ReactElement => {
 
   useEffect(() => {
     const renderQRCode = () => {
-      agent
+      getAgent()
         .qrURIElement(createQRCodeElement())
         .then((code: ReactElement) => setQrCodeElement(code))
         .catch(error => {

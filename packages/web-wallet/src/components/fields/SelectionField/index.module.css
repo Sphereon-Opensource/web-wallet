@@ -39,7 +39,11 @@
     font-style: normal;
     font-weight: 600;
     line-height: normal;
-    color: #303030
+    color: #303030;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 490px;
 }
 
 .editButton {
@@ -76,5 +80,9 @@
     font-style: normal;
     font-weight: 400;
     line-height: normal;
-    color: #303030
+    color: #303030;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 490px;
 }

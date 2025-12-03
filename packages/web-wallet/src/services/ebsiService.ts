@@ -1,7 +1,8 @@
 import {CredentialRole} from '@sphereon/ssi-sdk.credential-store';
 import {EbsiAccessTokenOpts} from '@sphereon/ssi-sdk.ebsi-support/src/did/types';
-import agent from '@agent';
+import { getAgent } from '@agent';
 import {RegisterDidOnLedgerArgs} from '@typings';
+import {getEnv} from '@/src/services/env'
 
 export const registerDidEbsiOnLedger = async (args: RegisterDidOnLedgerArgs): Promise<void> => {
     const { credentialIssuer, did } = args
@@ -11,8 +12,8 @@ export const registerDidEbsiOnLedger = async (args: RegisterDidOnLedgerArgs): Pr
         return Promise.reject(Error(`Did ${did} is not a valid ebsi did`))
     }
 
-    const identifier  = await agent.didManagerGet({ did })
-    const clientId = process?.env?.NEXT_PUBLIC_CLIENT_ID ?? `${window.location.protocol}//${window.location.hostname}`
+    const identifier  = await getAgent().didManagerGet({ did })
+    const clientId = getEnv('BROWSER_PUBLIC_CLIENT_ID') ?? `${window.location.protocol}//${window.location.hostname}`
     const jwksUri = `${clientId}/.well-known/jwks/dids/${identifier.did}`
     const accessTokenOpts: EbsiAccessTokenOpts = {
         attestationToOnboardCredentialRole: CredentialRole.HOLDER,
@@ -23,7 +24,7 @@ export const registerDidEbsiOnLedger = async (args: RegisterDidOnLedgerArgs): Pr
         environment: 'conformance'// TODO we need to derive this from the identifier
     }
 
-    await agent.ebsiCreateDidOnLedger({
+    await getAgent().ebsiCreateDidOnLedger({
         identifier,
         accessTokenOpts
     })

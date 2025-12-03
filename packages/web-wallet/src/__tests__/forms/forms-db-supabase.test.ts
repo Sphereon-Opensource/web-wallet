@@ -44,31 +44,31 @@ describe('Forms related Database Operations', () => {
 
   afterAll(async () => {
     for (const value of formStepToSchemaDefRelations) {
-      await supabaseServiceClient.from('form_step_to_schema_definition').delete().match({
+      await supabaseServiceClient().from('form_step_to_schema_definition').delete().match({
         form_step_id: value.form_step_id,
         schema_definition_id: value.schema_definition_id,
       })
     }
     for (const value of formDefToFormStepRelations) {
-      await supabaseServiceClient.from('form_def_to_form_step').delete().match({
+      await supabaseServiceClient().from('form_def_to_form_step').delete().match({
         form_definition_id: value.form_definition_id,
         form_step_id: value.form_step_id,
       })
     }
     if (createdSchemaDefinitionDTO1 !== undefined) {
-      await supabaseServiceClient.from('schema_definition').delete().match({id: createdSchemaDefinitionDTO1.id})
+      await supabaseServiceClient().from('schema_definition').delete().match({id: createdSchemaDefinitionDTO1.id})
     }
     if (createdSchemaDefinitionDTO2 !== undefined) {
-      await supabaseServiceClient.from('schema_definition').delete().match({id: createdSchemaDefinitionDTO2.id})
+      await supabaseServiceClient().from('schema_definition').delete().match({id: createdSchemaDefinitionDTO2.id})
     }
     if (createdFormStep !== undefined) {
-      await supabaseServiceClient.from('form_step').delete().match({id: createdFormStep.id})
+      await supabaseServiceClient().from('form_step').delete().match({id: createdFormStep.id})
     }
     if (createdFormDefinitionDTO !== undefined) {
-      await supabaseServiceClient.from('form_definition').delete().match({id: createdFormDefinitionDTO.id})
+      await supabaseServiceClient().from('form_definition').delete().match({id: createdFormDefinitionDTO.id})
     }
     if (createdMachineDTO !== undefined) {
-      await supabaseServiceClient.from('machine').delete().match({id: createdMachineDTO.id})
+      await supabaseServiceClient().from('machine').delete().match({id: createdMachineDTO.id})
     }
   })
 
@@ -78,7 +78,7 @@ describe('Forms related Database Operations', () => {
       tenantId: uuidv4() as string,
       persistence: true,
     })
-    const insertResult = await supabaseServiceClient.from('machine').insert([actual.asEntity()]).select().single<MachineEntityType>()
+    const insertResult = await supabaseServiceClient().from('machine').insert([actual.asEntity()]).select().single<MachineEntityType>()
     expect(insertResult).toBeTruthy()
     expect(insertResult.status).toEqual(201)
     expect(insertResult.data).toBeTruthy()
@@ -101,7 +101,7 @@ describe('Forms related Database Operations', () => {
       tenantId: createdMachineDTO!.tenantId,
     })
 
-    const insertResult = await supabaseServiceClient
+    const insertResult = await supabaseServiceClient()
       .from('form_definition')
       .insert([formDefinitionDTO.asEntity()])
       .select()
@@ -125,7 +125,7 @@ describe('Forms related Database Operations', () => {
       tenantId: uuidv4(),
     })
 
-    const insertResult = await supabaseServiceClient.from('meta_data_set').insert([metaDataSet.asEntity()]).select().single()
+    const insertResult = await supabaseServiceClient().from('meta_data_set').insert([metaDataSet.asEntity()]).select().single()
 
     expect(insertResult.status).toEqual(201)
     expect(insertResult.data).toBeTruthy()
@@ -144,7 +144,7 @@ describe('Forms related Database Operations', () => {
       valueType: ValueType.Text,
     })
 
-    const metaDataKeyResult = await supabaseServiceClient
+    const metaDataKeyResult = await supabaseServiceClient()
       .from('meta_data_keys')
       .insert([metaDataKey.asEntity()])
       .select()
@@ -160,7 +160,7 @@ describe('Forms related Database Operations', () => {
       textValue: 'VerifyableCredential',
     })
 
-    const metaDataValueResult = await supabaseServiceClient
+    const metaDataValueResult = await supabaseServiceClient()
       .from('meta_data_values')
       .insert([metaDataValue.asEntity()])
       .select()
@@ -183,7 +183,7 @@ describe('Forms related Database Operations', () => {
       metaDataSet: createdMetaDataSetDTO,
     })
 
-    const insertResult = await supabaseServiceClient
+    const insertResult = await supabaseServiceClient()
       .from('schema_definition')
       .insert([schemaDefinition.asEntity()])
       .select()
@@ -211,7 +211,7 @@ describe('Forms related Database Operations', () => {
       metaDataSet: createdMetaDataSetDTO,
     })
 
-    const insertResult = await supabaseServiceClient
+    const insertResult = await supabaseServiceClient()
       .from('schema_definition')
       .insert([schemaDefinition.asEntity()])
       .select()
@@ -240,7 +240,7 @@ describe('Forms related Database Operations', () => {
         order: 1,
       }),
       formStepDTO = formStep.asEntity()
-    const insertFormDefToFormStepResult = await supabaseServiceClient.from('form_step').insert([formStepDTO]).select().single<FormStepEntityType>()
+    const insertFormDefToFormStepResult = await supabaseServiceClient().from('form_step').insert([formStepDTO]).select().single<FormStepEntityType>()
     expect(insertFormDefToFormStepResult.status).toEqual(201)
     expect(insertFormDefToFormStepResult.data).toBeTruthy()
 
@@ -256,7 +256,7 @@ describe('Forms related Database Operations', () => {
       form_definition_id: createdFormDefinitionDTO!.id!,
       form_step_id: createdFormStep.id,
     })
-    const formDefToFormStepResult = await supabaseServiceClient
+    const formDefToFormStepResult = await supabaseServiceClient()
       .from('form_def_to_form_step')
       .insert([formDefToFormStepEntity])
       .select()
@@ -276,7 +276,7 @@ describe('Forms related Database Operations', () => {
       form_step_id: createdFormStep!.id!,
       schema_definition_id: createdSchemaDefinitionDTO1.id,
     })
-    let formStepToSchemaDefResult = await supabaseServiceClient
+    let formStepToSchemaDefResult = await supabaseServiceClient()
       .from('form_step_to_schema_definition')
       .insert([formStepToSchemaDefEntity])
       .select()
@@ -295,7 +295,7 @@ describe('Forms related Database Operations', () => {
       form_step_id: createdFormStep!.id!,
       schema_definition_id: createdSchemaDefinitionDTO2.id,
     })
-    formStepToSchemaDefResult = await supabaseServiceClient
+    formStepToSchemaDefResult = await supabaseServiceClient()
       .from('form_step_to_schema_definition')
       .insert([formStepToSchemaDefEntity])
       .select()
@@ -312,7 +312,7 @@ describe('Forms related Database Operations', () => {
   })
 
   test('Reload form definition entity', async () => {
-    const formDefResult = await supabaseServiceClient
+    const formDefResult = await supabaseServiceClient()
       .from('form_definition')
       .select(
         `*, machine!fk_machine(*),
@@ -337,7 +337,7 @@ describe('Forms related Database Operations', () => {
     expect(formStepDTO.tenantId).toEqual(createdMachineDTO?.tenantId)
 
     // Phase two, get schema definitions
-    const schemaDefsResult = await supabaseServiceClient
+    const schemaDefsResult = await supabaseServiceClient()
       .from('form_step_to_schema_definition')
       .select(
         `
