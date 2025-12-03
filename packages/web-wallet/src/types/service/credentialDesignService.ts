@@ -18,20 +18,27 @@ export type CredentialConfigurationOptionsCommon = {
   proofTypesSupported?: ProofTypesSupported
 }
 
-export type CredentialConfigurationOptions =
-  | (CredentialConfigurationOptionsCommon & {
-  format: 'dc+sd-jwt' | 'vc+sd-jwt'
-  vct: string
-})
-  | (CredentialConfigurationOptionsCommon & {
-  format: 'jwt_vc_json' | 'jwt_vc'
-  types: string[]
-})
-  | (CredentialConfigurationOptionsCommon & {
+export type SdJwtFormatOptions = CredentialConfigurationOptionsCommon & {
+  format: 'dc+sd-jwt' | 'vc+sd-jwt';
+  vct: string;
+};
+
+export type JsonLDFormatOptions = CredentialConfigurationOptionsCommon & {
   format: 'ldp_vc' | 'jwt_vc_json-ld'
   credentialDefinition: CredentialDefinitionJwtVcJsonLdAndLdpVcV1_0_15
-})
-  | (CredentialConfigurationOptionsCommon & {
+}
+
+export type JWTFormatOptions = CredentialConfigurationOptionsCommon & {
+  format: 'jwt_vc_json' | 'jwt_vc'
+  types: string[]
+}
+
+export type MdocFormatOptions = CredentialConfigurationOptionsCommon & {
   format: 'mso_mdoc'
   doctype: string
-})
+}
+export type CredentialConfigurationOptions =
+  | SdJwtFormatOptions
+  | JsonLDFormatOptions
+  | JWTFormatOptions
+  | MdocFormatOptions
