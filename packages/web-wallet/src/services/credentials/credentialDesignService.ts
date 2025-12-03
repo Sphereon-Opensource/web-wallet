@@ -54,15 +54,17 @@ export function schemaToClaims(
 }
 
 export const toCredentialConfiguration = (args: ToCredentialConfigurationArgs): CredentialConfigurationSupportedV1_0_15 => {
-  const { schema, branding } = args
+  const { identifier, schema, branding } = args
   const {
     format,
     scope,
     cryptographicBindingMethodsSupported = ['did:web', 'did:jwk'],
     credentialSigningAlgValuesSupported = ['ES256'],
-    proofTypesSupported,
-    vct,
+    proofTypesSupported
   } = args.options
+
+  const vct = args.options.vct ?? ((format === 'dc+sd-jwt' || format === 'vc+sd-jwt') ? identifier : undefined)
+
   return {
     format,
     scope,

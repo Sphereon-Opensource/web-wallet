@@ -201,6 +201,7 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
           })
           .then(() => {
             const credentialConfiguration = toCredentialConfiguration({
+              identifier: credentialDesignerDetailsFormData.data.identifier,
               schema: buildResult.schema,
               branding: credentialDesignerVisualDesignFormData.data,
               options: {
