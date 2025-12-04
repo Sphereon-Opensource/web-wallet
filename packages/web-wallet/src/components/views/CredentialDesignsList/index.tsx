@@ -37,11 +37,11 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
   })
 
   const onDelete = async (data: Row<CredentialDesignTableItem>): Promise<void> => {
-    // TODO implement
+    // TODO SSISDK-92 implement
   }
 
   const onShow = async (data: Row<CredentialDesignTableItem>): Promise<void> => {
-    // TODO implement
+    // TODO SSISDK-93 implement
   }
 
   const onCreate = async (): Promise<void> => {
