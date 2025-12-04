@@ -1,5 +1,5 @@
 // import {DevtoolsProvider, DevtoolsPanel} from '@refinedev/devtools'
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import {AppProps} from 'next/app'
 import type {NextPage} from 'next'
 import {SessionProvider, useSession} from 'next-auth/react'
@@ -25,6 +25,7 @@ import styles from './App.module.css'
 import '../app/constants'
 // initialize i18n
 import '../src/i18n/client'
+import {envManager, getEnv} from '@/src/services/env'
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   noLayout?: boolean
@@ -37,13 +38,29 @@ type AppPropsWithLayout = AppProps & {
 const _app = (props: React.PropsWithChildren<unknown>) => {
   const {data, status} = useSession()
   const {t, i18n} = useTranslation()
+  const [envLoaded, setEnvLoaded] = useState(false)
+
   const i18nProvider: I18nProvider = {
     translate: (key: string, options?: any, defaultMessage?: string) => t(key, options).toString(),
     changeLocale: (lang: string) => i18n.changeLanguage(lang),
     getLocale: () => i18n.language,
   }
 
-  if (status === 'loading') {
+  useEffect(() => {
+    const loadEnvironment = async () => {
+      try {
+        await envManager.load()
+        setEnvLoaded(true)
+      } catch (err) {
+        console.error('Failed to load environment:', err)
+        setEnvLoaded(true) // Set to true anyway to unblock rendering
+      }
+    }
+
+    void loadEnvironment()
+  }, [])
+
+  if (status === 'loading' || !envLoaded) {
     return <span>loading...</span>
   }
 
@@ -109,8 +126,8 @@ const _app = (props: React.PropsWithChildren<unknown>) => {
   ]
 
   const dataProviders = {
-    [DataProvider.DEFAULT]: dataProvider(process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5010'),
-    [DataProvider.SUPABASE]: supabaseDataProvider(supabaseServiceClient),
+    [DataProvider.DEFAULT]: dataProvider(getEnv('BROWSER_PUBLIC_API_URL') ?? 'http://localhost:5010'),
+    [DataProvider.SUPABASE]: supabaseDataProvider(supabaseServiceClient()),
     [DataProvider.CREDENTIALS]: credentialDataProvider(),
     [DataProvider.KEYS]: keysDataProvider(),
     [DataProvider.IDENTIFIERS]: identifiersDataProvider(),
@@ -124,7 +141,7 @@ const _app = (props: React.PropsWithChildren<unknown>) => {
       <Refine
         routerProvider={routerProvider}
         dataProvider={dataProviders}
-        liveProvider={supabaseLiveProvider(supabaseServiceClient)}
+        liveProvider={supabaseLiveProvider(supabaseServiceClient())}
         authProvider={getAuthProvider(data, status)}
         i18nProvider={i18nProvider}
         resources={resources}

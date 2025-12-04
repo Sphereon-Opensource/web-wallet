@@ -27,7 +27,7 @@ export class FormsService {
                 form_def_to_form_step!fk_form_definition(form_step!fk_form_step(*))`
 
     console.log(`query: ${query}`)
-    let select = supabaseServiceClient.from('form_definition').select(query)
+    let select = supabaseServiceClient().from('form_definition').select(query)
 
     if ('id' in args) {
       select = select.eq('id', args.id)
@@ -125,7 +125,7 @@ export class FormsService {
   }
 
   private async getSchemaDefinitions(formStepId: string): Promise<SchemaDefinitionDTO[]> {
-    const result = await supabaseServiceClient
+    const result = await supabaseServiceClient()
       .from('form_step_to_schema_definition')
       .select(
         `

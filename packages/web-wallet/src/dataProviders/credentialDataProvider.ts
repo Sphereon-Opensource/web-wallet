@@ -14,7 +14,7 @@ import {
   UpdateParams,
   UpdateResponse,
 } from '@refinedev/core'
-import agent from '@agent'
+import { getAgent } from '@agent'
 import type {
   DigitalCredential,
   FindDigitalCredentialArgs,
@@ -84,7 +84,7 @@ export const credentialDataProvider = (): DataProvider => ({
       fetchOptions.showVersionHistory = meta.variables.showVersionHistory
     }
 
-    const items: Array<DigitalCredential> = await agent.crsGetCredentials({filter: findArgs})
+    const items: Array<DigitalCredential> = await getAgent().crsGetCredentials({filter: findArgs})
     // FIXME CWALL-234 there should be a better way for this but i could not find any yet without refine.dev not complaining
     const data: TData[] = items.map(item => ({...(item as any)}))
 
@@ -99,7 +99,7 @@ export const credentialDataProvider = (): DataProvider => ({
       return Promise.reject(Error('credentialRole not found in meta query'))
     }
     const args: GetCredentialsByIdOrHashArgs = {credentialRole: meta.variables.credentialRole, idOrHash: id as string}
-    const credential: OptionalUniqueDigitalCredential = await agent.crsGetUniqueCredentialByIdOrHash(args)
+    const credential: OptionalUniqueDigitalCredential = await getAgent().crsGetUniqueCredentialByIdOrHash(args)
     return {
       data: credential?.digitalCredential as unknown as TData,
     }
@@ -109,7 +109,7 @@ export const credentialDataProvider = (): DataProvider => ({
     variables,
   }: CreateParams<TVariables>): Promise<CreateResponse<TData>> => {
     assertResource(resource)
-    const item: DigitalCredential = await agent.crsAddCredential({credential: variables as DigitalCredential})
+    const item: DigitalCredential = await getAgent().crsAddCredential({credential: variables as DigitalCredential})
     return {
       data: item as unknown as TData,
     }
@@ -120,7 +120,7 @@ export const credentialDataProvider = (): DataProvider => ({
     variables,
   }: UpdateParams<TVariables>): Promise<UpdateResponse<TData>> => {
     assertResource(resource)
-    const item: DigitalCredential = await agent.crsUpdateCredentialState(variables as UpdateCredentialStateArgs)
+    const item: DigitalCredential = await getAgent().crsUpdateCredentialState(variables as UpdateCredentialStateArgs)
     return {
       data: item as unknown as TData,
     }
@@ -132,7 +132,7 @@ export const credentialDataProvider = (): DataProvider => ({
   }: DeleteOneParams<TVariables>): Promise<DeleteOneResponse<TData>> => {
     assertResource(resource)
     const hashAsId = typeof meta?.idColumnName === 'string' && meta?.idColumnName === 'hash'
-    await agent.crsDeleteCredential(hashAsId ? {hash: id as string} : {id: id as string})
+    await getAgent().crsDeleteCredential(hashAsId ? {hash: id as string} : {id: id as string})
     return {
       data: {} as TData,
     }
@@ -142,7 +142,7 @@ export const credentialDataProvider = (): DataProvider => ({
     const filter: FindDigitalCredentialArgs = params.ids.map(id => {
       return {id: id as string}
     })
-    await agent.crsDeleteCredentials({
+    await getAgent().crsDeleteCredentials({
       filter: filter,
     })
     return {

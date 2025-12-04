@@ -9,6 +9,7 @@ import {supabaseServiceClient, supabaseStorageServiceClient} from '@helpers/Supa
 import {StoragePathResolver} from '@objectstorage/StoragePathResolver'
 import {WF_BUCKET_STORAGE_ID} from '@components/views/WorkflowApproveDocuments'
 import {ObjectStorage} from '@objectstorage'
+import {getEnvInt} from '@/src/services/env'
 
 type Props = {
   allowAddNewDocument?: boolean
@@ -19,7 +20,7 @@ type QueryOptions = {
 }
 
 const getBucketObjects = async (opts?: QueryOptions) => {
-  let query = supabaseServiceClient.from('objects_view').select('*')
+  let query = supabaseServiceClient().from('objects_view').select('*')
   if (opts?.path) {
     query = query.ilike('name', `${opts.path}%`)
   }
@@ -76,7 +77,7 @@ const DocumentsList: React.FC<Props> = (props: Props): ReactElement => {
   }
 
   // todo: move this to environment-vars.ts file like we're doing in the web-wallet-agent
-  const truncationLength: number = process.env.NEXT_PUBLIC_TRUNCATION_LENGTH ? Number(process.env.NEXT_PUBLIC_TRUNCATION_LENGTH) : 8
+  const truncationLength: number = getEnvInt('BROWSER_PUBLIC_TRUNCATION_LENGTH', 8)
   const columns: Array<ColumnHeader<StorageDocumentTableItem>> = [
     {
       accessor: 'asset_id',

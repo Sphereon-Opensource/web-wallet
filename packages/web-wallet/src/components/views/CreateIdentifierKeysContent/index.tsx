@@ -1,6 +1,6 @@
-import React, {FC, ReactElement} from 'react'
+import React, {FC, ReactElement, useMemo} from 'react'
 import {v4 as uuidv4} from 'uuid'
-import {useTranslate} from '@refinedev/core'
+import {useTranslate, useList} from '@refinedev/core'
 import {ButtonIcon} from '@sphereon/ui-components.core'
 import {FormView, IconButton, PrimaryButton, SecondaryButton} from '@sphereon/ui-components.ssi-react'
 import addKeySchema from '../../../../src/schemas/data/addKeySchema.json' assert {type: 'json'}
@@ -8,34 +8,104 @@ import addKeyUISchema from '../../../../src/schemas/ui/addKeyUISchema.json' asse
 import SelectionField from '@components/fields/SelectionField'
 import style from './index.module.css'
 import {useIdentifierCreateOutletContext} from '@typings/machine/identifiers/create'
-import {IdentifierKey} from '@typings'
+import {DataResource, IdentifierKey} from '@typings'
 import {createAjv} from '@jsonforms/core'
+import {ManagedKeyInfo} from '@veramo/core'
 
 const CreateIdentifierKeysContent: FC = (): ReactElement => {
   const translate = useTranslate()
-  const {keys, onSetKeys, onKeyDataChange, keyData, capabilitiesInfo, identifierKeyMiddleware} = useIdentifierCreateOutletContext()
-  const ajv = createAjv({useDefaults: 'empty', coerceTypes: true})
+  const {
+    keys,
+    onSetKeys,
+    onKeyDataChange,
+    keyData,
+    capabilitiesInfo,
+    identifierKeyMiddleware,
+    keySchema,
+  } = useIdentifierCreateOutletContext()
+
+  // Memoize ajv instance to prevent re-creation on every render
+  const ajv = useMemo(() => createAjv({useDefaults: 'empty', coerceTypes: true}), [])
+
+  // Fetch available keys from the key manager
+  const {data: keysData} = useList<ManagedKeyInfo>({
+    resource: DataResource.KEYS,
+    pagination: {
+      mode: 'off',
+    },
+  })
+
+  // Use dynamic schema if available, otherwise fall back to static schema
+  const schema = keySchema || addKeySchema
 
   const onAddKey = async (): Promise<void> => {
-    const type = keyData?.data?.type
-    if (!type || !capabilitiesInfo) {
-      console.log(`No Type`, type, capabilitiesInfo)
-      throw Error(`No Type`)
+    if (!capabilitiesInfo) {
+      console.log(`No capabilitiesInfo`, capabilitiesInfo)
+      throw Error(`No capabilitiesInfo`)
     }
+
+    const action = keyData?.data?.action
     const identifierCapability = capabilitiesInfo.identifierCapability
-    const newKey: IdentifierKey = {
-      id: uuidv4(),
-      type: type,
-      alias: keyData?.data?.alias,
-      purposes: keyData?.data?.purposes,
-      readonly: false,
-      capability: identifierCapability.create.keyTypes.find(keyCap => keyCap.keyType === type)!,
+
+    let newKey: IdentifierKey
+
+    if (action === 'select') {
+      // When selecting an existing key
+      const selectedKeyId = keyData?.data?.selectedKeyId
+      if (!selectedKeyId) {
+        console.log(`No selectedKeyId`)
+        throw Error(`No selected key`)
+      }
+
+      // Find the key info from keysData
+      const keyInfo = keysData?.data?.find((key: ManagedKeyInfo) => key.kid === selectedKeyId)
+      if (!keyInfo) {
+        throw Error(`Key with id ${selectedKeyId} not found`)
+      }
+
+      console.log(`Adding existing key with kid: ${keyInfo.kid}`)
+
+      newKey = {
+        id: uuidv4(),
+        type: keyInfo.type,
+        alias: keyInfo.meta?.alias || keyInfo.kid,
+        kid: keyInfo.kid,
+        purposes: ['assertionMethod', 'authentication'], // Default purposes, could be made configurable
+        readonly: false,
+        capability: identifierCapability.create.keyTypes.find(keyCap => keyCap.keyType === keyInfo.type)!,
+      }
+    } else {
+      // When generating a new key
+      const type = keyData?.data?.type
+      if (!type) {
+        console.log(`No Type`, type)
+        throw Error(`No Type`)
+      }
+
+      console.log(`Generating new key of type: ${type}`)
+
+      newKey = {
+        id: uuidv4(),
+        type: type,
+        alias: keyData?.data?.alias,
+        purposes: keyData?.data?.purposes,
+        readonly: false,
+        capability: identifierCapability.create.keyTypes.find(keyCap => keyCap.keyType === type)!,
+      }
     }
+
     const newKeys = [...keys, newKey]
+    console.log(`Updated keys array:`, newKeys)
     onSetKeys(newKeys)
 
-    console.log(capabilitiesInfo)
-    // setFormState(undefined)
+    // Reset form fields but keep the action field to avoid middleware re-initialization
+    await onKeyDataChange({
+      data: {
+        action: 'generate', // Keep action to prevent middleware from resetting
+        purposes: ['assertionMethod', 'authentication'],
+      },
+      errors: [],
+    })
   }
 
   const onRemoveKey = async (id: string): Promise<void> => {
@@ -53,7 +123,8 @@ const CreateIdentifierKeysContent: FC = (): ReactElement => {
         {title: translate('create_identifier_keys_card_key_purpose_label'), value: key.purposes.join(', ')},
       ]
 
-      return <SelectionField value={key.alias} details={details} onRemove={key.readonly ? undefined : onRemove} />
+      return <SelectionField key={key.id} value={key.alias} details={details}
+                             onRemove={key.readonly ? undefined : onRemove} />
     })
   }
   const maxKeysReached = capabilitiesInfo && keys.length >= capabilitiesInfo.identifierCapability.maxKeys
@@ -71,7 +142,7 @@ const CreateIdentifierKeysContent: FC = (): ReactElement => {
             </div>
             <FormView
               data={keyData?.data}
-              schema={addKeySchema}
+              schema={schema}
               uiSchema={addKeyUISchema}
               onFormStateChange={onKeyDataChange}
               middleware={identifierKeyMiddleware}
@@ -99,7 +170,7 @@ const CreateIdentifierKeysContent: FC = (): ReactElement => {
                 <div className={style.addTitleCaption}>{translate('create_identifier_keys_add_key_title')}</div>
                 <FormView
                   data={keyData?.data}
-                  schema={addKeySchema}
+                  schema={schema}
                   uiSchema={addKeyUISchema}
                   onFormStateChange={onKeyDataChange}
                   middleware={identifierKeyMiddleware}

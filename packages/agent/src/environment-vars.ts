@@ -76,6 +76,7 @@ export const CONF_PATH = env('CONF_PATH', ENV_VAR_PREFIX) ? resolve(env('CONF_PA
 
 export const IS_WALLET_ENABLED = toBoolean(process.env.IS_WALLET_ENABLED, false)
 export const IS_OID4VP_ENABLED = toBoolean(process.env.OID4VP_ENABLED, true)
+export const IS_LINKED_VP_ENABLED = toBoolean(process.env.IS_LINKED_VP_ENABLED, false)
 
 export const IS_OID4VCI_ENABLED = toBoolean(process.env.OID4VCI_ENABLED, true)
 export const OID4VCI_API_BASE_URL = env('OID4VCI_API_BASE_URL', ENV_VAR_PREFIX) ?? `${INTERNAL_HOSTNAME_OR_IP}:${INTERNAL_PORT}/oid4vci`
@@ -133,3 +134,9 @@ export const OID4VP_RP_OPTIONS_PATH = `${CONF_PATH}/oid4vp_options`
 export const OID4VP_RP_METADATA_PATH = `${CONF_PATH}/oid4vp_metadata`
 
 export const IS_PDM_API_ENABLED = toBoolean(process.env.PDM_API_ENABLED, true)
+
+export const REST_KMS_BASE_URL = env('REST_KMS_BASE_URL', ENV_VAR_PREFIX) ?? 'http://localhost:8080'
+export const REST_KMS_PROVIDER_ID = env('REST_KMS_PROVIDER_ID', ENV_VAR_PREFIX)
+export const REST_KMS_APPLICATION_ID = env('REST_KMS_APPLICATION_ID', ENV_VAR_PREFIX) ?? 'cloud-kms'
+export const REST_KMS_TENANT_ID = env('REST_KMS_TENANT_ID', ENV_VAR_PREFIX)
+export const REST_KMS_USER_ID = env('REST_KMS_USER_ID', ENV_VAR_PREFIX)

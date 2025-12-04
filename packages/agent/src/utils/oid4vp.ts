@@ -6,7 +6,12 @@ import {Resolvable} from 'did-resolver'
 import {OID4VPInstanceOpts} from '../types'
 import {createDidResolver, getDefaultDID, getDefaultKeyRef, getIdentifier} from './did'
 import {oid4vpInstanceOpts} from '../environment-vars-with-deps'
-import {ManagedIdentifierDidOpts, ManagedIdentifierX5cOpts} from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import {
+  ManagedIdentifierDidOpts,
+  ManagedIdentifierOptsOrResult,
+  ManagedIdentifierX5cOpts,
+} from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import {IIdentifier, IKey} from '@veramo/core'
 
 function toPexInstanceOptions(
   oid4vpInstanceOpts: OID4VPInstanceOpts[],
@@ -19,21 +24,25 @@ function toPexInstanceOptions(
     if (opt.rpOpts && !opt.rpOpts.identifierOpts.resolveOpts) {
       if (!opt.rpOpts.identifierOpts) {
         // @ts-ignore
-        opt.rpOpts.identifierOpts = { resolveOpts: { resolver: opts?.resolver ?? createDidResolver() } }
+        opt.rpOpts.identifierOpts = {resolveOpts: {resolver: opts?.resolver ?? createDidResolver()}}
       }
-      opt.rpOpts.identifierOpts.resolveOpts = { ...opt.rpOpts.identifierOpts.resolveOpts }
+      opt.rpOpts.identifierOpts.resolveOpts = {...opt.rpOpts.identifierOpts.resolveOpts}
       if (!opt.rpOpts.identifierOpts.resolveOpts.resolver) {
         opt.rpOpts.identifierOpts.resolveOpts.resolver = opts?.resolver ?? createDidResolver()
       }
       const rpOpts = opt.rpOpts
       // we handle rpOpts separately, because it contains a resolver function of which the prototype would get lost
-      result.push({ ...opt, rpOpts })
+      result.push({...opt, rpOpts})
     }
   })
   return result
 }
 
-export async function getDefaultOID4VPRPOptions(args?: { did?: string; x5c?: string[]; resolver?: Resolvable }): Promise<IRPDefaultOpts | undefined> {
+export async function getDefaultOID4VPRPOptions(args?: {
+  did?: string;
+  x5c?: string[];
+  resolver?: Resolvable
+}): Promise<IRPDefaultOpts | undefined> {
   if (!IS_OID4VP_ENABLED) {
     return undefined
   }
@@ -57,7 +66,7 @@ export async function getDefaultOID4VPRPOptions(args?: { did?: string; x5c?: str
     idOpts = {
       method: 'did',
       identifier,
-      kmsKeyRef: await getDefaultKeyRef({ did }),
+      kmsKeyRef: await getDefaultKeyRef({did}),
     } satisfies ManagedIdentifierDidOpts
   }
   return {
@@ -74,8 +83,48 @@ export async function getDefaultOID4VPRPOptions(args?: { did?: string; x5c?: str
   }
 }
 
-export async function createOID4VPRP(opts: { resolver: Resolvable }): Promise<SIOPv2RP> {
+export async function createOID4VPRP(opts: {resolver: Resolvable}): Promise<SIOPv2RP> {
   return new SIOPv2RP({
     instanceOpts: toPexInstanceOptions(oid4vpInstanceOpts.asArray, opts),
   })
+}
+
+
+export function extractDidFromManagedIdentifier(
+  input?: ManagedIdentifierOptsOrResult,
+): string | undefined {
+
+  if (!input) {
+    return undefined
+  }
+  const id = input.identifier
+
+  if (!id) {
+    throw new Error('No identifier present in ManagedIdentifierOptsOrResult')
+  }
+
+  if (typeof id === 'string') {
+    return id
+  }
+
+  if (Array.isArray(id)) {
+    const first = id.find(x => typeof x === 'string')
+    if (first) return first
+  }
+
+  if (typeof id === 'object') {
+
+    const identifier = id as IIdentifier
+    if (identifier.did) {
+      return identifier.did
+    }
+
+    if ('identifier' in identifier && identifier.identifier &&
+      typeof identifier.identifier === 'string'
+    ) {
+      return identifier.identifier as string
+    }
+  }
+  throw new Error(
+    `Cannot extract DID from ManagedIdentifierOptsOrResult.identifier: ${JSON.stringify(id)}`)
 }

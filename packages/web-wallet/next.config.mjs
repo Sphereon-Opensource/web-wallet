@@ -5,13 +5,13 @@ process.env.I18NEXT_DEFAULT_CONFIG_PATH = `./next-i18next.config.mjs`
 const nextConfig = {
   i18n: i18nNextConfig.i18n,
 
-  transpilePackages: ['@sphereon/ui-components.ssi-react', '@sphereon/ssi-sdk.ebsi-support'],
+  transpilePackages: ['@sphereon/ui-components.ssi-react', '@sphereon/ssi-sdk.ebsi-support', '@veramo/did-manager', '@sphereon/ssi-sdk.oid4vci-holder'],
 
-  webpack(config, { isServer }) {
+  webpack(config, {dev, isServer}) {
     if (!isServer) {
       config.resolve.alias = {
         ...config.resolve.alias,
-        typeorm: 'typeorm/browser'
+        typeorm: 'typeorm/browser',
       }
       config.resolve.fallback = {
         ...config.resolve.fallback,
@@ -25,6 +25,10 @@ const nextConfig = {
         dns: false,
       }
     }
+
+    if (dev) {
+      config.devtool = 'cheap-module-source-map' // or 'cheap-module-source-map'
+    }
     return config
   },
 
@@ -35,18 +39,15 @@ const nextConfig = {
       fileName: false,
     },
   },
-
   async rewrites() {
     return [
-      /*JWKS proxy to agent*/
       {
         source: '/.well-known/jwks/:path*',
-        destination: `${process.env.NEXT_PUBLIC_AGENT_BASE_URL}/.well-known/jwks/:path*`,
+        destination: '/api/proxy/jwks/:path*',
       },
-      /*DID: WEB proxy to agent*/
       {
         source: '/:path*/did.json',
-        destination: `${process.env.NEXT_PUBLIC_AGENT_BASE_URL}/:path*/did.json`,
+        destination: '/api/proxy/did/:path*/did.json',
       },
     ]
   },

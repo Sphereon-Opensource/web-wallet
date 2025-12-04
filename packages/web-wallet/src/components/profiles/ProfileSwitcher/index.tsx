@@ -7,6 +7,7 @@ import LogoutIcon from '@components/assets/icons/LogoutIcon'
 import axios from 'axios'
 import {ButtonIcon, logoColors} from '@sphereon/ui-components.core'
 import {LanguageSwitcher} from '@components/languageSwitcher'
+import {getEnv} from '@/src/services/env'
 
 const logout = async (): Promise<void> => {
   const {
@@ -34,7 +35,7 @@ const ProfileSwitcher: FC = (): ReactElement => {
   }, [])
 
   const {data: session} = useSession()
-  const organizationName = process.env.NEXT_PUBLIC_ORGANIZATION_NAME || 'Sphereon International'
+  const organizationName = getEnv('BROWSER_PUBLIC_ORGANIZATION_NAME') || 'Sphereon International'
   const userName = session?.user?.name ?? 'Unknown'
   return (
     <div className={style.container} ref={dropdownRef}>

@@ -66,7 +66,7 @@ export const buildInformationDetails = async (
   onGetCredential: (vc: VerifiableCredential) => Promise<void>,
 ): Promise<Array<KeyValuePair>> => {
   try {
-    const credentialResult = await supabaseServiceClient
+    const credentialResult = await supabaseServiceClient()
       .from('credential_reference')
       .select('*')
       .eq('asset_id', assetId)

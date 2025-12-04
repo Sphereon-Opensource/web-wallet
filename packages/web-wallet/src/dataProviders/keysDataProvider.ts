@@ -15,14 +15,14 @@ import {
   UpdateResponse,
 } from '@refinedev/core'
 import {PartialKey} from '@sphereon/ssi-sdk-ext.key-manager'
-import agent from '@agent'
+import { getAgent } from '@agent'
 import {KeyManagementSystem} from '@typings'
 
 // TODO CWALL-242 further implement
 
 export const keysDataProvider = (): DataProvider => ({
   getList: async <TData extends BaseRecord = BaseRecord>({resource, pagination, filters, sort}: GetListParams): Promise<GetListResponse<TData>> => {
-    const keys = await agent.keyManagerListKeys()
+    const keys = await getAgent().keyManagerListKeys()
     // FIXME CWALL-242 there should be a better way for this but i could not find any yet without refine.dev not complaining
     const data: TData[] = keys.map((key: any) => ({...(key as any)}))
 
@@ -43,7 +43,7 @@ export const keysDataProvider = (): DataProvider => ({
     meta,
   }: CreateParams<TVariables>): Promise<CreateResponse<TData>> => {
     // FIXME CWALL-242 fix ignores
-    const key = await agent.keyManagerCreate({
+    const key = await getAgent().keyManagerCreate({
       kms: KeyManagementSystem.LOCAL,
       // @ts-ignore
       type: variables.type,
@@ -68,7 +68,7 @@ export const keysDataProvider = (): DataProvider => ({
     // @ts-ignore
     const keyCreations: Array<Promise<PartialKey>> = variables.map(async key =>
       // FIXME CWALL-242 fix ignores
-      agent.keyManagerCreate({
+      getAgent().keyManagerCreate({
         kms: 'local',
         // @ts-ignore
         type: key.type,
