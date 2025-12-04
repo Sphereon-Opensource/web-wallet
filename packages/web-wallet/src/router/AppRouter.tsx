@@ -81,6 +81,8 @@ import CredentialDesignerCreatePage from '@/pages/credentials/design/create'
 import CredentialDesignerClaimsContent from '@components/views/CredentialDesignerClaimsContent'
 import CredentialDesignerDetailsContent from '@components/views/CredentialDesignerDetailsContent'
 import CredentialDesignerVisualDesignContent from '@components/views/CredentialDesignerVisualDesignContent'
+import CredentialDesignsList from '@components/views/CredentialDesignsList'
+import CredentialDesignsListPage from '@/pages/credentials/design'
 
 const KeycloakLoginPage = (props: PropsWithChildren<any>) => {
   const {mutate: login} = useLogin()
@@ -171,7 +173,8 @@ const AppRouter: React.FC = () => {
               <Route path={IssueCredentialRoute.DETAILS} element={<IssueCredentialEnterDetailsContent />} />
               <Route path={IssueCredentialRoute.ISSUE_METHOD} element={<IssueCredentialIssueMethodContent />} />
             </Route>
-            <Route path={MainRoute.DESIGNER}>
+            <Route path={MainRoute.DESIGNS}>
+              <Route index element={<CredentialDesignsListPage />} />
               <Route
                 path={MainRoute.SUB_CREATE}
                 element={
