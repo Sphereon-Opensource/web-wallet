@@ -1,5 +1,5 @@
-import React, {CSSProperties, FC, ReactElement, useEffect, useState} from 'react'
-import {ButtonIcon, TabViewRoute} from '@sphereon/ui-components.core'
+import React, {CSSProperties, FC, ReactElement, useCallback, useEffect, useMemo, useState} from 'react'
+import {ButtonIcon} from '@sphereon/ui-components.core'
 import {CredentialMiniCardView, IconButton, SSICredentialCardView, SSITabView} from '@sphereon/ui-components.ssi-react'
 import styles from './index.module.css'
 
@@ -47,7 +47,7 @@ const CredentialDesignerLivePreviewView: FC<Props> = (props: Props): ReactElemen
     }
   }, [logoImage])
 
-  const getCredentialCardContent = (): ReactElement => {
+  const getCredentialCardContent = useCallback((): ReactElement => {
     return (
       <div
         style={{
@@ -89,9 +89,9 @@ const CredentialDesignerLivePreviewView: FC<Props> = (props: Props): ReactElemen
         />
       </div>
     )
-  }
+  }, [logo, backgroundImage, backgroundColor, textColor])
 
-  const getMiniCardContent = (): ReactElement => {
+  const getMiniCardContent = useCallback((): ReactElement => {
     return (
       <div
         style={{
@@ -118,9 +118,9 @@ const CredentialDesignerLivePreviewView: FC<Props> = (props: Props): ReactElemen
         />
       </div>
     )
-  }
+  }, [backgroundColor, textColor, logo])
 
-  const routes: Array<TabViewRoute> = [
+  const routes = useMemo(() => [
     {
       key: 'credential',
       title: 'Credential card',
@@ -131,7 +131,7 @@ const CredentialDesignerLivePreviewView: FC<Props> = (props: Props): ReactElemen
       title: 'Mini card',
       content: getMiniCardContent,
     },
-  ]
+  ], [getCredentialCardContent, getMiniCardContent])
 
   const toggleCollapsed = async (): Promise<void> => {
     setIsCollapsed(!isCollapsed)
