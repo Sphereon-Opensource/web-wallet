@@ -48,6 +48,7 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
     create(DataResource.CREDENTIAL_DESIGNS)
   }
 
+  // TODO SSISDK-87 add support for additional data
   const columns: ColumnHeader<CredentialDesignTableItem>[] = [
     {
       accessor: 'name',
