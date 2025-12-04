@@ -57,6 +57,9 @@ const CredentialDesignerDetailsContent: FC = (): ReactElement => {
         uiSchema={credentialDesignerVisualDesignUISchema}
         data={credentialDesignerVisualDesignFormData?.data}
         onFormStateChange={onCredentialFormInputChange}
+        config={{
+          hideRequiredAsterisk: true
+        }}
       />
     </div>
   }
