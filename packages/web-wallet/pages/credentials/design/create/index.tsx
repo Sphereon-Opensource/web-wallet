@@ -63,9 +63,9 @@ const CredentialDesignerCreatePage: FC = () => {
         </div>
         <div style={{display: 'flex', flexDirection: 'column', gap: 24}}>
           <CredentialDesignerLivePreviewView
-            backgroundImage={credentialDesignerVisualDesignFormData?.data.background_image?.url}
+            backgroundImage={credentialDesignerVisualDesignFormData?.data.background_image?.uri}
             backgroundColor={credentialDesignerVisualDesignFormData?.data.background_color}
-            logoImage={credentialDesignerVisualDesignFormData?.data.logo?.url}
+            logoImage={credentialDesignerVisualDesignFormData?.data.logo?.uri}
             textColor={credentialDesignerVisualDesignFormData?.data.text_color}
             style={{marginTop: 47}}
           />

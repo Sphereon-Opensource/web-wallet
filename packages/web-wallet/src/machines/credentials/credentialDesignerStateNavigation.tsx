@@ -195,8 +195,8 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
             branding: {
               backgroundColor: credentialDesignerVisualDesignFormData.data?.background_color,
               logoColor: credentialDesignerVisualDesignFormData.data?.logo_color,
-              backgroundUrl: credentialDesignerVisualDesignFormData.data?.background_image?.url,
-              logoUrl: credentialDesignerVisualDesignFormData.data?.logo?.url
+              backgroundUri: credentialDesignerVisualDesignFormData.data?.background_image?.uri,
+              logoUri: credentialDesignerVisualDesignFormData.data?.logo?.uri
             }
           })
           .then(() => {
