@@ -74,7 +74,7 @@ export const toCredentialConfiguration = (args: ToCredentialConfigurationArgs): 
 
   switch (options.format) {
     case 'dc+sd-jwt':
-    case 'vc+sd-jwt': // FIXME Add | 'vc+sd-jwt' to  CredentialConfigurationSupportedSdJwtVcV1_0_15
+    case 'vc+sd-jwt':
       return {format: options.format, vct: options.vct, ...baseConfig}
     case 'jwt_vc_json':
     case 'jwt_vc':
@@ -84,10 +84,9 @@ export const toCredentialConfiguration = (args: ToCredentialConfigurationArgs): 
       return {format: options.format, credential_definition: options.credentialDefinition, ...baseConfig}
     case 'mso_mdoc':
       return {format: options.format, doctype: options.doctype, ...baseConfig}
-    default:
-      // @ts-ignore
-      throw Error(`Unsupported format type ${options.format}`)
   }
+
+  throw Error(`Unsupported format type ${options.format}`)
 }
 
 export const updateOid4vciMetadata = async (identifier: string, credentialConfiguration: CredentialConfigurationSupportedV1_0_15): Promise<void> => {
