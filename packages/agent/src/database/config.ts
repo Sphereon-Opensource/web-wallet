@@ -33,6 +33,7 @@ import {
   DataStorePresentationDefinitionMigrations,
   DataStoreStatusListMigrations,
 } from '@sphereon/ssi-sdk.data-store'
+import { kvStoreMigrations, KeyValueStoreEntity } from '@sphereon/ssi-sdk.kv-store-temp'
 // @ts-ignore // Package does not export these properly
 import {SqliteConnectionOptions} from "typeorm/driver/sqlite/SqliteConnectionOptions";
 // @ts-ignore // Package does not export these properly
@@ -78,6 +79,7 @@ const sqliteConfig: SqliteConnectionOptions = {
     ...DataStoreDigitalCredentialEntities,
     ...DataStoreMachineStateEntities,
     ...DataStorePresentationDefinitionEntities,
+    KeyValueStoreEntity,
   ],
   migrations: [
     ...VeramoDataStoreMigrations,
@@ -87,7 +89,8 @@ const sqliteConfig: SqliteConnectionOptions = {
     ...DataStoreEventLoggerMigrations,
     ...DataStoreDigitalCredentialMigrations,
     ...DataStoreMachineStateMigrations,
-    ...DataStorePresentationDefinitionMigrations
+    ...DataStorePresentationDefinitionMigrations,
+    ...kvStoreMigrations,
   ],
   migrationsRun: false, // We run migrations from code to ensure proper ordering with Redux
   synchronize: false, // We do not enable synchronize, as we use migrations from code
@@ -119,6 +122,7 @@ const postgresConfig: PostgresConnectionOptions = validatePostgresOptions({
     ...DataStoreDigitalCredentialEntities,
     ...DataStoreMachineStateEntities,
     ...DataStorePresentationDefinitionEntities,
+    KeyValueStoreEntity,
   ],
   migrations: [
     ...VeramoDataStoreMigrations,
@@ -130,6 +134,7 @@ const postgresConfig: PostgresConnectionOptions = validatePostgresOptions({
     ...DataStoreMachineStateMigrations,
     ...DataStorePresentationDefinitionMigrations,
     ...WebWalletMigrations,
+    ...kvStoreMigrations,
   ],
   migrationsRun: false, // We run migrations from code to ensure proper ordering with Redux
   synchronize: false, // We do not enable synchronize, as we use migrations from code

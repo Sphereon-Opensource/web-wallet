@@ -1,4 +1,4 @@
-FROM node:20.12.1-bookworm
+FROM node:iron-bullseye
 SHELL ["/bin/bash", "-c"]
 WORKDIR /opt/agent
 RUN npm -g install pnpm@9 && SHELL=bash pnpm setup && source /root/.bashrc && pnpm self-update

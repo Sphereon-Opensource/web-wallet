@@ -15,7 +15,7 @@ import {
   UpdateResponse,
 } from '@refinedev/core'
 import {supabaseServiceClient} from '@helpers/SupabaseClient'
-import {toPascalCase} from '@helpers/StringUtils'
+import {enrichSchemaWithDisclosureFrame, enrichSchemaWithStatusList} from '@helpers/SchemaUtils'
 
 export const credentialDesignDataProvider = (): DataProvider => ({
   getList: async <TData extends BaseRecord = BaseRecord>({resource, pagination, filters, sort}: GetListParams): Promise<GetListResponse<TData>> => {
@@ -45,7 +45,10 @@ export const credentialDesignDataProvider = (): DataProvider => ({
     // TODO SSISDK-88 create transaction solution
 
     // @ts-ignore
-    const { identifier, credentialFormat, schema, uiSchema, branding } = variables
+    const { identifier, credentialFormat, schema, uiSchema, branding, statusListUri } = variables
+
+    // Enrich the schema with disclosureFrame (for non-required fields) and statusList (if URI provided)
+    const enrichedSchema = enrichSchemaWithStatusList(enrichSchemaWithDisclosureFrame(schema), statusListUri)
 
     let formStepId
     const formStepResult = await supabaseServiceClient()
@@ -115,7 +118,7 @@ export const credentialDesignDataProvider = (): DataProvider => ({
       correlation_id: identifier,
       schema_type: 'Data',
       entity_type: 'VC',
-      schema: JSON.stringify(schema),
+      schema: JSON.stringify(enrichedSchema),
       meta_data_set_id: setId
     }
 
