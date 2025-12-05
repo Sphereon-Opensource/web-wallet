@@ -1,7 +1,9 @@
-import React, {useCallback, useEffect, useState} from 'react'
+import React, {useCallback, useEffect, useMemo, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
-import {useCreate, useCreateMany} from '@refinedev/core'
+import {useCreate, useCreateMany, useList} from '@refinedev/core'
 import {JSONFormState} from '@sphereon/ui-components.ssi-react'
+import addKeySchema from '../../../src/schemas/data/addKeySchema.json' assert {type: 'json'}
+
 import {
   calculateUIKeyCapabilitiesInfo,
   CreateIdentifierRoute,
@@ -18,7 +20,12 @@ import {
 } from '@typings'
 import {IdentifiersCreateContext} from '@typings/machine/identifiers/create'
 import {CoreActions, JsonFormsCore} from '@jsonforms/core'
-import agent from '@agent'
+import {getAgent} from '@agent'
+import {ManagedKeyInfo, TKeyType} from '@veramo/core'
+import { getEnv } from '@/src/services/env'
+
+// Supported key types - adjust based on your requirements
+const SUPPORTED_KEY_TYPES: TKeyType[] = ['Ed25519', 'Secp256k1', 'Secp256r1', 'X25519', 'RSA']
 
 const createIdentifierNavigationListener = async (step: number, navigate: any): Promise<void> => {
   switch (step) {
@@ -46,12 +53,61 @@ export const IdentifiersCreateContextProvider = (props: any): JSX.Element => {
   const [identifierData, setIdentifierData] = useState<JSONFormState<KeyManagementIdentifier>>()
   const [keys, setKeys] = useState<Array<IdentifierKey>>([])
   const [keyData, setKeyData] = useState<JSONFormState | undefined>()
+  const [keySchema, setKeySchema] = useState<any>(addKeySchema)
   const [serviceEndpoints, setServiceEndpoints] = useState<Array<IdentifierServiceEndpoint>>([])
   const [serviceEndpointData, setServiceEndpointData] = useState<JSONFormState | undefined>()
   const maxInteractiveSteps = 4
   const maxAutoSteps: number = 1
 
-  const identifierKeyMiddleware = (
+  // Fetch available keys from the key manager
+  const {data: keysData, isLoading: isLoadingKeys} = useList<ManagedKeyInfo>({
+    resource: DataResource.KEYS,
+    pagination: {
+      mode: 'off',
+    },
+  })
+
+  // Update key schema with filtered keys
+  useEffect(() => {
+    if (keysData?.data) {
+      let filteredKeys = keysData.data
+
+      // Filter based on identifier method if needed
+      if (identifierData?.data?.method) {
+        const method = identifierData.data.method
+        // Add method-specific filtering logic here if needed
+        // For example, for did:web you might want to filter by supported key types
+        if (method === 'web') {
+          filteredKeys = keysData.data.filter((key: ManagedKeyInfo) =>
+            SUPPORTED_KEY_TYPES.includes(key.type),
+          )
+        }
+      }
+
+      // Create oneOf options for the dropdown
+      const keyOptions = filteredKeys.map((key: ManagedKeyInfo) => ({
+        const: key.kid,
+        title: `${key.meta?.alias || key.kid} (${key.type})`,
+      }))
+
+      // Update schema with dynamic options
+      const updatedSchema = {
+        ...addKeySchema,
+        properties: {
+          ...addKeySchema.properties,
+          selectedKeyId: {
+            type: 'string',
+              title: 'Key',
+            oneOf: keyOptions,
+          },
+        },
+      }
+
+      setKeySchema(updatedSchema)
+    }
+  }, [keysData, identifierData?.data?.method])
+
+  const identifierKeyMiddleware = useCallback((
     state: Omit<JsonFormsCore, 'data'> & {data: IdentifierKey},
     action: CoreActions,
     defaultReducer: (
@@ -62,17 +118,19 @@ export const IdentifiersCreateContextProvider = (props: any): JSX.Element => {
     },
   ) => {
     const newState = defaultReducer(state, action)
-    if (!state?.data) {
-      state.data = {
-        ...newState?.data,
+    // Only initialize defaults if the data object doesn't have the required fields yet
+    // This prevents infinite re-render loops by not modifying data that's already initialized
+    if (newState?.data && !newState.data.hasOwnProperty('action')) {
+      newState.data = {
+        ...newState.data,
         action: newState.schema?.properties?.['action']?.default ?? 'generate',
-        purposes: ['assertionMethod', 'authentication'],
+        purposes: newState.data.purposes || ['assertionMethod', 'authentication'],
       }
     }
-    console.log(`identifier key middleware`, newState)
     return newState
-  }
-  const identifierMiddleware = (
+  }, [])
+
+  const identifierMiddleware = useCallback((
     state: Omit<JsonFormsCore, 'data'> & {data: KeyManagementIdentifier},
     action: CoreActions,
     defaultReducer: (
@@ -83,22 +141,24 @@ export const IdentifiersCreateContextProvider = (props: any): JSX.Element => {
     },
   ) => {
     const newState = defaultReducer(state, action)
-    if (!state?.data) {
-      agent.didManagerGetProviders().then(method => {
+    // Only initialize defaults if the data object doesn't have the type field yet
+    // This prevents infinite re-render loops by not modifying data that's already initialized
+    if (newState?.data && !newState.data.hasOwnProperty('type')) {
+      getAgent().didManagerGetProviders().then(method => {
         const agentMethods = method.map(did => did.replace('did:', '').toLowerCase())
-        const schemaMethods = state.schema?.properties?.['method']?.oneOf?.map(oneOf => oneOf.const.toLowerCase() as string) ?? []
+        const schemaMethods = newState.schema?.properties?.['method']?.oneOf?.map(oneOf => oneOf.const.toLowerCase() as string) ?? []
         console.log(`TODO: filter against Agent methods: ${agentMethods.join(',')}, schema: ${schemaMethods.join(',')}`)
         // TODO: Filter out the schema method to the agent enabled methods
       })
       const props = newState?.schema?.properties
       // Unfortunately setting the default value in the schema does not work for the first entry. Could be because of the name: 'type'
       newState.data = {
-        ...newState?.data,
+        ...newState.data,
         type: 'did',
         method: props?.method?.default,
         network: props?.['network']?.default,
         web: {
-          hostName: process?.env?.NEXT_PUBLIC_CLIENT_ID ?? process?.env?.NEXTAUTH_URL ?? '',
+          hostName: getEnv('BROWSER_PUBLIC_CLIENT_ID') ?? getEnv('NEXTAUTH_URL') ?? '',
           path: '/.well-known',
         },
         ebsi: {
@@ -111,7 +171,7 @@ export const IdentifiersCreateContextProvider = (props: any): JSX.Element => {
       }
     }
     return newState
-  }
+  }, [])
 
   useEffect(() => {
     void createIdentifierNavigationListener(step, navigate)
@@ -320,6 +380,7 @@ export const IdentifiersCreateContextProvider = (props: any): JSX.Element => {
         onSetKeys,
         keyData,
         onKeyDataChange,
+        keySchema,
         serviceEndpoints,
         onSetServiceEndpoints: setServiceEndpoints,
         serviceEndpointData,

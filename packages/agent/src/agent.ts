@@ -15,12 +15,17 @@ import {
   IS_CONTACT_MANAGER_ENABLED,
   IS_FEDERATION_ENABLED,
   IS_JWKS_HOSTING_ENABLED,
+  IS_LINKED_VP_ENABLED,
   IS_OID4VCI_ENABLED,
   IS_OID4VP_ENABLED,
   IS_PDM_API_ENABLED,
   IS_STATUS_LIST_ENABLED,
   IS_VC_API_ENABLED,
   OID4VP_DEFINITIONS,
+  REST_KMS_APPLICATION_ID,
+  REST_KMS_BASE_URL,
+  REST_KMS_PROVIDER_ID,
+  REST_KMS_TENANT_ID,
   STATUS_LIST_API_BASE_PATH,
   STATUS_LIST_CORRELATION_ID,
   STATUS_LIST_ID,
@@ -29,7 +34,7 @@ import {
 } from './environment-vars.js'
 
 import {ImportDcqlQueryItem, PDManager} from '@sphereon/ssi-sdk.pd-manager'
-import {ClientAuthMethod} from '@sphereon/oid4vci-common'
+import {AuthorizationServerMetadata, ClientAuthMethod, IssuerMetadataV1_0_15} from '@sphereon/oid4vci-common'
 
 import {createAgent, IAgentContext, IAgentPlugin, TAgent} from '@veramo/core'
 import {VcdmCredentialPlugin} from '@sphereon/ssi-sdk.credential-vcdm'
@@ -46,7 +51,8 @@ import {DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore} from '@ver
 import {DIDManager} from '@veramo/did-manager'
 import {DIDResolverPlugin} from '@veramo/did-resolver'
 import {SphereonKeyManager} from '@sphereon/ssi-sdk-ext.key-manager'
-import {SecretBox} from '@veramo/kms-local'
+import {KeyManagementSystem, SecretBox} from '@veramo/kms-local'
+import {RestKeyManagementSystem} from '@sphereon/ssi-sdk.kms-rest'
 import {SphereonKeyManagementSystem} from '@sphereon/ssi-sdk-ext.kms-local'
 import {
   createDidProviders,
@@ -72,7 +78,7 @@ import {
 } from '@sphereon/ssi-sdk.data-store'
 import {IIssuerInstanceArgs, OID4VCIIssuer} from '@sphereon/ssi-sdk.oid4vci-issuer'
 import {
-  IIssuerInstanceOptions,
+  IIssuerInstanceOptions, IIssuerOptions,
   IIssuerOptsPersistArgs,
   IMetadataImportArgs,
   OID4VCIStore,
@@ -82,7 +88,7 @@ import {EventLogger} from '@sphereon/ssi-sdk.event-logger'
 import {RemoteServerApiServer} from '@sphereon/ssi-sdk.remote-server-rest-api'
 import {IssuanceBranding} from '@sphereon/ssi-sdk.issuance-branding'
 import {CredentialProofFormat, defaultHasher, LoggingEventType} from '@sphereon/ssi-types'
-import {createOID4VPRP, getDefaultOID4VPRPOptions} from './utils/oid4vp'
+import {createOID4VPRP, extractDidFromManagedIdentifier, getDefaultOID4VPRPOptions} from './utils/oid4vp'
 import {PresentationExchange} from '@sphereon/ssi-sdk.presentation-exchange'
 import {ISIOPv2RPRestAPIOpts, SIOPv2RPApiServer} from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-api'
 import {DidAuthSiopOpAuthenticator} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
@@ -99,6 +105,7 @@ import {
   DID_WEB_SERVICE_FEATURES,
   oid4vciInstanceOpts,
   oid4vciMetadataOpts,
+  oid4vpInstanceOpts,
   oid4vpMetadataOpts,
   REMOTE_SERVER_API_FEATURES,
   STATUS_LIST_API_FEATURES,
@@ -106,6 +113,7 @@ import {
   VC_API_FEATURES,
 } from './environment-vars-with-deps'
 import {dbConnection} from './database'
+import { KeyValueStore, KeyValueTypeORMStoreAdapter } from '@sphereon/ssi-sdk.kv-store-temp'
 import {IdentifierResolution} from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {JwtService} from '@sphereon/ssi-sdk-ext.jwt-service'
 import {SDJwtPlugin} from '@sphereon/ssi-sdk.sd-jwt'
@@ -119,11 +127,18 @@ import {CredentialValidation} from '@sphereon/ssi-sdk.credential-validation'
 import {OIDFMetadataServer, OIDFMetadataStore} from '@sphereon/ssi-sdk.oidf-metatdata-server'
 import {IEndpointOpts} from '@sphereon/ssi-express-support'
 import {PdManagerApiServer} from '@sphereon/ssi-sdk.pd-manager-rest-api'
+import {LinkedVPManager} from '@sphereon/ssi-sdk.linked-vp'
+import {
+  ILinkedVPManagerAPIEndpointOpts,
+  LinkedVpApiServer,
+  LinkedVPManagerApiServerArgs,
+} from '@sphereon/ssi-sdk.linked-vp-rest-api'
+import {AbstractKeyManagementSystem} from '@veramo/key-manager'
 
 const cliMode: boolean = process.env.RUN_MODE === 'cli'
 
-if(process.env.DISABLE_MIGRATIONS !== 'true') {
-  await (await dbConnection).runMigrations();
+if (process.env.DISABLE_MIGRATIONS !== 'true') {
+  await (await dbConnection).runMigrations()
 }
 
 /**
@@ -140,7 +155,7 @@ const privateKeyStore: PrivateKeyStore = new PrivateKeyStore(dbConnection, new S
  * Define Agent plugins being used. The plugins come from Sphereon's SSI-SDK and Veramo.
  */
 
-const test:ClientAuthMethod = 'client_secret_basic'
+const test: ClientAuthMethod = 'client_secret_basic'
 
 const jsonldProvider = new CredentialProviderJsonld({
   //todo: We could add the GS1 contexts locally as well
@@ -151,15 +166,38 @@ const jsonldProvider = new CredentialProviderJsonld({
 
 const vcdm2JoseProvider = new CredentialProviderVcdm2Jose()
 
+const holderDids: Record<string, string> = {}
+// FIXME we can have different identifiers for different queries
+const holderDid = extractDidFromManagedIdentifier(oid4vpInstanceOpts.asObject.default.rpOpts?.identifierOpts?.idOpts)
+if (holderDid) {
+  holderDids['default'] = holderDid
+}
+
+function buildKmsMap() {
+  const kmsMap: Record<string, KeyManagementSystem | AbstractKeyManagementSystem> = {
+    local: new SphereonKeyManagementSystem(privateKeyStore),
+  }
+
+  if(REST_KMS_BASE_URL) {
+    kmsMap['Digidentity KMS'] = new RestKeyManagementSystem({
+      applicationId: REST_KMS_APPLICATION_ID,
+      baseUrl: REST_KMS_BASE_URL,
+      providerId: REST_KMS_PROVIDER_ID,
+      tenantId: REST_KMS_TENANT_ID,
+      /*
+              userId: REST_KMS_USER_ID,
+      */
+    })
+  }
+  return kmsMap
+}
 
 const plugins: IAgentPlugin[] = [
   new DataStore(dbConnection),
   new DataStoreORM(dbConnection),
   new SphereonKeyManager({
     store: new KeyStore(dbConnection),
-    kms: {
-      local: new SphereonKeyManagementSystem(privateKeyStore),
-    },
+    kms: buildKmsMap(),
   }),
   new DIDManager({
     store: new DIDStore(dbConnection),
@@ -171,8 +209,8 @@ const plugins: IAgentPlugin[] = [
   }),
   new CredentialPlugin(),
   new VcdmCredentialPlugin({issuers: [jsonldProvider, vcdm2JoseProvider]}),
-  new ContactManager({ store: new ContactStore(dbConnection) }),
-  new IssuanceBranding({ store: new IssuanceBrandingStore(dbConnection) }),
+  new ContactManager({store: new ContactStore(dbConnection)}),
+  new IssuanceBranding({store: new IssuanceBrandingStore(dbConnection)}),
   new EventLogger({
     eventTypes: [LoggingEventType.AUDIT],
     store: new EventLoggerStore(dbConnection),
@@ -180,12 +218,12 @@ const plugins: IAgentPlugin[] = [
   new PDManager({
     store: new PDStore(dbConnection),
   }),
-  new CredentialStore({ store: new DigitalCredentialStore(dbConnection) }),
+  new CredentialStore({store: new DigitalCredentialStore(dbConnection)}),
   new DidAuthSiopOpAuthenticator(),
-  new OID4VCIHolder({ hasher: defaultHasher }),
+  new OID4VCIHolder({hasher: defaultHasher}),
   new EbsiSupport(),
   // The Animo funke cert is self-signed and not issued by a CA. Since we perform strict checks on certs, we blindly trust if for the Funke
-  new MDLMdoc({ trustAnchors: [sphereonCA, funkeTestCA], opts: { blindlyTrustedAnchors: [animoFunkeCert] } }),
+  new MDLMdoc({trustAnchors: [sphereonCA, funkeTestCA], opts: {blindlyTrustedAnchors: [animoFunkeCert]}}),
   new IdentifierResolution(),
   new JwtService(),
   new SDJwtPlugin({
@@ -195,9 +233,10 @@ const plugins: IAgentPlugin[] = [
   }),
   new StatusListPlugin({
     defaultStatusListId: STATUS_LIST_ID,
-    allDataSources: DataSources.singleInstance()
+    allDataSources: DataSources.singleInstance(),
   }),
   new CredentialValidation(),
+  new LinkedVPManager(),
 ]
 
 let oid4vpRP: SIOPv2RP | undefined
@@ -209,8 +248,36 @@ if (!cliMode) {
   })
 
   if (IS_OID4VCI_ENABLED) {
+    // Create persistent KeyValueStore instances for OID4VCI with separate namespaces to prevent collisions
+    const issuerMetadataStore = new KeyValueStore<IssuerMetadataV1_0_15>({
+      namespace: 'oid4vci_issuer',
+      store: new KeyValueTypeORMStoreAdapter({
+        dbConnection,
+        namespace: 'oid4vci_issuer'
+      })
+    })
+
+    const authMetadataStore = new KeyValueStore<AuthorizationServerMetadata>({
+      namespace: 'oid4vci_auth',
+      store: new KeyValueTypeORMStoreAdapter({
+        dbConnection,
+        namespace: 'oid4vci_auth'
+      })
+    })
+
+    const issuerOptsStore = new KeyValueStore<IIssuerOptions>({
+      namespace: 'oid4vci_opts',
+      store: new KeyValueTypeORMStoreAdapter({
+        dbConnection,
+        namespace: 'oid4vci_opts'
+      })
+    })
+
     plugins.push(
       new OID4VCIStore({
+        issuerMetadataStores: issuerMetadataStore,
+        authorizationServerMetadataStores: authMetadataStore,
+        issuerOptsStores: issuerOptsStore,
         importIssuerOpts: oid4vciInstanceOpts.asArray,
         importMetadatas: oid4vciMetadataOpts.asArray as Array<IMetadataImportArgs>, // with method parameters like for oidfStoreImportMetadatas, TypeScript is being more lenient. Here we need to cast to the discriminator base interface
       }),
@@ -230,7 +297,7 @@ if (!cliMode) {
     plugins.push(new PresentationExchange())
   }
 
-  if(IS_FEDERATION_ENABLED) {
+  if (IS_FEDERATION_ENABLED) {
     plugins.push(new OIDFMetadataStore())
   }
 }
@@ -242,7 +309,7 @@ const agent = createAgent<TAgentTypes>({
   plugins,
 }) as TAgent<TAgentTypes>
 export default agent
-export const context: IAgentContext<TAgentTypes> = { agent }
+export const context: IAgentContext<TAgentTypes> = {agent}
 
 let defaultDID: string | undefined
 let defaultKid: string | undefined
@@ -259,13 +326,17 @@ if (!cliMode) {
   if (defaultDID) {
     console.log(`[DID] default DID: ${defaultDID}`)
   }
-  defaultKid = await getDefaultKeyRef({ did: defaultDID })
+  defaultKid = await getDefaultKeyRef({did: defaultDID})
   console.log(`[DID] default key identifier: ${defaultKid}`)
   if ((DEFAULT_MODE.toLowerCase() === 'did' && !defaultDID) || !defaultKid) {
     console.warn('[DID] Agent has no default DID and Key Identifier!')
   }
 
-  const oid4vpOpts = IS_OID4VP_ENABLED ? await getDefaultOID4VPRPOptions({ did: defaultDID, x5c: DEFAULT_X5C, resolver }) : undefined
+  const oid4vpOpts = IS_OID4VP_ENABLED ? await getDefaultOID4VPRPOptions({
+    did: defaultDID,
+    x5c: DEFAULT_X5C,
+    resolver,
+  }) : undefined
   if (oid4vpOpts && oid4vpRP) {
     oid4vpRP.setDefaultOpts(oid4vpOpts, context)
   }
@@ -277,7 +348,7 @@ if (!cliMode) {
 /**
  * Build a common express REST API configuration first, used by the exposed Routers/Services below
  */
-const expressSupport = expressBuilder().build({ startListening: false })
+const expressSupport = expressBuilder().build({startListening: false})
 
 /**
  * Authentication and authorization settings
@@ -348,8 +419,18 @@ if (!cliMode) {
         },
       },
     }
-    new SIOPv2RPApiServer({ agent, expressSupport, opts })
+    new SIOPv2RPApiServer({agent, expressSupport, opts})
     console.log('[OID4VP] SIOPv2 and OID4VP started: ' + (process.env.OID4VP_AGENT_BASE_URI ?? `http://localhost:${INTERNAL_PORT}`))
+
+    if (IS_LINKED_VP_ENABLED) {
+      new LinkedVpApiServer({
+        agent, expressSupport,
+        opts: {
+          enableFeatures: ['generate-presentation'],
+        },
+      })
+      console.log('[OID4VP] LinkedVP API server started: ' + (process.env.OID4VP_AGENT_BASE_URI ?? `http://localhost:${INTERNAL_PORT}`))
+    }
   }
 
   /**
@@ -388,13 +469,13 @@ if (!cliMode) {
       opts: {
         // TODO: This does limit hosting to the frontend only, whilst the agent could be behind multiple reverse proxy
         // Reason is that nextjs rewrites return the internal IP address instead of the original
-        // ...(process?.env?.NEXT_PUBLIC_CLIENT_ID && {hostname: process.env.NEXT_PUBLIC_CLIENT_ID.replace('https://', '').replace('http://', '')}),
+        // ...(process?.env?.BROWSER_PUBLIC_CLIENT_ID && {hostname: process.env.BROWSER_PUBLIC_CLIENT_ID.replace('https://', '').replace('http://', '')}),
         globalAuth,
         endpointOpts: {
           enabled: DID_WEB_SERVICE_FEATURES.includes('did-web-global-resolution'),
           // TODO: This does limit hosting to the frontend only, whilst the agent could be behind multiple reverse proxy
           // Reason is that nextjs rewrites return the internal IP address instead of the original
-          ...(process?.env?.NEXT_PUBLIC_CLIENT_ID && { hostname: process.env.NEXT_PUBLIC_CLIENT_ID.replace('https://', '').replace('http://', '') }),
+          ...(process?.env?.BROWSER_PUBLIC_CLIENT_ID && {hostname: process.env.BROWSER_PUBLIC_CLIENT_ID.replace('https://', '').replace('http://', '')}),
         },
         enableFeatures: DID_WEB_SERVICE_FEATURES,
       },
@@ -449,7 +530,7 @@ if (!cliMode) {
     })
   }
 
-  if(IS_PDM_API_ENABLED) {
+  if (IS_PDM_API_ENABLED) {
     new PdManagerApiServer({agent, expressSupport})
   }
 
@@ -485,7 +566,7 @@ if (!cliMode) {
           opts: {
             baseUrl: credentialIssuer,
             endpointOpts: opts.endpointOpts as IEndpointOpts,
-            asClientOpts: opts.issuerOpts.asClientOpts
+            asClientOpts: opts.issuerOpts.asClientOpts,
           } as IOID4VCIRestAPIOpts,
           context: context as unknown as IRequiredContext,
           issuerInstanceArgs: {
@@ -505,11 +586,11 @@ if (!cliMode) {
     )
   }
 
-  if(IS_FEDERATION_ENABLED) {
-    if(oid4vciMetadataOpts) {
+  if (IS_FEDERATION_ENABLED) {
+    if (oid4vciMetadataOpts) {
       await context.agent.oidfStoreImportMetadatas(oid4vciMetadataOpts.asArray)
     }
-    if(oid4vpMetadataOpts) {
+    if (oid4vpMetadataOpts) {
       await context.agent.oidfStoreImportMetadatas(oid4vpMetadataOpts.asArray)
     }
 
@@ -517,7 +598,7 @@ if (!cliMode) {
   }
 
   if (IS_JWKS_HOSTING_ENABLED) {
-    new PublicKeyHosting({ agent, expressSupport, opts: { hostingOpts: { enableFeatures: ['did-jwks', 'all-jwks'] } } })
+    new PublicKeyHosting({agent, expressSupport, opts: {hostingOpts: {enableFeatures: ['did-jwks', 'all-jwks']}}})
   }
 
 
@@ -561,27 +642,30 @@ if (!cliMode) {
       agent,
     })
 
-    await getOrCreateConfiguredStatusList({issuer: defaultDID, keyRef: defaultKid}).catch(e => console.log(`ERROR statuslist`, e))
+    await getOrCreateConfiguredStatusList({
+      issuer: defaultDID,
+      keyRef: defaultKid,
+    }).catch(e => console.log(`ERROR statuslist`, e))
   }
 
   // Import presentation definitions from disk, get base filenames without file ext
   const baseNames = Object.keys(syncDefinitionsOpts)
   const queriesToImport: Array<ImportDcqlQueryItem> = baseNames
-      .map(baseName => {
-        const dcqlQueryPayload = syncDefinitionsOpts[baseName]
-        if (!isDcqlQuery(dcqlQueryPayload)) {
-          return null
-        }
-
-        const { queryId } = dcqlQueryPayload
-        if (OID4VP_DEFINITIONS.length === 0 || OID4VP_DEFINITIONS.includes(queryId)) {
-          console.log(`[OID4VP] Enabling DCQL query id '${queryId}'`)
-
-          return syncDefinitionsOpts[baseName]
-        }
+    .map(baseName => {
+      const dcqlQueryPayload = syncDefinitionsOpts[baseName]
+      if (!isDcqlQuery(dcqlQueryPayload)) {
         return null
-      })
-      .filter((item): item is ImportDcqlQueryItem => item !== null)
+      }
+
+      const {queryId} = dcqlQueryPayload
+      if (OID4VP_DEFINITIONS.length === 0 || OID4VP_DEFINITIONS.includes(queryId)) {
+        console.log(`[OID4VP] Enabling DCQL query id '${queryId}'`)
+
+        return syncDefinitionsOpts[baseName]
+      }
+      return null
+    })
+    .filter((item): item is ImportDcqlQueryItem => item !== null)
 
   if (queriesToImport.length > 0) {
     await agent.siopImportDefinitions({

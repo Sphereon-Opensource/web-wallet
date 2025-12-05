@@ -7,6 +7,7 @@ import {ButtonIcon} from '@sphereon/ui-components.core'
 import type {Contact, Identity, MetadataItem, Party, MetadataTypes} from '@sphereon/ssi-sdk.data-store-types'
 import {PartyTypeType} from '@sphereon/ssi-sdk.data-store-types'
 import {camelToSnakeCase} from '@helpers/StringUtils'
+import {getEnvInt} from '@/src/services/env'
 
 type Props = {
   assetIdFilter?: string
@@ -39,7 +40,7 @@ type GenerateHeaderProps = {
 
 const ContactsList: FC<Props> = (props: Props): ReactElement => {
   const {allowAddNewContact = true, assetIdFilter} = props
-  const truncationLength: number = process.env.NEXT_PUBLIC_TRUNCATION_LENGTH ? Number(process.env.NEXT_PUBLIC_TRUNCATION_LENGTH) : 8
+  const truncationLength: number = getEnvInt('BROWSER_PUBLIC_TRUNCATION_LENGTH', 8)
   const translate = useTranslate()
   const {create, show} = useNavigation()
   const {mutateAsync: deleteContact} = useDelete<Party, HttpError>()

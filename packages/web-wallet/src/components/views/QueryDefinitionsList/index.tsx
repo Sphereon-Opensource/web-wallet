@@ -5,6 +5,7 @@ import {ButtonIcon} from '@sphereon/ui-components.core'
 import {ColumnHeader, Row, SSITableView, TableCellType} from '@sphereon/ui-components.ssi-react'
 import type {DcqlQueryItem} from '@sphereon/ssi-sdk.data-store-types'
 import {DataProvider, DataResource} from '@typings'
+import {getEnv} from '@/src/services/env'
 
 type Props = {
   allowAddNewDcqlQueryItem?: boolean
@@ -17,7 +18,7 @@ type DcqlQueryMenuItem = DcqlQueryItem & {
 const QueryDefinitionsList: FC<Props> = (props: Props): ReactElement => {
   const translate = useTranslate()
   const {allowAddNewDcqlQueryItem = false} = props
-  const uuidTruncationLength: number = process.env.NEXT_PUBLIC_TRUNCATION_LENGTH ? Number(process.env.NEXT_PUBLIC_TRUNCATION_LENGTH) : 8
+  const uuidTruncationLength: number = getEnv('BROWSER_PUBLIC_TRUNCATION_LENGTH') ? Number(getEnv('BROWSER_PUBLIC_TRUNCATION_LENGTH')) : 8
   const {mutateAsync: deleteDcqlQueryItems} = useDeleteMany<DcqlQueryItem[], HttpError>()
   const {show, create, edit} = useNavigation()
   const dataProvider = useDataProvider()

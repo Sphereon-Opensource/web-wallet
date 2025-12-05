@@ -3,6 +3,8 @@ import 'next-auth/jwt'
 
 import Keycloak from 'next-auth/providers/keycloak'
 
+const nextAuthUrl = process.env.NEXTAUTH_URL  || 'http://localhost:3000'
+
 const isIP = (url: string) => {
   const hostname = new URL(url).hostname
   return /^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$/.test(hostname)
@@ -19,10 +21,10 @@ const determineDomain = (url: string) => {
     .join('.')
 }
 
-const useSecureCookies = process.env.NEXTAUTH_URL?.startsWith('https://')
+const useSecureCookies = nextAuthUrl?.startsWith('https://')
 const cookiePrefix = useSecureCookies ? '__Secure-' : ''
-const hostName = determineDomain(process.env.NEXTAUTH_URL!)
-const isIp = isIP(process.env.NEXTAUTH_URL!)
+const hostName = determineDomain(nextAuthUrl!)
+const isIp = isIP(nextAuthUrl!)
 const isIpOrLocalhost = isIp || hostName.toLowerCase() === 'localhost'
 
 export const authOptions: NextAuthConfig = {

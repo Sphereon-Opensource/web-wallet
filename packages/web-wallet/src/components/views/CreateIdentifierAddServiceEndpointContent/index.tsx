@@ -8,22 +8,19 @@ import addServiceEndpointUISchema
 import SelectionField from '@components/fields/SelectionField'
 import {useIdentifierCreateOutletContext} from '@typings/machine/identifiers/create'
 import {useIdentifiersEditContext} from '@typings/machine/identifiers/edit'
-import {useLocation} from 'react-router-dom'
 import style from './index.module.css'
 import {IdentifierServiceEndpoint} from '@typings'
 
-const CreateIdentifierAddServiceEndpointContent: FC = (): ReactElement => {
-  const translate = useTranslate()
-  const location = useLocation()
-  const isEditMode = location.pathname.includes('/edit/')
+type Props = {
+  mode: 'create' | 'edit'
+}
 
-  // Use appropriate context based on mode
-  let context
-  if (isEditMode) {
-    context = useIdentifiersEditContext()
-  } else {
-    context = useIdentifierCreateOutletContext()
-  }
+const CreateIdentifierAddServiceEndpointContent: FC<Props> = ({mode}): ReactElement => {
+  const translate = useTranslate()
+  const isEditMode = mode === 'edit'
+  const [formKey, setFormKey] = React.useState(0)
+
+  const context = isEditMode ? useIdentifiersEditContext() : useIdentifierCreateOutletContext()
 
   const {
     serviceEndpoints,
@@ -56,6 +53,7 @@ const CreateIdentifierAddServiceEndpointContent: FC = (): ReactElement => {
 
     // Reset form by triggering change with empty data
     await onServiceEndpointChange({data: undefined, errors: []})
+    setFormKey(prev => prev + 1)
   }
 
   const formatServiceEndpointValue = (serviceEndpoint: string) => {
@@ -101,7 +99,7 @@ const CreateIdentifierAddServiceEndpointContent: FC = (): ReactElement => {
                 className={style.descriptionCaption}>{translate('create_identifier_service_endpoints_description')}</div>
             </div>
             <FormView
-              key={serviceEndpoints.length}
+              key={formKey}
               schema={addServiceEndpointSchema}
               uiSchema={addServiceEndpointUISchema}
               onFormStateChange={onServiceEndpointChange}
@@ -129,7 +127,7 @@ const CreateIdentifierAddServiceEndpointContent: FC = (): ReactElement => {
             <div className={style.formContainer}>
               <div className={style.addTitleCaption}>{translate('create_identifier_service_endpoints_title')}</div>
               <FormView
-              key={serviceEndpoints.length}
+                key={serviceEndpoints.length}
                 schema={addServiceEndpointSchema}
                 uiSchema={addServiceEndpointUISchema}
                 onFormStateChange={onServiceEndpointChange}

@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react'
+import React, {useCallback, useEffect, useMemo, useState} from 'react'
 import {useNavigate, useParams} from 'react-router-dom'
 import {useList, useOne, useUpdate} from '@refinedev/core'
 import {JSONFormState} from '@sphereon/ui-components.ssi-react'
@@ -7,6 +7,7 @@ import {
   DataResource,
   EditIdentifierRoute,
   IdentifierCapabilities,
+  IdentifierKey,
   IdentifierServiceEndpoint,
   KeyManagementIdentifier,
   KeyManagementRoute,
@@ -16,16 +17,18 @@ import {
 import {IdentifiersEditContext} from '@typings/machine/identifiers/edit'
 import {CoreActions, JsonFormsCore} from '@jsonforms/core'
 import {IIdentifier, ManagedKeyInfo, TKeyType} from '@veramo/core'
+import addKeySchema from '../../../src/schemas/data/addKeySchema.json' assert {type: 'json'}
 
-
-// Supported key types for did:web
-const DID_WEB_SUPPORTED_KEY_TYPES: TKeyType[] = ['Ed25519', 'Secp256k1', 'Secp256r1', 'X25519']
+// Supported key types - adjust based on your requirements
+const SUPPORTED_KEY_TYPES: TKeyType[] = ['Ed25519', 'Secp256k1', 'Secp256r1', 'X25519', 'RSA']
 
 const editIdentifierNavigationListener = async (step: number, navigate: any): Promise<void> => {
   switch (step) {
     case 1:
-      return navigate(EditIdentifierRoute.KEYS)
+      return navigate(EditIdentifierRoute.ALIAS)
     case 2:
+      return navigate(EditIdentifierRoute.KEYS)
+    case 3:
       return navigate(EditIdentifierRoute.SERVICE_ENDPOINTS)
     default:
       return Promise.reject(Error('edit identifier step exceeds maximum steps'))
@@ -44,7 +47,10 @@ export const IdentifiersEditContextProvider = (props: {children: React.ReactNode
   const [serviceEndpoints, setServiceEndpoints] = useState<Array<IdentifierServiceEndpoint>>([])
   const [serviceEndpointData, setServiceEndpointData] = useState<JSONFormState | undefined>()
   const [capabilitiesInfo, setCapabilitiesInfo] = useState<UIKeyCapabilitiesInfo>()
-  const maxInteractiveSteps = 2
+  const [keys, setKeys] = useState<Array<IdentifierKey>>([])
+  const [keyData, setKeyData] = useState<JSONFormState | undefined>()
+  const [keySchema, setKeySchema] = useState<any>(addKeySchema)
+  const maxInteractiveSteps = 3
   const maxAutoSteps = 1
 
   const {data: identifierForEdit, isLoading} = useOne<IIdentifier>({
@@ -59,19 +65,39 @@ export const IdentifiersEditContextProvider = (props: {children: React.ReactNode
     },
   })
 
-  // Update schema with filtered keys
+  // Update schema with dynamic alias field
   useEffect(() => {
-    if (keysData?.data && identifierForEdit?.data) {
-      const identifier = identifierForEdit.data
-      const method = (identifier.provider || '').replace('did:', '') || identifier.did.split(':')[1]
+    if (identifierForEdit?.data) {
+      // Update schema with dynamic options
+      const updatedSchema = {
+        type: 'object',
+        properties: {
+          alias: {
+            type: 'string',
+            title: 'Alias name',
+          },
+        },
+        required: ['alias'],
+      }
 
+      setSchema(updatedSchema)
+    }
+  }, [identifierForEdit])
+
+  // Update key schema with filtered keys
+  useEffect(() => {
+    if (keysData?.data) {
       let filteredKeys = keysData.data
 
-      // Filter out unsupported key types for did:web
-      if (method === 'web') {
-        filteredKeys = keysData.data.filter((key: ManagedKeyInfo) =>
-          DID_WEB_SUPPORTED_KEY_TYPES.includes(key.type),
-        )
+      // Filter based on identifier method if needed
+      if (identifierForEdit?.data) {
+        const method = identifierForEdit.data.did.split(':')[1]
+        // Add method-specific filtering logic here if needed
+        if (method === 'web') {
+          filteredKeys = keysData.data.filter((key: ManagedKeyInfo) =>
+            SUPPORTED_KEY_TYPES.includes(key.type),
+          )
+        }
       }
 
       // Create oneOf options for the dropdown
@@ -82,26 +108,45 @@ export const IdentifiersEditContextProvider = (props: {children: React.ReactNode
 
       // Update schema with dynamic options
       const updatedSchema = {
-        type: 'object',
+        ...addKeySchema,
         properties: {
-          alias: {
-            type: 'string',
-            title: 'Alias name',
-          },
+          ...addKeySchema.properties,
           selectedKeyId: {
             type: 'string',
             title: 'Key',
             oneOf: keyOptions,
           },
         },
-        required: ['alias'],
       }
 
-      setSchema(updatedSchema)
+      setKeySchema(updatedSchema)
     }
   }, [keysData, identifierForEdit])
 
-  const identifierMiddleware = (
+  const identifierKeyMiddleware = useCallback((
+    state: Omit<JsonFormsCore, 'data'> & {data: IdentifierKey},
+    action: CoreActions,
+    defaultReducer: (
+      state: JsonFormsCore,
+      action: CoreActions,
+    ) => Omit<JsonFormsCore, 'data'> & {
+      data: IdentifierKey
+    },
+  ) => {
+    const newState = defaultReducer(state, action)
+    // Only initialize defaults if the data object doesn't have the required fields yet
+    // This prevents infinite re-render loops by not modifying data that's already initialized
+    if (newState?.data && !newState.data.hasOwnProperty('action')) {
+      newState.data = {
+        ...newState.data,
+        action: newState.schema?.properties?.['action']?.default ?? 'generate',
+        purposes: newState.data.purposes || ['assertionMethod', 'authentication'],
+      }
+    }
+    return newState
+  }, [])
+
+  const identifierMiddleware = useCallback((
     state: Omit<JsonFormsCore, 'data'> & {data: KeyManagementIdentifier},
     action: CoreActions,
     defaultReducer: (
@@ -122,11 +167,10 @@ export const IdentifiersEditContextProvider = (props: {children: React.ReactNode
         type: 'did',
         method,
         alias: identifier.alias,
-        selectedKeyId: newState?.data?.selectedKeyId || undefined,
       }
     }
     return newState
-  }
+  }, [identifierForEdit?.data])
 
   useEffect(() => {
     if (identifierForEdit?.data && !identifierData) {
@@ -134,57 +178,68 @@ export const IdentifiersEditContextProvider = (props: {children: React.ReactNode
       const provider = identifier.provider || ''
       const method = provider.replace('did:', '') || identifier.did.split(':')[1]
 
-      console.log('Setting up form with identifier:', identifier)
-      console.log('Identifier keys:', identifier.keys)
-      console.log('Identifier controllerKeyId:', identifier.controllerKeyId)
-
-      // Find the key that matches controllerKeyId
-      const selectedKey = identifier.keys?.find(key => key.kid === identifier.controllerKeyId)
-
-      console.log('Selected key found:', selectedKey)
-      console.log('Selected key kid:', selectedKey?.kid)
-
       const formData = {
         data: {
           type: 'did',
           method,
           alias: identifier.alias,
-          selectedKeyId: selectedKey?.kid,
         } as KeyManagementIdentifier,
         errors: [],
       }
 
-      console.log('Setting identifierData to:', formData)
       setIdentifierData(formData)
+
+      // Initialize keys from the identifier
+      if (identifier.keys && identifier.keys.length > 0) {
+        const method = provider.replace('did:', '') || identifier.did.split(':')[1]
+        const identifierCapability = method ? IdentifierCapabilities[method] : undefined
+
+        const identifierKeys: IdentifierKey[] = identifier.keys.map((key, index) => ({
+          id: key.kid || `key-${index}`,
+          type: key.type,
+          alias: key.meta?.alias || key.kid,
+          kid: key.kid,
+          purposes: key.meta?.purposes || ['assertionMethod', 'authentication'],
+          readonly: true, // Mark existing keys as readonly initially
+          capability: identifierCapability?.add.keyTypes?.find(keyCap => keyCap.keyType === key.type),
+        }))
+        setKeys(identifierKeys)
+      }
     }
-  }, [identifierForEdit, identifierData])
+  }, [identifierForEdit])
 
   useEffect(() => {
     void editIdentifierNavigationListener(step, navigate)
+  }, [step, navigate])
 
+  useEffect(() => {
     const handlePopstate = (): void => {
-      const nextStep = step - maxAutoSteps
-      if (step > 0) {
-        setStep(nextStep)
-      }
+      const path = window.location.pathname
 
-      if (nextStep === 0) {
+      if (path.includes(EditIdentifierRoute.SERVICE_ENDPOINTS)) {
+        setStep(3)
+      } else if (path.includes(EditIdentifierRoute.KEYS)) {
+        setStep(2)
+      } else if (path.includes(EditIdentifierRoute.ALIAS)) {
+        setStep(1)
+      } else {
+        // Not on an edit step, navigate back to list
         navigate(`${MainRoute.KEY_MANAGEMENT}/${KeyManagementRoute.IDENTIFIERS}`)
       }
     }
     window.addEventListener('popstate', handlePopstate)
-    return (): void => {
-      window.removeEventListener('popstate', handlePopstate)
-    }
-  }, [step])
+    return () => window.removeEventListener('popstate', handlePopstate)
+  }, [navigate])
 
   useEffect(() => {
     if (step === 1) {
       setDisabled((identifierData?.errors !== undefined && identifierData?.errors.length !== 0) || identifierData === undefined)
     } else if (step === 2) {
+      setDisabled(!capabilitiesInfo || capabilitiesInfo.errors.length > 0)
+    } else if (step === 3) {
       setDisabled(false)
     }
-  }, [step, identifierData, serviceEndpointData, serviceEndpoints])
+  }, [step, identifierData, serviceEndpointData, serviceEndpoints, capabilitiesInfo])
 
   useEffect(() => {
     if (identifierForEdit?.data) {
@@ -231,6 +286,22 @@ export const IdentifiersEditContextProvider = (props: {children: React.ReactNode
     setIdentifierData(newState)
   }
 
+  const onKeyDataChange = async (data: JSONFormState): Promise<void> => {
+    setKeyData(data)
+  }
+
+  const onSetKeys = (value: React.SetStateAction<IdentifierKey[]>) => {
+    setKeys(value)
+    if (capabilitiesInfo) {
+      const calculatedCapabilitiesInfo = calculateUIKeyCapabilitiesInfo({
+        identifierCapability: capabilitiesInfo.identifierCapability,
+        keys: Array.isArray(value) ? value : keys,
+        mode: capabilitiesInfo.identifierCapability.add,
+      })
+      setCapabilitiesInfo(calculatedCapabilitiesInfo)
+    }
+  }
+
   const onNext = useCallback(async (): Promise<void> => {
     const nextStep: number = step + maxAutoSteps
     if (nextStep <= maxInteractiveSteps) {
@@ -275,9 +346,9 @@ export const IdentifiersEditContextProvider = (props: {children: React.ReactNode
         id,
         values: {
           alias: identifierData?.data.alias,
-          selectedKeyId: identifierData?.data.selectedKeyId,
           web: identifierData?.data.web,
           services: serviceEndpoints,
+          keys,
         },
       },
       {onError, onSuccess},
@@ -314,6 +385,12 @@ export const IdentifiersEditContextProvider = (props: {children: React.ReactNode
         serviceEndpointData,
         onServiceEndpointChange,
         capabilitiesInfo,
+        keys,
+        onSetKeys,
+        keyData,
+        onKeyDataChange,
+        identifierKeyMiddleware,
+        keySchema,
       }}>
       {children}
     </IdentifiersEditContext.Provider>

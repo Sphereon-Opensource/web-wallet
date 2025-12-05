@@ -31,6 +31,7 @@ import {DidApiFeatures, DidWebServiceFeatures} from '@sphereon/ssi-sdk.uni-resol
 import {identifierResolutionContextMethods} from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {credentialValidationMethods} from '@sphereon/ssi-sdk.credential-validation'
 import {FederationMetadataImportArgs} from '@sphereon/ssi-sdk.oidf-metatdata-server'
+import {linkedVPManagerMethods} from '@sphereon/ssi-sdk.linked-vp'
 import { oid4vciIssuerMethods } from '@sphereon/ssi-sdk.oid4vci-issuer'
 
 export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATURES', ENV_VAR_PREFIX)
@@ -58,7 +59,7 @@ export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATU
     ...credentialStoreMethods,
     ...identifierResolutionContextMethods,
     ...credentialValidationMethods,
-    ...oid4vciStoreMethods,'crsGetUniqueCredentials', // FIXME in SSI_SDK
+    ...oid4vciStoreMethods,...oid4vciIssuerMethods,'crsGetUniqueCredentials', // FIXME in SSI_SDK
     // fixme: import from respective modules
       'createSdJwtVc',
       'createSdJwtPresentation',
@@ -68,8 +69,10 @@ export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATU
       'jwtCreateJwsJsonGeneralSignature',
       'jwtCreateJwsJsonFlattenedSignature',
       'jwtCreateJwsCompactSignature',
-      'jwtVerifyJwsCompactSignature'
-    ]
+      'jwtVerifyJwsCompactSignature',
+      'jwtVerifyJwsCompactSignature',
+    ...linkedVPManagerMethods
+  ]
 
 export const oid4vpInstanceOpts = loadJsonFiles<OID4VPInstanceOpts>({ path: OID4VP_RP_OPTIONS_PATH })
 

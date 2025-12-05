@@ -1,4 +1,5 @@
 import {
+  CredentialPayload,
   ICredentialVerifier,
   IDataStore,
   IDataStoreORM,
@@ -25,6 +26,7 @@ import {IStatusListPlugin} from '@sphereon/ssi-sdk.vc-status-list'
 import {ICredentialValidation} from '@sphereon/ssi-sdk.credential-validation'
 import {IOIDFMetadataStore} from '@sphereon/ssi-sdk.oidf-metatdata-server'
 import {IVcdmCredentialPlugin} from '@sphereon/ssi-sdk.credential-vcdm'
+import {ILinkedVPManager} from '@sphereon/ssi-sdk.linked-vp'
 
 export const DID_PREFIX = 'did'
 
@@ -53,7 +55,8 @@ export type TAgentTypes = IDIDManager &
   ICredentialValidation &
   IStatusListPlugin &
   IOIDFMetadataStore &
-  ICredentialVerifier
+  ICredentialVerifier &
+  ILinkedVPManager
 
 /**
  * The Key Management System (name) to use. Currently, there is only one KMS
@@ -104,6 +107,14 @@ interface TemplateMapping {
   template_path: string
   format?: string
 }
+
+export type CredentialGenerationMethod = 'TEMPLATE' | 'JSON_SCHEMA'
+export type CredentialSupplierConfigWithHashOrId = {hashOrId: string}
+export type CredentialSupplierConfigWithCredentialPayload = {
+  credentialPayload: CredentialPayload | Partial<CredentialPayload>,
+  credentialGenerationMethod: CredentialGenerationMethod
+}
+
 
 /*
 /!**

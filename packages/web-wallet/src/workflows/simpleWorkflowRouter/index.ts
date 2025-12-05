@@ -1,10 +1,10 @@
 import {
   Asset,
   createAssetDescriptor,
+  getProcessOwnerDid,
   IInEdge,
   IOutEdge,
   IWorkflowStepDescriptor,
-  PROCESS_OWNER_DID,
   WorkflowDTOType,
   WorkflowEntity,
   WorkflowEntityType,
@@ -42,15 +42,15 @@ export async function newCreateAssetWorkflowEntities(
   },
 ): Promise<IWorkflowStepData> {
   const workflowEntity = new WorkflowEntity()
-  workflowEntity.owner_id = PROCESS_OWNER_DID
+  workflowEntity.owner_id = getProcessOwnerDid()
   workflowEntity.created_at = new Date().toISOString()
   workflowEntity.asset_id = asset.id
 
-  const wfRes = await supabaseServiceClient.from('workflow').insert(workflowEntity).select('id')
+  const wfRes = await supabaseServiceClient().from('workflow').insert(workflowEntity).select('id')
   if (wfRes.error || !wfRes.data || wfRes.data.length == 0) {
     throw new Error('Adding workflow failed: ' + wfRes.error)
   }
-  const workflowId = wfRes.data[0]['id']
+  const workflowId = wfRes.data[0]['id'] as string
   workflowEntity.id = workflowId
 
   /*const res = await create.mutate({
@@ -73,16 +73,16 @@ export async function newCreateAssetWorkflowEntities(
 
   const workflowStepEntity = new WorkflowStepEntity()
   workflowStepEntity.status = WorkflowStatus.New
-  workflowStepEntity.code = createAssetDescriptor.step
-  workflowStepEntity.message = createAssetDescriptor.message
-  workflowStepEntity.message = createAssetDescriptor.message
-  workflowStepEntity.action = createAssetDescriptor.action!
+  workflowStepEntity.code = createAssetDescriptor().step
+  workflowStepEntity.message = createAssetDescriptor().message
+  workflowStepEntity.message = createAssetDescriptor().message
+  workflowStepEntity.action = createAssetDescriptor().action!
   workflowStepEntity.created_at = new Date().toISOString()
-  workflowStepEntity.sender_id = PROCESS_OWNER_DID
-  workflowStepEntity.recipient_id = PROCESS_OWNER_DID
+  workflowStepEntity.sender_id = getProcessOwnerDid()
+  workflowStepEntity.recipient_id = getProcessOwnerDid()
   workflowStepEntity.workflow_id = workflowId
 
-  const stepRes = await supabaseServiceClient.from('workflow_step').insert(workflowStepEntity).select('id')
+  const stepRes = await supabaseServiceClient().from('workflow_step').insert(workflowStepEntity).select('id')
   if (stepRes.error || !stepRes.data || stepRes.data.length == 0) {
     throw new Error('Adding workflow step failed: ' + JSON.stringify(stepRes.error))
   }
@@ -115,7 +115,7 @@ export async function startCreateWorkflow(assetId: string) {
 export function getWorkflowDescriptor(step: WorkflowStepCode | number): IWorkflowStepDescriptor {
   // @ts-ignore
   const stepType: WorkflowStepCode = WorkflowStepCode[WorkflowStepCode[step]]
-  const descriptor = workflowStepDescriptors[stepType]!
+  const descriptor = workflowStepDescriptors()[stepType]!
   return descriptor
 }
 
@@ -188,7 +188,7 @@ export async function progressWorkflowState(
         status: instance.status ?? WorkflowStatus.New,
       }
       let data, error
-      ;({data, error} = await supabaseServiceClient.from('workflow_step').insert(step).select('id'))
+      ;({data, error} = await supabaseServiceClient().from('workflow_step').insert(step).select('id'))
       if (error || !data || data.length == 0) {
         throw new Error('Adding workflow step failed: ' + JSON.stringify(error))
       }
@@ -220,7 +220,7 @@ export async function progressWorkflowState(
       }
       console.log(`Progress ${JSON.stringify(workflowState.workflowStep)}:${inEdge?.inStatus} - updated step ${JSON.stringify(step)} `)
       let data, error
-      ;({data, error} = await supabaseServiceClient.from('workflow_step').update(step).eq('id', workflowState.workflowStep.id).select('id'))
+      ;({data, error} = await supabaseServiceClient().from('workflow_step').update(step).eq('id', workflowState.workflowStep.id).select('id'))
       if (error || !data || data.length == 0) {
         throw new Error('Updating workflow step failed: ' + JSON.stringify(error))
       }

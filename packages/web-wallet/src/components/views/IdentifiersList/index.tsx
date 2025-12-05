@@ -61,7 +61,7 @@ const IdentifiersList: FC<Props> = (props: Props): ReactElement => {
     if (!did.startsWith('did:web')) {
       return
     }
-    // Use the DID as the identifier for the edit route
+
     edit(DataResource.IDENTIFIERS, did)
   }
 

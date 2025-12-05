@@ -1,11 +1,11 @@
 import {NextApiRequest, NextApiResponse} from 'next'
 import axios from 'axios'
-import process from 'process'
 import type {Party} from '@sphereon/ssi-sdk.data-store-types'
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<Party[]>) {
-  const url = process.env.NEXT_PUBLIC_CONTACT_DATA_PROVIDER_BASE_URL
-    ? process.env.NEXT_PUBLIC_CONTACT_DATA_PROVIDER_BASE_URL + '/parties'
+  // Server-side: use process.env directly
+  const url = process.env.CONTACT_DATA_PROVIDER_BASE_URL
+    ? process.env.CONTACT_DATA_PROVIDER_BASE_URL + '/parties'
     : 'http://localhost:5010/parties'
   switch (req.method) {
     case 'GET':

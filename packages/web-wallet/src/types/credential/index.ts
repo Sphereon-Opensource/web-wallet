@@ -7,6 +7,7 @@ import {CredentialMapper} from '@sphereon/ssi-types'
 import {IVerifiableCredential} from '@sphereon/ssi-types'
 import {DigitalCredential} from '@sphereon/ssi-sdk.credential-store'
 import {contextToString} from '@helpers/Credentials/CredentialsHelper'
+import {CredentialPayload} from '@veramo/core'
 
 export type Credential = {
   hash: string
@@ -31,6 +32,7 @@ export enum IssueMethod {
   QR_CODE = 'qrCode',
   WALLET_URL = 'walletUrl',
 }
+
 export class CredentialTableItem {
   id?: string
   hash: string
@@ -45,6 +47,7 @@ export class CredentialTableItem {
   status: CredentialStatus
   actions: string
   miniCardView: CredentialMiniCardViewProps
+  linkedVpId?: string
 
   constructor(data: {
     id?: string
@@ -58,6 +61,7 @@ export class CredentialTableItem {
     subject: Party | undefined
     raw: string
     status: CredentialStatus
+    linkedVpId?: string
     credentialCardViewProps: CredentialMiniCardViewProps
   }) {
     this.id = data.id
@@ -73,6 +77,7 @@ export class CredentialTableItem {
     this.status = data.status
     this.actions = 'actions'
     this.miniCardView = data.credentialCardViewProps
+    this.linkedVpId = data.linkedVpId
   }
 
   static from(credential: DigitalCredential, parties: Party[], credentialSummary?: CredentialSummary): CredentialTableItem {
@@ -118,6 +123,7 @@ export class CredentialTableItem {
       issuer: issuerPartyIdentity.party,
       subject: subjectParty,
       raw: credential.rawDocument,
+      linkedVpId: credential.linkedVpId,
       status,
       credentialCardViewProps,
     })
@@ -145,4 +151,11 @@ export type CredentialUISchema = {
   label?: string
   scope?: string
   elements?: Array<CredentialUISchema>
+}
+
+export type CredentialGenerationMethod = 'TEMPLATE' | 'JSON_SCHEMA'
+export type CredentialSupplierConfigWithHashOrId = {hashOrId: string}
+export type CredentialSupplierConfigWithCredentialPayload = {
+  credentialPayload: CredentialPayload | Partial<CredentialPayload>,
+  credentialGenerationMethod: CredentialGenerationMethod
 }

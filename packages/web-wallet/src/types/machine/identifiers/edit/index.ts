@@ -1,5 +1,5 @@
 import React, {createContext, useContext} from 'react'
-import {IdentifierServiceEndpoint, KeyManagementIdentifier, UIKeyCapabilitiesInfo} from '@typings'
+import {IdentifierKey, IdentifierServiceEndpoint, KeyManagementIdentifier, UIKeyCapabilitiesInfo} from '@typings'
 import {JSONFormState} from '@sphereon/ui-components.ssi-react'
 import {Middleware} from '@jsonforms/core'
 import {IIdentifier} from '@veramo/core'
@@ -31,6 +31,12 @@ export type IdentifiersEditContextType = {
   serviceEndpointData?: JSONFormState
   onServiceEndpointChange: (data: JSONFormState) => Promise<void>
   capabilitiesInfo?: UIKeyCapabilitiesInfo
+  keys: Array<IdentifierKey>
+  onSetKeys: React.Dispatch<React.SetStateAction<Array<IdentifierKey>>>
+  keyData?: JSONFormState
+  onKeyDataChange: (data: JSONFormState) => Promise<void>
+  identifierKeyMiddleware?: Middleware
+  keySchema?: any
 }
 
 export const useIdentifiersEditContext = () => {

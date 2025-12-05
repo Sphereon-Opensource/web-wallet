@@ -1,11 +1,14 @@
-import React, {FC} from 'react'
+import React, {FC, ReactElement} from 'react'
 import {Outlet} from 'react-router-dom'
 import {useTranslate} from '@refinedev/core'
-import {PrimaryButton, ProgressStepIndicator, SecondaryButton} from '@sphereon/ui-components.ssi-react'
+import {PrimaryButton, ProgressStepIndicator, SecondaryButton,
+  SSICredentialCardView, SSITabView, SSITextH1Styled, SSITextH2Styled} from '@sphereon/ui-components.ssi-react'
 import PageHeaderBar from '@components/bars/PageHeaderBar'
 import {staticPropsWithSST} from '@/src/i18n/server'
 import {useCredentialDesignerMachine} from '@machines/credentials/credentialDesignerStateNavigation'
 import style from './index.module.css'
+import {CredentialStatus, fontColors, TabViewRoute} from '@sphereon/ui-components.core'
+import CredentialDesignerLivePreviewView from '@components/views/CredentialDesignerLivePreviewView'
 
 const CredentialDesignerCreatePage: FC = () => {
   const translate = useTranslate()
@@ -58,23 +61,32 @@ const CredentialDesignerCreatePage: FC = () => {
             />
           </div>
         </div>
-        <ProgressStepIndicator
-          steps={[
-            {
-              title: translate('design_credential_details_step_title'),
-              description: translate('design_credential_details_step_description'),
-            },
-            {
-              title: translate('design_credential_visual_design_step_title'),
-              description: translate('design_credential_visual_design_step_description'),
-            },
-            {
-              title: translate('design_credential_claims_structure_step_title'),
-              description: translate('design_credential_claims_structure_step_description'),
-            }
-          ]}
-          activeStep={step}
-        />
+        <div style={{display: 'flex', flexDirection: 'column', gap: 24}}>
+          <CredentialDesignerLivePreviewView
+            backgroundImage={credentialDesignerVisualDesignFormData?.data.background_image?.url}
+            backgroundColor={credentialDesignerVisualDesignFormData?.data.background_color}
+            logoImage={credentialDesignerVisualDesignFormData?.data.logo?.url}
+            textColor={credentialDesignerVisualDesignFormData?.data.text_color}
+            style={{marginTop: 47}}
+          />
+          <ProgressStepIndicator
+            steps={[
+              {
+                title: translate('design_credential_details_step_title'),
+                description: translate('design_credential_details_step_description'),
+              },
+              {
+                title: translate('design_credential_visual_design_step_title'),
+                description: translate('design_credential_visual_design_step_description'),
+              },
+              {
+                title: translate('design_credential_claims_structure_step_title'),
+                description: translate('design_credential_claims_structure_step_description'),
+              }
+            ]}
+            activeStep={step}
+          />
+        </div>
       </div>
     </div>
   )

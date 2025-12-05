@@ -1,32 +1,47 @@
 import crypto from 'crypto'
 import { v4 as uuidv4 } from 'uuid'
+import {joseSignatureAlgToWebCrypto} from '@sphereon/ssi-sdk-ext.key-utils'
+import {JoseSignatureAlgorithmString} from '@sphereon/ssi-types'
 
 export const generateSalt = (): string => {
   return uuidv4()
 }
 
-export const getCryptoDigestAlgorithm = (algorithm: string): string => {
-  switch (algorithm.toUpperCase()) {
-    case 'SHA256':
-    case 'SHA-256':
-      return 'sha256'
-    case 'SHA384':
-    case 'SHA-384':
-      return 'sha384'
-    case 'SHA512':
-    case 'SHA-512':
-      return 'sha512'
-    default:
-      throw new Error(`crypto algorithm: ${algorithm} not supported`)
+export const verifySDJWTSignature = async <T>(data: string, signature: string, key: JsonWebKey): Promise<boolean> => {
+  const {alg, crv, kty} = key
+
+  if (!alg) {
+    return Promise.reject(Error('Key algorithm (alg) is required'))
   }
-}
 
-export const verifySDJWTSignature = async <T>(data: string, signature: string, key: JsonWebKey): Promise<Awaited<Promise<boolean>>> => {
-  let { alg, crv } = key
-  if (alg === 'ES256' || (alg === undefined && crv === 'P-256')) alg = 'ECDSA' // FIXME Funke
-  const publicKey = await crypto.subtle.importKey('jwk', key, { name: alg, namedCurve: crv } as EcKeyImportParams, true, ['verify'])
+  let algorithm: RsaHashedImportParams | EcKeyImportParams
+  let verifyAlgorithm: RsaHashedImportParams | EcdsaParams | RsaPssParams
 
-  return Promise.resolve(
-    crypto.subtle.verify({ name: alg as string, hash: 'SHA-256' }, publicKey, Buffer.from(signature, 'base64'), Buffer.from(data)),
+  if (kty === 'RSA') {
+    const webCryptoAlg = joseSignatureAlgToWebCrypto(alg as JoseSignatureAlgorithmString)
+    algorithm = webCryptoAlg as RsaHashedImportParams
+    verifyAlgorithm = webCryptoAlg as RsaHashedImportParams | RsaPssParams
+  } else if (kty === 'EC') {
+    algorithm = {
+      name: 'ECDSA',
+      namedCurve: crv,
+    } as EcKeyImportParams
+
+    const webCryptoAlg = joseSignatureAlgToWebCrypto(alg as JoseSignatureAlgorithmString)
+    verifyAlgorithm = {
+      name: 'ECDSA',
+      hash: webCryptoAlg.hash,
+    }
+  } else {
+    return Promise.reject(Error(`Unsupported key type: ${kty}`))
+  }
+
+  const publicKey = await crypto.subtle.importKey('jwk', key, algorithm, true, ['verify'])
+
+  return crypto.subtle.verify(
+    verifyAlgorithm,
+      publicKey,
+      Buffer.from(signature, 'base64'),
+      Buffer.from(data),
   )
 }

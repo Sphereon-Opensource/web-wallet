@@ -1,7 +1,7 @@
 import {ClaimsDescriptionV1_0_15, CredentialConfigurationSupportedV1_0_15} from '@sphereon/oid4vci-common'
 import {CredentialSchema, ToCredentialConfigurationArgs} from '@typings'
-import agent from '@agent'
-import {NEXT_PUBLIC_ISSUER_CORRELATION_ID} from '@/src/agent/environment'
+import {getAgent} from '@agent'
+import {getIssuerCorrelationId} from '@/src/agent/environment'
 
 export function schemaToClaims(
   schema: CredentialSchema,
@@ -54,18 +54,16 @@ export function schemaToClaims(
 }
 
 export const toCredentialConfiguration = (args: ToCredentialConfigurationArgs): CredentialConfigurationSupportedV1_0_15 => {
-  const { identifier, schema, branding } = args
+  const {identifier, schema, branding, options} = args
   const {
     scope,
     cryptographicBindingMethodsSupported = ['did:web', 'did:jwk'],
     credentialSigningAlgValuesSupported = ['ES256'],
-    proofTypesSupported
+    proofTypesSupported,
+
   } = args.options
 
-  const vct = args.options.vct ?? ((format === 'dc+sd-jwt' || format === 'vc+sd-jwt') ? identifier : undefined)
-
-  return {
-    format,
+  const baseConfig = {
     scope,
     cryptographic_binding_methods_supported: cryptographicBindingMethodsSupported,
     cryptographic_suites_supported: credentialSigningAlgValuesSupported,
@@ -102,9 +100,9 @@ export const updateOid4vciMetadata = async (identifier: string, credentialConfig
   })
 
   if (metadata) {
-    return agent.oid4vciStorePersistMetadata({
+    return await getAgent().oid4vciStorePersistMetadata({
       metadataType: 'issuer',
-      correlationId: NEXT_PUBLIC_ISSUER_CORRELATION_ID,
+      correlationId: issuerCorrelationId,
       metadata: {
         ...metadata,
         credential_configurations_supported: {
@@ -113,7 +111,7 @@ export const updateOid4vciMetadata = async (identifier: string, credentialConfig
         },
       },
     })
-      .then(() => agent.oid4vciRefreshInstanceMetadata({credentialIssuer: getIssuerCorrelationId()}))
+      .then(() => getAgent().oid4vciRefreshInstanceMetadata({credentialIssuer: getIssuerCorrelationId()}))
       .catch((e) => Promise.reject(Error(`Failed to update oid4vci metadata. ${e.message}`)))
   }
 }

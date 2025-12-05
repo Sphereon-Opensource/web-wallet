@@ -4,6 +4,7 @@ import {ColumnHeader, CredentialMiniCardViewProps, SSITableView, TableCellType, 
 import {CredentialStatus} from '@sphereon/ui-components.core'
 import {useCredentialsOutletContext} from '@machines/credentials/credentialCreateStateNavigation'
 import styles from './index.module.css'
+import {getEnv} from '@/src/services/env'
 
 type CredentialDetails = {
   credentialTitle: string
@@ -30,7 +31,7 @@ const IssueCredentialIssueMethodContent: FC = (): ReactElement => {
       credentialDetails: {
         credentialTitle: credentialType?.label ?? translate('unknown_label'),
         credentialStatus: CredentialStatus.DRAFT,
-        issuerName: process.env.NEXT_PUBLIC_TEMP_CREDENTIAL_ISSUER_NAME ?? translate('unknown_label'),
+        issuerName: getEnv('BROWSER_PUBLIC_TEMP_CREDENTIAL_ISSUER_NAME') ?? translate('unknown_label'),
         issueDate: Date.now(),
       },
       issueType: issueMethod ?? issueMethods[0],
