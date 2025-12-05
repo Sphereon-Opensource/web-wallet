@@ -52,7 +52,7 @@ export const roleConfig:Array<RoleData> = [
             type: "item",
             label: "Design",
             icon: "design",
-            path: "/credentials/designer/create"
+            path: "/credentials/designs"
           }
         ]
       },

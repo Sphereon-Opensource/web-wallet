@@ -120,7 +120,8 @@ const _app = (props: React.PropsWithChildren<unknown>) => {
     },
     {
       name: DataResource.CREDENTIAL_DESIGNS,
-      create: `${MainRoute.DESIGNER}/${MainRoute.SUB_CREATE}`,
+      list: `${MainRoute.CREDENTIALS}/${MainRoute.DESIGNS}`,
+      create: `${MainRoute.CREDENTIALS}/${MainRoute.DESIGNS}/${MainRoute.SUB_CREATE}`,
       meta: {dataProviderName: DataProvider.CREDENTIAL_DESIGNS},
     },
   ]
