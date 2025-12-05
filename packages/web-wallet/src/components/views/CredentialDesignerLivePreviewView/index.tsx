@@ -104,6 +104,11 @@ const CredentialDesignerLivePreviewView: FC<Props> = (props: Props): ReactElemen
           paddingBottom: 24,
         }}>
         <CredentialMiniCardView
+          {...(backgroundImage && {
+            backgroundImage: {
+              uri: backgroundImage
+            },
+          })}
           backgroundColor={backgroundColor}
           logoColor={textColor}
           {...(logo && {
@@ -118,7 +123,7 @@ const CredentialDesignerLivePreviewView: FC<Props> = (props: Props): ReactElemen
         />
       </div>
     )
-  }, [backgroundColor, textColor, logo])
+  }, [logo, backgroundImage, backgroundColor, textColor])
 
   const routes = useMemo(() => [
     {
