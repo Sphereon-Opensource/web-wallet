@@ -1,6 +1,7 @@
 import {
   CredentialDefinitionJwtVcJsonLdAndLdpVcV1_0_15,
-  CredentialsSupportedDisplay, OID4VCICredentialFormat, ProofTypesSupported,
+  CredentialsSupportedDisplay,
+  ProofTypesSupported,
 } from '@sphereon/oid4vci-common'
 import {CredentialSchema} from '@/src/types'
 

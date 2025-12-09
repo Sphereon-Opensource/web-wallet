@@ -159,9 +159,3 @@ export type CredentialSupplierConfigWithCredentialPayload = {
   credentialPayload: CredentialPayload | Partial<CredentialPayload>,
   credentialGenerationMethod: CredentialGenerationMethod
 }
-
-export type CredentialDesignTableItem = {
-  id: string
-  name: string
-  actions: string
-}
