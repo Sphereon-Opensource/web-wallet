@@ -115,3 +115,29 @@ export const updateOid4vciMetadata = async (identifier: string, credentialConfig
       .catch((e) => Promise.reject(Error(`Failed to update oid4vci metadata. ${e.message}`)))
   }
 }
+
+export const removeCredentialConfigurationFromOid4vciMetadata = async (identifier: string): Promise<void> => {
+  const issuerCorrelationId = getIssuerCorrelationId()
+  if (!issuerCorrelationId) {
+    return Promise.reject('Env var BROWSER_PUBLIC_ISSUER_CORRELATION_ID is missing')
+  }
+  const metadata = await getAgent().oid4vciStoreGetMetadata({
+    metadataType: 'issuer',
+    correlationId: issuerCorrelationId,
+  })
+
+  if (metadata) {
+    delete metadata.credential_configurations_supported[identifier]
+
+    return await getAgent().oid4vciStorePersistMetadata({
+      metadataType: 'issuer',
+      correlationId: issuerCorrelationId,
+      metadata: {
+        ...metadata,
+        credential_configurations_supported: metadata.credential_configurations_supported,
+      },
+    })
+    .then(() => getAgent().oid4vciRefreshInstanceMetadata({credentialIssuer: getIssuerCorrelationId()}))
+    .catch((e) => Promise.reject(Error(`Failed to update oid4vci metadata. ${e.message}`)))
+  }
+}

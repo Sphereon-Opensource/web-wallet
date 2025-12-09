@@ -2,6 +2,7 @@ import React, {ChangeEvent, FC, ReactElement, useState} from 'react'
 import {HttpError, useDelete, useList, useNavigation, useTranslate} from '@refinedev/core'
 import {ColumnHeader, Row, SSITableView, TableCellType} from '@sphereon/ui-components.ssi-react'
 import {ButtonIcon} from '@sphereon/ui-components.core'
+import {removeCredentialConfigurationFromOid4vciMetadata} from '@/src/services/credentials/credentialDesignService'
 import {Button, CredentialDesignDTO, CredentialDesignTableItem, DataResource} from '@typings'
 
 type Props = {
@@ -39,7 +40,12 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
   })
 
   const onDelete = async (data: Row<CredentialDesignTableItem>): Promise<void> => {
-    // TODO SSISDK-92 implement
+    return deleteCredential({
+      resource: DataResource.CREDENTIAL_DESIGNS,
+      id: data.original.id
+    })
+    .then(() => removeCredentialConfigurationFromOid4vciMetadata(data.original.name))
+    .catch(e => Promise.reject(Error(e.message)))
   }
 
   const onShow = async (data: Row<CredentialDesignTableItem>): Promise<void> => {
