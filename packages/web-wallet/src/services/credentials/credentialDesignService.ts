@@ -132,10 +132,7 @@ export const removeCredentialConfigurationFromOid4vciMetadata = async (identifie
     return await getAgent().oid4vciStorePersistMetadata({
       metadataType: 'issuer',
       correlationId: issuerCorrelationId,
-      metadata: {
-        ...metadata,
-        credential_configurations_supported: metadata.credential_configurations_supported,
-      },
+      metadata,
     })
     .then(() => getAgent().oid4vciRefreshInstanceMetadata({credentialIssuer: getIssuerCorrelationId()}))
     .catch((e) => Promise.reject(Error(`Failed to update oid4vci metadata. ${e.message}`)))
