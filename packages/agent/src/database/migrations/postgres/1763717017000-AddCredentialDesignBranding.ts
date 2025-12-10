@@ -209,19 +209,35 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
                         'key', 'credentialType',
                         'set_id', _set_id,
                         'value_type', 'Text',
-                        'meta_data_values', jsonb_build_array(
-                            jsonb_build_object('id', gen_random_uuid(), 'index', 0, 'key_id', _credential_type_key_id, 'text_value', 'VerifiableCredential'),
-                            jsonb_build_object('id', gen_random_uuid(), 'index', 1, 'key_id', _credential_type_key_id, 'text_value', p_identifier)
-                        )
+                        'meta_data_values', (
+                          select jsonb_agg(
+                              jsonb_build_object(
+                                  'id', id,
+                                  'index', index,
+                                  'key_id', key_id,
+                                  'text_value', text_value
+                              ) order by index
+                          )
+                          from meta_data_values
+                          where key_id = _credential_type_key_id
+                      )
                     ),
                     jsonb_build_object(
                         'id', _credential_format_key_id,
                         'key', 'credentialFormat',
                         'set_id', _set_id,
                         'value_type', 'Text',
-                        'meta_data_values', jsonb_build_array(
-                            jsonb_build_object('id', gen_random_uuid(), 'index', 0, 'key_id', _credential_format_key_id, 'text_value', p_credential_format)
-                        )
+                        'meta_data_values', (
+                          select jsonb_agg(
+                              jsonb_build_object(
+                                  'id', id,
+                                  'index', index,
+                                  'key_id', key_id,
+                                  'text_value', text_value
+                              ) order by index
+                          )
+                          from meta_data_values
+                          where key_id = _credential_format_key_id
                     )
                 ),
                 'schema_definition', jsonb_build_array(
@@ -252,10 +268,9 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
                         )
                     )
                 ),
-                'credential_design_branding', jsonb_build_array(
-                    jsonb_build_object(
-                        'id', _branding_id,
-                        'logo', CASE
+                'credential_design_branding', jsonb_build_object(
+                     'id', _branding_id,
+                     'logo', CASE
                             WHEN _logo_attr_id IS NOT NULL THEN
                                 jsonb_build_object(
                                     'id', _logo_attr_id,
@@ -289,10 +304,9 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
                                     END
                                 )
                             ELSE null
-                        END,
-                        'background_color', p_branding->>'background_color',
-                        'meta_data_set_id', _set_id
-                    )
+                     END,
+                     'background_color', p_branding->>'background_color',
+                     'meta_data_set_id', _set_id
                 )
             );
         end;
@@ -423,6 +437,34 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
                     returning id into _logo_attr_id;
                 end if;
             else
+                -- Remove existing logo completely (attributes + dimensions)
+                declare
+                    _old_logo_attr uuid;
+                    _old_logo_dim uuid;
+                begin
+                    select logo into _old_logo_attr
+                    from credential_design_branding
+                    where id = _branding_id;
+            
+                    if _old_logo_attr is not null then
+                        update credential_design_branding
+                        set logo = null
+                        where id = _branding_id;
+                    
+                        select "dimensionsId" into _old_logo_dim
+                        from "ImageAttributes"
+                        where id = _old_logo_attr;
+            
+                        delete from "ImageAttributes"
+                        where id = _old_logo_attr;
+            
+                        if _old_logo_dim is not null then
+                            delete from "ImageDimensions"
+                            where id = _old_logo_dim;
+                        end if;
+                    end if;
+                end;
+                 
                 _logo_attr_id := null;
                 _logo_dimensions_id := null;
             end if;
@@ -466,6 +508,33 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
                     returning id into _bg_attr_id;
                 end if;
             else
+              -- Remove existing background image completely (attributes + dimensions)
+              declare
+                  _old_bg_attr uuid;
+                  _old_bg_dim uuid;
+              begin
+                  select background_image into _old_bg_attr
+                  from credential_design_branding
+                  where id = _branding_id;
+          
+                  if _old_bg_attr is not null then
+                      update credential_design_branding
+                      set background_image = null
+                      where id = _branding_id;
+                      
+                      select "dimensionsId" into _old_bg_dim
+                      from "ImageAttributes"
+                      where id = _old_bg_attr;
+          
+                      delete from "ImageAttributes"
+                      where id = _old_bg_attr;
+          
+                      if _old_bg_dim is not null then
+                          delete from "ImageDimensions"
+                          where id = _old_bg_dim;
+                      end if;
+                  end if;
+              end;       
                 _bg_attr_id := null;
                 _bg_dimensions_id := null;
             end if;
@@ -490,27 +559,43 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
                         'key', 'credentialType',
                         'set_id', p_set_id,
                         'value_type', 'Text',
-                        'meta_data_values', jsonb_build_array(
-                            jsonb_build_object('id', gen_random_uuid(), 'index', 0, 'key_id', _credential_type_key_id, 'text_value', 'VerifiableCredential'),
-                            jsonb_build_object('id', gen_random_uuid(), 'index', 1, 'key_id', _credential_type_key_id, 'text_value', p_identifier)
-                        )
+                        'meta_data_values', (
+                          select jsonb_agg(
+                              jsonb_build_object(
+                                  'id', id,
+                                  'index', index,
+                                  'key_id', key_id,
+                                  'text_value', text_value
+                              ) order by index
+                          ) 
+                          from meta_data_values
+                          where key_id = _credential_type_key_id
+                      )
                     ),
                     jsonb_build_object(
                         'id', _credential_format_key_id,
                         'key', 'credentialFormat',
                         'set_id', p_set_id,
                         'value_type', 'Text',
-                        'meta_data_values', jsonb_build_array(
-                            jsonb_build_object('id', gen_random_uuid(), 'index', 0, 'key_id', _credential_format_key_id, 'text_value', p_credential_format)
-                        )
+                        'meta_data_values', (
+                          select jsonb_agg(
+                              jsonb_build_object(
+                                  'id', id,
+                                  'index', index,
+                                  'key_id', key_id,
+                                  'text_value', text_value
+                              ) order by index
+                          ) 
+                          from meta_data_values
+                          where key_id = _credential_format_key_id
+                      )
                     )
                 ),
                 'schema_definition', jsonb_build_array(
                     jsonb_build_object('id', _schema_definition_id, 'schema', p_schema),
                     jsonb_build_object('id', _ui_schema_definition_id, 'schema', p_ui_schema)
                 ),
-                'credential_design_branding', jsonb_build_array(
-                    jsonb_build_object(
+                'credential_design_branding', jsonb_build_object(
                         'id', _branding_id,
                         'logo', CASE
                             WHEN _logo_attr_id IS NOT NULL THEN
@@ -549,7 +634,6 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
                         END,
                         'background_color', p_branding->>'background_color',
                         'meta_data_set_id', p_set_id
-                    )
                 )
             );
         end;
