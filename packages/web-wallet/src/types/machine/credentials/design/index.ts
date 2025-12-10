@@ -9,8 +9,8 @@ export type StoreCredentialSchemaArgs = {
 }
 
 export type CredentialDesignBranding = {
-  logoUrl?: string
-  backgroundUrl?: string
+  logoUri?: string
+  backgroundUri?: string
   logoColor?: string
   backgroundColor?: string
 }
