@@ -100,7 +100,7 @@ export const credentialDesignDataProvider = (): DataProvider => ({
   create: async <TData extends BaseRecord = BaseRecord, TVariables = {}>({resource, variables, meta}: CreateParams<TVariables>): Promise<CreateResponse<TData>> => {
     const client = supabaseServiceClient()
     // @ts-ignore
-    const { name, credentialFormat, schema, uiSchema, branding, statusListUri } = variables
+    const { name, schema, uiSchema, branding, statusListUri, options } = variables
 
     // Enrich the schema with disclosureFrame (for non-required fields) and statusList (if URI provided)
     const enrichedSchema = enrichSchemaWithStatusList(enrichSchemaWithDisclosureFrame(schema), statusListUri)
@@ -128,22 +128,27 @@ export const credentialDesignDataProvider = (): DataProvider => ({
     const { data, error } = await client.rpc(
       'insert_credential_design', {
         p_identifier: name,
-        p_credential_format: credentialFormat,
+        p_credential_format: options.format,
         p_schema: enrichedSchema,
         p_ui_schema: uiSchema,
         p_form_step_id: formStepId,
-        p_branding: {
-          logo: branding.logo,
-          background_image: branding.backgroundImage,
-          text_color: branding.textColor,
-          background_color: branding.backgroundColor
-        }
+        p_vct: options.vct,
+        ...(branding && {
+          p_branding: {
+            logo: branding.logo,
+            background_image: branding.backgroundImage,
+            text_color: branding.textColor,
+            background_color: branding.backgroundColor
+          }
+        })
       }
     )
 
     if (error) {
       throw new Error(error.message)
     }
+
+    console.log(`INSERT DATA: ${JSON.stringify(data)}`)
 
     const result = new CredentialDesignEntity(data).asDTO() as unknown
 

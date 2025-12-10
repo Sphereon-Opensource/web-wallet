@@ -207,7 +207,6 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
         .then(buildResult => {
           storeCredentialSchema({
             name: credentialDesignerDetailsFormData.data.identifier,
-            credentialFormat: credentialDesignerDetailsFormData.data.format,
             schema: buildResult.schema,
             uiSchema: buildResult.uiSchema,
             branding: new CredentialDesignBrandingDTO({
@@ -215,7 +214,15 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
                 textColor: credentialDesignerVisualDesignFormData.data?.text_color,
                 backgroundImage: credentialDesignerVisualDesignBackgroundImage,
                 logo: credentialDesignerVisualDesignLogo,
-            })
+            }),
+            options: {
+              format: credentialDesignerDetailsFormData.data.format,
+              scope: credentialDesignerDetailsFormData.data.scope,
+              credentialSigningAlgValuesSupported: credentialDesignerDetailsFormData.data.credential_signing_alg_values_supported,
+              vct: credentialDesignerDetailsFormData.data.vct ?? credentialDesignerDetailsFormData.data.identifier,
+              cryptographicBindingMethodsSupported: credentialDesignerDetailsFormData.data.cryptographic_binding_methods_supported,
+              proofTypesSupported: credentialDesignerDetailsFormData.data.proof_types_supported,
+            }
           })
           .then(() => {
             const credentialConfiguration = toCredentialConfiguration({

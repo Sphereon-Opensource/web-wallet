@@ -31,7 +31,8 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
             p_schema jsonb,
             p_ui_schema jsonb,
             p_form_step_id uuid,
-            p_branding jsonb
+            p_branding jsonb,
+            p_vct text default null
         )
         returns jsonb
         language plpgsql
@@ -40,6 +41,7 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
             _set_id uuid;
             _credential_type_key_id uuid;
             _credential_format_key_id uuid;
+            _vct_key_id uuid;
             _schema_definition_id uuid;
             _ui_schema_definition_id uuid;
             _branding_id uuid;
@@ -74,6 +76,15 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
         
             insert into meta_data_values (key_id, index, text_value)
             values (_credential_format_key_id, 0, p_credential_format);
+            
+            if p_vct is not null then
+                insert into meta_data_keys (set_id, key, value_type)
+                values (_set_id, 'VCT', 'Text')
+                returning id into _vct_key_id;
+        
+                insert into meta_data_values (key_id, index, text_value)
+                values (_vct_key_id, 0, p_vct);
+            end if;
         
             insert into schema_definition (
                 correlation_id,
@@ -226,7 +237,25 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
                           from meta_data_values
                           where key_id = _credential_format_key_id
                         )
-                    )
+                    ),
+                    CASE
+                        WHEN _vct_key_id IS NOT NULL THEN
+                            jsonb_build_object(
+                                'id', _vct_key_id,
+                                'key', 'VCT',
+                                'set_id', _set_id,
+                                'value_type', 'Text',
+                                'meta_data_values', jsonb_build_array(
+                                    jsonb_build_object(
+                                        'id', gen_random_uuid(),
+                                        'index', 0,
+                                        'key_id', _vct_key_id,
+                                        'text_value', p_vct
+                                    )
+                                )
+                            )
+                        ELSE null
+                    END
                 ),
                 'schema_definition', jsonb_build_array(
                     jsonb_build_object(
