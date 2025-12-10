@@ -5,7 +5,7 @@ import {
   CredentialSignerCallback,
 } from '@sphereon/oid4vci-issuer'
 import {TemplateVCGenerator} from './templateManager'
-import {CredentialRequestV1_0_15, OID4VCICredentialFormat} from '@sphereon/oid4vci-common'
+import {CredentialRequestV1_0_15, OID4VCICredentialFormat, ProofOfPossession} from '@sphereon/oid4vci-common'
 import {CONF_PATH} from '../environment-vars'
 import {
   CredentialSupplierConfigWithCredentialPayload,
@@ -37,6 +37,52 @@ class TemplateCredentialDataSupplier {
 
   constructor(correlationId: string) {
     this.issuerCorrelationId = correlationId
+  }
+
+  /**
+   * Normalizes proof/proofs parameters from credential request into an array of ProofOfPossession objects.
+   * Validates mutual exclusivity and handles both v13 (proof) and v15 (proofs) formats.
+   */
+  private normalizeProofs(credentialRequest: CredentialRequestV1_0_15): ProofOfPossession[] {
+    const credReq = credentialRequest as CredentialRequestV1_0_15
+
+    // Validate request structure (mutually exclusive)
+    if (credReq.proof && credReq.proofs) {
+      throw Error('Credential request may not contain both proof and proofs parameters')
+    }
+
+    // Normalize candidates into a single array of ProofOfPossession objects
+    const proofCandidates: ProofOfPossession[] = []
+
+    if (credReq.proof) {
+      proofCandidates.push(credReq.proof)
+    } else if (credReq.proofs) {
+      // Handle "proofs": prioritize 'jwt' as it's the only fully supported type
+      if (Array.isArray(credReq.proofs.jwt)) {
+        // Map to ProofOfPossession objects, handling both string and object formats
+        for (const jwtProof of credReq.proofs.jwt) {
+          if (typeof jwtProof === 'string') {
+            // Handle case where jwt array contains strings instead of ProofOfPossession objects
+            proofCandidates.push({
+              proof_type: 'jwt',
+              jwt: jwtProof,
+            })
+          } else if (jwtProof && typeof jwtProof === 'object' && 'jwt' in jwtProof) {
+            // Handle proper ProofOfPossession object
+            proofCandidates.push(jwtProof)
+          }
+        }
+      }
+
+      // Check if there are no supported proofs found
+      if (proofCandidates.length === 0) {
+        const availableTypes = Object.keys(credReq.proofs).join(', ')
+        throw Error(`No supported proof types found in request. Available: [${availableTypes}]`)
+      }
+    }
+
+    // If no proof or proofs provided, return empty array (validation handled by caller if needed)
+    return proofCandidates
   }
 
   // TODO Refactor, this is the TemplateCredentialDataSupplier & defaultCredentialDataSupplier smacked together
@@ -74,17 +120,44 @@ class TemplateCredentialDataSupplier {
       const credentialPayload = credentialDataSupplierInput.credentialPayload as CredentialPayload
       console.log('-------------> credentialPayload', credentialPayload)
 
+      // Normalize proof/proofs into array of candidates
+      const proofCandidates = this.normalizeProofs(credentialRequest)
+
       if (!Array.isArray(credentialPayload.type) || 'vct' in credentialPayload) {
-        if (!credentialRequest.proof?.jwt) {
-          throw Error(`Credential request proof was missing`)
+        if (proofCandidates.length === 0 || !proofCandidates[0]?.jwt) {
+          throw Error('Credential request proof was missing')
         }
       }
       if (!credentialPayload.credentialSubject?.id && !('vct' in credentialPayload)) {
-        const decodedJwt = decodeJWT(credentialRequest.proof!.jwt)
-        const kid = decodedJwt.header.kid
-        if (!kid) {
-          throw Error('No kid value found')
+        if (proofCandidates.length === 0 || !proofCandidates[0]?.jwt) {
+          throw Error('Proof of possession is required. No proof or proofs value present in credential request')
         }
+
+        // Try to decode JWT proofs in order until one succeeds
+        let decodedJwt: ReturnType<typeof decodeJWT> | undefined
+        let kid: string | undefined
+        const decodeErrors: string[] = []
+
+        for (const proof of proofCandidates) {
+          try {
+            decodedJwt = decodeJWT(proof.jwt)
+            kid = decodedJwt.header.kid
+            if (kid) {
+              break
+            }
+          } catch (error) {
+            const msg = error instanceof Error ? error.message : String(error)
+            decodeErrors.push(msg)
+          }
+        }
+
+        if (!kid) {
+          const errorMsg = decodeErrors.length > 0
+            ? `No kid value found. Decode errors: ${decodeErrors.join('; ')}`
+            : 'No kid value found'
+          throw Error(errorMsg)
+        }
+
         const did = kid.split('#')[0] as string
         if (!did || !did.startsWith('did:')) {
           throw Error(`invalid DID supplied as subject ${did}`)
