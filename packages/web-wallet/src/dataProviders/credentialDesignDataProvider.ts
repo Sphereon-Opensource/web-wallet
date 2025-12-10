@@ -133,6 +133,8 @@ export const credentialDesignDataProvider = (): DataProvider => ({
         p_ui_schema: uiSchema,
         p_form_step_id: formStepId,
         p_vct: options.vct,
+        p_cryptographic_binding_methods_supported: options.cryptographicBindingMethodsSupported ?? [],
+        p_credential_signing_alg_values_supported: options.credentialSigningAlgValuesSupported ?? [],
         ...(branding && {
           p_branding: {
             logo: branding.logo,

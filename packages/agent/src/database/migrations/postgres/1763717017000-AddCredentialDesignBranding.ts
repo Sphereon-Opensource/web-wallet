@@ -32,7 +32,9 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
             p_ui_schema jsonb,
             p_form_step_id uuid,
             p_branding jsonb,
-            p_vct text default null
+            p_vct text default null,
+            p_cryptographic_binding_methods_supported text[] default '{}',
+            p_credential_signing_alg_values_supported text[] default '{}'
         )
         returns jsonb
         language plpgsql
@@ -42,6 +44,8 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
             _credential_type_key_id uuid;
             _credential_format_key_id uuid;
             _vct_key_id uuid;
+            _cryptographic_binding_key_id uuid;
+            _credential_signing_alg_key_id uuid;
             _schema_definition_id uuid;
             _ui_schema_definition_id uuid;
             _branding_id uuid;
@@ -79,11 +83,31 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
             
             if p_vct is not null then
                 insert into meta_data_keys (set_id, key, value_type)
-                values (_set_id, 'VCT', 'Text')
+                values (_set_id, 'vct', 'Text')
                 returning id into _vct_key_id;
         
                 insert into meta_data_values (key_id, index, text_value)
                 values (_vct_key_id, 0, p_vct);
+            end if;
+            
+            insert into meta_data_keys (set_id, key, value_type)
+            values (_set_id, 'cryptographicBindingMethodsSupported', 'Text')
+            returning id into _cryptographic_binding_key_id;
+            
+            if array_length(p_cryptographic_binding_methods_supported, 1) > 0 then
+                insert into meta_data_values (key_id, index, text_value)
+                select _cryptographic_binding_key_id, i, val
+                from unnest(p_cryptographic_binding_methods_supported) with ordinality as t(val, i);
+            end if;
+            
+            insert into meta_data_keys (set_id, key, value_type)
+            values (_set_id, 'credentialSigningAlgValuesSupported', 'Text')
+            returning id into _credential_signing_alg_key_id;
+            
+            if array_length(p_credential_signing_alg_values_supported, 1) > 0 then
+                insert into meta_data_values (key_id, index, text_value)
+                select _credential_signing_alg_key_id, i, val
+                from unnest(p_credential_signing_alg_values_supported) with ordinality as t(val, i);
             end if;
         
             insert into schema_definition (
@@ -238,11 +262,53 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
                           where key_id = _credential_format_key_id
                         )
                     ),
+                    jsonb_build_object(
+                        'id', _cryptographic_binding_key_id,
+                        'key', 'cryptographicBindingMethodsSupported',
+                        'set_id', _set_id,
+                        'value_type', 'Text',
+                        'meta_data_values', (
+                            select coalesce(
+                                jsonb_agg(
+                                    jsonb_build_object(
+                                        'id', id,
+                                        'index', index,
+                                        'key_id', key_id,
+                                        'text_value', text_value
+                                    ) order by index
+                                ),
+                                '[]'::jsonb
+                            )
+                            from meta_data_values
+                            where key_id = _cryptographic_binding_key_id
+                        )
+                    ),
+                    jsonb_build_object(
+                        'id', _credential_signing_alg_key_id,
+                        'key', 'credentialSigningAlgValuesSupported',
+                        'set_id', _set_id,
+                        'value_type', 'Text',
+                        'meta_data_values', (
+                            select coalesce(
+                                jsonb_agg(
+                                    jsonb_build_object(
+                                        'id', id,
+                                        'index', index,
+                                        'key_id', key_id,
+                                        'text_value', text_value
+                                    ) order by index
+                                ),
+                                '[]'::jsonb
+                            )
+                            from meta_data_values
+                            where key_id = _credential_signing_alg_key_id
+                        )
+                    ),
                     CASE
                         WHEN _vct_key_id IS NOT NULL THEN
                             jsonb_build_object(
                                 'id', _vct_key_id,
-                                'key', 'VCT',
+                                'key', 'vct',
                                 'set_id', _set_id,
                                 'value_type', 'Text',
                                 'meta_data_values', jsonb_build_array(
