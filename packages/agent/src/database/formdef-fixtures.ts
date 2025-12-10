@@ -347,6 +347,13 @@ export async function removeMetadataSet(setName: string): Promise<void> {
       [setId],
     )
 
+    await queryRunner.query(
+      `DELETE
+       FROM credential_design_branding
+       WHERE meta_data_set_id = $1`,
+      [setId],
+    )
+
     // Delete metadata set
     await queryRunner.query(
       `DELETE

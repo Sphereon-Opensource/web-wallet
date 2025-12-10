@@ -15,6 +15,7 @@ import {
   UpdateResponse,
 } from '@refinedev/core'
 import {supabaseServiceClient} from '@helpers/SupabaseClient'
+import {enrichSchemaWithDisclosureFrame, enrichSchemaWithStatusList} from '@helpers/SchemaUtils'
 import {CredentialDesignEntity, StoreCredentialSchemaArgs} from '@typings'
 
 export const credentialDesignDataProvider = (): DataProvider => ({
@@ -99,7 +100,10 @@ export const credentialDesignDataProvider = (): DataProvider => ({
   create: async <TData extends BaseRecord = BaseRecord, TVariables = {}>({resource, variables, meta}: CreateParams<TVariables>): Promise<CreateResponse<TData>> => {
     const client = supabaseServiceClient()
     // @ts-ignore
-    const { name, credentialFormat, schema, uiSchema, branding } = variables
+    const { name, credentialFormat, schema, uiSchema, branding, statusListUri } = variables
+
+    // Enrich the schema with disclosureFrame (for non-required fields) and statusList (if URI provided)
+    const enrichedSchema = enrichSchemaWithStatusList(enrichSchemaWithDisclosureFrame(schema), statusListUri)
 
     let formStepId
     const formStepResult = await client
@@ -125,7 +129,7 @@ export const credentialDesignDataProvider = (): DataProvider => ({
       'insert_credential_design', {
         p_identifier: name,
         p_credential_format: credentialFormat,
-        p_schema: schema,
+        p_schema: enrichedSchema,
         p_ui_schema: uiSchema,
         p_form_step_id: formStepId,
         p_branding: {
