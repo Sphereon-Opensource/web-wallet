@@ -5,6 +5,7 @@ import {ButtonIcon} from '@sphereon/ui-components.core'
 import {Button, CredentialTableItem, DataProvider, DataResource} from '@typings'
 import {getCredentialIssuerNameAndAlias, toCredentialSummary} from '@sphereon/ui-components.credential-branding'
 import {getAgent} from '@agent'
+import {useBrandingSync} from '@services/brandingSyncService'
 import {
   CorrelationIdentifierType,
   CredentialCorrelationType,
@@ -39,6 +40,8 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
   const {create, show} = useNavigation()
   const [credentialTableItems, setCredentialTableItems] = useState<CredentialTableItem[]>([])
   const [showImportCredentialModal, setShowImportCredentialModal] = useState<boolean>(false)
+
+  const {service: brandingSync, sync: syncBrandings} = useBrandingSync()
 
   const {
     data: credentialData,
@@ -89,10 +92,18 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
 
       const digitalCredentials = credentialData.data as Array<DigitalCredential>
       try {
-        const credentialBrandings = await getAgent().ibGetCredentialBranding()
+        // Use BrandingSync service for efficient credential branding retrieval
+        const syncResult = await syncBrandings()
+        console.debug('[CredentialsList] Branding sync result:', {
+          total: syncResult.allBrandings.length,
+          changed: syncResult.changedBrandings.length,
+          deleted: syncResult.deletedIds.length,
+          fullSync: syncResult.fullSync,
+        })
+
         const newCredentialTableItems = await Promise.all(
           digitalCredentials.map(async (credential: DigitalCredential) => {
-            const filteredCredentialBrandings = credentialBrandings.filter(cb => cb.vcHash === credential.hash)
+            const filteredCredentialBrandings = brandingSync.getBrandingsByVcHash(credential.hash)
             const issuerPartyIdentity =
               credential.issuerCorrelationId !== undefined ? getMatchingIdentity(partyData.data, credential.issuerCorrelationId) : undefined
             const subjectPartyIdentity =
@@ -119,11 +130,12 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
         )
         setCredentialTableItems(newCredentialTableItems)
       } catch (error) {
-        console.error(error)
+        console.error('[CredentialsList] Error fetching credential table items:', error)
       }
     }
 
     void fetchCredentialTableItems()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [credentialData, partyData])
 
   const onCredentialItemDelete = async (opts: Row<CredentialTableItem>): Promise<void> => {
