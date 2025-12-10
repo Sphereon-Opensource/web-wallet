@@ -190,7 +190,7 @@ export const credentialDesignDataProvider = (): DataProvider => ({
       )
     )
 
-    const data: TData[] = results.map((result: any) => result.data)
+    const data: TData[] = results.map((result: any) => new CredentialDesignEntity(result).asDTO())
 
     return { data }
   },
