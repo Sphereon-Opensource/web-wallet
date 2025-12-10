@@ -225,6 +225,7 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
                           )
                           from meta_data_values
                           where key_id = _credential_format_key_id
+                        )
                     )
                 ),
                 'schema_definition', jsonb_build_array(
