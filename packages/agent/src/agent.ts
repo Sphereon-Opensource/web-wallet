@@ -34,7 +34,7 @@ import {
 } from './environment-vars.js'
 
 import {ImportDcqlQueryItem, PDManager} from '@sphereon/ssi-sdk.pd-manager'
-import {ClientAuthMethod} from '@sphereon/oid4vci-common'
+import {AuthorizationServerMetadata, ClientAuthMethod, IssuerMetadataV1_0_15} from '@sphereon/oid4vci-common'
 
 import {createAgent, IAgentContext, IAgentPlugin, TAgent} from '@veramo/core'
 import {VcdmCredentialPlugin} from '@sphereon/ssi-sdk.credential-vcdm'
@@ -78,7 +78,7 @@ import {
 } from '@sphereon/ssi-sdk.data-store'
 import {IIssuerInstanceArgs, OID4VCIIssuer} from '@sphereon/ssi-sdk.oid4vci-issuer'
 import {
-  IIssuerInstanceOptions,
+  IIssuerInstanceOptions, IIssuerOptions,
   IIssuerOptsPersistArgs,
   IMetadataImportArgs,
   OID4VCIStore,
@@ -113,6 +113,7 @@ import {
   VC_API_FEATURES,
 } from './environment-vars-with-deps'
 import {dbConnection} from './database'
+import { KeyValueStore, KeyValueTypeORMStoreAdapter } from '@sphereon/ssi-sdk.kv-store-temp'
 import {IdentifierResolution} from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {JwtService} from '@sphereon/ssi-sdk-ext.jwt-service'
 import {SDJwtPlugin} from '@sphereon/ssi-sdk.sd-jwt'
@@ -247,8 +248,36 @@ if (!cliMode) {
   })
 
   if (IS_OID4VCI_ENABLED) {
+    // Create persistent KeyValueStore instances for OID4VCI with separate namespaces to prevent collisions
+    const issuerMetadataStore = new KeyValueStore<IssuerMetadataV1_0_15>({
+      namespace: 'oid4vci_issuer',
+      store: new KeyValueTypeORMStoreAdapter({
+        dbConnection,
+        namespace: 'oid4vci_issuer'
+      })
+    })
+
+    const authMetadataStore = new KeyValueStore<AuthorizationServerMetadata>({
+      namespace: 'oid4vci_auth',
+      store: new KeyValueTypeORMStoreAdapter({
+        dbConnection,
+        namespace: 'oid4vci_auth'
+      })
+    })
+
+    const issuerOptsStore = new KeyValueStore<IIssuerOptions>({
+      namespace: 'oid4vci_opts',
+      store: new KeyValueTypeORMStoreAdapter({
+        dbConnection,
+        namespace: 'oid4vci_opts'
+      })
+    })
+
     plugins.push(
       new OID4VCIStore({
+        issuerMetadataStores: issuerMetadataStore,
+        authorizationServerMetadataStores: authMetadataStore,
+        issuerOptsStores: issuerOptsStore,
         importIssuerOpts: oid4vciInstanceOpts.asArray,
         importMetadatas: oid4vciMetadataOpts.asArray as Array<IMetadataImportArgs>, // with method parameters like for oidfStoreImportMetadatas, TypeScript is being more lenient. Here we need to cast to the discriminator base interface
       }),
