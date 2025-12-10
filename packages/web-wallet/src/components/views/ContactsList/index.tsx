@@ -1,4 +1,4 @@
-import React, {FC, ReactElement} from 'react'
+import React, {FC, ReactElement, useEffect} from 'react'
 import {ColumnHeader, Row, SSITableView, SSITabView, TableCellType} from '@sphereon/ui-components.ssi-react'
 import {HttpError, useDelete, useList, useNavigation, useTranslate} from '@refinedev/core'
 import short from 'short-uuid'
@@ -86,6 +86,8 @@ const ContactsList: FC<Props> = (props: Props): ReactElement => {
   if (partiesData.isError || (assetIdFilter && (workflowStepResults.isError || workflowResults.isError))) {
     return <div>{translate('data_provider_error_message')}</div>
   }
+  console.log('==== parties', partiesData)
+
 
   const orderProperties = (entry: [string, string | Date | Array<MetadataItem<MetadataTypes>>][]) => {
     const index = entry.map(e => e[0]).indexOf('displayName')

@@ -17,7 +17,7 @@ import {DIDResolverPlugin} from '@veramo/did-resolver'
 import {AgentRestClient} from '@veramo/remote-client'
 import {Resolver} from 'did-resolver'
 import {ebsiSupportMethods} from '@sphereon/ssi-sdk.ebsi-support'
-import {getAgentBaseUrl, getVcApiCredentialIssueUrl, getVcApiUrl} from './environment'
+import {getAgentBaseUrl, getHolderPrimaryIdentifier, getVcApiCredentialIssueUrl, getVcApiUrl} from './environment'
 import {OID4VCIHolder, oid4vciHolderContextMethods, OID4VCIHolderLinkHandler} from '@sphereon/ssi-sdk.oid4vci-holder'
 import {contactManagerMethods} from '@sphereon/ssi-sdk.contact-manager'
 import {issuanceBrandingMethods} from '@sphereon/ssi-sdk.issuance-branding'
@@ -122,6 +122,7 @@ const getPlugins = ():IAgentPlugin[] => [
     ],
   }),
   new OID4VCIHolder({
+    defaultHolderIdentifier: getHolderPrimaryIdentifier(),
     hasher: defaultHasher,
   }),
   new LinkHandlerPlugin({

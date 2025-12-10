@@ -1,7 +1,13 @@
 import React, {createContext, Dispatch, useContext} from 'react'
 import {useOutletContext} from 'react-router-dom'
 import {JSONFormState} from '@sphereon/ui-components.ssi-react'
-import {IdentifierKey, IdentifierServiceEndpoint, JSONFormTypeState, KeyManagementIdentifier, UIContextType, UIKeyCapabilitiesInfo} from '@typings'
+import {
+  IdentifierKey,
+  IdentifierServiceEndpoint,
+  KeyManagementIdentifier,
+  UIContextType,
+  UIKeyCapabilitiesInfo,
+} from '@typings'
 import {Middleware} from '@jsonforms/core'
 
 export type IdentifierParams = {

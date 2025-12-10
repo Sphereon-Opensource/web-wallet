@@ -14,7 +14,11 @@ const SideNavigationGroup: FC<Props> = (props: Props): ReactElement => {
   const {label, items, allMenuItems, style} = props
 
   const groupFrom = (items: Array<MenuItem>): ReactNode => {
-    return items.map(item => menuItemFrom(item, allMenuItems))
+  return items.map(item => (
+    <React.Fragment key={item.path}>
+      {menuItemFrom(item, allMenuItems)}
+    </React.Fragment>
+  ))
   }
 
   return (

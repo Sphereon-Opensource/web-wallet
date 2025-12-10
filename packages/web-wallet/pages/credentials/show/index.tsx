@@ -1,6 +1,7 @@
 import React, {FC, ReactElement, useEffect, useState} from 'react'
 import {HttpError, useList, useOne, useTranslate} from '@refinedev/core'
 import {TabViewRoute} from '@sphereon/ui-components.core'
+import {useBrandingSync} from '@services/brandingSyncService'
 import {
   ColumnHeader,
   CredentialMiniCardView,
@@ -96,6 +97,9 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
   const {id} = params
   const truncationLength: number = getEnvInt('BROWSER_PUBLIC_TRUNCATION_LENGTH', 8)
   const [credentialSummary, setCredentialSummary] = useState<CredentialSummary | undefined>(undefined)
+
+  // Use reactive branding sync hook
+  const {service: brandingSync, sync: syncBrandings} = useBrandingSync()
   const credentialResult = useOne<DigitalCredential, HttpError>({
     resource: DataResource.CREDENTIALS,
     id,
@@ -134,9 +138,13 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
           })
           : []
 
-        const credentialBrandings = await getAgent().ibGetCredentialBranding({
-          filter: [{vcHash: hash}],
-        })
+        // Use BrandingSync service for efficient credential branding retrieval
+        // First ensure we have the latest brandings
+        await syncBrandings()
+
+        // Then get brandings from cache filtered by vcHash
+        const credentialBrandings = brandingSync.getBrandingsByVcHash(hash)
+        console.debug('[ShowCredentialDetails] Found', credentialBrandings.length, 'brandings for hash', hash)
 
         const uniformVerifiableCredential = await getUnifiedVC(rawDocument)
         const credentialSummary: CredentialSummary = await toCredentialSummary({
@@ -151,12 +159,12 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
 
         setCredentialSummary(credentialSummary)
       } catch (error) {
-        console.error(error)
+        console.error('[ShowCredentialDetails] Error fetching branding:', error)
       }
     }
 
     void fetchBranding()
-  }, [credentialResult.data])
+  }, [credentialResult.data, syncBrandings, brandingSync])
 
   if (credentialResult.isLoading || partyResults.isLoading || !credentialSummary) {
     return <div>{translate('data_provider_loading_message')}</div>
