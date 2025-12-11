@@ -16,42 +16,97 @@ import {
 } from '@refinedev/core'
 import {supabaseServiceClient} from '@helpers/SupabaseClient'
 import {enrichSchemaWithDisclosureFrame, enrichSchemaWithStatusList} from '@helpers/SchemaUtils'
+import {CredentialDesignEntity, StoreCredentialSchemaArgs} from '@typings'
 
 export const credentialDesignDataProvider = (): DataProvider => ({
   getList: async <TData extends BaseRecord = BaseRecord>({resource, pagination, filters, sort}: GetListParams): Promise<GetListResponse<TData>> => {
-    // TODO SSISDK-86 implement, currently doing a quick fetch here to get the names of the designs
-    const credentialDesigns = await supabaseServiceClient()
+    const client = supabaseServiceClient()
+    const { current = 1, pageSize = 10 } = pagination || {}
+    const from = (current - 1) * pageSize
+    const to = current * pageSize - 1
+    let query = client
       .from('meta_data_set')
-      .select('*')
+      .select(`
+        *,
+        meta_data_keys:meta_data_keys!fk_meta_data_set (
+          *,
+          meta_data_values:meta_data_values!fk_meta_data_keys (*)
+        ),
+        schema_definition:schema_definition!fk_schemadef_metadata (
+          *,
+          form_step_to_schema_definition:form_step_to_schema_definition!fk_schema_definition (*)
+        ),
+        credential_design_branding:credential_design_branding!fk_credentialdesignbranding_metadata (
+          *,
+          logo:ImageAttributes!fk_branding_logo (
+            *,
+            dimensions:ImageDimensions!FK_ImageAttributes_dimensionsId (*)
+          ),
+          background_image:ImageAttributes!fk_branding_background_image (
+            *,
+            dimensions:ImageDimensions!FK_ImageAttributes_dimensionsId (*)
+          )
+        )
+    `, { count: 'exact' })
+    query = query.range(from, to)
+    const { data, error, count } = await query
 
-    const data: TData[] = credentialDesigns.data ?? []
+    if (error) {
+      throw new Error(error.message)
+    }
+
+    const result = (data ?? []).map(item => new CredentialDesignEntity(item).asDTO()) as unknown
 
     return {
-      data,
-      total: data.length,
+      data: result as TData[],
+      total: count ?? (data?.length ?? 0)
     }
   },
   getOne: async <TData extends BaseRecord = BaseRecord>({resource, id}: GetOneParams): Promise<GetOneResponse<TData>> => {
-    // TODO SSISDK-86 implement
+    const client = supabaseServiceClient()
+    const result = await client
+      .from('meta_data_set')
+      .select(`
+        *,
+        meta_data_keys:meta_data_keys!fk_meta_data_set (
+          *,
+          meta_data_values:meta_data_values!fk_meta_data_keys (*)
+        ),
+        schema_definition:schema_definition!fk_schemadef_metadata (
+          *,
+          form_step_to_schema_definition:form_step_to_schema_definition!fk_schema_definition (*)
+        ),
+        credential_design_branding:credential_design_branding!fk_credentialdesignbranding_metadata (
+          *,
+          logo:ImageAttributes!fk_branding_logo (
+            *,
+            dimensions:ImageDimensions!FK_ImageAttributes_dimensionsId (*)
+          ),
+          background_image:ImageAttributes!fk_branding_background_image (
+            *,
+            dimensions:ImageDimensions!FK_ImageAttributes_dimensionsId (*)
+          )
+        )
+      `)
+      .eq('id', id)
+      .single()
+
+    const data = new CredentialDesignEntity(result.data).asDTO() as unknown
+
     return {
-      data: {} as TData,
+      data: data as TData
     }
   },
-  create: async <TData extends BaseRecord = BaseRecord, TVariables = {}>({
-    resource,
-    variables,
-    meta,
-  }: CreateParams<TVariables>): Promise<CreateResponse<TData>> => {
-    // TODO SSISDK-88 create transaction solution
-
+  create: async <TData extends BaseRecord = BaseRecord, TVariables = {}>({resource, variables, meta}: CreateParams<TVariables>): Promise<CreateResponse<TData>> => {
+    const client = supabaseServiceClient()
     // @ts-ignore
-    const { identifier, credentialFormat, schema, uiSchema, branding, statusListUri } = variables
+    const { name, schema, uiSchema, branding, statusListUri, options } = variables
 
     // Enrich the schema with disclosureFrame (for non-required fields) and statusList (if URI provided)
     const enrichedSchema = enrichSchemaWithStatusList(enrichSchemaWithDisclosureFrame(schema), statusListUri)
 
     let formStepId
-    const formStepResult = await supabaseServiceClient()
+    const formStepResult = await client
       .from('form_step')
       .select('*')
       .eq('form_id', 'credentialIssuanceWizard').single()
@@ -62,7 +117,7 @@ export const credentialDesignDataProvider = (): DataProvider => ({
         step_nr: 1,
         order: 1
       }
-      const result  = await supabaseServiceClient().from('form_step').insert([
+      const result  = await client.from('form_step').insert([
         formStep
       ]).single()
       formStepId = (result.data as any).id
@@ -70,134 +125,141 @@ export const credentialDesignDataProvider = (): DataProvider => ({
       formStepId = formStepResult.data.id
     }
 
-    const metaDataSetResult  = await supabaseServiceClient().from('meta_data_set').insert([
-      { name: identifier }
-    ]).single()
-    const setId = (metaDataSetResult.data as any).id
+    const {data, error} = await client.rpc('insert_credential_design', {
+      p_identifier: name,
+      p_credential_format: options.format,
+      p_schema: enrichedSchema,
+      p_ui_schema: uiSchema,
+      p_form_step_id: formStepId,
+      p_vct: options.vct ?? null,
+      p_scope: options.scope ?? null,
+      p_cryptographic_binding_methods_supported: options.cryptographicBindingMethodsSupported ?? [],
+      p_credential_signing_alg_values_supported: options.credentialSigningAlgValuesSupported ?? [],
+      p_proof_types_supported: options.proofTypesSupported ?? {},
+      p_branding: branding ? {
+        logo: branding.logo,
+        background_image: branding.backgroundImage,
+        text_color: branding.textColor,
+        background_color: branding.backgroundColor,
+      } : null
+    })
 
-    const credentialTypeMetaDataKeysResult  = await supabaseServiceClient().from('meta_data_keys').insert([
-      {
-        set_id: setId,
-        key: 'credentialType',
-        value_type: 'Text'
-      }
-    ]).single()
-    const credentialTypeKeyId = (credentialTypeMetaDataKeysResult.data as any).id
-
-    await supabaseServiceClient().from('meta_data_values').insert([
-      {
-        key_id: credentialTypeKeyId,
-        index: 0,
-        text_value: 'VerifiableCredential'
-      },
-      {
-        key_id: credentialTypeKeyId,
-        index: 1,
-        text_value: identifier
-      }
-    ])
-
-    const credentialFormatMetaDataKeysResult  = await supabaseServiceClient().from('meta_data_keys').insert([
-      {
-        set_id: setId,
-        key: 'credentialFormat',
-        value_type: 'Text'
-      }
-    ]).single()
-    const credentialFormatKeyId = (credentialFormatMetaDataKeysResult.data as any).id
-
-    await supabaseServiceClient().from('meta_data_values').insert([
-      {
-        key_id: credentialFormatKeyId,
-        index: 0,
-        text_value: credentialFormat
-      }
-    ])
-
-    const schemaDefinition = {
-      correlation_id: identifier,
-      schema_type: 'Data',
-      entity_type: 'VC',
-      schema: JSON.stringify(enrichedSchema),
-      meta_data_set_id: setId
+    if (error) {
+      throw new Error(error.message)
     }
 
-    const uiSchemaDefinition = {
-      correlation_id: identifier,
-      schema_type: 'UI_Form',
-      entity_type: 'VC',
-      schema: JSON.stringify(uiSchema),
-      meta_data_set_id: setId
-    }
-
-    const schemaDefinitionResult = await supabaseServiceClient().from('schema_definition').insert([
-      schemaDefinition, uiSchemaDefinition
-    ])
-
-    await supabaseServiceClient().from('form_step_to_schema_definition').insert([
-      {
-        form_step_id: formStepId,
-        schema_definition_id: (schemaDefinitionResult.data?.[0] as any).id
-      },
-      {
-        form_step_id: formStepId,
-        schema_definition_id: (schemaDefinitionResult.data?.[1] as any).id
-      }
-    ])
-
-    const credentialDesignBranding = {
-      logo_url: branding.logoUrl,
-      background_url: branding.backgroundUrl,
-      logo_color: branding.logoColor,
-      background_color: branding.backgroundColor,
-      meta_data_set_id: setId
-    }
-
-    await supabaseServiceClient().from('credential_design_branding').insert([
-      credentialDesignBranding
-    ])
+    const result = new CredentialDesignEntity(data).asDTO() as unknown
 
     return {
-      // FIXME CWALL-242 there should be a better way for this but i could not find any yet without refine.dev not complaining
-      data: {...({ // TODO SSISDK-86 implement proper return
-          formStepId,
-          setId,
-          keyId: credentialTypeKeyId,
-          schema: schemaDefinition,
-          uiSchema: uiSchemaDefinition
-        } as any)} as TData,
+      data: result as TData
     }
   },
-  createMany: async <TData extends BaseRecord = BaseRecord, TVariables = {}>({
-    resource,
-    variables,
-    meta,
-  }: CreateManyParams<TVariables>): Promise<CreateManyResponse<TData>> => {
-    // TODO SSISDK-86 implement
-    const data: TData[] = []
+  createMany: async <TData extends BaseRecord = BaseRecord, TVariables = {}>({resource, variables, meta}: CreateManyParams<TVariables>): Promise<CreateManyResponse<TData>> => {
+    const client = supabaseServiceClient()
+    // @ts-ignore
+    const { credentialDesigns } = variables
+
+    let formStepId
+    const formStepResult = await client
+      .from('form_step')
+      .select('*')
+      .eq('form_id', 'credentialIssuanceWizard').single()
+
+    if (!formStepResult.data) {
+      const formStep = {
+        form_id: 'credentialIssuanceWizard',
+        step_nr: 1,
+        order: 1
+      }
+      const result  = await client.from('form_step').insert([
+        formStep
+      ]).single()
+      formStepId = (result.data as any).id
+    } else {
+      formStepId = formStepResult.data.id
+    }
+
+    const results = await Promise.all(
+      credentialDesigns.map((design: StoreCredentialSchemaArgs) =>
+        client.rpc('insert_credential_design', {
+          p_identifier: design.name,
+          p_credential_format: design.options.format,
+          p_schema: design.schema,
+          p_ui_schema: design.uiSchema,
+          p_form_step_id: formStepId,
+          p_vct: design.options.vct ?? null,
+          p_scope: design.options.scope ?? null,
+          p_cryptographic_binding_methods_supported: design.options.cryptographicBindingMethodsSupported ?? [],
+          p_credential_signing_alg_values_supported: design.options.credentialSigningAlgValuesSupported ?? [],
+          p_proof_types_supported: design.options.proofTypesSupported ?? {},
+          p_branding: design.branding ? {
+            logo: design.branding.logo,
+            background_image: design.branding.backgroundImage,
+            text_color: design.branding.textColor,
+            background_color: design.branding.backgroundColor,
+          } : null
+        })
+      )
+    )
+
+    const data: TData[] = results.map((result: any) => new CredentialDesignEntity(result).asDTO())
+
     return { data }
   },
-  update: async <TData extends BaseRecord = BaseRecord, TVariables = {}>({
-    resource,
-    id,
-    variables,
-  }: UpdateParams<TVariables>): Promise<UpdateResponse<TData>> => {
-    // TODO SSISDK-86 implement
+  update: async <TData extends BaseRecord = BaseRecord, TVariables = {}>({resource, id, variables}: UpdateParams<TVariables>): Promise<UpdateResponse<TData>> => {
+    const client = supabaseServiceClient()
+    // @ts-ignore
+    const { name, schema, uiSchema, branding, options } = variables
+
+    const { data, error } = await client.rpc('update_credential_design', {
+      p_set_id: id,
+      p_identifier: name,
+      p_credential_format: options.format,
+      p_schema: schema,
+      p_ui_schema: uiSchema,
+      p_vct: options.vct ?? null,
+      p_scope: options.scope ?? null,
+      p_cryptographic_binding_methods_supported: options.cryptographicBindingMethodsSupported ?? [],
+      p_credential_signing_alg_values_supported: options.credentialSigningAlgValuesSupported ?? [],
+      p_proof_types_supported: options.proofTypesSupported ?? {},
+      p_branding: branding ? {
+        logo: branding.logo,
+        background_image: branding.backgroundImage,
+        text_color: branding.textColor,
+        background_color: branding.backgroundColor,
+      } : null
+    })
+
+    if (error) {
+      throw new Error(error.message)
+    }
+
     return {
-      data: {} as TData,
+      data: data as TData
     }
   },
-  deleteOne: async <TData extends BaseRecord = BaseRecord, TVariables = {}>({
-    resource,
-    id,
-  }: DeleteOneParams<TVariables>): Promise<DeleteOneResponse<TData>> => {
-    // TODO SSISDK-86 implement
+  deleteOne: async <TData extends BaseRecord = BaseRecord, TVariables = {}>({resource, id}: DeleteOneParams<TVariables>): Promise<DeleteOneResponse<TData>> => {
+    const client = supabaseServiceClient()
+
+    const { data, error } = await client
+      .from('meta_data_set')
+      .delete()
+      .eq('id', id)
+      .single()
+
+    if (error) {
+      throw new Error(error.message)
+    }
+
+    if (!data) {
+      throw new Error(`Record with id ${id} not found`)
+    }
+
     return {
-      data: {} as TData,
+      data: data as TData
     }
   },
   getApiUrl: (): string => {
-    // TODO SSISDK-86 implement
     throw Error('Not implemented')
-  },
+  }
 })

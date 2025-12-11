@@ -6,7 +6,7 @@ import JsonEditor from '@components/editors/JsonEditor'
 import {useCredentialDesignerOutletContext} from '@machines/credentials/credentialDesignerStateNavigation';
 import credentialDesignDetailsSchema from '../../../../src/schemas/data/credentialDesignerDetailsSchema.json' assert {type: 'json'}
 import credentialDesignDetailsUiSchema from '../../../../src/schemas/ui/credentialDesignerDetailsUISchema.json' assert {type: 'json'}
-import {DataResource} from '@typings'
+import {CredentialDesignDTO, DataResource} from '@typings'
 import style from './index.module.css'
 
 const CredentialDesignerDetailsContent: FC = (): ReactElement => {
@@ -18,7 +18,7 @@ const CredentialDesignerDetailsContent: FC = (): ReactElement => {
       onCredentialDesignerDetailsFormDataChange
   } = useCredentialDesignerOutletContext()
 
-  const credentialDesigns = useList<{ name: string }, HttpError>({ // TODO SSISDK-86 use proper type
+  const credentialDesigns = useList<CredentialDesignDTO, HttpError>({
     resource: DataResource.CREDENTIAL_DESIGNS,
   })
 

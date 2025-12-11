@@ -2,7 +2,12 @@ import React, {createContext, ReactElement, useCallback, useContext, useEffect, 
 import {JSONFormState} from '@sphereon/ui-components.ssi-react'
 import {useNavigate, useOutletContext} from 'react-router-dom'
 import {HttpError, useCreate} from '@refinedev/core'
+import {toCredentialConfiguration, updateOid4vciMetadata} from '@/src/services/credentials/credentialDesignService'
+import {ImageAttributes} from '@sphereon/ui-components.core'
+import {downloadImage, getImageDimensions, IImageDimensions} from '@sphereon/ssi-sdk.core'
 import {
+  CredentialDesignBrandingDTO,
+  CredentialDesignDTO,
   CredentialDesignerRoute,
   CredentialSchema,
   CredentialSchemaClaim,
@@ -12,7 +17,6 @@ import {
   StoreCredentialSchemaArgs,
   UIContextType,
 } from '@typings'
-import {toCredentialConfiguration, updateOid4vciMetadata} from '@/src/services/credentials/credentialDesignService'
 
 export type CredentialDesignerContextType = UIContextType & {
   advancedMode: boolean
@@ -22,6 +26,8 @@ export type CredentialDesignerContextType = UIContextType & {
   credentialDesignerClaimsFormData?: JSONFormState
   onCredentialDesignerClaimsFormDataChange: (state: JSONFormState) => Promise<void>
   credentialDesignerVisualDesignFormData?: JSONFormState
+  credentialDesignerVisualDesignBackgroundImage?: ImageAttributes
+  credentialDesignerVisualDesignLogo?: ImageAttributes
   onCredentialDesignerVisualDesignFormDataChange: (state: JSONFormState) => Promise<void>
 }
 
@@ -30,6 +36,13 @@ export const CredentialDesignerContext = createContext({} as CredentialDesignerC
 export const useCredentialDesignerMachine = () => useContext(CredentialDesignerContext)
 
 export const useCredentialDesignerOutletContext = () => useOutletContext<CredentialDesignerContextType>()
+
+const getImageSizes = async (url: string): Promise<IImageDimensions | undefined> => {
+  const resource = await downloadImage(url)
+  if (resource) {
+    return getImageDimensions(resource?.base64Content)
+  }
+}
 
 const credentialDesignNavigationListener = async (step: number, navigate: any): Promise<void> => {
   switch (step) {
@@ -76,13 +89,18 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
       ]
     }
   })
+
   const [credentialDesignerVisualDesignFormData, setCredentialDesignerVisualDesignFormData] = useState<JSONFormState>({
     data: {
       "background_color": "#7276f7",
       "text_color": "#fbfbfb"
     }
   })
-  const {mutateAsync} = useCreate<{form_id: string}, HttpError>({ // TODO SSISDK-86 use proper type
+
+  const [credentialDesignerVisualDesignBackgroundImage, setCredentialDesignerVisualDesignBackgroundImage] = useState<ImageAttributes | undefined>()
+  const [credentialDesignerVisualDesignLogo, setCredentialDesignerVisualDesignLogo] = useState<ImageAttributes | undefined>()
+
+  const {mutateAsync} = useCreate<CredentialDesignDTO, HttpError>({
     resource: DataResource.CREDENTIAL_DESIGNS,
   })
 
@@ -188,15 +206,22 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
       await buildCredentialSchemas(credentialDesignerClaimsFormData.data)
         .then(buildResult => {
           storeCredentialSchema({
-            identifier: credentialDesignerDetailsFormData.data.identifier,
-            credentialFormat: credentialDesignerDetailsFormData.data.format,
+            name: credentialDesignerDetailsFormData.data.identifier,
             schema: buildResult.schema,
             uiSchema: buildResult.uiSchema,
-            branding: {
-              backgroundColor: credentialDesignerVisualDesignFormData.data?.background_color,
-              logoColor: credentialDesignerVisualDesignFormData.data?.logo_color,
-              backgroundUri: credentialDesignerVisualDesignFormData.data?.background_image?.uri,
-              logoUri: credentialDesignerVisualDesignFormData.data?.logo?.uri
+            branding: new CredentialDesignBrandingDTO({
+                backgroundColor: credentialDesignerVisualDesignFormData.data?.background_color,
+                textColor: credentialDesignerVisualDesignFormData.data?.text_color,
+                backgroundImage: credentialDesignerVisualDesignBackgroundImage,
+                logo: credentialDesignerVisualDesignLogo,
+            }),
+            options: {
+              format: credentialDesignerDetailsFormData.data.format,
+              credentialSigningAlgValuesSupported: credentialDesignerDetailsFormData.data.credential_signing_alg_values_supported,
+              vct: credentialDesignerDetailsFormData.data.vct ?? credentialDesignerDetailsFormData.data.identifier,
+              cryptographicBindingMethodsSupported: credentialDesignerDetailsFormData.data.cryptographic_binding_methods_supported,
+              proofTypesSupported: credentialDesignerDetailsFormData.data.proof_types_supported,
+              scope: credentialDesignerDetailsFormData.data.scope,
             }
           })
           .then(() => {
@@ -206,17 +231,17 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
               branding: credentialDesignerVisualDesignFormData.data,
               options: {
                 format: credentialDesignerDetailsFormData.data.format,
-                scope: credentialDesignerDetailsFormData.data.scope,
                 credentialSigningAlgValuesSupported: credentialDesignerDetailsFormData.data.credential_signing_alg_values_supported,
                 vct: credentialDesignerDetailsFormData.data.vct ?? credentialDesignerDetailsFormData.data.identifier,
                 cryptographicBindingMethodsSupported: credentialDesignerDetailsFormData.data.cryptographic_binding_methods_supported,
                 proofTypesSupported: credentialDesignerDetailsFormData.data.proof_types_supported,
+                scope: credentialDesignerDetailsFormData.data.scope
               }
             })
             void updateOid4vciMetadata(credentialDesignerDetailsFormData.data.identifier, credentialConfiguration)
           })
         })
-        .then(() => navigate(MainRoute.CREDENTIALS)) // TODO when we have a credential design overview, we should navigate there
+        .then(() => navigate(`${MainRoute.CREDENTIALS}/${MainRoute.DESIGNS}`))
     }
   }, [step, credentialDesignerClaimsFormData, credentialDesignerDetailsFormData])
 
@@ -241,6 +266,50 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
 
   const onCredentialDesignerVisualDesignFormDataChange = async (state: JSONFormState): Promise<void> => {
     setCredentialDesignerVisualDesignFormData(state)
+
+    if (credentialDesignerVisualDesignFormData.data.background_image?.uri !== state.data.background_image?.uri) {
+      if (state.data.background_image?.uri) {
+        getImageSizes(state.data.background_image?.uri)
+          .then(dimensions =>
+            setCredentialDesignerVisualDesignBackgroundImage({
+              uri: state.data.background_image?.uri,
+              ...(dimensions && {
+                dimensions: {
+                  width: dimensions.width,
+                  height: dimensions.height
+                }
+              })
+            })
+          )
+          .catch(() => setCredentialDesignerVisualDesignBackgroundImage({
+            uri: state.data.background_image?.uri
+          }))
+      } else {
+        setCredentialDesignerVisualDesignBackgroundImage(undefined)
+      }
+    }
+
+    if (credentialDesignerVisualDesignFormData.data.logo?.uri !== state.data.logo?.uri) {
+      if (state.data.logo?.uri) {
+        getImageSizes(state.data.logo?.uri)
+          .then(dimensions =>
+            setCredentialDesignerVisualDesignLogo({
+              uri: state.data.logo?.uri,
+              ...(dimensions && {
+                dimensions: {
+                  width: dimensions.width,
+                  height: dimensions.height
+                }
+              })
+            })
+          )
+          .catch(() => setCredentialDesignerVisualDesignLogo({
+            uri: state.data.logo?.uri
+          }))
+      } else {
+        setCredentialDesignerVisualDesignLogo(undefined)
+      }
+    }
   }
 
   const buildCredentialSchemas = async (
@@ -336,16 +405,7 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
   }
 
   const storeCredentialSchema = async (args: StoreCredentialSchemaArgs): Promise<void> => {
-    const {identifier, credentialFormat, schema, uiSchema, branding} = args
-    await mutateAsync({
-      values: {
-        identifier,
-        credentialFormat,
-        schema,
-        uiSchema,
-        branding
-      }
-    })
+    await mutateAsync({ values: args })
   }
 
   return (
@@ -363,6 +423,8 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
         credentialDesignerDetailsFormData,
         onCredentialDesignerDetailsFormDataChange,
         credentialDesignerVisualDesignFormData,
+        credentialDesignerVisualDesignBackgroundImage,
+        credentialDesignerVisualDesignLogo,
         onCredentialDesignerVisualDesignFormDataChange,
       }}>
       {children}

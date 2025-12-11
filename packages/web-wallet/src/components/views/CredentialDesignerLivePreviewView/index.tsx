@@ -1,12 +1,13 @@
-import React, {CSSProperties, FC, ReactElement, useEffect, useState} from 'react'
-import {ButtonIcon, TabViewRoute} from '@sphereon/ui-components.core'
+import React, {CSSProperties, FC, ReactElement, useCallback, useMemo, useState} from 'react'
+import {useTranslate} from '@refinedev/core'
+import {ButtonIcon, ImageAttributes} from '@sphereon/ui-components.core'
 import {CredentialMiniCardView, IconButton, SSICredentialCardView, SSITabView} from '@sphereon/ui-components.ssi-react'
 import styles from './index.module.css'
 
 type Props = {
-  backgroundImage?: string
+  backgroundImage?: ImageAttributes
   backgroundColor?: string
-  logoImage?: string
+  logo?: ImageAttributes
   textColor?: string
   style?: CSSProperties
 }
@@ -15,39 +16,14 @@ const CredentialDesignerLivePreviewView: FC<Props> = (props: Props): ReactElemen
   const {
     backgroundImage,
     backgroundColor,
-    logoImage,
+    logo,
     textColor,
     style
   } = props
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false)
-  const [logo, setLogo] = useState<any>()
+  const translate = useTranslate()
 
-  // TODO we should have functions for this already
-  function getImageDimensions(url: string): Promise<{ width: number, height: number }> {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.src = url;
-
-      img.onload = () => {
-        resolve({ width: img.width, height: img.height });
-      };
-
-      img.onerror = (err) => {
-        reject(err);
-      };
-    });
-  }
-
-  useEffect(() => {
-    if (logoImage) {
-      getImageDimensions(logoImage)
-        .then((result) => setLogo({ url: logoImage, width: result.width, height: result.height }))
-    } else {
-      setLogo(undefined)
-    }
-  }, [logoImage])
-
-  const getCredentialCardContent = (): ReactElement => {
+  const getCredentialCardContent = useCallback((): ReactElement => {
     return (
       <div
         style={{
@@ -62,12 +38,12 @@ const CredentialDesignerLivePreviewView: FC<Props> = (props: Props): ReactElemen
         <SSICredentialCardView
           header={
             {
-              ...(logo && {
+              ...((logo && logo.dimensions) && {
                   logo: {
-                    uri: logo.url,
+                    uri: logo.uri,
                     dimensions: {
-                      width: logo.width,
-                      height: logo.height,
+                      width: logo.dimensions.width,
+                      height: logo.dimensions.height,
                     }
                   }
                 }
@@ -79,7 +55,7 @@ const CredentialDesignerLivePreviewView: FC<Props> = (props: Props): ReactElemen
             {
               ...(backgroundImage && {
                 backgroundImage: {
-                  uri: backgroundImage
+                  uri: backgroundImage.uri
                 },
               }),
               backgroundColor,
@@ -89,9 +65,9 @@ const CredentialDesignerLivePreviewView: FC<Props> = (props: Props): ReactElemen
         />
       </div>
     )
-  }
+  }, [logo, backgroundImage, backgroundColor, textColor])
 
-  const getMiniCardContent = (): ReactElement => {
+  const getMiniCardContent = useCallback((): ReactElement => {
     return (
       <div
         style={{
@@ -104,34 +80,39 @@ const CredentialDesignerLivePreviewView: FC<Props> = (props: Props): ReactElemen
           paddingBottom: 24,
         }}>
         <CredentialMiniCardView
+          {...(backgroundImage && {
+            backgroundImage: {
+              uri: backgroundImage.uri
+            },
+          })}
           backgroundColor={backgroundColor}
           logoColor={textColor}
-          {...(logo && {
+          {...((logo && logo.dimensions) && {
             logo: {
-              uri: logo.url,
+              uri: logo.uri,
               dimensions: {
-                width: logo.width,
-                height: logo.height,
+                width: logo.dimensions.width,
+                height: logo.dimensions.height,
               }
             }
           })}
         />
       </div>
     )
-  }
+  }, [logo, backgroundImage, backgroundColor, textColor])
 
-  const routes: Array<TabViewRoute> = [
+  const routes = useMemo(() => [
     {
       key: 'credential',
-      title: 'Credential card',
+      title: translate('design_credential_live_preview_credential_card_tab_header_label'),
       content: getCredentialCardContent,
     },
     {
       key: 'mini',
-      title: 'Mini card',
+      title: translate('design_credential_live_preview_mini_card_tab_header_label'),
       content: getMiniCardContent,
     },
-  ]
+  ], [getCredentialCardContent, getMiniCardContent])
 
   const toggleCollapsed = async (): Promise<void> => {
     setIsCollapsed(!isCollapsed)
@@ -140,7 +121,7 @@ const CredentialDesignerLivePreviewView: FC<Props> = (props: Props): ReactElemen
   return (
     <div style={style} className={styles.container}>
       <div className={styles.headerContainer}>
-        <div className={styles.headerTitle}>{'Live Preview'}</div>
+        <div className={styles.headerTitle}>{translate('design_credential_live_preview_title')}</div>
         <IconButton
           icon={isCollapsed ? ButtonIcon.ARROW_DOWN : ButtonIcon.ARROW_UP }
           onClick={toggleCollapsed}
