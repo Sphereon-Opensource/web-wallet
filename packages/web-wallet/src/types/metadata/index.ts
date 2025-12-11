@@ -60,23 +60,31 @@ export class MetaDataKeysEntity {
   set_id: string
   key: string
   value_type: ValueType
+  meta_data_values?: MetaDataValuesEntity[]
 
   constructor(init?: Partial<MetaDataKeysEntity>) {
     Object.assign(this, init)
+
+    if (init?.meta_data_values) {
+        this.meta_data_values = init?.meta_data_values.map(value => new MetaDataValuesEntity(
+            value
+        ))
+    }
+
     deleteUndefinedProps(this)
   }
 
-  asDTO(values: MetaDataValuesDTO[]): MetaDataKeysDTO {
+  asDTO(values?: MetaDataValuesDTO[]): MetaDataKeysDTO {
     return MetaDataKeysEntity.toDTO(this, values)
   }
 
-  static toDTO(entity: MetaDataKeysEntityType, values: MetaDataValuesDTO[]): MetaDataKeysDTO {
+  static toDTO(entity: MetaDataKeysEntityType, values?: MetaDataValuesDTO[]): MetaDataKeysDTO {
     return new MetaDataKeysDTO({
       id: entity.id,
       setId: entity.set_id,
       key: entity.key,
       valueType: entity.value_type,
-      values: values,
+      values: values ?? entity.meta_data_values?.map(value => value.asDTO())
     })
   }
 }
@@ -102,7 +110,7 @@ export class MetaDataKeysDTO {
       set_id: dto.setId,
       key: dto.key,
       value_type: dto.valueType,
-      // Skipping transformation of values into entities to keep the example concise
+      meta_data_values: dto.values?.map(value => value.asEntity())
     })
   }
 }

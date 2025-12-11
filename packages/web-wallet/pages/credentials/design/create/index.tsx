@@ -1,16 +1,14 @@
 import React, {FC, ReactElement} from 'react'
 import {Outlet} from 'react-router-dom'
 import {useTranslate} from '@refinedev/core'
-import {PrimaryButton, ProgressStepIndicator, SecondaryButton,
-  SSICredentialCardView, SSITabView, SSITextH1Styled, SSITextH2Styled} from '@sphereon/ui-components.ssi-react'
+import {PrimaryButton, ProgressStepIndicator, SecondaryButton} from '@sphereon/ui-components.ssi-react'
 import PageHeaderBar from '@components/bars/PageHeaderBar'
 import {staticPropsWithSST} from '@/src/i18n/server'
 import {useCredentialDesignerMachine} from '@machines/credentials/credentialDesignerStateNavigation'
 import style from './index.module.css'
-import {CredentialStatus, fontColors, TabViewRoute} from '@sphereon/ui-components.core'
 import CredentialDesignerLivePreviewView from '@components/views/CredentialDesignerLivePreviewView'
 
-const CredentialDesignerCreatePage: FC = () => {
+const CredentialDesignerCreatePage: FC = (): ReactElement => {
   const translate = useTranslate()
   const {
     advancedMode,
@@ -22,6 +20,8 @@ const CredentialDesignerCreatePage: FC = () => {
     onCredentialDesignerVisualDesignFormDataChange,
     credentialDesignerClaimsFormData,
     onCredentialDesignerClaimsFormDataChange,
+    credentialDesignerVisualDesignBackgroundImage,
+    credentialDesignerVisualDesignLogo,
     step,
     maxInteractiveSteps,
     onBack,
@@ -42,7 +42,9 @@ const CredentialDesignerCreatePage: FC = () => {
               credentialDesignerVisualDesignFormData,
               onCredentialDesignerVisualDesignFormDataChange,
               credentialDesignerClaimsFormData,
-              onCredentialDesignerClaimsFormDataChange
+              onCredentialDesignerClaimsFormDataChange,
+              credentialDesignerVisualDesignBackgroundImage,
+              credentialDesignerVisualDesignLogo,
             }}
           />
           <div style={{display: 'flex', flexDirection: 'row'}}>
@@ -63,9 +65,9 @@ const CredentialDesignerCreatePage: FC = () => {
         </div>
         <div style={{display: 'flex', flexDirection: 'column', gap: 24}}>
           <CredentialDesignerLivePreviewView
-            backgroundImage={credentialDesignerVisualDesignFormData?.data.background_image?.uri}
+            backgroundImage={credentialDesignerVisualDesignBackgroundImage}
             backgroundColor={credentialDesignerVisualDesignFormData?.data.background_color}
-            logoImage={credentialDesignerVisualDesignFormData?.data.logo?.uri}
+            logo={credentialDesignerVisualDesignLogo}
             textColor={credentialDesignerVisualDesignFormData?.data.text_color}
             style={{marginTop: 47}}
           />

@@ -277,20 +277,20 @@ export class SchemaDefinitionEntity {
     deleteUndefinedProps(this)
   }
 
-  asDTO(schemaDefinitions: SchemaDefinitionDTO[], metaDataSets: MetaDataSetDTO[]): SchemaDefinitionDTO {
+  asDTO(schemaDefinitions?: SchemaDefinitionDTO[], metaDataSets?: MetaDataSetDTO[]): SchemaDefinitionDTO {
     return SchemaDefinitionEntity.toDTO(this, schemaDefinitions, metaDataSets)
   }
 
-  static toDTO(entity: SchemaDefinitionEntityType, schemaDefinitions: SchemaDefinitionDTO[], metaDataSets: MetaDataSetDTO[]): SchemaDefinitionDTO {
+  static toDTO(entity: SchemaDefinitionEntityType, schemaDefinitions?: SchemaDefinitionDTO[], metaDataSets?: MetaDataSetDTO[]): SchemaDefinitionDTO {
     return new SchemaDefinitionDTO({
       id: entity.id,
       tenantId: entity.tenant_id,
-      extends: schemaDefinitions.find(sd => sd.id === entity.extends_id),
+      extends: schemaDefinitions?.find(sd => sd.id === entity.extends_id),
       correlationId: entity.correlation_id,
       schemaType: entity.schema_type,
       entityType: entity.entity_type,
       schema: entity.schema,
-      metaDataSet: metaDataSets.find(mds => mds.id === entity.meta_data_set_id),
+      metaDataSet: metaDataSets?.find(mds => mds.id === entity.meta_data_set_id),
     })
   }
 }

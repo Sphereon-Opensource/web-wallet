@@ -9,7 +9,7 @@ export type ToCredentialConfigurationArgs = {
   identifier: string
   schema: CredentialSchema
   options: CredentialConfigurationOptions
-  branding?: CredentialsSupportedDisplay[] | undefined
+  branding?: Array<CredentialsSupportedDisplay>
 }
 
 export type CredentialConfigurationOptionsCommon = {

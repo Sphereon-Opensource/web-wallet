@@ -2,7 +2,7 @@ import React, {ChangeEvent, FC, ReactElement, useState} from 'react'
 import {HttpError, useDelete, useList, useNavigation, useTranslate} from '@refinedev/core'
 import {ColumnHeader, Row, SSITableView, TableCellType} from '@sphereon/ui-components.ssi-react'
 import {ButtonIcon} from '@sphereon/ui-components.core'
-import {Button, CredentialDesignTableItem, DataResource} from '@typings'
+import {Button, CredentialDesignDTO, CredentialDesignTableItem, DataResource} from '@typings'
 
 type Props = {
   allowCreateCredentialDesign?: boolean
@@ -11,16 +11,15 @@ type Props = {
 const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
   const {allowCreateCredentialDesign = true} = props
   const translate = useTranslate()
-  const {mutateAsync: deleteCredential} = useDelete<CredentialDesignTableItem, HttpError>()
-  const {create, show} = useNavigation()
+  const {mutateAsync: deleteCredential} = useDelete<CredentialDesignDTO, HttpError>()
+  const {create} = useNavigation()
   const [current, setCurrent] = useState<number>(1)
-  const [pageSize, setPageSize] = useState<number>(10)
+  const [pageSize, _] = useState<number>(10)
 
   const {
     data: credentialDesigns,
     isLoading: credentialDesignsLoading,
     isError: credentialDesignsError,
-    refetch: refetchCredentialDesigns,
   } = useList<CredentialDesignTableItem, HttpError>({
     resource: DataResource.CREDENTIAL_DESIGNS,
     pagination: {
@@ -51,14 +50,62 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
     create(DataResource.CREDENTIAL_DESIGNS)
   }
 
-  // TODO SSISDK-86 add support for additional data
   const columns: ColumnHeader<CredentialDesignTableItem>[] = [
     {
+        accessor: row => {
+            return {
+                ...(row.credentialDesignBranding.backgroundImage && {
+                    backgroundImage: {
+                        uri: row.credentialDesignBranding.backgroundImage.uri
+                    },
+                }),
+                ...(row.credentialDesignBranding.logo && {
+                    logo: {
+                        uri: row.credentialDesignBranding.logo.uri,
+                        dimensions: {
+                            width: row.credentialDesignBranding.logo.dimensions?.width,
+                            height: row.credentialDesignBranding.logo.dimensions?.height,
+                        }
+                    }
+                }),
+                backgroundColor: row.credentialDesignBranding.backgroundColor ?? undefined,
+                logoColor: row.credentialDesignBranding.textColor ?? undefined
+            }
+        },
+        label: translate('credential_design_fields_card'),
+        type: TableCellType.CREDENTIAL_CARD,
+        columnOptions: {
+            columnWidth: 120,
+        },
+    },
+    {
       accessor: 'name',
-      label: translate('credential_design_fields_name'),
+      label: translate('credential_design_fields_identifier'),
       type: TableCellType.TEXT,
       columnOptions: {
-        columnWidth: 120,
+        columnWidth: 240,
+      },
+    },
+    {
+      accessor: row => {
+        const keyItem = row.metadataKeys.find(key => key.key === 'credentialFormat');
+        return keyItem?.values?.[0]?.textValue ?? '';
+      },
+      label: translate('credential_design_fields_credential_format'),
+      type: TableCellType.TEXT,
+      columnOptions: {
+        columnWidth: 240,
+      },
+    },
+    {
+      accessor: row => {
+        const keyItem = row.metadataKeys.find(key => key.key === 'credentialType')
+        return keyItem?.values?.map(value => value.textValue).join(', ') ?? ''
+      },
+      label: translate('credential_design_fields_credential_type'),
+      type: TableCellType.TEXT,
+      columnOptions: {
+        columnWidth: 240,
       },
     },
     {
@@ -125,15 +172,14 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
       columns={columns}
       actions={buildActionList()}
       onRowClick={onShow}
-      // TODO SSISDK-86 enable when data provider supports pagination
-      // pagination={{
-      //   page: current,
-      //   count: Math.ceil(totalDesigns / pageSize),
-      //   onChange: onPageChange,
-      //   goToInputId: 'custom-goToInput',
-      //   containerStyle: {marginTop: '20px'},
-      //   onKeyDown: onPageChangeKeyDown,
-      // }}
+      pagination={{
+        page: current,
+        count: Math.ceil(totalDesigns / pageSize),
+        onChange: onPageChange,
+        goToInputId: 'custom-goToInput',
+        containerStyle: {marginTop: '20px'},
+        onKeyDown: onPageChangeKeyDown,
+      }}
     />
   </div>
 }

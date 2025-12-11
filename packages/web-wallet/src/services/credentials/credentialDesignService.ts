@@ -54,7 +54,7 @@ export function schemaToClaims(
 }
 
 export const toCredentialConfiguration = (args: ToCredentialConfigurationArgs): CredentialConfigurationSupportedV1_0_15 => {
-  const {identifier, schema, branding, options} = args
+  const {schema, branding, options} = args
   const {
     scope,
     cryptographicBindingMethodsSupported = ['did:web', 'did:jwk'],
