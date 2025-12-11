@@ -12,7 +12,7 @@ import {FileBody} from '@objectstorage/types'
 import {FileOptions, TransformOptions} from '@supabase/storage-js'
 import {supabaseServiceClient} from '../../SupabaseClient'
 import {uuid} from 'short-uuid'
-import {PostgrestError, PostgrestResponseFailure, PostgrestResponseSuccess} from '@supabase/postgrest-js/dist/cjs/types' // Package has two PostgrestError types exported...
+import {PostgrestError, PostgrestResponseFailure, PostgrestResponseSuccess} from '@supabase/postgrest-js/dist/cjs' // Package has two PostgrestError types exported...
 import {IWorkflowStepData} from '@/src/workflows/simpleWorkflowRouter'
 import {WF_BUCKET_STORAGE_ID} from '@components/views/WorkflowApproveDocuments'
 

@@ -1,2 +1,2 @@
 export * from './design'
-export {default as StoreCredentialSchemaArgs} from './design'
+export type {default as StoreCredentialSchemaArgs} from './design'
