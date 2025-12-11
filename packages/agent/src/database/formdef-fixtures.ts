@@ -37,37 +37,33 @@ async function getOrCreateFormStep(queryRunner: any, formId: string): Promise<nu
   return resp[0].id
 }
 
-async function getOrCreateFormDefinitionAndLink(
+async function getOrCreateFormDefinition(
   queryRunner: any,
-  formStepId: number,
-  formId: string,
   formName: string,
   formDescription: string | null,
   machineId: string | null,
 ): Promise<number> {
-  // Find form_definition linked to this form_step via the junction table
+  // Find existing form_definition by name (which is unique per tenant)
   let rows = await queryRunner.query(
-    `SELECT fd.id, fd.name, fd.description, fd.machine_id
-     FROM form_definition fd
-              JOIN form_def_to_form_step fds ON fds.form_definition_id = fd.id
-     WHERE fds.form_step_id = $1`,
-    [formStepId],
+    `SELECT id, description, machine_id
+     FROM form_definition
+     WHERE name = $1
+       AND tenant_id IS NULL`,
+    [formName],
   )
   let formDefId: number
 
   if (rows.length > 0) {
     formDefId = rows[0].id
     // Update if any fields changed
-    if (rows[0].name !== formName ||
-      (rows[0].description ?? null) !== (formDescription ?? null) ||
+    if ((rows[0].description ?? null) !== (formDescription ?? null) ||
       (rows[0].machine_id ?? null) !== (machineId ?? null)) {
       await queryRunner.query(
         `UPDATE form_definition
-         SET name = $2,
-             description = $3,
-             machine_id = $4
+         SET description = $2,
+             machine_id = $3
          WHERE id = $1`,
-        [formDefId, formName, formDescription ?? null, machineId ?? null],
+        [formDefId, formDescription ?? null, machineId ?? null],
       )
     }
   } else {
@@ -78,15 +74,32 @@ async function getOrCreateFormDefinitionAndLink(
       [null, formName, formDescription ?? null, machineId ?? null],
     )
     formDefId = resp[0].id
+  }
 
-    // Link to form_step
+  return formDefId
+}
+
+async function linkFormDefToFormStep(
+  queryRunner: any,
+  formDefId: number,
+  formStepId: number,
+): Promise<void> {
+  // Check if link already exists
+  const existing = await queryRunner.query(
+    `SELECT 1
+     FROM form_def_to_form_step
+     WHERE form_definition_id = $1
+       AND form_step_id = $2`,
+    [formDefId, formStepId],
+  )
+
+  if (existing.length === 0) {
     await queryRunner.query(
       `INSERT INTO form_def_to_form_step(form_definition_id, form_step_id)
        VALUES ($1, $2)`,
       [formDefId, formStepId],
     )
   }
-  return formDefId
 }
 
 async function upsertSchemaAndLinkToStep(
@@ -241,17 +254,18 @@ export async function addFormDefs(directory: string): Promise<void> {
     // 1. Get or create form step (by formId)
     const formStepId = await getOrCreateFormStep(queryRunner, fixtures.formId)
 
-    // 2. Get or create form definition linked to this form step
-    await getOrCreateFormDefinitionAndLink(
+    // 2. Get or create form definition (by name - which is unique)
+    const formDefId = await getOrCreateFormDefinition(
       queryRunner,
-      formStepId,
-      fixtures.formId,
       fixtures.formName,
       fixtures.formDescription ?? null,
       fixtures.machineId ?? null,
     )
 
-    // 3. Process metadata sets: merge keys and schemas
+    // 3. Link form_definition to form_step (idempotent)
+    await linkFormDefToFormStep(queryRunner, formDefId, formStepId)
+
+    // 4. Process metadata sets: merge keys and schemas
     for (const set of fixtures.metadataSets ?? []) {
       const setId = await getOrCreateMetadataSet(queryRunner, set.name)
 
