@@ -3,7 +3,7 @@ import {CredentialConfigurationOptions, CredentialSchema, CredentialUISchema, Sc
 import {MetaDataKeysDTO, MetaDataKeysEntity} from '@typings/metadata'
 import {deleteUndefinedProps} from '@typings/type-commons'
 
-type StoreCredentialSchemaArgs = {
+export type StoreCredentialSchemaArgs = {
   name: string
   schema: CredentialSchema
   uiSchema: CredentialUISchema | Array<CredentialUISchema>
