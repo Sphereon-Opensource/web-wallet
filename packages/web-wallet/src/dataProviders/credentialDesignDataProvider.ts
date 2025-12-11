@@ -125,14 +125,16 @@ export const credentialDesignDataProvider = (): DataProvider => ({
       formStepId = formStepResult.data.id
     }
 
+    console.log(`INSERT options: ${JSON.stringify(options)}`)
+
     const {data, error} = await client.rpc('insert_credential_design', {
       p_identifier: name,
       p_credential_format: options.format,
       p_schema: enrichedSchema,
       p_ui_schema: uiSchema,
       p_form_step_id: formStepId,
-      p_vct: options.vct,
-      p_scope: options.scope,
+      p_vct: options.vct ?? null,
+      p_scope: options.scope ?? null,
       p_cryptographic_binding_methods_supported: options.cryptographicBindingMethodsSupported ?? [],
       p_credential_signing_alg_values_supported: options.credentialSigningAlgValuesSupported ?? [],
       p_proof_types_supported: options.proofTypesSupported ?? {},
@@ -208,14 +210,16 @@ export const credentialDesignDataProvider = (): DataProvider => ({
   update: async <TData extends BaseRecord = BaseRecord, TVariables = {}>({resource, id, variables}: UpdateParams<TVariables>): Promise<UpdateResponse<TData>> => {
     const client = supabaseServiceClient()
     // @ts-ignore
-    const { name, credentialFormat, schema, uiSchema, branding } = variables
+    const { name, credentialFormat, schema, uiSchema, branding, options } = variables
 
     const { data, error } = await client.rpc('update_credential_design', {
       p_set_id: id,
       p_identifier: name,
-      p_credential_format: credentialFormat,
+      p_credential_format: options.format,
       p_schema: schema,
       p_ui_schema: uiSchema,
+      p_vct: options.vct ?? null,
+      p_scope: options.scope ?? null,
       p_branding: {
         logo: branding.logo,
         background_image: branding.backgroundImage,

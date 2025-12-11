@@ -461,7 +461,9 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
             p_credential_format text,
             p_schema jsonb,
             p_ui_schema jsonb,
-            p_branding jsonb
+            p_branding jsonb,
+            p_vct text default null,
+            p_scope text default null
         )
         returns jsonb
         language plpgsql
@@ -472,6 +474,8 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
             _schema_definition_id uuid;
             _ui_schema_definition_id uuid;
             _branding_id uuid;
+            _vct_key_id uuid;
+            _scope_key_id uuid;
         
             -- logo / background helper vars
             _logo_dimensions_id uuid;
@@ -508,6 +512,52 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
             insert into meta_data_values(key_id, index, text_value)
             values
                 (_credential_format_key_id, 0, p_credential_format);
+                
+            select id into _vct_key_id
+            from meta_data_keys
+            where set_id = p_set_id and key = 'vct'
+            limit 1;
+            
+            if p_vct is not null then
+                if _vct_key_id is null then
+                    insert into meta_data_keys (set_id, key, value_type)
+                    values (p_set_id, 'vct', 'Text')
+                    returning id into _vct_key_id;
+                end if;
+            
+                delete from meta_data_values where key_id = _vct_key_id;
+            
+                insert into meta_data_values (key_id, index, text_value)
+                values (_vct_key_id, 0, p_vct);
+            else
+                if _vct_key_id is not null then
+                    delete from meta_data_values where key_id = _vct_key_id;
+                    delete from meta_data_keys where id = _vct_key_id;
+                end if;
+            end if;
+            
+            select id into _scope_key_id
+            from meta_data_keys
+            where set_id = p_set_id and key = 'scope'
+            limit 1;
+            
+            if p_scope is not null then
+                if _scope_key_id is null then
+                    insert into meta_data_keys (set_id, key, value_type)
+                    values (p_set_id, 'scope', 'Text')
+                    returning id into _scope_key_id;
+                end if;
+            
+                delete from meta_data_values where key_id = _scope_key_id;
+            
+                insert into meta_data_values (key_id, index, text_value)
+                values (_scope_key_id, 0, p_scope);
+            else
+                if _scope_key_id is not null then
+                    delete from meta_data_values where key_id = _scope_key_id;
+                    delete from meta_data_keys where id = _scope_key_id;
+                end if;
+            end if;    
         
             select id into _schema_definition_id
             from schema_definition
@@ -718,7 +768,51 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
                           from meta_data_values
                           where key_id = _credential_format_key_id
                       )
-                    )
+                    ),
+                    CASE
+                        WHEN _vct_key_id IS NOT NULL THEN
+                            jsonb_build_object(
+                                'id', _vct_key_id,
+                                'key', 'vct',
+                                'set_id', p_set_id,
+                                'value_type', 'Text',
+                                'meta_data_values', (
+                                    select jsonb_agg(
+                                        jsonb_build_object(
+                                            'id', id,
+                                            'index', index,
+                                            'key_id', key_id,
+                                            'text_value', text_value
+                                        ) order by index
+                                    )
+                                    from meta_data_values
+                                    where key_id = _vct_key_id
+                                )
+                            )
+                        ELSE null
+                    END,
+                    CASE
+                        WHEN _scope_key_id IS NOT NULL THEN
+                            jsonb_build_object(
+                                'id', _scope_key_id,
+                                'key', 'scope',
+                                'set_id', p_set_id,
+                                'value_type', 'Text',
+                                'meta_data_values', (
+                                    select jsonb_agg(
+                                        jsonb_build_object(
+                                            'id', id,
+                                            'index', index,
+                                            'key_id', key_id,
+                                            'text_value', text_value
+                                        ) order by index
+                                    )
+                                    from meta_data_values
+                                    where key_id = _scope_key_id
+                                )
+                            )
+                        ELSE null
+                    END
                 ),
                 'schema_definition', jsonb_build_array(
                     jsonb_build_object('id', _schema_definition_id, 'schema', p_schema),

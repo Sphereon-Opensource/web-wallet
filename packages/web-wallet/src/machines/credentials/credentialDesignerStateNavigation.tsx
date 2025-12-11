@@ -221,11 +221,7 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
               vct: credentialDesignerDetailsFormData.data.vct ?? credentialDesignerDetailsFormData.data.identifier,
               cryptographicBindingMethodsSupported: credentialDesignerDetailsFormData.data.cryptographic_binding_methods_supported,
               proofTypesSupported: credentialDesignerDetailsFormData.data.proof_types_supported,
-
-              types: credentialDesignerDetailsFormData.data.types, // TODO
-              scope: credentialDesignerDetailsFormData.data.scope, // TODO
-              credentialDefinition: credentialDesignerDetailsFormData.data.credentialDefinition, // TODO
-              doctype: credentialDesignerDetailsFormData.data.doctype, // TODO
+              scope: credentialDesignerDetailsFormData.data.scope,
             }
           })
           .then(() => {
@@ -239,10 +235,7 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
                 vct: credentialDesignerDetailsFormData.data.vct ?? credentialDesignerDetailsFormData.data.identifier,
                 cryptographicBindingMethodsSupported: credentialDesignerDetailsFormData.data.cryptographic_binding_methods_supported,
                 proofTypesSupported: credentialDesignerDetailsFormData.data.proof_types_supported,
-                types: credentialDesignerDetailsFormData.data.types,
-                scope: credentialDesignerDetailsFormData.data.scope,
-                credentialDefinition: credentialDesignerDetailsFormData.data.credentialDefinition,
-                doctype: credentialDesignerDetailsFormData.data.doctype,
+                scope: credentialDesignerDetailsFormData.data.scope
               }
             })
             void updateOid4vciMetadata(credentialDesignerDetailsFormData.data.identifier, credentialConfiguration)
