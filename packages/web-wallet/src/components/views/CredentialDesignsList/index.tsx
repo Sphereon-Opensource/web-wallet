@@ -13,7 +13,7 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
   const {allowCreateCredentialDesign = true} = props
   const translate = useTranslate()
   const {mutateAsync: deleteCredential} = useDelete<CredentialDesignDTO, HttpError>()
-  const {create} = useNavigation()
+  const {create, edit} = useNavigation()
   const [current, setCurrent] = useState<number>(1)
   const [pageSize, _] = useState<number>(10)
 
@@ -48,12 +48,12 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
     .catch(e => Promise.reject(Error(e.message)))
   }
 
-  const onShow = async (data: Row<CredentialDesignTableItem>): Promise<void> => {
-    // TODO SSISDK-93 implement
-  }
-
   const onCreate = async (): Promise<void> => {
     create(DataResource.CREDENTIAL_DESIGNS)
+  }
+
+  const onEdit = async (data: Row<CredentialDesignTableItem>): Promise<void> => {
+    edit(DataResource.CREDENTIAL_DESIGNS, data.original.id)
   }
 
   const columns: ColumnHeader<CredentialDesignTableItem>[] = [
@@ -94,8 +94,8 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
     },
     {
       accessor: row => {
-        const keyItem = row.metadataKeys.find(key => key.key === 'credentialFormat');
-        return keyItem?.values?.[0]?.textValue ?? '';
+        const keyItem = row.metadataKeys.find(key => key.key === 'credentialFormat')
+        return keyItem?.values?.[0]?.textValue ?? ''
       },
       label: translate('credential_design_fields_credential_format'),
       type: TableCellType.TEXT,
@@ -121,6 +121,11 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
       columnOptions: {
         cellOptions: {
           actions: [
+            {
+              caption: translate('credential_design_actions_edit'),
+              icon: ButtonIcon.EDIT,
+              onClick: onEdit,
+            },
             {
               caption: translate('credential_design_actions_delete'),
               icon: ButtonIcon.DELETE,
@@ -177,7 +182,6 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
       data={designsData}
       columns={columns}
       actions={buildActionList()}
-      onRowClick={onShow}
       pagination={{
         page: current,
         count: Math.ceil(totalDesigns / pageSize),

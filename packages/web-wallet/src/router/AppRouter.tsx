@@ -82,6 +82,7 @@ import CredentialDesignerClaimsContent from '@components/views/CredentialDesigne
 import CredentialDesignerDetailsContent from '@components/views/CredentialDesignerDetailsContent'
 import CredentialDesignerVisualDesignContent from '@components/views/CredentialDesignerVisualDesignContent'
 import CredentialDesignsListPage from '@/pages/credentials/design'
+import CredentialDesignerEditPage from '@/pages/credentials/design/edit'
 
 const KeycloakLoginPage = (props: PropsWithChildren<any>) => {
   const {mutate: login} = useLogin()
@@ -184,6 +185,17 @@ const AppRouter: React.FC = () => {
                     <Route path={CredentialDesignerRoute.DETAILS} element={ <CredentialDesignerDetailsContent /> } />
                     <Route path={CredentialDesignerRoute.VISUAL_DESIGN} element={ <CredentialDesignerVisualDesignContent /> } />
                     <Route path={CredentialDesignerRoute.CLAIMS} element={ <CredentialDesignerClaimsContent /> } />
+              </Route>
+              <Route
+                path={`${MainRoute.SUB_EDIT}/${MainRoute.SUB_ID}`}
+                element={
+                  <CredentialDesignerContextProvider>
+                    <CredentialDesignerEditPage />
+                  </CredentialDesignerContextProvider>
+                }>
+                <Route path={CredentialDesignerRoute.DETAILS} element={ <CredentialDesignerDetailsContent /> } />
+                <Route path={CredentialDesignerRoute.VISUAL_DESIGN} element={ <CredentialDesignerVisualDesignContent /> } />
+                <Route path={CredentialDesignerRoute.CLAIMS} element={ <CredentialDesignerClaimsContent /> } />
               </Route>
             </Route>
             <Route path={MainRoute.SUB_ID} element={<ShowCredentialDetails credentialRole={CredentialRole.HOLDER} />} />
