@@ -31,7 +31,12 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
             p_schema jsonb,
             p_ui_schema jsonb,
             p_form_step_id uuid,
-            p_branding jsonb
+            p_branding jsonb,
+            p_vct text default null,
+            p_scope text default null,
+            p_cryptographic_binding_methods_supported text[] default '{}',
+            p_credential_signing_alg_values_supported text[] default '{}',
+            p_proof_types_supported jsonb default '{}'::jsonb
         )
         returns jsonb
         language plpgsql
@@ -40,6 +45,11 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
             _set_id uuid;
             _credential_type_key_id uuid;
             _credential_format_key_id uuid;
+            _vct_key_id uuid;
+            _scope_key_id uuid;
+            _cryptographic_binding_key_id uuid;
+            _credential_signing_alg_key_id uuid;
+            _proof_types_supported_key_id uuid;
             _schema_definition_id uuid;
             _ui_schema_definition_id uuid;
             _branding_id uuid;
@@ -55,32 +65,71 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
             _bg_width integer;
             _bg_height integer;
         begin
-            -- 1) Create meta_data_set
             insert into meta_data_set (name)
             values (p_identifier)
             returning id into _set_id;
         
-            -- 2) Create meta_data_keys for credentialType
             insert into meta_data_keys (set_id, key, value_type)
             values (_set_id, 'credentialType', 'Text')
             returning id into _credential_type_key_id;
         
-            -- Insert meta_data_values for credentialType
             insert into meta_data_values (key_id, index, text_value)
             values 
                 (_credential_type_key_id, 0, 'VerifiableCredential'),
                 (_credential_type_key_id, 1, p_identifier);
         
-            -- 3) Create meta_data_keys for credentialFormat
             insert into meta_data_keys (set_id, key, value_type)
             values (_set_id, 'credentialFormat', 'Text')
             returning id into _credential_format_key_id;
         
-            -- Insert meta_data_values for credentialFormat
             insert into meta_data_values (key_id, index, text_value)
             values (_credential_format_key_id, 0, p_credential_format);
+            
+            if p_vct is not null then
+                insert into meta_data_keys (set_id, key, value_type)
+                values (_set_id, 'vct', 'Text')
+                returning id into _vct_key_id;
         
-            -- 4) Insert Data schema_definition (use jsonb directly)
+                insert into meta_data_values (key_id, index, text_value)
+                values (_vct_key_id, 0, p_vct);
+            end if;
+            
+            if p_scope is not null then
+                insert into meta_data_keys (set_id, key, value_type)
+                values (_set_id, 'scope', 'Text')
+                returning id into _scope_key_id;
+        
+                insert into meta_data_values (key_id, index, text_value)
+                values (_scope_key_id, 0, p_scope);
+            end if;
+            
+            insert into meta_data_keys (set_id, key, value_type)
+            values (_set_id, 'cryptographicBindingMethodsSupported', 'Text')
+            returning id into _cryptographic_binding_key_id;
+            
+            if array_length(p_cryptographic_binding_methods_supported, 1) > 0 then
+                insert into meta_data_values (key_id, index, text_value)
+                select _cryptographic_binding_key_id, i, val
+                from unnest(p_cryptographic_binding_methods_supported) with ordinality as t(val, i);
+            end if;
+            
+            insert into meta_data_keys (set_id, key, value_type)
+            values (_set_id, 'credentialSigningAlgValuesSupported', 'Text')
+            returning id into _credential_signing_alg_key_id;
+            
+            if array_length(p_credential_signing_alg_values_supported, 1) > 0 then
+                insert into meta_data_values (key_id, index, text_value)
+                select _credential_signing_alg_key_id, i, val
+                from unnest(p_credential_signing_alg_values_supported) with ordinality as t(val, i);
+            end if;
+            
+            insert into meta_data_keys (set_id, key, value_type)
+            values (_set_id, 'proofTypesSupported', 'Text')
+            returning id into _proof_types_supported_key_id;
+            
+            insert into meta_data_values (key_id, index, text_value)
+            values (_proof_types_supported_key_id, 0, p_proof_types_supported);
+        
             insert into schema_definition (
                 correlation_id,
                 schema_type,
@@ -97,7 +146,6 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
             )
             returning id into _schema_definition_id;
         
-            -- 5) Insert UI_Form schema_definition (use jsonb directly)
             insert into schema_definition (
                 correlation_id,
                 schema_type,
@@ -114,14 +162,11 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
             )
             returning id into _ui_schema_definition_id;
         
-            -- Link form step to both definitions
             insert into form_step_to_schema_definition (form_step_id, schema_definition_id)
             values 
                 (p_form_step_id, _schema_definition_id),
                 (p_form_step_id, _ui_schema_definition_id);
         
-            -- === Insert images if provided ===
-            -- Logo
             if (p_branding is not null) and (p_branding->'logo' is not null) and (p_branding->'logo'->>'uri' is not null) then
                 _logo_width := null;
                 _logo_height := null;
@@ -151,7 +196,6 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
                 _logo_dimensions_id := null;
             end if;
         
-            -- Background image
             if (p_branding is not null) and (p_branding->'background_image' is not null) and (p_branding->'background_image'->>'uri' is not null) then
                 _bg_width := null;
                 _bg_height := null;
@@ -181,7 +225,6 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
                 _bg_dimensions_id := null;
             end if;
         
-            -- 6) Insert credential_design_branding
             insert into credential_design_branding (
                 logo,
                 background_image,
@@ -198,7 +241,6 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
             )
             returning id into _branding_id;
         
-            -- 7) Return full nested object
             return jsonb_build_object(
                 'id', _set_id,
                 'tenant_id', null,
@@ -209,20 +251,135 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
                         'key', 'credentialType',
                         'set_id', _set_id,
                         'value_type', 'Text',
-                        'meta_data_values', jsonb_build_array(
-                            jsonb_build_object('id', gen_random_uuid(), 'index', 0, 'key_id', _credential_type_key_id, 'text_value', 'VerifiableCredential'),
-                            jsonb_build_object('id', gen_random_uuid(), 'index', 1, 'key_id', _credential_type_key_id, 'text_value', p_identifier)
-                        )
+                        'meta_data_values', (
+                          select jsonb_agg(
+                              jsonb_build_object(
+                                  'id', id,
+                                  'index', index,
+                                  'key_id', key_id,
+                                  'text_value', text_value
+                              ) order by index
+                          )
+                          from meta_data_values
+                          where key_id = _credential_type_key_id
+                      )
                     ),
                     jsonb_build_object(
                         'id', _credential_format_key_id,
                         'key', 'credentialFormat',
                         'set_id', _set_id,
                         'value_type', 'Text',
-                        'meta_data_values', jsonb_build_array(
-                            jsonb_build_object('id', gen_random_uuid(), 'index', 0, 'key_id', _credential_format_key_id, 'text_value', p_credential_format)
+                        'meta_data_values', (
+                          select jsonb_agg(
+                              jsonb_build_object(
+                                  'id', id,
+                                  'index', index,
+                                  'key_id', key_id,
+                                  'text_value', text_value
+                              ) order by index
+                          )
+                          from meta_data_values
+                          where key_id = _credential_format_key_id
                         )
-                    )
+                    ),
+                    jsonb_build_object(
+                        'id', _cryptographic_binding_key_id,
+                        'key', 'cryptographicBindingMethodsSupported',
+                        'set_id', _set_id,
+                        'value_type', 'Text',
+                        'meta_data_values', (
+                            select coalesce(
+                                jsonb_agg(
+                                    jsonb_build_object(
+                                        'id', id,
+                                        'index', index,
+                                        'key_id', key_id,
+                                        'text_value', text_value
+                                    ) order by index
+                                ),
+                                '[]'::jsonb
+                            )
+                            from meta_data_values
+                            where key_id = _cryptographic_binding_key_id
+                        )
+                    ),
+                    jsonb_build_object(
+                        'id', _credential_signing_alg_key_id,
+                        'key', 'credentialSigningAlgValuesSupported',
+                        'set_id', _set_id,
+                        'value_type', 'Text',
+                        'meta_data_values', (
+                            select coalesce(
+                                jsonb_agg(
+                                    jsonb_build_object(
+                                        'id', id,
+                                        'index', index,
+                                        'key_id', key_id,
+                                        'text_value', text_value
+                                    ) order by index
+                                ),
+                                '[]'::jsonb
+                            )
+                            from meta_data_values
+                            where key_id = _credential_signing_alg_key_id
+                        )
+                    ),
+                    jsonb_build_object(
+                        'id', _proof_types_supported_key_id,
+                        'key', 'proofTypesSupported',
+                        'set_id', _set_id,
+                        'value_type', 'Text',
+                        'meta_data_values', (
+                            select coalesce(
+                                jsonb_agg(
+                                    jsonb_build_object(
+                                        'id', id,
+                                        'index', index,
+                                        'key_id', key_id,
+                                        'text_value', text_value
+                                    ) order by index
+                                ), '[]'::jsonb
+                            )
+                            from meta_data_values
+                            where key_id = _proof_types_supported_key_id
+                        )
+                    ),
+                    CASE
+                        WHEN _vct_key_id IS NOT NULL THEN
+                            jsonb_build_object(
+                                'id', _vct_key_id,
+                                'key', 'vct',
+                                'set_id', _set_id,
+                                'value_type', 'Text',
+                                'meta_data_values', jsonb_build_array(
+                                    jsonb_build_object(
+                                        'id', gen_random_uuid(),
+                                        'index', 0,
+                                        'key_id', _vct_key_id,
+                                        'text_value', p_vct
+                                    )
+                                )
+                            )
+                        ELSE null
+                    END,
+                    CASE
+                        WHEN _scope_key_id IS NOT NULL THEN
+                            jsonb_build_object(
+                                'id', _scope_key_id,
+                                'key', 'scope',
+                                'set_id', _set_id,
+                                'value_type', 'Text',
+                                'meta_data_values', jsonb_build_array(
+                                    jsonb_build_object(
+                                        'id', gen_random_uuid(),
+                                        'index', 0,
+                                        'key_id', _scope_key_id,
+                                        'text_value', p_scope
+                                    )
+                                )
+                            )
+                        ELSE null
+                    END
                 ),
                 'schema_definition', jsonb_build_array(
                     jsonb_build_object(
@@ -252,8 +409,7 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
                         )
                     )
                 ),
-                'credential_design_branding', jsonb_build_array(
-                    jsonb_build_object(
+                'credential_design_branding', jsonb_build_object(
                         'id', _branding_id,
                         'logo', CASE
                             WHEN _logo_attr_id IS NOT NULL THEN
@@ -292,7 +448,6 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
                         END,
                         'background_color', p_branding->>'background_color',
                         'meta_data_set_id', _set_id
-                    )
                 )
             );
         end;
@@ -306,7 +461,12 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
             p_credential_format text,
             p_schema jsonb,
             p_ui_schema jsonb,
-            p_branding jsonb
+            p_branding jsonb,
+            p_vct text default null,
+            p_scope text default null,
+            p_cryptographic_binding_methods_supported text[] default '{}',
+            p_credential_signing_alg_values_supported text[] default '{}',
+            p_proof_types_supported jsonb default '{}'::jsonb
         )
         returns jsonb
         language plpgsql
@@ -317,6 +477,11 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
             _schema_definition_id uuid;
             _ui_schema_definition_id uuid;
             _branding_id uuid;
+            _vct_key_id uuid;
+            _scope_key_id uuid;
+            _cryptographic_binding_key_id uuid;
+            _credential_signing_alg_key_id uuid;
+            _proof_types_supported_key_id uuid;
         
             -- logo / background helper vars
             _logo_dimensions_id uuid;
@@ -328,13 +493,13 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
             _bg_attr_id uuid;
             _bg_width integer;
             _bg_height integer;
+            
+            _existing_cbms text[];
         begin
-            -- 1) Update meta_data_set
             update meta_data_set
             set name = p_identifier
             where id = p_set_id;
         
-            -- 2) Get existing meta_data_keys
             select id into _credential_type_key_id
             from meta_data_keys
             where set_id = p_set_id and key = 'credentialType'
@@ -345,20 +510,150 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
             where set_id = p_set_id and key = 'credentialFormat'
             limit 1;
         
-            -- 3) Update credentialType meta_data_values
             delete from meta_data_values where key_id = _credential_type_key_id;
             insert into meta_data_values(key_id, index, text_value)
             values
                 (_credential_type_key_id, 0, 'VerifiableCredential'),
                 (_credential_type_key_id, 1, p_identifier);
         
-            -- 4) Update credentialFormat meta_data_values
             delete from meta_data_values where key_id = _credential_format_key_id;
             insert into meta_data_values(key_id, index, text_value)
             values
                 (_credential_format_key_id, 0, p_credential_format);
+                
+            select id into _vct_key_id
+            from meta_data_keys
+            where set_id = p_set_id and key = 'vct'
+            limit 1;
+            
+            if p_vct is not null then
+                if _vct_key_id is null then
+                    insert into meta_data_keys (set_id, key, value_type)
+                    values (p_set_id, 'vct', 'Text')
+                    returning id into _vct_key_id;
+                end if;
+            
+                delete from meta_data_values where key_id = _vct_key_id;
+            
+                insert into meta_data_values (key_id, index, text_value)
+                values (_vct_key_id, 0, p_vct);
+            else
+                if _vct_key_id is not null then
+                    delete from meta_data_values where key_id = _vct_key_id;
+                    delete from meta_data_keys where id = _vct_key_id;
+                end if;
+            end if;
+            
+            select id into _scope_key_id
+            from meta_data_keys
+            where set_id = p_set_id and key = 'scope'
+            limit 1;
+            
+            if p_scope is not null then
+                if _scope_key_id is null then
+                    insert into meta_data_keys (set_id, key, value_type)
+                    values (p_set_id, 'scope', 'Text')
+                    returning id into _scope_key_id;
+                end if;
+            
+                delete from meta_data_values where key_id = _scope_key_id;
+            
+                insert into meta_data_values (key_id, index, text_value)
+                values (_scope_key_id, 0, p_scope);
+            else
+                if _scope_key_id is not null then
+                    delete from meta_data_values where key_id = _scope_key_id;
+                    delete from meta_data_keys where id = _scope_key_id;
+                end if;
+            end if;
+            
+            select id
+            into _cryptographic_binding_key_id
+            from meta_data_keys
+            where set_id = p_set_id
+              and key = 'cryptographicBindingMethodsSupported';
         
-            -- 5) Update schema_definitions
+            if _cryptographic_binding_key_id is null then
+                insert into meta_data_keys (set_id, key, value_type)
+                values (p_set_id, 'cryptographicBindingMethodsSupported', 'Text')
+                returning id into _cryptographic_binding_key_id;
+            end if;
+        
+            select array_agg(text_value order by index)
+            into _existing_cbms
+            from meta_data_values
+            where key_id = _cryptographic_binding_key_id;
+        
+            if _existing_cbms is null then
+                _existing_cbms := '{}';
+            end if;
+        
+            insert into meta_data_values (key_id, index, text_value)
+            select
+                _cryptographic_binding_key_id,
+                (
+                    select coalesce(max(index),0)
+                    from meta_data_values
+                    where key_id = _cryptographic_binding_key_id
+                ) + row_number() over (),
+                v
+            from unnest(p_cryptographic_binding_methods_supported) as v
+            where v is not null
+              and not (v = ANY(_existing_cbms));
+        
+            delete from meta_data_values
+            where key_id = _cryptographic_binding_key_id
+              and text_value != ALL(p_cryptographic_binding_methods_supported);
+
+            select id
+            into _credential_signing_alg_key_id
+            from meta_data_keys
+            where set_id = p_set_id
+              and key = 'credentialSigningAlgValuesSupported';
+        
+            if _credential_signing_alg_key_id is null then
+                insert into meta_data_keys (set_id, key, value_type)
+                values (p_set_id, 'credentialSigningAlgValuesSupported', 'Text')
+                returning id into _credential_signing_alg_key_id;
+            end if;
+        
+            select array_agg(text_value order by index)
+            into _existing_cbms
+            from meta_data_values
+            where key_id = _credential_signing_alg_key_id;
+        
+            if _existing_cbms is null then
+                _existing_cbms := '{}';
+            end if;
+        
+            insert into meta_data_values (key_id, index, text_value)
+            select
+                _credential_signing_alg_key_id,
+                (
+                    select coalesce(max(index),0)
+                    from meta_data_values
+                    where key_id = _credential_signing_alg_key_id
+                ) + row_number() over (),
+                v
+            from unnest(p_credential_signing_alg_values_supported) as v
+            where v is not null
+              and not (v = ANY(_existing_cbms));
+        
+            delete from meta_data_values
+            where key_id = _credential_signing_alg_key_id
+              and text_value != ALL(p_credential_signing_alg_values_supported);
+
+            select id
+            into _proof_types_supported_key_id
+            from meta_data_keys
+            where set_id = p_set_id
+              and key = 'proofTypesSupported';
+              
+            update meta_data_values
+            set text_value = p_proof_types_supported
+            where key_id = _proof_types_supported_key_id
+              and index = 0;
+
             select id into _schema_definition_id
             from schema_definition
             where meta_data_set_id = p_set_id and schema_type = 'Data'
@@ -377,14 +672,11 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
             set schema = p_ui_schema
             where id = _ui_schema_definition_id;
         
-            -- 6) Update branding
             select id into _branding_id
             from credential_design_branding
             where meta_data_set_id = p_set_id
             limit 1;
         
-            -- === Update / Insert images if provided ===
-            -- Logo
             if (p_branding is not null) and (p_branding->'logo' is not null) and (p_branding->'logo'->>'uri' is not null) then
                 _logo_width := null;
                 _logo_height := null;
@@ -423,11 +715,37 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
                     returning id into _logo_attr_id;
                 end if;
             else
+                declare
+                    _old_logo_attr uuid;
+                    _old_logo_dim uuid;
+                begin
+                    select logo into _old_logo_attr
+                    from credential_design_branding
+                    where id = _branding_id;
+            
+                    if _old_logo_attr is not null then
+                        update credential_design_branding
+                        set logo = null
+                        where id = _branding_id;
+                    
+                        select "dimensionsId" into _old_logo_dim
+                        from "ImageAttributes"
+                        where id = _old_logo_attr;
+            
+                        delete from "ImageAttributes"
+                        where id = _old_logo_attr;
+            
+                        if _old_logo_dim is not null then
+                            delete from "ImageDimensions"
+                            where id = _old_logo_dim;
+                        end if;
+                    end if;
+                end;
+            
                 _logo_attr_id := null;
                 _logo_dimensions_id := null;
             end if;
         
-            -- Background image
             if (p_branding is not null) and (p_branding->'background_image' is not null) and (p_branding->'background_image'->>'uri' is not null) then
                 _bg_width := null;
                 _bg_height := null;
@@ -466,11 +784,37 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
                     returning id into _bg_attr_id;
                 end if;
             else
+                declare
+                    _old_bg_attr uuid;
+                    _old_bg_dim uuid;
+                begin
+                    select background_image into _old_bg_attr
+                    from credential_design_branding
+                    where id = _branding_id;
+            
+                    if _old_bg_attr is not null then
+                        update credential_design_branding
+                        set background_image = null
+                        where id = _branding_id;
+                        
+                        select "dimensionsId" into _old_bg_dim
+                        from "ImageAttributes"
+                        where id = _old_bg_attr;
+            
+                        delete from "ImageAttributes"
+                        where id = _old_bg_attr;
+            
+                        if _old_bg_dim is not null then
+                            delete from "ImageDimensions"
+                            where id = _old_bg_dim;
+                        end if;
+                    end if;
+                end;  
+            
                 _bg_attr_id := null;
                 _bg_dimensions_id := null;
             end if;
         
-            -- Update credential_design_branding with new image attribute IDs
             update credential_design_branding
             set
                 logo = _logo_attr_id,
@@ -479,7 +823,6 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
                 background_color = p_branding->>'background_color'
             where id = _branding_id;
         
-            -- 7) Return updated object
             return jsonb_build_object(
                 'id', p_set_id,
                 'tenant_id', null,
@@ -490,27 +833,87 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
                         'key', 'credentialType',
                         'set_id', p_set_id,
                         'value_type', 'Text',
-                        'meta_data_values', jsonb_build_array(
-                            jsonb_build_object('id', gen_random_uuid(), 'index', 0, 'key_id', _credential_type_key_id, 'text_value', 'VerifiableCredential'),
-                            jsonb_build_object('id', gen_random_uuid(), 'index', 1, 'key_id', _credential_type_key_id, 'text_value', p_identifier)
-                        )
+                        'meta_data_values', (
+                          select jsonb_agg(
+                              jsonb_build_object(
+                                  'id', id,
+                                  'index', index,
+                                  'key_id', key_id,
+                                  'text_value', text_value
+                              ) order by index
+                          ) 
+                          from meta_data_values
+                          where key_id = _credential_type_key_id
+                      )
                     ),
                     jsonb_build_object(
                         'id', _credential_format_key_id,
                         'key', 'credentialFormat',
                         'set_id', p_set_id,
                         'value_type', 'Text',
-                        'meta_data_values', jsonb_build_array(
-                            jsonb_build_object('id', gen_random_uuid(), 'index', 0, 'key_id', _credential_format_key_id, 'text_value', p_credential_format)
-                        )
-                    )
+                        'meta_data_values', (
+                          select jsonb_agg(
+                              jsonb_build_object(
+                                  'id', id,
+                                  'index', index,
+                                  'key_id', key_id,
+                                  'text_value', text_value
+                              ) order by index
+                          ) 
+                          from meta_data_values
+                          where key_id = _credential_format_key_id
+                      )
+                    ),
+                    CASE
+                        WHEN _vct_key_id IS NOT NULL THEN
+                            jsonb_build_object(
+                                'id', _vct_key_id,
+                                'key', 'vct',
+                                'set_id', p_set_id,
+                                'value_type', 'Text',
+                                'meta_data_values', (
+                                    select jsonb_agg(
+                                        jsonb_build_object(
+                                            'id', id,
+                                            'index', index,
+                                            'key_id', key_id,
+                                            'text_value', text_value
+                                        ) order by index
+                                    )
+                                    from meta_data_values
+                                    where key_id = _vct_key_id
+                                )
+                            )
+                        ELSE null
+                    END,
+                    CASE
+                        WHEN _scope_key_id IS NOT NULL THEN
+                            jsonb_build_object(
+                                'id', _scope_key_id,
+                                'key', 'scope',
+                                'set_id', p_set_id,
+                                'value_type', 'Text',
+                                'meta_data_values', (
+                                    select jsonb_agg(
+                                        jsonb_build_object(
+                                            'id', id,
+                                            'index', index,
+                                            'key_id', key_id,
+                                            'text_value', text_value
+                                        ) order by index
+                                    )
+                                    from meta_data_values
+                                    where key_id = _scope_key_id
+                                )
+                            )
+                        ELSE null
+                    END
                 ),
                 'schema_definition', jsonb_build_array(
                     jsonb_build_object('id', _schema_definition_id, 'schema', p_schema),
                     jsonb_build_object('id', _ui_schema_definition_id, 'schema', p_ui_schema)
                 ),
-                'credential_design_branding', jsonb_build_array(
-                    jsonb_build_object(
+                'credential_design_branding', jsonb_build_object(
                         'id', _branding_id,
                         'logo', CASE
                             WHEN _logo_attr_id IS NOT NULL THEN
@@ -549,7 +952,6 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
                         END,
                         'background_color', p_branding->>'background_color',
                         'meta_data_set_id', p_set_id
-                    )
                 )
             );
         end;

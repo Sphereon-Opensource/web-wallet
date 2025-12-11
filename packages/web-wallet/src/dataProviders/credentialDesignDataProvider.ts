@@ -15,7 +15,8 @@ import {
   UpdateResponse,
 } from '@refinedev/core'
 import {supabaseServiceClient} from '@helpers/SupabaseClient'
-import {CredentialDesignEntity, StoreCredentialSchemaArgs} from '@typings'
+import {enrichSchemaWithDisclosureFrame, enrichSchemaWithStatusList} from '@helpers/SchemaUtils'
+import {CredentialDesignEntity, SdJwtFormatOptions, StoreCredentialSchemaArgs} from '@typings'
 
 export const credentialDesignDataProvider = (): DataProvider => ({
   getList: async <TData extends BaseRecord = BaseRecord>({resource, pagination, filters, sort}: GetListParams): Promise<GetListResponse<TData>> => {
@@ -99,7 +100,10 @@ export const credentialDesignDataProvider = (): DataProvider => ({
   create: async <TData extends BaseRecord = BaseRecord, TVariables = {}>({resource, variables, meta}: CreateParams<TVariables>): Promise<CreateResponse<TData>> => {
     const client = supabaseServiceClient()
     // @ts-ignore
-    const { name, credentialFormat, schema, uiSchema, branding } = variables
+    const { name, schema, uiSchema, branding, statusListUri, options } = variables
+
+    // Enrich the schema with disclosureFrame (for non-required fields) and statusList (if URI provided)
+    const enrichedSchema = enrichSchemaWithStatusList(enrichSchemaWithDisclosureFrame(schema), statusListUri)
 
     let formStepId
     const formStepResult = await client
@@ -121,21 +125,24 @@ export const credentialDesignDataProvider = (): DataProvider => ({
       formStepId = formStepResult.data.id
     }
 
-    const { data, error } = await client.rpc(
-      'insert_credential_design', {
-        p_identifier: name,
-        p_credential_format: credentialFormat,
-        p_schema: schema,
-        p_ui_schema: uiSchema,
-        p_form_step_id: formStepId,
-        p_branding: {
-          logo: branding.logo,
-          background_image: branding.backgroundImage,
-          text_color: branding.textColor,
-          background_color: branding.backgroundColor
-        }
-      }
-    )
+    const {data, error} = await client.rpc('insert_credential_design', {
+      p_identifier: name,
+      p_credential_format: options.format,
+      p_schema: enrichedSchema,
+      p_ui_schema: uiSchema,
+      p_form_step_id: formStepId,
+      p_vct: options.vct ?? null,
+      p_scope: options.scope ?? null,
+      p_cryptographic_binding_methods_supported: options.cryptographicBindingMethodsSupported ?? [],
+      p_credential_signing_alg_values_supported: options.credentialSigningAlgValuesSupported ?? [],
+      p_proof_types_supported: options.proofTypesSupported ?? {},
+      p_branding: branding ? {
+        logo: branding.logo,
+        background_image: branding.backgroundImage,
+        text_color: branding.textColor,
+        background_color: branding.backgroundColor,
+      } : null
+    })
 
     if (error) {
       throw new Error(error.message)
@@ -176,41 +183,51 @@ export const credentialDesignDataProvider = (): DataProvider => ({
       credentialDesigns.map((design: StoreCredentialSchemaArgs) =>
         client.rpc('insert_credential_design', {
           p_identifier: design.name,
-          p_credential_format: design.credentialFormat,
+          p_credential_format: design.options.format,
           p_schema: design.schema,
           p_ui_schema: design.uiSchema,
           p_form_step_id: formStepId,
-          p_branding: {
+          p_vct: (design.options as SdJwtFormatOptions).vct ?? null,
+          p_scope: design.options.scope ?? null,
+          p_cryptographic_binding_methods_supported: design.options.cryptographicBindingMethodsSupported ?? [],
+          p_credential_signing_alg_values_supported: design.options.credentialSigningAlgValuesSupported ?? [],
+          p_proof_types_supported: design.options.proofTypesSupported ?? {},
+          p_branding: design.branding ? {
             logo: design.branding.logo,
             background_image: design.branding.backgroundImage,
             text_color: design.branding.textColor,
-            background_color: design.branding.backgroundColor
-          }
+            background_color: design.branding.backgroundColor,
+          } : null
         })
       )
     )
 
-    const data: TData[] = results.map((result: any) => result.data)
+    const data: TData[] = results.map((result: any) => new CredentialDesignEntity(result).asDTO())
 
     return { data }
   },
   update: async <TData extends BaseRecord = BaseRecord, TVariables = {}>({resource, id, variables}: UpdateParams<TVariables>): Promise<UpdateResponse<TData>> => {
     const client = supabaseServiceClient()
     // @ts-ignore
-    const { name, credentialFormat, schema, uiSchema, branding } = variables
+    const { name, schema, uiSchema, branding, options } = variables
 
     const { data, error } = await client.rpc('update_credential_design', {
       p_set_id: id,
       p_identifier: name,
-      p_credential_format: credentialFormat,
+      p_credential_format: options.format,
       p_schema: schema,
       p_ui_schema: uiSchema,
-      p_branding: {
+      p_vct: options.vct ?? null,
+      p_scope: options.scope ?? null,
+      p_cryptographic_binding_methods_supported: options.cryptographicBindingMethodsSupported ?? [],
+      p_credential_signing_alg_values_supported: options.credentialSigningAlgValuesSupported ?? [],
+      p_proof_types_supported: options.proofTypesSupported ?? {},
+      p_branding: branding ? {
         logo: branding.logo,
         background_image: branding.backgroundImage,
         text_color: branding.textColor,
-        background_color: branding.backgroundColor
-      }
+        background_color: branding.backgroundColor,
+      } : null
     })
 
     if (error) {

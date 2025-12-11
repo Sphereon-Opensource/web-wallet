@@ -54,7 +54,7 @@ export function schemaToClaims(
 }
 
 export const toCredentialConfiguration = (args: ToCredentialConfigurationArgs): CredentialConfigurationSupportedV1_0_15 => {
-  const {identifier, schema, branding, options} = args
+  const {schema, branding, options} = args
   const {
     scope,
     cryptographicBindingMethodsSupported = ['did:web', 'did:jwk'],
@@ -84,9 +84,10 @@ export const toCredentialConfiguration = (args: ToCredentialConfigurationArgs): 
       return {format: options.format, credential_definition: options.credentialDefinition, ...baseConfig}
     case 'mso_mdoc':
       return {format: options.format, doctype: options.doctype, ...baseConfig}
+    default:
+      // @ts-ignore
+      throw Error(`Unsupported format type ${options.format}`)
   }
-
-  throw Error(`Unsupported format type ${options.format}`)
 }
 
 export const updateOid4vciMetadata = async (identifier: string, credentialConfiguration: CredentialConfigurationSupportedV1_0_15): Promise<void> => {
@@ -132,10 +133,7 @@ export const removeCredentialConfigurationFromOid4vciMetadata = async (identifie
     return await getAgent().oid4vciStorePersistMetadata({
       metadataType: 'issuer',
       correlationId: issuerCorrelationId,
-      metadata: {
-        ...metadata,
-        credential_configurations_supported: metadata.credential_configurations_supported,
-      },
+      metadata,
     })
     .then(() => getAgent().oid4vciRefreshInstanceMetadata({credentialIssuer: getIssuerCorrelationId()}))
     .catch((e) => Promise.reject(Error(`Failed to update oid4vci metadata. ${e.message}`)))

@@ -273,11 +273,11 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
             }),
             options: {
               format: credentialDesignerDetailsFormData.data.format,
-              scope: credentialDesignerDetailsFormData.data.scope,
               credentialSigningAlgValuesSupported: credentialDesignerDetailsFormData.data.credential_signing_alg_values_supported,
               vct: credentialDesignerDetailsFormData.data.vct ?? credentialDesignerDetailsFormData.data.identifier,
               cryptographicBindingMethodsSupported: credentialDesignerDetailsFormData.data.cryptographic_binding_methods_supported,
               proofTypesSupported: credentialDesignerDetailsFormData.data.proof_types_supported,
+              scope: credentialDesignerDetailsFormData.data.scope,
             }
           })
           .then(() => {
@@ -287,11 +287,11 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
               branding: credentialDesignerVisualDesignFormData.data,
               options: {
                 format: credentialDesignerDetailsFormData.data.format,
-                scope: credentialDesignerDetailsFormData.data.scope,
                 credentialSigningAlgValuesSupported: credentialDesignerDetailsFormData.data.credential_signing_alg_values_supported,
                 vct: credentialDesignerDetailsFormData.data.vct ?? credentialDesignerDetailsFormData.data.identifier,
                 cryptographicBindingMethodsSupported: credentialDesignerDetailsFormData.data.cryptographic_binding_methods_supported,
                 proofTypesSupported: credentialDesignerDetailsFormData.data.proof_types_supported,
+                scope: credentialDesignerDetailsFormData.data.scope
               }
             })
             void updateOid4vciMetadata(credentialDesignerDetailsFormData.data.identifier, credentialConfiguration)
@@ -323,12 +323,12 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
   const onCredentialDesignerVisualDesignFormDataChange = async (state: JSONFormState): Promise<void> => {
     setCredentialDesignerVisualDesignFormData(state)
 
-    if (credentialDesignerVisualDesignFormData.data.background_image?.url !== state.data.background_image?.url) {
-      if (state.data.background_image?.url) {
-        getImageSizes(state.data.background_image?.url)
+    if (credentialDesignerVisualDesignFormData.data.background_image?.uri !== state.data.background_image?.uri) {
+      if (state.data.background_image?.uri) {
+        getImageSizes(state.data.background_image?.uri)
           .then(dimensions =>
             setCredentialDesignerVisualDesignBackgroundImage({
-              uri: state.data.background_image?.url,
+              uri: state.data.background_image?.uri,
               ...(dimensions && {
                 dimensions: {
                   width: dimensions.width,
@@ -338,19 +338,19 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
             })
           )
           .catch(() => setCredentialDesignerVisualDesignBackgroundImage({
-            uri: state.data.background_image?.url
+            uri: state.data.background_image?.uri
           }))
       } else {
         setCredentialDesignerVisualDesignBackgroundImage(undefined)
       }
     }
 
-    if (credentialDesignerVisualDesignFormData.data.logo?.url !== state.data.logo?.url) {
-      if (state.data.logo?.url) {
-        getImageSizes(state.data.logo?.url)
+    if (credentialDesignerVisualDesignFormData.data.logo?.uri !== state.data.logo?.uri) {
+      if (state.data.logo?.uri) {
+        getImageSizes(state.data.logo?.uri)
           .then(dimensions =>
             setCredentialDesignerVisualDesignLogo({
-              uri: state.data.logo?.url,
+              uri: state.data.logo?.uri,
               ...(dimensions && {
                 dimensions: {
                   width: dimensions.width,
@@ -360,7 +360,7 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
             })
           )
           .catch(() => setCredentialDesignerVisualDesignLogo({
-            uri: state.data.logo?.url
+            uri: state.data.logo?.uri
           }))
       } else {
         setCredentialDesignerVisualDesignLogo(undefined)

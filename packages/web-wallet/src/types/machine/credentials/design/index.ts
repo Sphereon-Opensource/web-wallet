@@ -11,6 +11,8 @@ export type StoreCredentialSchemaArgs = {
   options: CredentialConfigurationOptions
 }
 
+export default StoreCredentialSchemaArgs
+
 export type CredentialDesignTableItem = CredentialDesignDTO & {
   actions: string
 }

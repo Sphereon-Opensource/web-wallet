@@ -1,7 +1,7 @@
 # ──────────────────────────────────────────────────────────────
 # Stage 1: Builder
 # ──────────────────────────────────────────────────────────────
-FROM node:20-bullseye AS builder
+FROM node:iron-bullseye AS builder
 SHELL ["/bin/bash", "-c"]
 
 WORKDIR /opt/wallet/frontend
@@ -28,7 +28,7 @@ RUN pnpm build
 # ──────────────────────────────────────────────────────────────
 # Stage 2: Runner
 # ──────────────────────────────────────────────────────────────
-FROM node:20-bullseye AS runner
+FROM node:iron-bullseye-slim AS runner
 SHELL ["/bin/bash", "-c"]
 
 WORKDIR /opt/wallet/frontend
