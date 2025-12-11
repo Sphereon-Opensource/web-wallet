@@ -463,7 +463,10 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
             p_ui_schema jsonb,
             p_branding jsonb,
             p_vct text default null,
-            p_scope text default null
+            p_scope text default null,
+            p_cryptographic_binding_methods_supported text[] default '{}',
+            p_credential_signing_alg_values_supported text[] default '{}',
+            p_proof_types_supported jsonb default '{}'::jsonb
         )
         returns jsonb
         language plpgsql
@@ -476,6 +479,9 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
             _branding_id uuid;
             _vct_key_id uuid;
             _scope_key_id uuid;
+            _cryptographic_binding_key_id uuid;
+            _credential_signing_alg_key_id uuid;
+            _proof_types_supported_key_id uuid;
         
             -- logo / background helper vars
             _logo_dimensions_id uuid;
@@ -487,6 +493,8 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
             _bg_attr_id uuid;
             _bg_width integer;
             _bg_height integer;
+            
+            _existing_cbms text[];
         begin
             update meta_data_set
             set name = p_identifier
@@ -557,8 +565,95 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
                     delete from meta_data_values where key_id = _scope_key_id;
                     delete from meta_data_keys where id = _scope_key_id;
                 end if;
-            end if;    
+            end if;
+            
+            select id
+            into _cryptographic_binding_key_id
+            from meta_data_keys
+            where set_id = p_set_id
+              and key = 'cryptographicBindingMethodsSupported';
         
+            if _cryptographic_binding_key_id is null then
+                insert into meta_data_keys (set_id, key, value_type)
+                values (p_set_id, 'cryptographicBindingMethodsSupported', 'Text')
+                returning id into _cryptographic_binding_key_id;
+            end if;
+        
+            select array_agg(text_value order by index)
+            into _existing_cbms
+            from meta_data_values
+            where key_id = _cryptographic_binding_key_id;
+        
+            if _existing_cbms is null then
+                _existing_cbms := '{}';
+            end if;
+        
+            insert into meta_data_values (key_id, index, text_value)
+            select
+                _cryptographic_binding_key_id,
+                (
+                    select coalesce(max(index),0)
+                    from meta_data_values
+                    where key_id = _cryptographic_binding_key_id
+                ) + row_number() over (),
+                v
+            from unnest(p_cryptographic_binding_methods_supported) as v
+            where v is not null
+              and not (v = ANY(_existing_cbms));
+        
+            delete from meta_data_values
+            where key_id = _cryptographic_binding_key_id
+              and text_value != ALL(p_cryptographic_binding_methods_supported);
+
+            select id
+            into _credential_signing_alg_key_id
+            from meta_data_keys
+            where set_id = p_set_id
+              and key = 'credentialSigningAlgValuesSupported';
+        
+            if _credential_signing_alg_key_id is null then
+                insert into meta_data_keys (set_id, key, value_type)
+                values (p_set_id, 'credentialSigningAlgValuesSupported', 'Text')
+                returning id into _credential_signing_alg_key_id;
+            end if;
+        
+            select array_agg(text_value order by index)
+            into _existing_cbms
+            from meta_data_values
+            where key_id = _credential_signing_alg_key_id;
+        
+            if _existing_cbms is null then
+                _existing_cbms := '{}';
+            end if;
+        
+            insert into meta_data_values (key_id, index, text_value)
+            select
+                _credential_signing_alg_key_id,
+                (
+                    select coalesce(max(index),0)
+                    from meta_data_values
+                    where key_id = _credential_signing_alg_key_id
+                ) + row_number() over (),
+                v
+            from unnest(p_credential_signing_alg_values_supported) as v
+            where v is not null
+              and not (v = ANY(_existing_cbms));
+        
+            delete from meta_data_values
+            where key_id = _credential_signing_alg_key_id
+              and text_value != ALL(p_credential_signing_alg_values_supported);
+
+            select id
+            into _proof_types_supported_key_id
+            from meta_data_keys
+            where set_id = p_set_id
+              and key = 'proofTypesSupported';
+              
+            update meta_data_values
+            set text_value = p_proof_types_supported
+            where key_id = _proof_types_supported_key_id
+              and index = 0;
+
             select id into _schema_definition_id
             from schema_definition
             where meta_data_set_id = p_set_id and schema_type = 'Data'
