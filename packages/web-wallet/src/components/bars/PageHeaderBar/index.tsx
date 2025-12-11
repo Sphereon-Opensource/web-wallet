@@ -1,4 +1,4 @@
-import {SSIArrowDownIcon} from '@sphereon/ui-components.ssi-react'
+import {ArrowIcon} from '@sphereon/ui-components.ssi-react'
 import React, {FC, ReactElement} from 'react'
 import style from './index.module.css'
 
@@ -29,7 +29,7 @@ const PageHeaderBar: FC<Props> = (props: Props): ReactElement => {
       <div className={style.titleContainer}>
         {onBack && (
           <div className={style.backButtonContainer} onClick={onBack}>
-            <SSIArrowDownIcon style={{transform: 'rotate(90deg)'}} />
+            <ArrowIcon style={{transform: 'rotate(90deg)'}} />
           </div>
         )}
         {title && <div className={style.titleText}>{title}</div>}

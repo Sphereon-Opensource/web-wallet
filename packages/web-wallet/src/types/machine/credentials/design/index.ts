@@ -1,20 +1,17 @@
 import {ImageAttributes} from '@sphereon/ui-components.core'
-import {
-  CredentialSchema,
-  CredentialUISchema,
-  SchemaDefinitionDTO,
-  SchemaDefinitionEntity,
-} from '@/src/types'
+import {CredentialConfigurationOptions, CredentialSchema, CredentialUISchema, SchemaDefinitionDTO, SchemaDefinitionEntity} from '@/src/types'
 import {MetaDataKeysDTO, MetaDataKeysEntity} from '@typings/metadata'
 import {deleteUndefinedProps} from '@typings/type-commons'
 
-export type StoreCredentialSchemaArgs = {
+type StoreCredentialSchemaArgs = {
   name: string
-  credentialFormat: string
   schema: CredentialSchema
   uiSchema: CredentialUISchema | Array<CredentialUISchema>
-  branding: CredentialDesignBrandingDTO
+  branding?: CredentialDesignBrandingDTO
+  options: CredentialConfigurationOptions
 }
+
+export default StoreCredentialSchemaArgs
 
 export type CredentialDesignTableItem = CredentialDesignDTO & {
   actions: string
