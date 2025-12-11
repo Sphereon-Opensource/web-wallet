@@ -84,6 +84,9 @@ export const toCredentialConfiguration = (args: ToCredentialConfigurationArgs): 
       return {format: options.format, credential_definition: options.credentialDefinition, ...baseConfig}
     case 'mso_mdoc':
       return {format: options.format, doctype: options.doctype, ...baseConfig}
+    default:
+      // @ts-ignore
+      throw Error(`Unsupported format type ${options.format}`)
   }
 }
 

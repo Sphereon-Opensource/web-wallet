@@ -1,4 +1,4 @@
-import {SSIArrowDownIcon} from '@sphereon/ui-components.ssi-react'
+import {ArrowIcon} from '@sphereon/ui-components.ssi-react'
 import React, {ReactElement, useEffect, useState} from 'react'
 import {DetailsRoute} from '@typings'
 import style from './index.module.css'
@@ -59,7 +59,7 @@ const SideDetailsNavigationCategory: React.FC<Props> = (props: Props): ReactElem
         <div className={style.activeCaption}>{label}</div>
         {routes && routes.length > 0 && (
           <div className={style.dropdownIconContainer} style={{...(isCollapsed && {transform: 'scaleY(-1)'})}}>
-            <SSIArrowDownIcon />
+            <ArrowIcon />
           </div>
         )}
       </div>

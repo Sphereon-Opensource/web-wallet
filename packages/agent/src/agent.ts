@@ -168,7 +168,7 @@ const vcdm2JoseProvider = new CredentialProviderVcdm2Jose()
 
 const holderDids: Record<string, string> = {}
 // FIXME we can have different identifiers for different queries
-const holderDid = extractDidFromManagedIdentifier(oid4vpInstanceOpts.asObject.default.rpOpts?.identifierOpts?.idOpts)
+const holderDid = extractDidFromManagedIdentifier(oid4vpInstanceOpts.asObject.default?.rpOpts?.identifierOpts?.idOpts)
 if (holderDid) {
   holderDids['default'] = holderDid
 }
