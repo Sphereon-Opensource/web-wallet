@@ -125,26 +125,26 @@ export const credentialDesignDataProvider = (): DataProvider => ({
       formStepId = formStepResult.data.id
     }
 
-    const { data, error } = await client.rpc(
-      'insert_credential_design', {
-        p_identifier: name,
-        p_credential_format: options.format,
-        p_schema: enrichedSchema,
-        p_ui_schema: uiSchema,
-        p_form_step_id: formStepId,
-        p_vct: options.vct,
-        p_cryptographic_binding_methods_supported: options.cryptographicBindingMethodsSupported ?? [],
-        p_credential_signing_alg_values_supported: options.credentialSigningAlgValuesSupported ?? [],
-        ...(branding && {
-          p_branding: {
-            logo: branding.logo,
-            background_image: branding.backgroundImage,
-            text_color: branding.textColor,
-            background_color: branding.backgroundColor
-          }
-        })
-      }
-    )
+    const {data, error} = await client.rpc('insert_credential_design', {
+      p_identifier: name,
+      p_credential_format: options.format,
+      p_schema: enrichedSchema,
+      p_ui_schema: uiSchema,
+      p_form_step_id: formStepId,
+      p_vct: options.vct,
+      p_scope: options.scope,
+      p_cryptographic_binding_methods_supported: options.cryptographicBindingMethodsSupported ?? [],
+      p_credential_signing_alg_values_supported: options.credentialSigningAlgValuesSupported ?? [],
+      p_proof_types_supported: options.proofTypesSupported ?? {},
+      ...(branding && {
+        p_branding: {
+          logo: branding.logo,
+          background_image: branding.backgroundImage,
+          text_color: branding.textColor,
+          background_color: branding.backgroundColor,
+        },
+      }),
+    })
 
     if (error) {
       throw new Error(error.message)

@@ -217,11 +217,15 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
             }),
             options: {
               format: credentialDesignerDetailsFormData.data.format,
-              scope: credentialDesignerDetailsFormData.data.scope,
               credentialSigningAlgValuesSupported: credentialDesignerDetailsFormData.data.credential_signing_alg_values_supported,
               vct: credentialDesignerDetailsFormData.data.vct ?? credentialDesignerDetailsFormData.data.identifier,
               cryptographicBindingMethodsSupported: credentialDesignerDetailsFormData.data.cryptographic_binding_methods_supported,
               proofTypesSupported: credentialDesignerDetailsFormData.data.proof_types_supported,
+
+              types: credentialDesignerDetailsFormData.data.types, // TODO
+              scope: credentialDesignerDetailsFormData.data.scope, // TODO
+              credentialDefinition: credentialDesignerDetailsFormData.data.credentialDefinition, // TODO
+              doctype: credentialDesignerDetailsFormData.data.doctype, // TODO
             }
           })
           .then(() => {
@@ -231,11 +235,14 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
               branding: credentialDesignerVisualDesignFormData.data,
               options: {
                 format: credentialDesignerDetailsFormData.data.format,
-                scope: credentialDesignerDetailsFormData.data.scope,
                 credentialSigningAlgValuesSupported: credentialDesignerDetailsFormData.data.credential_signing_alg_values_supported,
                 vct: credentialDesignerDetailsFormData.data.vct ?? credentialDesignerDetailsFormData.data.identifier,
                 cryptographicBindingMethodsSupported: credentialDesignerDetailsFormData.data.cryptographic_binding_methods_supported,
                 proofTypesSupported: credentialDesignerDetailsFormData.data.proof_types_supported,
+                types: credentialDesignerDetailsFormData.data.types,
+                scope: credentialDesignerDetailsFormData.data.scope,
+                credentialDefinition: credentialDesignerDetailsFormData.data.credentialDefinition,
+                doctype: credentialDesignerDetailsFormData.data.doctype,
               }
             })
             void updateOid4vciMetadata(credentialDesignerDetailsFormData.data.identifier, credentialConfiguration)

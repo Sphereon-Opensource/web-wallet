@@ -54,7 +54,7 @@ export function schemaToClaims(
 }
 
 export const toCredentialConfiguration = (args: ToCredentialConfigurationArgs): CredentialConfigurationSupportedV1_0_15 => {
-  const {identifier, schema, branding, options} = args
+  const {schema, branding, options} = args
   const {
     scope,
     cryptographicBindingMethodsSupported = ['did:web', 'did:jwk'],
@@ -85,8 +85,6 @@ export const toCredentialConfiguration = (args: ToCredentialConfigurationArgs): 
     case 'mso_mdoc':
       return {format: options.format, doctype: options.doctype, ...baseConfig}
   }
-
-  throw Error(`Unsupported format type ${options.format}`)
 }
 
 export const updateOid4vciMetadata = async (identifier: string, credentialConfiguration: CredentialConfigurationSupportedV1_0_15): Promise<void> => {

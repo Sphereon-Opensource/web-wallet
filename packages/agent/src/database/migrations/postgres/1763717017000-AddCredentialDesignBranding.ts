@@ -33,8 +33,10 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
             p_form_step_id uuid,
             p_branding jsonb,
             p_vct text default null,
+            p_scope text default null,
             p_cryptographic_binding_methods_supported text[] default '{}',
-            p_credential_signing_alg_values_supported text[] default '{}'
+            p_credential_signing_alg_values_supported text[] default '{}',
+            p_proof_types_supported jsonb default '{}'::jsonb
         )
         returns jsonb
         language plpgsql
@@ -44,8 +46,10 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
             _credential_type_key_id uuid;
             _credential_format_key_id uuid;
             _vct_key_id uuid;
+            _scope_key_id uuid;
             _cryptographic_binding_key_id uuid;
             _credential_signing_alg_key_id uuid;
+            _proof_types_supported_key_id uuid;
             _schema_definition_id uuid;
             _ui_schema_definition_id uuid;
             _branding_id uuid;
@@ -90,6 +94,15 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
                 values (_vct_key_id, 0, p_vct);
             end if;
             
+            if p_scope is not null then
+                insert into meta_data_keys (set_id, key, value_type)
+                values (_set_id, 'scope', 'Text')
+                returning id into _scope_key_id;
+        
+                insert into meta_data_values (key_id, index, text_value)
+                values (_scope_key_id, 0, p_scope);
+            end if;
+            
             insert into meta_data_keys (set_id, key, value_type)
             values (_set_id, 'cryptographicBindingMethodsSupported', 'Text')
             returning id into _cryptographic_binding_key_id;
@@ -109,6 +122,13 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
                 select _credential_signing_alg_key_id, i, val
                 from unnest(p_credential_signing_alg_values_supported) with ordinality as t(val, i);
             end if;
+            
+            insert into meta_data_keys (set_id, key, value_type)
+            values (_set_id, 'proofTypesSupported', 'Text')
+            returning id into _proof_types_supported_key_id;
+            
+            insert into meta_data_values (key_id, index, text_value)
+            values (_proof_types_supported_key_id, 0, p_proof_types_supported);
         
             insert into schema_definition (
                 correlation_id,
@@ -304,6 +324,26 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
                             where key_id = _credential_signing_alg_key_id
                         )
                     ),
+                    jsonb_build_object(
+                        'id', _proof_types_supported_key_id,
+                        'key', 'proofTypesSupported',
+                        'set_id', _set_id,
+                        'value_type', 'Text',
+                        'meta_data_values', (
+                            select coalesce(
+                                jsonb_agg(
+                                    jsonb_build_object(
+                                        'id', id,
+                                        'index', index,
+                                        'key_id', key_id,
+                                        'text_value', text_value
+                                    ) order by index
+                                ), '[]'::jsonb
+                            )
+                            from meta_data_values
+                            where key_id = _proof_types_supported_key_id
+                        )
+                    ),
                     CASE
                         WHEN _vct_key_id IS NOT NULL THEN
                             jsonb_build_object(
@@ -317,6 +357,24 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
                                         'index', 0,
                                         'key_id', _vct_key_id,
                                         'text_value', p_vct
+                                    )
+                                )
+                            )
+                        ELSE null
+                    END,
+                    CASE
+                        WHEN _scope_key_id IS NOT NULL THEN
+                            jsonb_build_object(
+                                'id', _scope_key_id,
+                                'key', 'scope',
+                                'set_id', _set_id,
+                                'value_type', 'Text',
+                                'meta_data_values', jsonb_build_array(
+                                    jsonb_build_object(
+                                        'id', gen_random_uuid(),
+                                        'index', 0,
+                                        'key_id', _scope_key_id,
+                                        'text_value', p_scope
                                     )
                                 )
                             )
