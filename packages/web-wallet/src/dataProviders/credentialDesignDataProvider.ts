@@ -16,7 +16,7 @@ import {
 } from '@refinedev/core'
 import {supabaseServiceClient} from '@helpers/SupabaseClient'
 import {enrichSchemaWithDisclosureFrame, enrichSchemaWithStatusList} from '@helpers/SchemaUtils'
-import {CredentialDesignEntity, StoreCredentialSchemaArgs} from '@typings'
+import {CredentialDesignEntity, SdJwtFormatOptions, StoreCredentialSchemaArgs} from '@typings'
 
 export const credentialDesignDataProvider = (): DataProvider => ({
   getList: async <TData extends BaseRecord = BaseRecord>({resource, pagination, filters, sort}: GetListParams): Promise<GetListResponse<TData>> => {
@@ -187,7 +187,7 @@ export const credentialDesignDataProvider = (): DataProvider => ({
           p_schema: design.schema,
           p_ui_schema: design.uiSchema,
           p_form_step_id: formStepId,
-          p_vct: design.options.vct ?? null,
+          p_vct: (design.options as SdJwtFormatOptions).vct ?? null,
           p_scope: design.options.scope ?? null,
           p_cryptographic_binding_methods_supported: design.options.cryptographicBindingMethodsSupported ?? [],
           p_credential_signing_alg_values_supported: design.options.credentialSigningAlgValuesSupported ?? [],
