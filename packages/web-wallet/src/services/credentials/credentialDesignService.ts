@@ -139,3 +139,32 @@ export const removeCredentialConfigurationFromOid4vciMetadata = async (identifie
     .catch((e) => Promise.reject(Error(`Failed to update oid4vci metadata. ${e.message}`)))
   }
 }
+
+export const transformAdvancedSchema = (schema: any): { credentialClaims: any[] } => {
+  const transform = (sch: any): any[] => {
+    if (!sch.properties) return []
+
+    return Object.entries(sch.properties)
+      .filter(([key]) => key !== "disclosureFrame")
+      .map(([key, value]) => {
+        const claim: any = {
+          claimName: key,
+          type: value.type,
+        }
+
+        if (sch.required?.includes(key)) {
+          claim.required = true
+        }
+
+        if (value.type === "object") {
+          claim.properties = transform(value)
+        }
+
+        return claim
+      })
+  }
+
+  return {
+    credentialClaims: transform(schema)
+  }
+}

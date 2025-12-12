@@ -12,10 +12,11 @@ import style from './index.module.css'
 const CredentialDesignerDetailsContent: FC = (): ReactElement => {
   const translate = useTranslate()
   const {
-      advancedMode,
+      isAdvancedMode,
       onModeChange,
       credentialDesignerDetailsFormData,
-      onCredentialDesignerDetailsFormDataChange
+      onCredentialDesignerDetailsFormDataChange,
+      editData
   } = useCredentialDesignerOutletContext()
 
   const credentialDesigns = useList<CredentialDesignDTO, HttpError>({
@@ -23,6 +24,15 @@ const CredentialDesignerDetailsContent: FC = (): ReactElement => {
   })
 
   const onCredentialFormInputChange = async (state: JSONFormState): Promise<void> => {
+    if (state.data.format !== 'dc+sd-jwt') {
+      delete state.data.vct
+    } else {
+      const originalVct = editData?.metadataKeys.find(key => key.key === 'vct')?.values?.[0]?.textValue
+      if (!state.data.vct && originalVct) {
+        state.data.vct = originalVct
+      }
+    }
+
     onCredentialDesignerDetailsFormDataChange?.(state)
   }
 
@@ -35,6 +45,10 @@ const CredentialDesignerDetailsContent: FC = (): ReactElement => {
       keyword: 'uniqueValue',
       type: 'string',
       validate: (_: string, data: string) => {
+        if (editData && editData.name === data) {
+          return true
+        }
+
         return !credentialDesigns.data?.data.some(credentialDesign => credentialDesign.name === data)
       },
       errors: true
@@ -125,7 +139,7 @@ const CredentialDesignerDetailsContent: FC = (): ReactElement => {
 
   return (
     <SSITabView
-        activeRoute={advancedMode ? "advanced" : "default"}
+        activeRoute={isAdvancedMode ? "advanced" : "default"}
         onRouteChange={onRouteChange}
         routes={routes}
     />

@@ -3,15 +3,24 @@ import {CredentialConfigurationOptions, CredentialSchema, CredentialUISchema, Sc
 import {MetaDataKeysDTO, MetaDataKeysEntity} from '@typings/metadata'
 import {deleteUndefinedProps} from '@typings/type-commons'
 
-export type StoreCredentialSchemaArgs = {
+export type StoreCredentialDesignArgs = {
   name: string
   schema: CredentialSchema
   uiSchema: CredentialUISchema | Array<CredentialUISchema>
-  branding?: CredentialDesignBrandingDTO
   options: CredentialConfigurationOptions
+  isAdvancedSchema: boolean
+  branding?: CredentialDesignBrandingDTO
 }
 
-export default StoreCredentialSchemaArgs
+export type UpdateCredentialDesignArgs = {
+  id: string
+  name: string
+  schema: CredentialSchema
+  uiSchema: CredentialUISchema | Array<CredentialUISchema>
+  options: CredentialConfigurationOptions
+  isAdvancedSchema: boolean
+  branding?: CredentialDesignBrandingDTO
+}
 
 export type CredentialDesignTableItem = CredentialDesignDTO & {
   actions: string

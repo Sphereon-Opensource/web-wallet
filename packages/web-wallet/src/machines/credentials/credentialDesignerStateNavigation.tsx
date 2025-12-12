@@ -1,26 +1,27 @@
 import React, {createContext, ReactElement, useCallback, useContext, useEffect, useState} from 'react'
 import {JSONFormState} from '@sphereon/ui-components.ssi-react'
 import {useNavigate, useOutletContext, useParams} from 'react-router-dom'
-import {HttpError, useCreate, useList, useOne} from '@refinedev/core'
-import {toCredentialConfiguration, updateOid4vciMetadata} from '@/src/services/credentials/credentialDesignService'
+import {HttpError, useCreate, useOne, useTranslate, useUpdate} from '@refinedev/core'
+import {toCredentialConfiguration, transformAdvancedSchema, updateOid4vciMetadata} from '@/src/services/credentials/credentialDesignService'
 import {ImageAttributes} from '@sphereon/ui-components.core'
 import {downloadImage, getImageDimensions, IImageDimensions} from '@sphereon/ssi-sdk.core'
 import {
   CredentialDesignBrandingDTO,
   CredentialDesignDTO,
   CredentialDesignerRoute,
-  CredentialDesignTableItem,
   CredentialSchema,
   CredentialSchemaClaim,
   CredentialUISchema,
   DataResource,
   MainRoute,
-  StoreCredentialSchemaArgs,
+  StoreCredentialDesignArgs,
   UIContextType,
+  UpdateCredentialDesignArgs,
 } from '@typings'
 
 export type CredentialDesignerContextType = UIContextType & {
-  advancedMode: boolean
+  isAdvancedMode: boolean
+  editData?: CredentialDesignDTO
   onModeChange: () => Promise<void>
   credentialDesignerDetailsFormData?: JSONFormState
   onCredentialDesignerDetailsFormDataChange: (state: JSONFormState) => Promise<void>
@@ -62,20 +63,82 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
   const {children} = props
   const {id} = useParams()
   const navigate = useNavigate()
-  const {mutateAsync} = useCreate<CredentialDesignDTO, HttpError>({
+  const {mutateAsync: createCredentialDesign} = useCreate<CredentialDesignDTO, HttpError>({
     resource: DataResource.CREDENTIAL_DESIGNS,
   })
+  const {mutateAsync: updateCredentialDesign} = useUpdate<CredentialDesignDTO, HttpError>({
+    resource: DataResource.CREDENTIAL_DESIGNS
+  })
+  const translate = useTranslate()
+
   const {
-    data: credentialDesign
-  } = useOne<CredentialDesignTableItem, HttpError>({
+    data: credentialDesign,
+    isLoading: credentialDesignLoading,
+    isError: credentialDesignError,
+  } = useOne<CredentialDesignDTO, HttpError>({
     id,
     resource: DataResource.CREDENTIAL_DESIGNS,
     queryOptions: {
       enabled: !!id,
+      onSuccess: (data) => {
+        // let proof_types_supported
+        // try {
+        //   const proofTypesSupported = data.data.metadataKeys.find(key => key.key === 'proofTypesSupported')?.values?.[0]?.textValue
+        //   if (proofTypesSupported) {
+        //     proof_types_supported = JSON.parse(proofTypesSupported)
+        //   }
+        // } catch {}
+        // const vct = data.data.metadataKeys.find(key => key.key === 'vct')?.values?.[0]?.textValue
+        // const scope = data.data.metadataKeys.find(key => key.key === 'scope')?.values?.[0]?.textValue
+        //
+        // let dataSchema
+        // try {
+        //   const result = data.data.schemaDefinition.find(def => def.schemaType === 'Data')?.schema
+        //   if (result) {
+        //     dataSchema = JSON.parse(result)
+        //   }
+        // } catch {
+        //   dataSchema = {}
+        // }
+        // const isAdvancedSchema = data.data.metadataKeys.find(key => key.key === 'advancedSchema')?.values?.[0]?.booleanValue
+
+        setCredentialDesignerDetailsFormData({
+          data: {
+            format: data.data.metadataKeys.find(key => key.key === 'credentialFormat')?.values?.[0]?.textValue,
+            // cryptographic_binding_methods_supported: data.data.metadataKeys.find(key => key.key === 'cryptographicBindingMethodsSupported')?.values.map(value => value.textValue) ?? [],
+            // credential_signing_alg_values_supported: data.data.metadataKeys.find(key => key.key === 'credentialSigningAlgValuesSupported')?.values.map(value => value.textValue) ?? [],
+            // proof_types_supported: proof_types_supported ?? {},
+            // ...(vct && { vct }),
+            // ...(scope && { scope }),
+            identifier: data.data.name
+          }
+        })
+        // setCredentialDesignerVisualDesignFormData({
+        //   data: {
+        //     ...(data.data.credentialDesignBranding.backgroundImage && {
+        //       background_image: {
+        //         uri: data.data.credentialDesignBranding.backgroundImage.uri,
+        //         //alt_text: credentialDesign.data.credentialDesignBranding.backgroundImage.altText
+        //       }
+        //     }),
+        //     ...(data.data.credentialDesignBranding.logo && {
+        //       logo: {
+        //         uri: data.data.credentialDesignBranding.logo.uri,
+        //         //alt_text: credentialDesign.data.credentialDesignBranding.backgroundImage.altText
+        //       }
+        //     }),
+        //     ...(data.data.credentialDesignBranding.backgroundColor && { background_color: data.data.credentialDesignBranding.backgroundColor }),
+        //     ...(data.data.credentialDesignBranding.textColor && { text_color: data.data.credentialDesignBranding.textColor })
+        //   }
+        // })
+        // setCredentialDesignerVisualDesignBackgroundImage(data.data.credentialDesignBranding.backgroundImage)
+        // setCredentialDesignerVisualDesignLogo(data.data.credentialDesignBranding.logo)
+        // setCredentialDesignerClaimsFormData({ data: isAdvancedSchema ? dataSchema : transformAdvancedSchema(dataSchema), errors: [] })
+      },
     },
   })
   const [step, setStep] = useState<number>(1)
-  const [advancedMode, setAdvancedMode] = useState<boolean>(false)
+  const [isAdvancedMode, setIsAdvancedMode] = useState<boolean>(false)
   const [disabled, setDisabled] = useState<boolean>(true)
   const [credentialDesignerDetailsFormData, setCredentialDesignerDetailsFormData] = useState<JSONFormState>({
     data: {
@@ -93,7 +156,8 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
             "ES256"
           ]
         }
-      }
+      },
+      "identifier": "bram"
     }
   })
   const [credentialDesignerClaimsFormData, setCredentialDesignerClaimsFormData] = useState<JSONFormState>({
@@ -112,53 +176,65 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
   const [credentialDesignerVisualDesignBackgroundImage, setCredentialDesignerVisualDesignBackgroundImage] = useState<ImageAttributes | undefined>()
   const [credentialDesignerVisualDesignLogo, setCredentialDesignerVisualDesignLogo] = useState<ImageAttributes | undefined>()
 
-  useEffect(() => {
-    console.log(`data: ${JSON.stringify(credentialDesign?.data)}`)
-    if (!credentialDesign) {
-      return // TODO set defaults
-    }
-
-    setCredentialDesignerDetailsFormData({
-      data: {
-        format: credentialDesign.data.metadataKeys.find(key => key.key === 'credentialFormat')?.values?.[0]?.textValue,
-        // "cryptographic_binding_methods_supported": [
-        //   "did:web",
-        //   "did:jwk",
-        // ],
-        // "credential_signing_alg_values_supported": [
-        //   "ES256"
-        // ],
-        // "proof_types_supported": {
-        //   "jwt": {
-        //     "proof_signing_alg_values_supported": [
-        //       "ES256"
-        //     ]
-        //   }
-        // },
-        identifier: credentialDesign.data.name
-      }
-    })
-    setCredentialDesignerVisualDesignFormData({
-      data: {
-        ...(credentialDesign.data.credentialDesignBranding.backgroundImage && {
-          background_image: {
-            url: credentialDesign.data.credentialDesignBranding.backgroundImage.uri,
-            //alt_text: credentialDesign.data.credentialDesignBranding.backgroundImage.altText
-          }
-        }),
-        ...(credentialDesign.data.credentialDesignBranding.logo && {
-          logo: {
-            url: credentialDesign.data.credentialDesignBranding.logo.uri,
-            //alt_text: credentialDesign.data.credentialDesignBranding.backgroundImage.altText
-          }
-        }),
-        ...(credentialDesign.data.credentialDesignBranding.backgroundColor && { background_color: credentialDesign.data.credentialDesignBranding.backgroundColor }),
-        ...(credentialDesign.data.credentialDesignBranding.textColor && { text_color: credentialDesign.data.credentialDesignBranding.textColor })
-      }
-    })
-    setCredentialDesignerVisualDesignBackgroundImage(credentialDesign.data.credentialDesignBranding.backgroundImage)
-    setCredentialDesignerVisualDesignLogo(credentialDesign.data.credentialDesignBranding.logo)
-  }, [credentialDesign])
+  // useEffect(() => {
+  //   if (!credentialDesign) {
+  //     return
+  //   }
+  //
+  //   let proof_types_supported
+  //   try {
+  //     const proofTypesSupported = credentialDesign.data.metadataKeys.find(key => key.key === 'proofTypesSupported')?.values?.[0]?.textValue
+  //     if (proofTypesSupported) {
+  //       proof_types_supported = JSON.parse(proofTypesSupported)
+  //     }
+  //   } catch {}
+  //   const vct = credentialDesign.data.metadataKeys.find(key => key.key === 'vct')?.values?.[0]?.textValue
+  //   const scope = credentialDesign.data.metadataKeys.find(key => key.key === 'scope')?.values?.[0]?.textValue
+  //
+  //   let dataSchema
+  //   try {
+  //     const result = credentialDesign.data.schemaDefinition.find(def => def.schemaType === 'Data')?.schema
+  //     if (result) {
+  //       dataSchema = JSON.parse(result)
+  //     }
+  //   } catch {
+  //     dataSchema = {}
+  //   }
+  //   const isAdvancedSchema = credentialDesign.data.metadataKeys.find(key => key.key === 'advancedSchema')?.values?.[0]?.booleanValue
+  //
+  //   setCredentialDesignerDetailsFormData({
+  //     data: {
+  //       format: credentialDesign.data.metadataKeys.find(key => key.key === 'credentialFormat')?.values?.[0]?.textValue,
+  //       cryptographic_binding_methods_supported: credentialDesign.data.metadataKeys.find(key => key.key === 'cryptographicBindingMethodsSupported')?.values.map(value => value.textValue) ?? [],
+  //       credential_signing_alg_values_supported: credentialDesign.data.metadataKeys.find(key => key.key === 'credentialSigningAlgValuesSupported')?.values.map(value => value.textValue) ?? [],
+  //       proof_types_supported: proof_types_supported ?? {},
+  //       ...(vct && { vct }),
+  //       ...(scope && { scope }),
+  //       identifier: credentialDesign.data.name
+  //     }
+  //   })
+  //   setCredentialDesignerVisualDesignFormData({
+  //     data: {
+  //       ...(credentialDesign.data.credentialDesignBranding.backgroundImage && {
+  //         background_image: {
+  //           uri: credentialDesign.data.credentialDesignBranding.backgroundImage.uri,
+  //           //alt_text: credentialDesign.data.credentialDesignBranding.backgroundImage.altText
+  //         }
+  //       }),
+  //       ...(credentialDesign.data.credentialDesignBranding.logo && {
+  //         logo: {
+  //           uri: credentialDesign.data.credentialDesignBranding.logo.uri,
+  //           //alt_text: credentialDesign.data.credentialDesignBranding.backgroundImage.altText
+  //         }
+  //       }),
+  //       ...(credentialDesign.data.credentialDesignBranding.backgroundColor && { background_color: credentialDesign.data.credentialDesignBranding.backgroundColor }),
+  //       ...(credentialDesign.data.credentialDesignBranding.textColor && { text_color: credentialDesign.data.credentialDesignBranding.textColor })
+  //     }
+  //   })
+  //   setCredentialDesignerVisualDesignBackgroundImage(credentialDesign.data.credentialDesignBranding.backgroundImage)
+  //   setCredentialDesignerVisualDesignLogo(credentialDesign.data.credentialDesignBranding.logo)
+  //   setCredentialDesignerClaimsFormData({ data: isAdvancedSchema ? dataSchema : transformAdvancedSchema(dataSchema), errors: [] })
+  // }, [credentialDesign])
 
   const maxInteractiveSteps = 3
   const maxAutoSteps = 1
@@ -166,48 +242,48 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
   useEffect(() => {
     void credentialDesignNavigationListener(step, navigate)
 
-    const handlePopstate = (): void => {
-      if (step > 0) {
-        setStep(step - maxAutoSteps)
-        // FIXME for now just resetting everything as we do not have support yet to rehydrate the fields again
-        setCredentialDesignerDetailsFormData({
-          data: {
-            "format": "dc+sd-jwt",
-            "cryptographic_binding_methods_supported": [
-              "did:web",
-              "did:jwk",
-            ],
-            "credential_signing_alg_values_supported": [
-              "ES256"
-            ],
-            "proof_types_supported": {
-              "jwt": {
-                "proof_signing_alg_values_supported": [
-                  "ES256"
-                ]
-              }
-            }
-          }
-        })
-        setCredentialDesignerClaimsFormData({
-          data: {
-            credentialClaims: [
-              {}
-            ]
-          }
-        })
-        setCredentialDesignerVisualDesignFormData({
-          data: {
-            "background_color": "#7276f7",
-            "text_color": "#fbfbfb"
-          }
-        })
-      }
-    }
-    window.addEventListener('popstate', handlePopstate)
-    return (): void => {
-      window.removeEventListener('popstate', handlePopstate)
-    }
+    // const handlePopstate = (): void => {
+    //   if (step > 0) {
+    //     setStep(step - maxAutoSteps)
+    //     // FIXME for now just resetting everything as we do not have support yet to rehydrate the fields again
+    //     setCredentialDesignerDetailsFormData({
+    //       data: {
+    //         "format": "dc+sd-jwt",
+    //         "cryptographic_binding_methods_supported": [
+    //           "did:web",
+    //           "did:jwk",
+    //         ],
+    //         "credential_signing_alg_values_supported": [
+    //           "ES256"
+    //         ],
+    //         "proof_types_supported": {
+    //           "jwt": {
+    //             "proof_signing_alg_values_supported": [
+    //               "ES256"
+    //             ]
+    //           }
+    //         }
+    //       }
+    //     })
+    //     setCredentialDesignerClaimsFormData({
+    //       data: {
+    //         credentialClaims: [
+    //           {}
+    //         ]
+    //       }
+    //     })
+    //     setCredentialDesignerVisualDesignFormData({
+    //       data: {
+    //         "background_color": "#7276f7",
+    //         "text_color": "#fbfbfb"
+    //       }
+    //     })
+    //   }
+    // }
+    // window.addEventListener('popstate', handlePopstate)
+    // return (): void => {
+    //   window.removeEventListener('popstate', handlePopstate)
+    // }
   }, [step])
 
   useEffect((): void => {
@@ -225,7 +301,7 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
         console.warn(credentialDesignerVisualDesignFormData?.errors)
       }
     } else if (step === 3) {
-      const disabled = !advancedMode
+      const disabled = !isAdvancedMode
         ? ((credentialDesignerClaimsFormData?.errors?.length ?? 0) > 0 || !noEmptyPropertiesRecursive(credentialDesignerClaimsFormData?.data?.credentialClaims ?? []))
         : false
 
@@ -261,26 +337,53 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
     } else if (credentialDesignerClaimsFormData?.data && credentialDesignerDetailsFormData.data) {
       await buildCredentialSchemas(credentialDesignerClaimsFormData.data)
         .then(buildResult => {
-          storeCredentialSchema({
-            name: credentialDesignerDetailsFormData.data.identifier,
-            schema: buildResult.schema,
-            uiSchema: buildResult.uiSchema,
-            branding: new CredentialDesignBrandingDTO({
+          if (id) {
+            onUpdate({
+              id,
+              name: credentialDesignerDetailsFormData.data.identifier,
+              schema: buildResult.schema,
+              uiSchema: buildResult.uiSchema,
+              branding: new CredentialDesignBrandingDTO({
                 backgroundColor: credentialDesignerVisualDesignFormData.data?.background_color,
                 textColor: credentialDesignerVisualDesignFormData.data?.text_color,
                 backgroundImage: credentialDesignerVisualDesignBackgroundImage,
                 logo: credentialDesignerVisualDesignLogo,
-            }),
-            options: {
-              format: credentialDesignerDetailsFormData.data.format,
-              credentialSigningAlgValuesSupported: credentialDesignerDetailsFormData.data.credential_signing_alg_values_supported,
-              vct: credentialDesignerDetailsFormData.data.vct ?? credentialDesignerDetailsFormData.data.identifier,
-              cryptographicBindingMethodsSupported: credentialDesignerDetailsFormData.data.cryptographic_binding_methods_supported,
-              proofTypesSupported: credentialDesignerDetailsFormData.data.proof_types_supported,
-              scope: credentialDesignerDetailsFormData.data.scope,
-            }
-          })
-          .then(() => {
+              }),
+              options: {
+                format: credentialDesignerDetailsFormData.data.format,
+                credentialSigningAlgValuesSupported: credentialDesignerDetailsFormData.data.credential_signing_alg_values_supported,
+                vct: credentialDesignerDetailsFormData.data.vct ?? credentialDesignerDetailsFormData.data.identifier,
+                cryptographicBindingMethodsSupported: credentialDesignerDetailsFormData.data.cryptographic_binding_methods_supported,
+                proofTypesSupported: credentialDesignerDetailsFormData.data.proof_types_supported,
+                scope: credentialDesignerDetailsFormData.data.scope,
+              },
+              isAdvancedSchema: !("credentialClaims" in credentialDesignerClaimsFormData.data)
+            })
+          } else {
+            onCreate({
+              name: credentialDesignerDetailsFormData.data.identifier,
+              schema: buildResult.schema,
+              uiSchema: buildResult.uiSchema,
+              branding: new CredentialDesignBrandingDTO({
+                backgroundColor: credentialDesignerVisualDesignFormData.data?.background_color,
+                textColor: credentialDesignerVisualDesignFormData.data?.text_color,
+                backgroundImage: credentialDesignerVisualDesignBackgroundImage,
+                logo: credentialDesignerVisualDesignLogo,
+              }),
+              options: {
+                format: credentialDesignerDetailsFormData.data.format,
+                credentialSigningAlgValuesSupported: credentialDesignerDetailsFormData.data.credential_signing_alg_values_supported,
+                vct: credentialDesignerDetailsFormData.data.vct ?? credentialDesignerDetailsFormData.data.identifier,
+                cryptographicBindingMethodsSupported: credentialDesignerDetailsFormData.data.cryptographic_binding_methods_supported,
+                proofTypesSupported: credentialDesignerDetailsFormData.data.proof_types_supported,
+                scope: credentialDesignerDetailsFormData.data.scope,
+              },
+              isAdvancedSchema: !("credentialClaims" in credentialDesignerClaimsFormData.data)
+            })
+          }
+          return buildResult
+        })
+        .then((buildResult) => {
             const credentialConfiguration = toCredentialConfiguration({
               identifier: credentialDesignerDetailsFormData.data.identifier,
               schema: buildResult.schema,
@@ -295,9 +398,9 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
               }
             })
             void updateOid4vciMetadata(credentialDesignerDetailsFormData.data.identifier, credentialConfiguration)
-          })
         })
-        .then(() => navigate(`${MainRoute.CREDENTIALS}/${MainRoute.DESIGNS}`))
+
+      navigate(`${MainRoute.CREDENTIALS}/${MainRoute.DESIGNS}`)
     }
   }, [step, credentialDesignerClaimsFormData, credentialDesignerDetailsFormData])
 
@@ -309,8 +412,8 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
   }, [step])
 
   const onModeChange = useCallback(async (): Promise<void> => {
-      setAdvancedMode(prev => !prev)
-  }, [advancedMode])
+      setIsAdvancedMode(prev => !prev)
+  }, [isAdvancedMode])
 
   const onCredentialDesignerDetailsFormDataChange = async (state: JSONFormState): Promise<void> => {
     setCredentialDesignerDetailsFormData(state)
@@ -460,8 +563,20 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
       : elements
   }
 
-  const storeCredentialSchema = async (args: StoreCredentialSchemaArgs): Promise<void> => {
-    await mutateAsync({ values: args })
+  const onCreate = async (args: StoreCredentialDesignArgs): Promise<void> => {
+    await createCredentialDesign({ values: args })
+  }
+
+  const onUpdate = async (args: UpdateCredentialDesignArgs): Promise<void> => {
+    await updateCredentialDesign({ id: args.id, values: args })
+  }
+
+  if (id !== undefined && credentialDesignError) {
+    return <div>{translate('data_provider_error_message')}</div>
+  }
+
+  if (id !== undefined && credentialDesignLoading) {
+    return <div>{translate('data_provider_loading_message')}</div>
   }
 
   return (
@@ -471,7 +586,7 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
         onNext,
         disabled,
         step,
-        advancedMode,
+        isAdvancedMode,
         onModeChange,
         maxInteractiveSteps,
         credentialDesignerClaimsFormData,
@@ -482,6 +597,7 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
         credentialDesignerVisualDesignBackgroundImage,
         credentialDesignerVisualDesignLogo,
         onCredentialDesignerVisualDesignFormDataChange,
+        editData: credentialDesign?.data
       }}>
       {children}
     </CredentialDesignerContext.Provider>

@@ -5,13 +5,13 @@ import {PrimaryButton, ProgressStepIndicator, SecondaryButton} from '@sphereon/u
 import PageHeaderBar from '@components/bars/PageHeaderBar'
 import {staticPropsWithSST} from '@/src/i18n/server'
 import {useCredentialDesignerMachine} from '@machines/credentials/credentialDesignerStateNavigation'
-import style from './index.module.css'
 import CredentialDesignerLivePreviewView from '@components/views/CredentialDesignerLivePreviewView'
+import style from './index.module.css'
 
 const CredentialDesignerEditPage: FC = (): ReactElement => {
   const translate = useTranslate()
   const {
-    advancedMode,
+    isAdvancedMode,
     onModeChange,
     disabled,
     credentialDesignerDetailsFormData,
@@ -25,7 +25,8 @@ const CredentialDesignerEditPage: FC = (): ReactElement => {
     step,
     maxInteractiveSteps,
     onBack,
-    onNext
+    onNext,
+    editData
   } = useCredentialDesignerMachine()
 
   return (
@@ -35,7 +36,7 @@ const CredentialDesignerEditPage: FC = (): ReactElement => {
         <div className={style.outletContainer}>
           <Outlet
             context={{
-              advancedMode,
+              advancedMode: isAdvancedMode,
               onModeChange,
               credentialDesignerDetailsFormData,
               onCredentialDesignerDetailsFormDataChange,
@@ -45,6 +46,7 @@ const CredentialDesignerEditPage: FC = (): ReactElement => {
               onCredentialDesignerClaimsFormDataChange,
               credentialDesignerVisualDesignBackgroundImage,
               credentialDesignerVisualDesignLogo,
+              editData
             }}
           />
           <div style={{display: 'flex', flexDirection: 'row'}}>
@@ -57,7 +59,12 @@ const CredentialDesignerEditPage: FC = (): ReactElement => {
             }
             <PrimaryButton
               style={{width: 180, marginLeft: 'auto'}}
-              caption={step === maxInteractiveSteps ? translate('action_publish_label') : translate('action_proceed_label')}
+              caption={step === maxInteractiveSteps
+                ? editData
+                  ? translate('action_save_label')
+                  : translate('action_publish_label')
+                : translate('action_proceed_label')
+              }
               onClick={onNext}
               disabled={disabled}
             />

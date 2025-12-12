@@ -11,7 +11,7 @@ import style from './index.module.css'
 const CredentialDesignerClaimsContent: FC = (): ReactElement => {
   const translate = useTranslate()
   const {
-    advancedMode,
+    isAdvancedMode,
     onModeChange,
     credentialDesignerClaimsFormData,
     onCredentialDesignerClaimsFormDataChange
@@ -73,7 +73,7 @@ const CredentialDesignerClaimsContent: FC = (): ReactElement => {
 
   return (
     <SSITabView
-      activeRoute={advancedMode ? "advanced" : "default"}
+      activeRoute={isAdvancedMode ? "advanced" : "default"}
       onRouteChange={onRouteChange}
       routes={routes}
     />

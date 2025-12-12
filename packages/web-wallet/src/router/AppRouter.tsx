@@ -1,6 +1,6 @@
 import {Authenticated, ErrorComponent, useLogin} from '@refinedev/core'
 import React, {PropsWithChildren, useEffect} from 'react'
-import {Outlet, Route, Routes} from 'react-router-dom'
+import {Outlet, Route, Routes, useLocation} from 'react-router-dom'
 import AssetsListPage from '../../pages/assets'
 import AssetsCreatePage from '../../pages/assets/create'
 import ShowAssetDetails from '../../pages/assets/show'

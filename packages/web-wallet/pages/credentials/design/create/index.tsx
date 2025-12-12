@@ -11,7 +11,7 @@ import CredentialDesignerLivePreviewView from '@components/views/CredentialDesig
 const CredentialDesignerCreatePage: FC = (): ReactElement => {
   const translate = useTranslate()
   const {
-    advancedMode,
+    isAdvancedMode,
     onModeChange,
     disabled,
     credentialDesignerDetailsFormData,
@@ -35,7 +35,7 @@ const CredentialDesignerCreatePage: FC = (): ReactElement => {
         <div className={style.outletContainer}>
           <Outlet
             context={{
-              advancedMode,
+              advancedMode: isAdvancedMode,
               onModeChange,
               credentialDesignerDetailsFormData,
               onCredentialDesignerDetailsFormDataChange,
@@ -44,7 +44,7 @@ const CredentialDesignerCreatePage: FC = (): ReactElement => {
               credentialDesignerClaimsFormData,
               onCredentialDesignerClaimsFormDataChange,
               credentialDesignerVisualDesignBackgroundImage,
-              credentialDesignerVisualDesignLogo,
+              credentialDesignerVisualDesignLogo
             }}
           />
           <div style={{display: 'flex', flexDirection: 'row'}}>
@@ -57,7 +57,7 @@ const CredentialDesignerCreatePage: FC = (): ReactElement => {
             }
             <PrimaryButton
               style={{width: 180, marginLeft: 'auto'}}
-              caption={step === maxInteractiveSteps ? translate('action_publish_label') : translate('action_proceed_label')}
+              caption={step === maxInteractiveSteps ? translate('action_save_label') : translate('action_proceed_label')}
               onClick={onNext}
               disabled={disabled}
             />
