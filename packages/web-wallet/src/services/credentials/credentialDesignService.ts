@@ -101,7 +101,7 @@ export const updateOid4vciMetadata = async (identifier: string, credentialConfig
     correlationId: issuerCorrelationId,
   })
 
-  // FIXME SSISDK-99 (workaround below)
+  // TODO See SSISDK-101 (workaround below see SSISDK-99)
   credentialConfiguration.display?.forEach(display => {
     if (!display.name) {
       display.name = capitalize(identifier)
