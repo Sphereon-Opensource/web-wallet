@@ -71,7 +71,8 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
         "did:jwk",
       ],
       "credential_signing_alg_values_supported": [
-        "ES256"
+        "ES256",
+        "RS256"
       ],
       "proof_types_supported": {
         "jwt": {
@@ -122,7 +123,8 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
               "did:jwk",
             ],
             "credential_signing_alg_values_supported": [
-              "ES256"
+              "ES256",
+              "RS256"
             ],
             "proof_types_supported": {
               "jwt": {
