@@ -213,6 +213,10 @@ export const credentialDesignDataProvider = (): DataProvider => ({
     // @ts-ignore
     const { name, schema, uiSchema, branding, options, isAdvancedSchema } = variables
 
+    if ((options.format !== 'dc+sd-jwt' || options.format !== 'vc+sd-jwt')) {
+      delete options.vct
+    }
+
     const { data, error } = await client.rpc('update_credential_design', {
       p_set_id: id,
       p_identifier: name,
