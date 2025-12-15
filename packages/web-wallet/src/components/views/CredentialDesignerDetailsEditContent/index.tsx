@@ -21,6 +21,10 @@ const CredentialDesignerDetailsEditContent: FC = (): ReactElement => {
 
   const credentialDesigns = useList<CredentialDesignDTO, HttpError>({
     resource: DataResource.CREDENTIAL_DESIGNS,
+    queryOptions: {
+      refetchOnMount: "always",
+      cacheTime: 0,
+    },
   })
 
   const onCredentialFormInputChange = async (state: JSONFormState): Promise<void> => {
