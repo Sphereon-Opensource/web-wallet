@@ -38,7 +38,6 @@ const CredentialDesignerDetailsEditContent: FC = (): ReactElement => {
 
   const ajv = useMemo(() => getFormViewAjv(), [])
   useEffect(() => {
-    ajv.removeSchema(credentialDesignDetailsSchema)
     ajv.addKeyword({
       keyword: 'uniqueValue',
       type: 'string',
@@ -53,14 +52,13 @@ const CredentialDesignerDetailsEditContent: FC = (): ReactElement => {
       },
       errors: true
     })
-    ajv.compile(credentialDesignDetailsSchema)
 
     return (): void => {
       if (ajv.getKeyword('uniqueValue')) {
         ajv.removeKeyword('uniqueValue')
       }
     }
-  }, [ajv])
+  }, [ajv, credentialDesigns?.data])
 
   if (credentialDesigns.isLoading) return <div>Loading...</div>
   if (credentialDesigns.isError) return <div>Error: {credentialDesigns.error.message}</div>
