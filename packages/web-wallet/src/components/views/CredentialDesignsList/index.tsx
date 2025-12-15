@@ -60,12 +60,12 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
     {
         accessor: row => {
             return {
-                ...(row.credentialDesignBranding.backgroundImage && {
+                ...(row.credentialDesignBranding?.backgroundImage && {
                     backgroundImage: {
                         uri: row.credentialDesignBranding.backgroundImage.uri
                     },
                 }),
-                ...(row.credentialDesignBranding.logo && {
+                ...(row.credentialDesignBranding?.logo && {
                     logo: {
                         uri: row.credentialDesignBranding.logo.uri,
                         dimensions: {
@@ -74,8 +74,8 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
                         }
                     }
                 }),
-                backgroundColor: row.credentialDesignBranding.backgroundColor ?? undefined,
-                logoColor: row.credentialDesignBranding.textColor ?? undefined
+                backgroundColor: row.credentialDesignBranding?.backgroundColor ?? undefined,
+                logoColor: row.credentialDesignBranding?.textColor ?? undefined
             }
         },
         label: translate('credential_design_fields_card'),

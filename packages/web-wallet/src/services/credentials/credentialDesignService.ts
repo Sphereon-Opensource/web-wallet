@@ -2,6 +2,7 @@ import {ClaimsDescriptionV1_0_15, CredentialConfigurationSupportedV1_0_15} from 
 import {CredentialSchema, ToCredentialConfigurationArgs} from '@typings'
 import {getAgent} from '@agent'
 import {getIssuerCorrelationId} from '@/src/agent/environment'
+import {capitalize} from '@material-ui/core'
 
 export function schemaToClaims(
   schema: CredentialSchema,
@@ -96,6 +97,13 @@ export const updateOid4vciMetadata = async (identifier: string, credentialConfig
   const metadata = await getAgent().oid4vciStoreGetMetadata({
     metadataType: 'issuer',
     correlationId: issuerCorrelationId,
+  })
+
+  // TODO See SSISDK-101 (workaround below see SSISDK-99)
+  credentialConfiguration.display?.forEach(display => {
+    if (!display.name) {
+      display.name = capitalize(identifier)
+    }
   })
 
   if (metadata) {

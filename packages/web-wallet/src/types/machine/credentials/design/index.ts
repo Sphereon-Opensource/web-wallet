@@ -99,7 +99,7 @@ export class CredentialDesignEntity {
       name: entity.name,
       metadataKeys: entity.meta_data_keys.map(key => key.asDTO()),
       schemaDefinition: entity.schema_definition.map(def => def.asDTO()),
-      credentialDesignBranding: entity.credential_design_branding.asDTO()
+      ...(entity.credential_design_branding && {credentialDesignBranding: entity.credential_design_branding.asDTO()})
     })
   }
 }
