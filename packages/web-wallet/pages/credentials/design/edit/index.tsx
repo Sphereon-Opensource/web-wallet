@@ -4,11 +4,11 @@ import {useTranslate} from '@refinedev/core'
 import {PrimaryButton, ProgressStepIndicator, SecondaryButton} from '@sphereon/ui-components.ssi-react'
 import PageHeaderBar from '@components/bars/PageHeaderBar'
 import {staticPropsWithSST} from '@/src/i18n/server'
-import {useCredentialDesignerCreateMachine} from '@machines/credentials/credentialDesignerCreateStateNavigation'
-import style from './index.module.css'
+import {useCredentialDesignerEditMachine} from '@machines/credentials/credentialDesignerEditStateNavigation'
 import CredentialDesignerLivePreviewView from '@components/views/CredentialDesignerLivePreviewView'
+import style from './index.module.css'
 
-const CredentialDesignerCreatePage: FC = (): ReactElement => {
+const CredentialDesignerEditPage: FC = (): ReactElement => {
   const translate = useTranslate()
   const {
     isAdvancedMode,
@@ -25,8 +25,9 @@ const CredentialDesignerCreatePage: FC = (): ReactElement => {
     step,
     maxInteractiveSteps,
     onBack,
-    onNext
-  } = useCredentialDesignerCreateMachine()
+    onNext,
+    editData
+  } = useCredentialDesignerEditMachine()
 
   return (
     <div className={style.container}>
@@ -44,7 +45,8 @@ const CredentialDesignerCreatePage: FC = (): ReactElement => {
               credentialDesignerClaimsFormData,
               onCredentialDesignerClaimsFormDataChange,
               credentialDesignerVisualDesignBackgroundImage,
-              credentialDesignerVisualDesignLogo
+              credentialDesignerVisualDesignLogo,
+              editData
             }}
           />
           <div style={{display: 'flex', flexDirection: 'row'}}>
@@ -57,7 +59,12 @@ const CredentialDesignerCreatePage: FC = (): ReactElement => {
             }
             <PrimaryButton
               style={{width: 180, marginLeft: 'auto'}}
-              caption={step === maxInteractiveSteps ? translate('action_save_label') : translate('action_proceed_label')}
+              caption={step === maxInteractiveSteps
+                ? editData
+                  ? translate('action_save_label')
+                  : translate('action_publish_label')
+                : translate('action_proceed_label')
+              }
               onClick={onNext}
               disabled={disabled}
             />
@@ -97,4 +104,4 @@ const CredentialDesignerCreatePage: FC = (): ReactElement => {
 export const getStaticProps = async ({locale = 'en'}: {locale?: string}) =>
   staticPropsWithSST({locale})
 
-export default CredentialDesignerCreatePage
+export default CredentialDesignerEditPage

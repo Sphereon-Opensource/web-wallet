@@ -36,7 +36,8 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
             p_scope text default null,
             p_cryptographic_binding_methods_supported text[] default '{}',
             p_credential_signing_alg_values_supported text[] default '{}',
-            p_proof_types_supported jsonb default '{}'::jsonb
+            p_proof_types_supported jsonb default '{}'::jsonb,
+            p_advanced_schema boolean default false
         )
         returns jsonb
         language plpgsql
@@ -53,8 +54,8 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
             _schema_definition_id uuid;
             _ui_schema_definition_id uuid;
             _branding_id uuid;
+            _advanced_schema_key_id uuid;
         
-            -- logo / background helper vars
             _logo_dimensions_id uuid;
             _logo_attr_id uuid;
             _logo_width integer;
@@ -84,6 +85,13 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
         
             insert into meta_data_values (key_id, index, text_value)
             values (_credential_format_key_id, 0, p_credential_format);
+            
+            insert into meta_data_keys (set_id, key, value_type)
+            values (_set_id, 'advancedSchema', 'Boolean')
+            returning id into _advanced_schema_key_id;
+        
+            insert into meta_data_values (key_id, index, boolean_value)
+            values (_advanced_schema_key_id, 0, p_advanced_schema);
             
             if p_vct is not null then
                 insert into meta_data_keys (set_id, key, value_type)
@@ -344,6 +352,26 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
                             where key_id = _proof_types_supported_key_id
                         )
                     ),
+                    jsonb_build_object(
+                        'id', _advanced_schema_key_id,
+                        'key', 'advancedSchema',
+                        'set_id', _set_id,
+                        'value_type', 'Boolean',
+                        'meta_data_values', (
+                            select coalesce(
+                                jsonb_agg(
+                                    jsonb_build_object(
+                                        'id', id,
+                                        'index', index,
+                                        'key_id', key_id,
+                                        'text_value', text_value
+                                    ) order by index
+                                ), '[]'::jsonb
+                            )
+                            from meta_data_values
+                            where key_id = _advanced_schema_key_id
+                        )
+                    ),
                     CASE
                         WHEN _vct_key_id IS NOT NULL THEN
                             jsonb_build_object(
@@ -351,13 +379,19 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
                                 'key', 'vct',
                                 'set_id', _set_id,
                                 'value_type', 'Text',
-                                'meta_data_values', jsonb_build_array(
-                                    jsonb_build_object(
-                                        'id', gen_random_uuid(),
-                                        'index', 0,
-                                        'key_id', _vct_key_id,
-                                        'text_value', p_vct
+                                'meta_data_values', (
+                                    select coalesce(
+                                        jsonb_agg(
+                                            jsonb_build_object(
+                                                'id', id,
+                                                'index', index,
+                                                'key_id', key_id,
+                                                'text_value', text_value
+                                            ) order by index
+                                        ), '[]'::jsonb
                                     )
+                                    from meta_data_values
+                                    where key_id = _vct_key_id
                                 )
                             )
                         ELSE null
@@ -369,13 +403,19 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
                                 'key', 'scope',
                                 'set_id', _set_id,
                                 'value_type', 'Text',
-                                'meta_data_values', jsonb_build_array(
-                                    jsonb_build_object(
-                                        'id', gen_random_uuid(),
-                                        'index', 0,
-                                        'key_id', _scope_key_id,
-                                        'text_value', p_scope
+                                'meta_data_values', (
+                                    select coalesce(
+                                        jsonb_agg(
+                                            jsonb_build_object(
+                                                'id', id,
+                                                'index', index,
+                                                'key_id', key_id,
+                                                'text_value', text_value
+                                            ) order by index
+                                        ), '[]'::jsonb
                                     )
+                                    from meta_data_values
+                                    where key_id = _scope_key_id
                                 )
                             )
                         ELSE null
@@ -466,7 +506,8 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
             p_scope text default null,
             p_cryptographic_binding_methods_supported text[] default '{}',
             p_credential_signing_alg_values_supported text[] default '{}',
-            p_proof_types_supported jsonb default '{}'::jsonb
+            p_proof_types_supported jsonb default '{}'::jsonb,
+            p_advanced_schema boolean default false
         )
         returns jsonb
         language plpgsql
@@ -482,8 +523,8 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
             _cryptographic_binding_key_id uuid;
             _credential_signing_alg_key_id uuid;
             _proof_types_supported_key_id uuid;
+            _advanced_schema_key_id uuid;
         
-            -- logo / background helper vars
             _logo_dimensions_id uuid;
             _logo_attr_id uuid;
             _logo_width integer;
@@ -543,6 +584,15 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
                     delete from meta_data_keys where id = _vct_key_id;
                 end if;
             end if;
+            
+            select id into _advanced_schema_key_id
+            from meta_data_keys
+            where set_id = p_set_id and key = 'advancedSchema'
+            limit 1;
+            
+            update meta_data_values
+            set boolean_value = p_advanced_schema
+            where key_id = _advanced_schema_key_id;
             
             select id into _scope_key_id
             from meta_data_keys
@@ -864,6 +914,26 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
                           where key_id = _credential_format_key_id
                       )
                     ),
+                    jsonb_build_object(
+                        'id', _advanced_schema_key_id,
+                        'key', 'advancedSchema',
+                        'set_id', p_set_id,
+                        'value_type', 'Boolean',
+                        'meta_data_values', (
+                            select coalesce(
+                                jsonb_agg(
+                                    jsonb_build_object(
+                                        'id', id,
+                                        'index', index,
+                                        'key_id', key_id,
+                                        'text_value', text_value
+                                    ) order by index
+                                ), '[]'::jsonb
+                            )
+                            from meta_data_values
+                            where key_id = _advanced_schema_key_id
+                        )
+                    ),
                     CASE
                         WHEN _vct_key_id IS NOT NULL THEN
                             jsonb_build_object(
@@ -1009,38 +1079,38 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
     `)
 
     await queryRunner.query(`
-        ALTER TABLE meta_data_keys DROP CONSTRAINT fk_meta_data_set;
+      ALTER TABLE meta_data_keys DROP CONSTRAINT fk_meta_data_set;
     `)
     await queryRunner.query(`
-        ALTER TABLE meta_data_keys ADD CONSTRAINT fk_meta_data_set FOREIGN KEY (set_id) REFERENCES meta_data_set(id);
-    `)
-
-    await queryRunner.query(`
-        ALTER TABLE schema_definition DROP CONSTRAINT fk_schemadef_metadata;
-    `)
-    await queryRunner.query(`
-        ALTER TABLE schema_definition ADD CONSTRAINT fk_schemadef_metadata FOREIGN KEY (meta_data_set_id) REFERENCES meta_data_set(id);
+      ALTER TABLE meta_data_keys ADD CONSTRAINT fk_meta_data_set FOREIGN KEY (set_id) REFERENCES meta_data_set(id);
     `)
 
     await queryRunner.query(`
-        ALTER TABLE meta_data_values DROP CONSTRAINT fk_meta_data_keys;
+      ALTER TABLE schema_definition DROP CONSTRAINT fk_schemadef_metadata;
     `)
     await queryRunner.query(`
-        ALTER TABLE meta_data_values ADD CONSTRAINT fk_meta_data_keys FOREIGN KEY (key_id) REFERENCES meta_data_keys(id);
-    `)
-
-    await queryRunner.query(`
-        ALTER TABLE form_step_to_schema_definition DROP CONSTRAINT form_step_to_schema_definition_schema_definition_id_fkey;
-    `)
-    await queryRunner.query(`
-        ALTER TABLE form_step_to_schema_definition ADD CONSTRAINT form_step_to_schema_definition_schema_definition_id_fkey FOREIGN KEY (schema_definition_id) REFERENCES schema_definition(id);
+      ALTER TABLE schema_definition ADD CONSTRAINT fk_schemadef_metadata FOREIGN KEY (meta_data_set_id) REFERENCES meta_data_set(id);
     `)
 
     await queryRunner.query(`
-        ALTER TABLE form_step_to_schema_definition DROP CONSTRAINT fk_schema_definition;
+      ALTER TABLE meta_data_values DROP CONSTRAINT fk_meta_data_keys;
     `)
     await queryRunner.query(`
-        ALTER TABLE form_step_to_schema_definition ADD CONSTRAINT fk_schema_definition FOREIGN KEY (schema_definition_id) REFERENCES schema_definition(id);
+      ALTER TABLE meta_data_values ADD CONSTRAINT fk_meta_data_keys FOREIGN KEY (key_id) REFERENCES meta_data_keys(id);
+    `)
+
+    await queryRunner.query(`
+      ALTER TABLE form_step_to_schema_definition DROP CONSTRAINT form_step_to_schema_definition_schema_definition_id_fkey;
+    `)
+    await queryRunner.query(`
+      ALTER TABLE form_step_to_schema_definition ADD CONSTRAINT form_step_to_schema_definition_schema_definition_id_fkey FOREIGN KEY (schema_definition_id) REFERENCES schema_definition(id);
+    `)
+
+    await queryRunner.query(`
+      ALTER TABLE form_step_to_schema_definition DROP CONSTRAINT fk_schema_definition;
+    `)
+    await queryRunner.query(`
+      ALTER TABLE form_step_to_schema_definition ADD CONSTRAINT fk_schema_definition FOREIGN KEY (schema_definition_id) REFERENCES schema_definition(id);
     `)
   }
 }

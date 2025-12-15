@@ -1,6 +1,4 @@
-import {
-  CredentialSchema,
-} from '@typings'
+import {CredentialSchema, CredentialSchemaClaim, CredentialUISchema} from '@typings'
 
 
 /**
@@ -123,5 +121,148 @@ export function enrichSchemaWithStatusList(schema: CredentialSchema, statusListU
       ...schema.properties,
       status_list: statusListProperty
     }
+  }
+}
+
+export const normalizeSchemaInput = (input: any): Array<{ name: string; schema: any }> => {
+  if (Array.isArray(input)) {
+    return input.map((claim) => ({
+      name: claim.claimName,
+      schema: claim
+    }))
+  }
+
+  if (input?.type === 'object' && input?.properties && !Array.isArray(input.properties)) {
+    return Object.entries(input.properties).map(([name, schema]) => ({
+      name,
+      schema
+    }))
+  }
+
+  return []
+}
+
+export const buildCredentialSchemas = async (claims: any): Promise<{schema: CredentialSchema; uiSchema: CredentialUISchema | Array<CredentialUISchema>}> => {
+  const schema: CredentialSchema = "credentialClaims" in claims ? buildCredentialSchema(claims.credentialClaims) : claims
+  const uiSchema = "credentialClaims" in claims ? buildCredentialUISchema(claims.credentialClaims) : buildCredentialUISchema(claims)
+
+  return {schema, uiSchema}
+}
+
+export const buildCredentialSchema = (claims: Array<CredentialSchemaClaim>): CredentialSchema => {
+  const properties: Record<string, any> = {}
+  const requiredFields: Array<string> = []
+
+  claims.forEach((claim): void => {
+    if (claim.type === 'object' && claim.properties) {
+      properties[claim.claimName] = buildCredentialSchema(claim.properties)
+    } else if (claim.type === 'array') {
+      properties[claim.claimName] = {
+        type: 'array',
+        items: {type: 'string'},
+      }
+    } else if (claim.type === 'date') {
+      properties[claim.claimName] = {
+        type: 'string',
+        format: 'date'
+      }
+    } else {
+      properties[claim.claimName] = {type: claim.type}
+    }
+
+    if (claim.required) {
+      requiredFields.push(claim.claimName)
+    }
+  })
+
+  return {
+    type: 'object',
+    properties,
+    ...(requiredFields.length > 0 && {required: requiredFields}),
+  }
+}
+
+export const buildCredentialUISchema = (input: any, basePath: string = '#/properties', isRoot: boolean = true): CredentialUISchema | Array<CredentialUISchema> => {
+  const elements: CredentialUISchema[] = []
+  const normalized = normalizeSchemaInput(input)
+
+  normalized.forEach(({ name, schema }) => {
+    const path = `${basePath}/${name}`
+    const isObject = schema.type === 'object' && schema.properties
+
+    if (isObject) {
+      const nextInput = Array.isArray(schema.properties)
+        ? schema.properties
+        : schema
+
+      elements.push({
+        type: 'Group',
+        label: name,
+        elements: buildCredentialUISchema(nextInput, `${path}/properties`, false) as CredentialUISchema[]
+      })
+    } else {
+      elements.push({
+        type: 'Control',
+        label: name,
+        scope: path
+      })
+    }
+  })
+
+  return isRoot
+    ? { type: 'VerticalLayout', elements }
+    : elements
+}
+
+export const noEmptyPropertiesRecursive = (items: Array<any>): boolean => {
+  return items.every(item => {
+    const itemType = item.type;
+
+    if (itemType !== 'object') {
+      return true
+    }
+
+    if (!Array.isArray(item.properties) || item.properties.length === 0) {
+      return false
+    }
+
+    return noEmptyPropertiesRecursive(item.properties)
+  })
+}
+
+export const transformAdvancedSchema = (schema: any): { credentialClaims: any[] } => {
+  const resolveType = (value: any): string => {
+    if (value.type === "string" && value.format === "date") {
+      return "date"
+    }
+
+    return value.type
+  }
+
+  const transform = (sch: any): any[] => {
+    if (!sch.properties) return []
+
+    return Object.entries(sch.properties)
+      .filter(([key]) => key !== "disclosureFrame")
+      .map(([key, value]) => {
+        const claim: any = {
+          claimName: key,
+          type: resolveType(value),
+        }
+
+        if (sch.required?.includes(key)) {
+          claim.required = true
+        }
+
+        if (value.type === "object") {
+          claim.properties = transform(value)
+        }
+
+        return claim
+      })
+  }
+
+  return {
+    credentialClaims: transform(schema)
   }
 }

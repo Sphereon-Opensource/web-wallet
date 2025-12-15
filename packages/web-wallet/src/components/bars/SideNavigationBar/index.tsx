@@ -22,6 +22,7 @@ export const menuItemFrom = (item: MenuItem | MenuSeparator, allItems: MenuItem[
   )
 
   return <SideNavigationItem
+    key={item.path}
     label={item.label}
     icon={item.icon}
     href={item.path}

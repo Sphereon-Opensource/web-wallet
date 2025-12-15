@@ -1,45 +1,55 @@
-import React, {FC, ReactElement} from 'react'
+import React, {FC, ReactElement, useEffect, useMemo} from 'react'
 import {HttpError, useList, useTranslate} from '@refinedev/core'
 import {TabViewRoute} from '@sphereon/ui-components.core'
 import {FormView, getFormViewAjv, JSONFormState, SSITabView, SSITextH1Styled, SSITextH2Styled} from '@sphereon/ui-components.ssi-react'
 import JsonEditor from '@components/editors/JsonEditor'
-import {useCredentialDesignerOutletContext} from '@machines/credentials/credentialDesignerStateNavigation';
+import {useCredentialDesignerCreateOutletContext} from '@machines/credentials/credentialDesignerCreateStateNavigation';
 import credentialDesignDetailsSchema from '../../../../src/schemas/data/credentialDesignerDetailsSchema.json' assert {type: 'json'}
 import credentialDesignDetailsUiSchema from '../../../../src/schemas/ui/credentialDesignerDetailsUISchema.json' assert {type: 'json'}
 import {CredentialDesignDTO, DataResource} from '@typings'
 import style from './index.module.css'
 
-const CredentialDesignerDetailsContent: FC = (): ReactElement => {
+const CredentialDesignerDetailsCreateContent: FC = (): ReactElement => {
   const translate = useTranslate()
   const {
-      advancedMode,
+      isAdvancedMode,
       onModeChange,
       credentialDesignerDetailsFormData,
       onCredentialDesignerDetailsFormDataChange
-  } = useCredentialDesignerOutletContext()
+  } = useCredentialDesignerCreateOutletContext()
 
   const credentialDesigns = useList<CredentialDesignDTO, HttpError>({
     resource: DataResource.CREDENTIAL_DESIGNS,
   })
 
   const onCredentialFormInputChange = async (state: JSONFormState): Promise<void> => {
+    if (state.data.format !== 'dc+sd-jwt') {
+      delete state.data.vct
+    }
+
     onCredentialDesignerDetailsFormDataChange?.(state)
   }
 
-  if (credentialDesigns.isLoading) return <div>Loading...</div>
-  if (credentialDesigns.isError) return <div>Error: {credentialDesigns.error.message}</div>
-
-  const ajv = getFormViewAjv()
-  if (!ajv.getKeyword('uniqueValue')) {
+  const ajv = useMemo(() => getFormViewAjv(), [])
+  useEffect(() => {
+    ajv.removeSchema(credentialDesignDetailsSchema)
     ajv.addKeyword({
       keyword: 'uniqueValue',
       type: 'string',
-      validate: (_: string, data: string) => {
-        return !credentialDesigns.data?.data.some(credentialDesign => credentialDesign.name === data)
-      },
+      validate: (_: string, data: string) => !credentialDesigns.data?.data.some(credentialDesign => credentialDesign.name === data),
       errors: true
     })
-  }
+    ajv.compile(credentialDesignDetailsSchema)
+
+    return (): void => {
+      if (ajv.getKeyword('uniqueValue')) {
+        ajv.removeKeyword('uniqueValue')
+      }
+    }
+  }, [ajv, credentialDesigns?.data])
+
+  if (credentialDesigns.isLoading) return <div>Loading...</div>
+  if (credentialDesigns.isError) return <div>Error: {credentialDesigns.error.message}</div>
 
   const advancedValidator = (content: string): string | null => {
     try {
@@ -107,7 +117,7 @@ const CredentialDesignerDetailsContent: FC = (): ReactElement => {
   }
 
   const onRouteChange = async (key: string): Promise<void> => {
-      void onModeChange()
+      await onModeChange()
   }
 
   const routes: Array<TabViewRoute> = [
@@ -125,11 +135,11 @@ const CredentialDesignerDetailsContent: FC = (): ReactElement => {
 
   return (
     <SSITabView
-        activeRoute={advancedMode ? "advanced" : "default"}
+        activeRoute={isAdvancedMode ? "advanced" : "default"}
         onRouteChange={onRouteChange}
         routes={routes}
     />
   )
 }
 
-export default CredentialDesignerDetailsContent
+export default CredentialDesignerDetailsCreateContent
