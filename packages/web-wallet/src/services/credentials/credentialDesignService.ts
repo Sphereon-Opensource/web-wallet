@@ -17,9 +17,7 @@ export function schemaToClaims(
 
       const isLeaf =
         !propSchema.properties &&
-        !propSchema.items &&
-        propSchema.type !== 'object' &&
-        propSchema.type !== 'array'
+        propSchema.type !== 'object'
 
       if (isLeaf) {
         claims.push({
@@ -90,7 +88,7 @@ export const toCredentialConfiguration = (args: ToCredentialConfigurationArgs): 
   }
 }
 
-export const updateOid4vciMetadata = async (identifier: string, credentialConfiguration: CredentialConfigurationSupportedV1_0_15): Promise<void> => {
+export const updateOid4vciMetadata = async (identifier: string, credentialConfiguration: CredentialConfigurationSupportedV1_0_15, previousIdentifier?: string): Promise<void> => {
   const issuerCorrelationId = getIssuerCorrelationId()
   if (!issuerCorrelationId) {
     return Promise.reject('Env var BROWSER_PUBLIC_ISSUER_CORRELATION_ID is missing')
@@ -101,6 +99,10 @@ export const updateOid4vciMetadata = async (identifier: string, credentialConfig
   })
 
   if (metadata) {
+    if (previousIdentifier) {
+      delete metadata.credential_configurations_supported[previousIdentifier]
+    }
+
     return await getAgent().oid4vciStorePersistMetadata({
       metadataType: 'issuer',
       correlationId: issuerCorrelationId,
@@ -137,34 +139,5 @@ export const removeCredentialConfigurationFromOid4vciMetadata = async (identifie
     })
     .then(() => getAgent().oid4vciRefreshInstanceMetadata({credentialIssuer: getIssuerCorrelationId()}))
     .catch((e) => Promise.reject(Error(`Failed to update oid4vci metadata. ${e.message}`)))
-  }
-}
-
-export const transformAdvancedSchema = (schema: any): { credentialClaims: any[] } => {
-  const transform = (sch: any): any[] => {
-    if (!sch.properties) return []
-
-    return Object.entries(sch.properties)
-      .filter(([key]) => key !== "disclosureFrame")
-      .map(([key, value]) => {
-        const claim: any = {
-          claimName: key,
-          type: value.type,
-        }
-
-        if (sch.required?.includes(key)) {
-          claim.required = true
-        }
-
-        if (value.type === "object") {
-          claim.properties = transform(value)
-        }
-
-        return claim
-      })
-  }
-
-  return {
-    credentialClaims: transform(schema)
   }
 }

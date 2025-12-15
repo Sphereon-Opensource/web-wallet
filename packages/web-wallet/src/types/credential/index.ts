@@ -130,7 +130,7 @@ export class CredentialTableItem {
   }
 }
 
-export type CredentialSchemaClaimType = "object" | "string" | "number" | "boolean" | "array"
+export type CredentialSchemaClaimType = "object" | "string" | "number" | "boolean" | "array" | "date"
 
 export type CredentialSchemaClaim = {
   claimName: string

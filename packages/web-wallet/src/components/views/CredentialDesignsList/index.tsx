@@ -1,5 +1,5 @@
 import React, {ChangeEvent, FC, ReactElement, useState} from 'react'
-import {HttpError, useDelete, useList, useNavigation, useTranslate, useUpdate} from '@refinedev/core'
+import {HttpError, useDelete, useList, useNavigation, useTranslate} from '@refinedev/core'
 import {ColumnHeader, Row, SSITableView, TableCellType} from '@sphereon/ui-components.ssi-react'
 import {ButtonIcon} from '@sphereon/ui-components.core'
 import {removeCredentialConfigurationFromOid4vciMetadata} from '@/src/services/credentials/credentialDesignService'
@@ -16,7 +16,6 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
   const {create, edit} = useNavigation()
   const [current, setCurrent] = useState<number>(1)
   const [pageSize, _] = useState<number>(10)
-  const {mutateAsync: updateCredential} = useUpdate<any, HttpError>()
 
   const {
     data: credentialDesigns,
@@ -55,46 +54,6 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
 
   const onEdit = async (data: Row<CredentialDesignTableItem>): Promise<void> => {
     edit(DataResource.CREDENTIAL_DESIGNS, data.original.id)
-  }
-
-  const onUpdate = async (): Promise<void> => {
-    void updateCredential({
-      resource: DataResource.CREDENTIAL_DESIGNS,
-      id: '2e28e259-b6ec-494a-be90-ef0eef92fbcc',
-      values: {
-        name: 'nieuwe naam',
-        schema: 'some schema',
-        uiSchema: 'some ui schema',
-        branding: {
-          backgroundImage: {
-            uri: 'https://png.pngtree.com/thumb_back/fh260/background/20250205/pngtree-soft-pastel-floral-design-light-blue-background-image_16896113.jpg',
-            dimensions: {
-              width: 666,
-              height: 666
-            }
-          },
-          logo: {
-            uri: 'https://media.wired.com/photos/5926ffe47034dc5f91bed4e8/3:2/w_2560%2Cc_limit/google-logo.jpg',
-            dimensions: {
-              width: 1203,
-              height: 802
-            }
-          },
-          textColor: 'red',
-          backgroundColor: 'black'
-        },
-        options: {
-          format: 'some format',
-          //scope: "bram_scope",
-          vct: "nieuwe_vct_test",
-          cryptographicBindingMethodsSupported: ["did:jwk", "did:web2"],
-          credentialSigningAlgValuesSupported: ["BRAM_ALG_TEST2"],
-          proofTypesSupported: {"bram": {"proof_signing_alg_values_supported": ["ES256"]}}
-        },
-        //isAdvancedSchema: false
-
-      }
-    })
   }
 
   const columns: ColumnHeader<CredentialDesignTableItem>[] = [
@@ -219,7 +178,6 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
   }
 
   return <div>
-    <button style={{color: 'red'}} onClick={onUpdate}>UPDATE</button>
     <SSITableView
       data={designsData}
       columns={columns}

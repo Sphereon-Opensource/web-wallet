@@ -3,19 +3,19 @@ import {useTranslate} from '@refinedev/core'
 import {TabViewRoute} from '@sphereon/ui-components.core'
 import {FormView, JSONFormState, SSITabView, SSITextH1Styled, SSITextH2Styled} from '@sphereon/ui-components.ssi-react'
 import JsonEditor from '@components/editors/JsonEditor'
-import {useCredentialDesignerOutletContext} from '@machines/credentials/credentialDesignerStateNavigation';
+import {useCredentialDesignerCreateOutletContext} from '@machines/credentials/credentialDesignerCreateStateNavigation';
 import credentialDesignerClaimStructureSchema from '../../../../src/schemas/data/credentialDesignerClaimStructureSchema.json' assert {type: 'json'}
 import credentialDesignerClaimStructureUISchema from '../../../../src/schemas/ui/credentialDesignerClaimStructureUISchema.json' assert {type: 'json'}
 import style from './index.module.css'
 
-const CredentialDesignerClaimsContent: FC = (): ReactElement => {
+const CredentialDesignerClaimsCreateContent: FC = (): ReactElement => {
   const translate = useTranslate()
   const {
     isAdvancedMode,
     onModeChange,
     credentialDesignerClaimsFormData,
     onCredentialDesignerClaimsFormDataChange
-  } = useCredentialDesignerOutletContext()
+  } = useCredentialDesignerCreateOutletContext()
 
   const onCredentialFormInputChange = async (state: JSONFormState): Promise<void> => {
     onCredentialDesignerClaimsFormDataChange?.(state)
@@ -80,4 +80,4 @@ const CredentialDesignerClaimsContent: FC = (): ReactElement => {
   )
 }
 
-export default CredentialDesignerClaimsContent
+export default CredentialDesignerClaimsCreateContent

@@ -1,49 +1,24 @@
 import React, {FC, ReactElement} from 'react'
 import {useTranslate} from '@refinedev/core'
 import {TabViewRoute} from '@sphereon/ui-components.core'
-import {FormView, JSONFormState, SSITabView, SSITextH1Styled, SSITextH2Styled, getFormViewAjv} from '@sphereon/ui-components.ssi-react'
+import {FormView, JSONFormState, SSITabView, SSITextH1Styled, SSITextH2Styled} from '@sphereon/ui-components.ssi-react'
 import JsonEditor from '@components/editors/JsonEditor'
-import {useCredentialDesignerOutletContext} from '@machines/credentials/credentialDesignerStateNavigation';
+import {useCredentialDesignerCreateOutletContext} from '@machines/credentials/credentialDesignerCreateStateNavigation';
 import credentialDesignerVisualDesignSchema from '../../../../src/schemas/data/credentialDesignerVisualDesignSchema.json' assert {type: 'json'}
 import credentialDesignerVisualDesignUISchema from '../../../../src/schemas/ui/credentialDesignerVisualDesignUISchema.json' assert {type: 'json'}
 import style from './index.module.css'
 
-const CredentialDesignerDetailsContent: FC = (): ReactElement => {
+const CredentialDesignerVisualDesignCreateContent: FC = (): ReactElement => {
   const translate = useTranslate()
   const {
     isAdvancedMode,
     onModeChange,
     credentialDesignerVisualDesignFormData,
     onCredentialDesignerVisualDesignFormDataChange
-  } = useCredentialDesignerOutletContext()
+  } = useCredentialDesignerCreateOutletContext()
 
   const onCredentialFormInputChange = async (state: JSONFormState): Promise<void> => {
     onCredentialDesignerVisualDesignFormDataChange?.(state)
-  }
-
-  const ajv = getFormViewAjv()
-  if (!ajv.getKeyword('noEmptyObject')) {
-    ajv.addKeyword({
-      keyword: 'noEmptyObject',
-      modifying: true,
-      validate: (
-        schema: object,
-        data: any,
-        parentSchema,
-        dataCxt
-      ): boolean => {
-        if (typeof data === 'object') {
-          if (!dataCxt?.parentData || dataCxt.parentDataProperty === undefined) {
-            return true;
-          }
-          if (Object.keys(data).length === 0) {
-            delete dataCxt.parentData[dataCxt.parentDataProperty];
-          }
-          return true;
-        }
-        return false;
-      }
-    });
   }
 
   const getDefaultContent = (): ReactElement => {
@@ -105,4 +80,4 @@ const CredentialDesignerDetailsContent: FC = (): ReactElement => {
   )
 }
 
-export default CredentialDesignerDetailsContent
+export default CredentialDesignerVisualDesignCreateContent

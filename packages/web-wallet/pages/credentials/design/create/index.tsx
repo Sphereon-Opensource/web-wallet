@@ -4,7 +4,7 @@ import {useTranslate} from '@refinedev/core'
 import {PrimaryButton, ProgressStepIndicator, SecondaryButton} from '@sphereon/ui-components.ssi-react'
 import PageHeaderBar from '@components/bars/PageHeaderBar'
 import {staticPropsWithSST} from '@/src/i18n/server'
-import {useCredentialDesignerMachine} from '@machines/credentials/credentialDesignerStateNavigation'
+import {useCredentialDesignerCreateMachine} from '@machines/credentials/credentialDesignerCreateStateNavigation'
 import style from './index.module.css'
 import CredentialDesignerLivePreviewView from '@components/views/CredentialDesignerLivePreviewView'
 
@@ -26,7 +26,7 @@ const CredentialDesignerCreatePage: FC = (): ReactElement => {
     maxInteractiveSteps,
     onBack,
     onNext
-  } = useCredentialDesignerMachine()
+  } = useCredentialDesignerCreateMachine()
 
   return (
     <div className={style.container}>
@@ -35,7 +35,7 @@ const CredentialDesignerCreatePage: FC = (): ReactElement => {
         <div className={style.outletContainer}>
           <Outlet
             context={{
-              advancedMode: isAdvancedMode,
+              isAdvancedMode,
               onModeChange,
               credentialDesignerDetailsFormData,
               onCredentialDesignerDetailsFormDataChange,
