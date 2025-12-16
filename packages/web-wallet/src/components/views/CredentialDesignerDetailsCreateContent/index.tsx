@@ -1,4 +1,4 @@
-import React, {FC, ReactElement, useEffect, useMemo} from 'react'
+import React, {FC, ReactElement, useMemo} from 'react'
 import {HttpError, useList, useTranslate} from '@refinedev/core'
 import {TabViewRoute} from '@sphereon/ui-components.core'
 import {FormView, getFormViewAjv, JSONFormState, SSITabView, SSITextH1Styled, SSITextH2Styled} from '@sphereon/ui-components.ssi-react'
@@ -19,8 +19,22 @@ const CredentialDesignerDetailsCreateContent: FC = (): ReactElement => {
   } = useCredentialDesignerCreateOutletContext()
 
   const credentialDesigns = useList<CredentialDesignDTO, HttpError>({
-    resource: DataResource.CREDENTIAL_DESIGNS,
+    resource: DataResource.CREDENTIAL_DESIGNS
   })
+
+  const ajv = useMemo(() => {
+    const ajv = getFormViewAjv()
+
+    ajv.addKeyword({
+      keyword: 'uniqueValue',
+      type: 'string',
+      validate: (_: string, data: string) =>
+        !credentialDesigns.data?.data.some(credentialDesign => credentialDesign.name === data),
+      errors: true
+    })
+
+    return ajv
+  }, [credentialDesigns.data])
 
   const onCredentialFormInputChange = async (state: JSONFormState): Promise<void> => {
     if (state.data.format !== 'dc+sd-jwt') {
@@ -30,26 +44,12 @@ const CredentialDesignerDetailsCreateContent: FC = (): ReactElement => {
     onCredentialDesignerDetailsFormDataChange?.(state)
   }
 
-  const ajv = useMemo(() => getFormViewAjv(), [])
-  useEffect(() => {
-    ajv.removeSchema(credentialDesignDetailsSchema)
-    ajv.addKeyword({
-      keyword: 'uniqueValue',
-      type: 'string',
-      validate: (_: string, data: string) => !credentialDesigns.data?.data.some(credentialDesign => credentialDesign.name === data),
-      errors: true
-    })
-    ajv.compile(credentialDesignDetailsSchema)
-
-    return (): void => {
-      if (ajv.getKeyword('uniqueValue')) {
-        ajv.removeKeyword('uniqueValue')
-      }
-    }
-  }, [ajv, credentialDesigns?.data])
-
-  if (credentialDesigns.isLoading) return <div>Loading...</div>
-  if (credentialDesigns.isError) return <div>Error: {credentialDesigns.error.message}</div>
+  if (credentialDesigns.isLoading || credentialDesigns.isFetching) {
+    return <div>Loading...</div>
+  }
+  if (credentialDesigns.isError) {
+    return <div>Error: {credentialDesigns.error.message}</div>
+  }
 
   const advancedValidator = (content: string): string | null => {
     try {
