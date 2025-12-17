@@ -16,7 +16,7 @@ import {
 } from '@refinedev/core'
 import {supabaseServiceClient} from '@helpers/SupabaseClient'
 import {enrichSchemaWithDisclosureFrame, enrichSchemaWithStatusList} from '@helpers/SchemaUtils'
-import {CredentialDesignEntity, SdJwtFormatOptions, StoreCredentialSchemaArgs} from '@typings'
+import {CredentialDesignEntity, SdJwtFormatOptions, StoreCredentialDesignArgs} from '@typings'
 
 export const credentialDesignDataProvider = (): DataProvider => ({
   getList: async <TData extends BaseRecord = BaseRecord>({resource, pagination, filters, sort}: GetListParams): Promise<GetListResponse<TData>> => {
@@ -100,7 +100,7 @@ export const credentialDesignDataProvider = (): DataProvider => ({
   create: async <TData extends BaseRecord = BaseRecord, TVariables = {}>({resource, variables, meta}: CreateParams<TVariables>): Promise<CreateResponse<TData>> => {
     const client = supabaseServiceClient()
     // @ts-ignore
-    const { name, schema, uiSchema, branding, statusListUri, options } = variables
+    const { name, schema, uiSchema, branding, statusListUri, options, isAdvancedSchema } = variables
 
     // Enrich the schema with disclosureFrame (for non-required fields) and statusList (if URI provided)
     const enrichedSchema = enrichSchemaWithStatusList(enrichSchemaWithDisclosureFrame(schema), statusListUri)
@@ -136,6 +136,7 @@ export const credentialDesignDataProvider = (): DataProvider => ({
       p_cryptographic_binding_methods_supported: options.cryptographicBindingMethodsSupported ?? [],
       p_credential_signing_alg_values_supported: options.credentialSigningAlgValuesSupported ?? [],
       p_proof_types_supported: options.proofTypesSupported ?? {},
+      p_advanced_schema: isAdvancedSchema ?? false,
       p_branding: branding ? {
         logo: branding.logo,
         background_image: branding.backgroundImage,
@@ -180,7 +181,7 @@ export const credentialDesignDataProvider = (): DataProvider => ({
     }
 
     const results = await Promise.all(
-      credentialDesigns.map((design: StoreCredentialSchemaArgs) =>
+      credentialDesigns.map((design: StoreCredentialDesignArgs) =>
         client.rpc('insert_credential_design', {
           p_identifier: design.name,
           p_credential_format: design.options.format,
@@ -192,6 +193,7 @@ export const credentialDesignDataProvider = (): DataProvider => ({
           p_cryptographic_binding_methods_supported: design.options.cryptographicBindingMethodsSupported ?? [],
           p_credential_signing_alg_values_supported: design.options.credentialSigningAlgValuesSupported ?? [],
           p_proof_types_supported: design.options.proofTypesSupported ?? {},
+          p_advanced_schema: design.isAdvancedSchema ?? false,
           p_branding: design.branding ? {
             logo: design.branding.logo,
             background_image: design.branding.backgroundImage,
@@ -209,7 +211,11 @@ export const credentialDesignDataProvider = (): DataProvider => ({
   update: async <TData extends BaseRecord = BaseRecord, TVariables = {}>({resource, id, variables}: UpdateParams<TVariables>): Promise<UpdateResponse<TData>> => {
     const client = supabaseServiceClient()
     // @ts-ignore
-    const { name, schema, uiSchema, branding, options } = variables
+    const { name, schema, uiSchema, branding, options, isAdvancedSchema } = variables
+
+    if ((options.format !== 'dc+sd-jwt' || options.format !== 'vc+sd-jwt')) {
+      delete options.vct
+    }
 
     const { data, error } = await client.rpc('update_credential_design', {
       p_set_id: id,
@@ -222,6 +228,7 @@ export const credentialDesignDataProvider = (): DataProvider => ({
       p_cryptographic_binding_methods_supported: options.cryptographicBindingMethodsSupported ?? [],
       p_credential_signing_alg_values_supported: options.credentialSigningAlgValuesSupported ?? [],
       p_proof_types_supported: options.proofTypesSupported ?? {},
+      p_advanced_schema: isAdvancedSchema ?? false,
       p_branding: branding ? {
         logo: branding.logo,
         background_image: branding.backgroundImage,

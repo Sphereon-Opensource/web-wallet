@@ -1,6 +1,6 @@
 import {Authenticated, ErrorComponent, useLogin} from '@refinedev/core'
-import React, {PropsWithChildren, useEffect} from 'react'
-import {Outlet, Route, Routes} from 'react-router-dom'
+import React, {FC, PropsWithChildren, ReactElement, useEffect} from 'react'
+import {Outlet, Route, Routes, useParams} from 'react-router-dom'
 import AssetsListPage from '../../pages/assets'
 import AssetsCreatePage from '../../pages/assets/create'
 import ShowAssetDetails from '../../pages/assets/show'
@@ -76,12 +76,17 @@ import EditIdentifierContent from '@components/views/EditIdentifierContent'
 import EditIdentifierKeysContent from '@components/views/EditIdentifierKeysContent'
 import {IdentifiersEditContextProvider} from '@machines/identifiers/identifiersEditStateNavigation'
 import IdentifierEditPage from '@/pages/keyManagement/identifiers/edit'
-import CredentialDesignerContextProvider from '@machines/credentials/credentialDesignerStateNavigation'
+import CredentialDesignerCreateContextProvider from '@machines/credentials/credentialDesignerCreateStateNavigation'
 import CredentialDesignerCreatePage from '@/pages/credentials/design/create'
-import CredentialDesignerClaimsContent from '@components/views/CredentialDesignerClaimsContent'
-import CredentialDesignerDetailsContent from '@components/views/CredentialDesignerDetailsContent'
-import CredentialDesignerVisualDesignContent from '@components/views/CredentialDesignerVisualDesignContent'
+import CredentialDesignerClaimsCreateContent from '@components/views/CredentialDesignerClaimsCreateContent'
+import CredentialDesignerDetailsCreateContent from '@components/views/CredentialDesignerDetailsCreateContent'
 import CredentialDesignsListPage from '@/pages/credentials/design'
+import CredentialDesignerEditPage from '@/pages/credentials/design/edit'
+import CredentialDesignerEditContextProvider from '@machines/credentials/credentialDesignerEditStateNavigation'
+import CredentialDesignerDetailsEditContent from '@components/views/CredentialDesignerDetailsEditContent'
+import CredentialDesignerVisualDesignEditContent from '@components/views/CredentialDesignerVisualDesignEditContent'
+import CredentialDesignerVisualDesignCreateContent from '@components/views/CredentialDesignerVisualDesignCreateContent'
+import CredentialDesignerClaimsEditContent from '@components/views/CredentialDesignerClaimsEditContent'
 
 const KeycloakLoginPage = (props: PropsWithChildren<any>) => {
   const {mutate: login} = useLogin()
@@ -91,14 +96,25 @@ const KeycloakLoginPage = (props: PropsWithChildren<any>) => {
   return props.children
 }
 
+const CredentialDesignerEditWrapper: FC = (): ReactElement => {
+  const { id } = useParams()
+  return (
+    <CredentialDesignerEditContextProvider key={id}>
+      <CredentialDesignerEditPage />
+    </CredentialDesignerEditContextProvider>
+  )
+}
+
 const AppRouter: React.FC = () => {
   return (
     <NavigationProvider>
       <Routes>
         <Route
           element={
-            <Authenticated key={'securePageAuthentication'} fallback={<KeycloakLoginPage />}
-                           appendCurrentPathToQuery={true}>
+            <Authenticated
+                key={'securePageAuthentication'} fallback={<KeycloakLoginPage />}
+                appendCurrentPathToQuery={true}
+            >
               <Outlet />
             </Authenticated>
           }>
@@ -177,13 +193,20 @@ const AppRouter: React.FC = () => {
               <Route
                 path={MainRoute.SUB_CREATE}
                 element={
-                  <CredentialDesignerContextProvider>
+                  <CredentialDesignerCreateContextProvider>
                     <CredentialDesignerCreatePage />
-                  </CredentialDesignerContextProvider>
+                  </CredentialDesignerCreateContextProvider>
                 }>
-                    <Route path={CredentialDesignerRoute.DETAILS} element={ <CredentialDesignerDetailsContent /> } />
-                    <Route path={CredentialDesignerRoute.VISUAL_DESIGN} element={ <CredentialDesignerVisualDesignContent /> } />
-                    <Route path={CredentialDesignerRoute.CLAIMS} element={ <CredentialDesignerClaimsContent /> } />
+                    <Route path={CredentialDesignerRoute.DETAILS} element={ <CredentialDesignerDetailsCreateContent/> } />
+                    <Route path={CredentialDesignerRoute.VISUAL_DESIGN} element={ <CredentialDesignerVisualDesignCreateContent /> } />
+                    <Route path={CredentialDesignerRoute.CLAIMS} element={ <CredentialDesignerClaimsCreateContent /> } />
+              </Route>
+              <Route
+                path={`${MainRoute.SUB_EDIT}/${MainRoute.SUB_ID}`}
+                element={<CredentialDesignerEditWrapper />}>
+                <Route path={CredentialDesignerRoute.DETAILS} element={ <CredentialDesignerDetailsEditContent /> } />
+                <Route path={CredentialDesignerRoute.VISUAL_DESIGN} element={ <CredentialDesignerVisualDesignEditContent /> } />
+                <Route path={CredentialDesignerRoute.CLAIMS} element={ <CredentialDesignerClaimsEditContent /> } />
               </Route>
             </Route>
             <Route path={MainRoute.SUB_ID} element={<ShowCredentialDetails credentialRole={CredentialRole.HOLDER} />} />

@@ -18,9 +18,7 @@ export function schemaToClaims(
 
       const isLeaf =
         !propSchema.properties &&
-        !propSchema.items &&
-        propSchema.type !== 'object' &&
-        propSchema.type !== 'array'
+        propSchema.type !== 'object'
 
       if (isLeaf) {
         claims.push({
@@ -91,7 +89,7 @@ export const toCredentialConfiguration = (args: ToCredentialConfigurationArgs): 
   }
 }
 
-export const updateOid4vciMetadata = async (identifier: string, credentialConfiguration: CredentialConfigurationSupportedV1_0_15): Promise<void> => {
+export const updateOid4vciMetadata = async (identifier: string, credentialConfiguration: CredentialConfigurationSupportedV1_0_15, previousIdentifier?: string): Promise<void> => {
   const issuerCorrelationId = getIssuerCorrelationId()
   if (!issuerCorrelationId) {
     return Promise.reject('Env var BROWSER_PUBLIC_ISSUER_CORRELATION_ID is missing')
@@ -101,7 +99,7 @@ export const updateOid4vciMetadata = async (identifier: string, credentialConfig
     correlationId: issuerCorrelationId,
   })
 
-  // FIXME SSISDK-99 (workaround below)
+  // TODO See SSISDK-101 (workaround below see SSISDK-99)
   credentialConfiguration.display?.forEach(display => {
     if (!display.name) {
       display.name = capitalize(identifier)
@@ -109,6 +107,10 @@ export const updateOid4vciMetadata = async (identifier: string, credentialConfig
   })
 
   if (metadata) {
+    if (previousIdentifier) {
+      delete metadata.credential_configurations_supported[previousIdentifier]
+    }
+
     return await getAgent().oid4vciStorePersistMetadata({
       metadataType: 'issuer',
       correlationId: issuerCorrelationId,
