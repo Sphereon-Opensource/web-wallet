@@ -164,7 +164,7 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
     }
 
     void fetchBranding()
-  }, [credentialResult.data, syncBrandings, brandingSync])
+  }, [credentialResult.data])
 
   if (credentialResult.isLoading || partyResults.isLoading || !credentialSummary) {
     return <div>{translate('data_provider_loading_message')}</div>

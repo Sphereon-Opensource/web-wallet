@@ -1,7 +1,7 @@
 import {getAgent} from '@agent'
 import {EventEmitter} from 'events'
 import {ICredentialBranding, IGetCredentialBrandingArgs} from '@sphereon/ssi-sdk.data-store-types'
-import {useEffect, useState} from 'react'
+import {useCallback, useEffect, useState} from 'react'
 
 /**
  * IndexedDB configuration
@@ -366,12 +366,8 @@ export class BrandingSyncService extends EventEmitter {
       const shouldForceFullSync = force || this.shouldPerformFullSync()
 
       if (shouldForceFullSync || this.brandings.size === 0) {
-        console.log('== performFullSync')
-
         return await this.performFullSync()
       } else {
-        console.log('== performIncrementalSync')
-
         return await this.performIncrementalSync()
       }
     } catch (error) {
@@ -517,7 +513,6 @@ export class BrandingSyncService extends EventEmitter {
    */
   private async performIncrementalSync(): Promise<ISyncResult> {
     this.config.logger.debug?.('[BrandingSyncService] Performing incremental sync with', Object.keys(this.knownStates).length, 'known states...')
-    console.log('== performIncrementalSync')
 
     const startTime = Date.now()
 
@@ -713,10 +708,15 @@ export function useBrandingSync(config?: IBrandingSyncConfig) {
     }
   }, [service])
 
+  // Memoize sync and clear to prevent unnecessary re-renders when used as dependencies
+  // Service is a singleton so dependencies are empty
+  const sync = useCallback((force?: boolean) => service.sync(force), [])
+  const clear = useCallback(() => service.clearCache(), [])
+
   return {
     brandings, // Current brandings (reactive)
     service, // Expose service for manual calls
-    sync: (force?: boolean) => service.sync(force), // Convenience method
-    clear: () => service.clearCache(), // Convenience method
+    sync, // Convenience method
+    clear, // Convenience method
   }
 }

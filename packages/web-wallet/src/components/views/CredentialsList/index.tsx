@@ -135,8 +135,7 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
     }
 
     void fetchCredentialTableItems()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [credentialData, partyData])
+  }, [credentialData, partyData, syncBrandings, brandingSync])
 
   const onCredentialItemDelete = async (opts: Row<CredentialTableItem>): Promise<void> => {
     await onDelete(opts)
