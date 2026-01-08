@@ -1,4 +1,4 @@
-import React, {ChangeEvent, FC, ReactElement, useRef, useState} from 'react'
+import React, {ChangeEvent, FC, ReactElement, useState} from 'react'
 import {HttpError, useDelete, useList, useNavigation, useTranslate} from '@refinedev/core'
 import {ColumnHeader, Row, SSITableView, TableCellType} from '@sphereon/ui-components.ssi-react'
 import {ButtonIcon} from '@sphereon/ui-components.core'
@@ -16,8 +16,6 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
   const {create, edit} = useNavigation()
   const [current, setCurrent] = useState<number>(1)
   const [pageSize, _] = useState<number>(10)
-  const lastClickRef = useRef<{rowId: string; time: number} | null>(null)
-  const DOUBLE_CLICK_THRESHOLD = 300
 
   const {
     data: credentialDesigns,
@@ -50,27 +48,18 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
     .catch(e => Promise.reject(Error(e.message)))
   }
 
-  const onRowClick = async (data: Row<CredentialDesignTableItem>): Promise<void> => {
-    const now = Date.now()
-    const lastClick = lastClickRef.current
-
-    if (lastClick && lastClick.rowId === data.original.id && (now - lastClick.time) < DOUBLE_CLICK_THRESHOLD) {
-      console.log('Double-click detected on row:', data.original.id)
-      lastClickRef.current = null
-      await onEdit(data)
-    } else {
-      lastClickRef.current = {rowId: data.original.id, time: now}
-    }
-  }
-
-  const onEdit = async (data: Row<CredentialDesignTableItem>): Promise<void> => {
-    console.log('Navigating to edit:', DataResource.CREDENTIAL_DESIGNS, data.original.id)
-    edit(DataResource.CREDENTIAL_DESIGNS, data.original.id)
+  const onShow = async (data: Row<CredentialDesignTableItem>): Promise<void> => {
+    // TODO SSISDK-93 implement
   }
 
   const onCreate = async (): Promise<void> => {
     create(DataResource.CREDENTIAL_DESIGNS)
   }
+
+  const onEdit = async (data: Row<CredentialDesignTableItem>): Promise<void> => {
+    edit(DataResource.CREDENTIAL_DESIGNS, data.original.id)
+  }
+
 
   const columns: ColumnHeader<CredentialDesignTableItem>[] = [
     {
@@ -110,8 +99,8 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
     },
     {
       accessor: row => {
-        const keyItem = row.metadataKeys.find(key => key.key === 'credentialFormat');
-        return keyItem?.values?.[0]?.textValue ?? '';
+        const keyItem = row.metadataKeys.find(key => key.key === 'credentialFormat')
+        return keyItem?.values?.[0]?.textValue ?? ''
       },
       label: translate('credential_design_fields_credential_format'),
       type: TableCellType.TEXT,
@@ -137,6 +126,11 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
       columnOptions: {
         cellOptions: {
           actions: [
+            {
+              caption: translate('credential_design_actions_edit'),
+              icon: ButtonIcon.EDIT,
+              onClick: onEdit,
+            },
             {
               caption: translate('credential_design_actions_delete'),
               icon: ButtonIcon.DELETE,
@@ -193,7 +187,8 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
       data={designsData}
       columns={columns}
       actions={buildActionList()}
-      onRowClick={onRowClick}
+      onRowClick={onShow}
+      onRowDoubleClick={onEdit}
       pagination={{
         page: current,
         count: Math.ceil(totalDesigns / pageSize),
