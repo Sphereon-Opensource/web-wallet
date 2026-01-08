@@ -49,7 +49,7 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
   }
 
   const onShow = async (data: Row<CredentialDesignTableItem>): Promise<void> => {
-    // TODO SSISDK-93 implement
+    // TODO SSISDK-93 implement display/details page
   }
 
   const onCreate = async (): Promise<void> => {
