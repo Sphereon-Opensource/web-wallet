@@ -1,4 +1,4 @@
-import React, {ChangeEvent, FC, ReactElement, useState} from 'react'
+import React, {ChangeEvent, FC, ReactElement, useRef, useState} from 'react'
 import {HttpError, useDelete, useList, useNavigation, useTranslate} from '@refinedev/core'
 import {ColumnHeader, Row, SSITableView, TableCellType} from '@sphereon/ui-components.ssi-react'
 import {ButtonIcon} from '@sphereon/ui-components.core'
@@ -16,6 +16,8 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
   const {create, edit} = useNavigation()
   const [current, setCurrent] = useState<number>(1)
   const [pageSize, _] = useState<number>(10)
+  const lastClickRef = useRef<{rowId: string; time: number} | null>(null)
+  const DOUBLE_CLICK_THRESHOLD = 300
 
   const {
     data: credentialDesigns,
@@ -48,11 +50,21 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
     .catch(e => Promise.reject(Error(e.message)))
   }
 
-  const onShow = async (data: Row<CredentialDesignTableItem>): Promise<void> => {
-    // TODO SSISDK-93 implement
+  const onRowClick = async (data: Row<CredentialDesignTableItem>): Promise<void> => {
+    const now = Date.now()
+    const lastClick = lastClickRef.current
+
+    if (lastClick && lastClick.rowId === data.original.id && (now - lastClick.time) < DOUBLE_CLICK_THRESHOLD) {
+      console.log('Double-click detected on row:', data.original.id)
+      lastClickRef.current = null
+      await onEdit(data)
+    } else {
+      lastClickRef.current = {rowId: data.original.id, time: now}
+    }
   }
 
   const onEdit = async (data: Row<CredentialDesignTableItem>): Promise<void> => {
+    console.log('Navigating to edit:', DataResource.CREDENTIAL_DESIGNS, data.original.id)
     edit(DataResource.CREDENTIAL_DESIGNS, data.original.id)
   }
 
@@ -181,8 +193,7 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
       data={designsData}
       columns={columns}
       actions={buildActionList()}
-      onRowClick={onShow}
-      onRowDoubleClick={onEdit}
+      onRowClick={onRowClick}
       pagination={{
         page: current,
         count: Math.ceil(totalDesigns / pageSize),
