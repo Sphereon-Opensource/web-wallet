@@ -13,7 +13,7 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
   const {allowCreateCredentialDesign = true} = props
   const translate = useTranslate()
   const {mutateAsync: deleteCredential} = useDelete<CredentialDesignDTO, HttpError>()
-  const {create} = useNavigation()
+  const {create, edit} = useNavigation()
   const [current, setCurrent] = useState<number>(1)
   const [pageSize, _] = useState<number>(10)
 
@@ -50,6 +50,10 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
 
   const onShow = async (data: Row<CredentialDesignTableItem>): Promise<void> => {
     // TODO SSISDK-93 implement
+  }
+
+  const onEdit = async (data: Row<CredentialDesignTableItem>): Promise<void> => {
+    edit(DataResource.CREDENTIAL_DESIGNS, data.original.id)
   }
 
   const onCreate = async (): Promise<void> => {
@@ -178,6 +182,7 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
       columns={columns}
       actions={buildActionList()}
       onRowClick={onShow}
+      onRowDoubleClick={onEdit}
       pagination={{
         page: current,
         count: Math.ceil(totalDesigns / pageSize),
