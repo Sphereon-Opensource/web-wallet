@@ -48,6 +48,10 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
     .catch(e => Promise.reject(Error(e.message)))
   }
 
+  const onShow = async (data: Row<CredentialDesignTableItem>): Promise<void> => {
+    // TODO SSISDK-93 implement display/details page
+  }
+
   const onCreate = async (): Promise<void> => {
     create(DataResource.CREDENTIAL_DESIGNS)
   }
@@ -55,6 +59,7 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
   const onEdit = async (data: Row<CredentialDesignTableItem>): Promise<void> => {
     edit(DataResource.CREDENTIAL_DESIGNS, data.original.id)
   }
+
 
   const columns: ColumnHeader<CredentialDesignTableItem>[] = [
     {
@@ -182,6 +187,8 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
       data={designsData}
       columns={columns}
       actions={buildActionList()}
+      onRowClick={onShow}
+      onRowDoubleClick={onEdit}
       pagination={{
         page: current,
         count: Math.ceil(totalDesigns / pageSize),
