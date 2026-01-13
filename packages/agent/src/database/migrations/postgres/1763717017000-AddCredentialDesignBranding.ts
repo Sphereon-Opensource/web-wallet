@@ -1062,7 +1062,6 @@ export class AddCredentialDesignBranding1763717017000 implements MigrationInterf
     await queryRunner.query(`
       ALTER TABLE form_step_to_schema_definition ADD CONSTRAINT fk_schema_definition FOREIGN KEY (schema_definition_id) REFERENCES schema_definition(id) ON DELETE CASCADE;
     `)
-
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

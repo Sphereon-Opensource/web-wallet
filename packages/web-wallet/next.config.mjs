@@ -49,6 +49,10 @@ const nextConfig = {
         source: '/:path*/did.json',
         destination: '/api/proxy/did/:path*/did.json',
       },
+      {
+        source: '/key-management/:path*',
+        destination: '/keyManagement/:path*',
+      },
     ]
   },
   async redirects() {

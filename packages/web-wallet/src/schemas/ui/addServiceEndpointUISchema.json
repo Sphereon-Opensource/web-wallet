@@ -17,6 +17,154 @@
       "scope": "#/properties/serviceEndpoint",
       "options": {
         "multi": true
+      },
+      "rule": {
+        "effect": "SHOW",
+        "condition": {
+          "scope": "#/properties/type",
+          "schema": {
+            "enum": ["linkedDomains", "didCommMessaging", "credentialRegistry", "openID4VCI", "openID4VP"]
+          }
+        }
+      }
+    },
+    {
+      "type": "Control",
+      "label": "Entity Name *",
+      "scope": "#/properties/entityName",
+      "rule": {
+        "effect": "SHOW",
+        "condition": {
+          "scope": "#/properties/type",
+          "schema": {
+            "enum": ["einv-direct", "einv-peppol", "einv-ppf-fr"]
+          }
+        }
+      }
+    },
+    {
+      "type": "Control",
+      "label": "Country (2-letter code) *",
+      "scope": "#/properties/country",
+      "options": {
+        "placeholder": "e.g., NL, FR, DE",
+        "showUnfocusedDescription": true
+      },
+      "rule": {
+        "effect": "SHOW",
+        "condition": {
+          "scope": "#/properties/type",
+          "schema": {
+            "enum": ["einv-direct", "einv-peppol", "einv-ppf-fr"]
+          }
+        }
+      }
+    },
+    {
+      "type": "Control",
+      "label": "PEPPOL Participant ID *",
+      "scope": "#/properties/peppolParticipantId",
+      "options": {
+        "placeholder": "e.g., iso6523-actorid-upis::0106:123456789"
+      },
+      "rule": {
+        "effect": "SHOW",
+        "condition": {
+          "scope": "#/properties/type",
+          "schema": {
+            "const": "einv-peppol"
+          }
+        }
+      }
+    },
+    {
+      "type": "Control",
+      "label": "PEPPOL SMP URL (optional)",
+      "scope": "#/properties/peppolSmpUrl",
+      "rule": {
+        "effect": "SHOW",
+        "condition": {
+          "scope": "#/properties/type",
+          "schema": {
+            "const": "einv-peppol"
+          }
+        }
+      }
+    },
+    {
+      "type": "Control",
+      "label": "PEPPOL AS4 Endpoint (optional)",
+      "scope": "#/properties/peppolAs4Endpoint",
+      "rule": {
+        "effect": "SHOW",
+        "condition": {
+          "scope": "#/properties/type",
+          "schema": {
+            "const": "einv-peppol"
+          }
+        }
+      }
+    },
+    {
+      "type": "Control",
+      "label": "PPF Platform ID *",
+      "scope": "#/properties/ppfPlatformId",
+      "options": {
+        "placeholder": "e.g., fr-ppf:pdp:provider-123"
+      },
+      "rule": {
+        "effect": "SHOW",
+        "condition": {
+          "scope": "#/properties/type",
+          "schema": {
+            "const": "einv-ppf-fr"
+          }
+        }
+      }
+    },
+    {
+      "type": "Control",
+      "label": "PPF Recipient IDs *",
+      "scope": "#/properties/ppfRecipientIds",
+      "options": {
+        "placeholder": "SIREN/SIRET, comma-separated"
+      },
+      "rule": {
+        "effect": "SHOW",
+        "condition": {
+          "scope": "#/properties/type",
+          "schema": {
+            "const": "einv-ppf-fr"
+          }
+        }
+      }
+    },
+    {
+      "type": "Control",
+      "label": "PPF Mode *",
+      "scope": "#/properties/ppfMode",
+      "rule": {
+        "effect": "SHOW",
+        "condition": {
+          "scope": "#/properties/type",
+          "schema": {
+            "const": "einv-ppf-fr"
+          }
+        }
+      }
+    },
+    {
+      "type": "Control",
+      "label": "PPF API Endpoint (optional)",
+      "scope": "#/properties/ppfApiEndpoint",
+      "rule": {
+        "effect": "SHOW",
+        "condition": {
+          "scope": "#/properties/type",
+          "schema": {
+            "const": "einv-ppf-fr"
+          }
+        }
       }
     }
   ]

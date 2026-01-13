@@ -3,13 +3,7 @@ import {eventLoggerAuditMethods} from '@sphereon/ssi-sdk.event-logger'
 import {sphereonKeyManagerMethods} from '@sphereon/ssi-sdk-ext.key-manager'
 import {VcApiIssuerClient} from '@sphereon/ssi-sdk.w3c-vc-api-issuer-rest-client'
 import {QrCodeProvider} from '@sphereon/ssi-sdk.qr-code-generator'
-import {
-  defaultHasher,
-  LinkHandlerEventType,
-  LinkHandlerPlugin,
-  LinkHandlers,
-  LogLinkHandler,
-} from '@sphereon/ssi-sdk.core'
+import {defaultHasher, LinkHandlerEventType, LinkHandlerPlugin, LinkHandlers, LogLinkHandler} from '@sphereon/ssi-sdk.core'
 import {OID4VCIRestClient} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-client'
 import {createAgent, IAgentContext, IAgentPlugin, TAgent} from '@veramo/core'
 import {getResolver as getDidKeyResolver} from '@sphereon/ssi-sdk-ext.did-resolver-key'
@@ -55,92 +49,95 @@ let _agent: TAgent<TAgentTypes> | null = null
 let _agentContext: IAgentContext<TAgentTypes> | null = null
 
 const createAgentInstance = (): TAgent<TAgentTypes> => {
-const getPlugins = ():IAgentPlugin[] => [
-  new DIDResolverPlugin({
-    resolver,
-  }),
-  new VcApiIssuerClient({
-    issueUrl: getVcApiCredentialIssueUrl(),
-    authorizationToken: 'test',
-  }),
-  new OID4VCIRestClient({
-    baseUrl: getVcApiUrl(),
-    authentication: {
-      enabled: false,
-    },
-  }),
-  new DidAuthSiopOpAuthenticator(),
-  new QrCodeProvider(),
-  new AgentRestClient({
-    url: getAgentBaseUrl(),
-    enabledMethods: [
-      ...issuanceBrandingMethods,
-      ...eventLoggerAuditMethods,
-      ...oid4vciHolderContextMethods,
-      ...didAuthSiopOpAuthenticatorMethods,
-      ...ebsiSupportMethods,
-      ...pdManagerMethods,
-      ...credentialStoreMethods,
-      'crsGetUniqueCredentials',
-      ...contactManagerMethods,
-      ...sphereonKeyManagerMethods,
-      // fixme: import from respective modules
-      ...sdJwtPluginContextMethods,
-      ...jwtServiceContextMethods,
-      ...identifierResolutionContextMethods,
-      ...credentialValidationMethods,
-      'didManagerCreate',
-      'didManagerFind',
-      'didManagerGet',
-      'didManagerSetAlias',
-      'didManagerRemoveKey',
-      'didManagerAddKey',
-      'didManagerAddService',
-      'didManagerRemoveService',
-      ...oid4vciStoreMethods,
-      'oid4vciRefreshInstanceMetadata',
-      'createSdJwtVc',
-      'createSdJwtPresentation',
-      'verifySdJwtVc',
-      'verifySdJwtPresentation',
-      'identifierManagedGet',
-      'identifierManagedGetByDid',
-      'identifierManagedGetByKid',
-      'identifierManagedGetByJwk',
-      'identifierManagedGetByX5c',
-      'identifierManagedGetByKey',
-      'identifierExternalResolve',
-      'identifierExternalResolveByDid',
-      'identifierExternalResolveByX5c',
-      'jwtPrepareJws',
-      'jwtCreateJwsJsonGeneralSignature',
-      'jwtCreateJwsJsonFlattenedSignature',
-      'jwtCreateJwsCompactSignature',
-      'jwtVerifyJwsCompactSignature',
-      'jwtVerifyJwsCompactSignature',
-      ...linkedVPManagerMethods
-    ],
-  }),
-  new OID4VCIHolder({
-    defaultHolderIdentifier: getHolderPrimaryIdentifier(),
-    hasher: defaultHasher,
-  }),
-  new LinkHandlerPlugin({
-    eventTypes: [LinkHandlerEventType.LINK_HANDLER_URL],
-    handlers: linkHandlers,
-  }),
-  new IdentifierResolution(),
-  new JwtService(),
-  new SDJwtPlugin({
-    hasher: defaultHasher,
-    saltGenerator: generateSalt,
-    verifySignature: verifySDJWTSignature,
-  }),
-]
+  const getPlugins = (): IAgentPlugin[] => [
+    new DIDResolverPlugin({
+      resolver,
+    }),
+    new VcApiIssuerClient({
+      issueUrl: getVcApiCredentialIssueUrl(),
+      authorizationToken: 'test',
+    }),
+    new OID4VCIRestClient({
+      baseUrl: getVcApiUrl(),
+      authentication: {
+        enabled: false,
+      },
+    }),
+    new DidAuthSiopOpAuthenticator(),
+    new QrCodeProvider(),
+    new AgentRestClient({
+      url: getAgentBaseUrl(),
+      enabledMethods: [
+        ...issuanceBrandingMethods,
+        ...eventLoggerAuditMethods,
+        ...oid4vciHolderContextMethods,
+        ...didAuthSiopOpAuthenticatorMethods,
+        ...ebsiSupportMethods,
+        ...pdManagerMethods,
+        ...credentialStoreMethods,
+        'crsGetUniqueCredentials',
+        ...contactManagerMethods,
+        ...sphereonKeyManagerMethods,
+        // fixme: import from respective modules
+        ...sdJwtPluginContextMethods,
+        ...jwtServiceContextMethods,
+        ...identifierResolutionContextMethods,
+        ...credentialValidationMethods,
+        'didManagerCreate',
+        'didManagerFind',
+        'didManagerGet',
+        'didManagerSetAlias',
+        'didManagerRemoveKey',
+        'didManagerAddKey',
+        'didManagerAddService',
+        'didManagerRemoveService',
+        ...oid4vciStoreMethods,
+        'oid4vciRefreshInstanceMetadata',
+        'createSdJwtVc',
+        'createSdJwtPresentation',
+        'verifySdJwtVc',
+        'verifySdJwtPresentation',
+        'identifierManagedGet',
+        'identifierManagedGetByDid',
+        'identifierManagedGetByKid',
+        'identifierManagedGetByJwk',
+        'identifierManagedGetByX5c',
+        'identifierManagedGetByKey',
+        'identifierExternalResolve',
+        'identifierExternalResolveByDid',
+        'identifierExternalResolveByX5c',
+        'jwtPrepareJws',
+        'jwtCreateJwsJsonGeneralSignature',
+        'jwtCreateJwsJsonFlattenedSignature',
+        'jwtCreateJwsCompactSignature',
+        'jwtVerifyJwsCompactSignature',
+        'jwtVerifyJwsCompactSignature',
+        ...linkedVPManagerMethods,
+        // Service metadata methods for eInvoicing
+        'updateServiceMetadata',
+        'getServiceMetadata',
+      ],
+    }),
+    new OID4VCIHolder({
+      defaultHolderIdentifier: getHolderPrimaryIdentifier(),
+      hasher: defaultHasher,
+    }),
+    new LinkHandlerPlugin({
+      eventTypes: [LinkHandlerEventType.LINK_HANDLER_URL],
+      handlers: linkHandlers,
+    }),
+    new IdentifierResolution(),
+    new JwtService(),
+    new SDJwtPlugin({
+      hasher: defaultHasher,
+      saltGenerator: generateSalt,
+      verifySignature: verifySDJWTSignature,
+    }),
+  ]
 
   return createAgent<TAgentTypes>({
-  plugins: getPlugins(),
-})
+    plugins: getPlugins(),
+  })
 }
 
 const addLinkListeners = (linkHandlers: LinkHandlers, context: IAgentContext<any>): void => {
@@ -186,4 +183,3 @@ export const getAgentContext = (): IAgentContext<TAgentTypes> & {agent: TAgent<T
   }
   return _agentContext!
 }
-

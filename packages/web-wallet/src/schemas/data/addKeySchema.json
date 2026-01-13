@@ -84,17 +84,17 @@
     {
       "if": {
         "properties": {
-          "action": { "const": "generate" }
+          "action": {"const": "generate"}
         }
       },
       "then": {
-  "required": ["type", "purposes"]
-}
+        "required": ["type", "purposes"]
+      }
     },
     {
       "if": {
         "properties": {
-          "action": { "const": "select" }
+          "action": {"const": "select"}
         }
       },
       "then": {

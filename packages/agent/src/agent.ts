@@ -33,27 +33,27 @@ import {
   VC_API_DEFAULT_PROOF_FORMAT,
 } from './environment-vars.js'
 
-import {ImportDcqlQueryItem, PDManager} from '@sphereon/ssi-sdk.pd-manager'
-import {AuthorizationServerMetadata, ClientAuthMethod, IssuerMetadataV1_0_15} from '@sphereon/oid4vci-common'
+import { ImportDcqlQueryItem, PDManager } from '@sphereon/ssi-sdk.pd-manager'
+import { AuthorizationServerMetadata, ClientAuthMethod, IssuerMetadataV1_0_15 } from '@sphereon/oid4vci-common'
 
-import {createAgent, IAgentContext, IAgentPlugin, TAgent} from '@veramo/core'
-import {VcdmCredentialPlugin} from '@sphereon/ssi-sdk.credential-vcdm'
+import { createAgent, IAgentContext, IAgentPlugin, TAgent } from '@veramo/core'
+import { VcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
 import {
   CredentialProviderJsonld,
   LdDefaultContexts,
   SphereonEd25519Signature2018,
   SphereonEd25519Signature2020,
 } from '@sphereon/ssi-sdk.credential-vcdm-jsonld-provider'
-import {CredentialProviderVcdm2Jose} from '@sphereon/ssi-sdk.credential-vcdm2-jose-provider'
+import { CredentialProviderVcdm2Jose } from '@sphereon/ssi-sdk.credential-vcdm2-jose-provider'
 
-import {CredentialPlugin} from '@veramo/credential-w3c'
-import {DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore} from '@veramo/data-store'
-import {DIDManager} from '@veramo/did-manager'
-import {DIDResolverPlugin} from '@veramo/did-resolver'
-import {SphereonKeyManager} from '@sphereon/ssi-sdk-ext.key-manager'
-import {KeyManagementSystem, SecretBox} from '@veramo/kms-local'
-import {RestKeyManagementSystem} from '@sphereon/ssi-sdk.kms-rest'
-import {SphereonKeyManagementSystem} from '@sphereon/ssi-sdk-ext.kms-local'
+import { CredentialPlugin } from '@veramo/credential-w3c'
+import { DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore } from '@veramo/data-store'
+import { DIDManager } from '@veramo/did-manager'
+import { DIDResolverPlugin } from '@veramo/did-resolver'
+import { SphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
+import { KeyManagementSystem, SecretBox } from '@veramo/kms-local'
+import { RestKeyManagementSystem } from '@sphereon/ssi-sdk.kms-rest'
+import { SphereonKeyManagementSystem } from '@sphereon/ssi-sdk-ext.kms-local'
 import {
   createDidProviders,
   createDidResolver,
@@ -63,42 +63,37 @@ import {
   getOrCreateDIDWebFromEnv,
   getOrCreateIdentifiersFromFS,
 } from './utils'
-import {VcApiServer} from '@sphereon/ssi-sdk.w3c-vc-api'
-import {DidWebServer, UniResolverApiServer} from '@sphereon/ssi-sdk.uni-resolver-registrar-api'
-import {DID_PREFIX, DIDMethods, TAgentTypes} from './types'
-import {StatuslistManagementApiServer} from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
-import {ContactManagerApiServer} from '@sphereon/ssi-sdk.contact-manager-rest-api'
-import {ContactManager} from '@sphereon/ssi-sdk.contact-manager'
+import { VcApiServer } from '@sphereon/ssi-sdk.w3c-vc-api'
+import { DidWebServer, UniResolverApiServer } from '@sphereon/ssi-sdk.uni-resolver-registrar-api'
+import { DID_PREFIX, DIDMethods, TAgentTypes } from './types'
+import { StatuslistManagementApiServer } from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
+import { ContactManagerApiServer } from '@sphereon/ssi-sdk.contact-manager-rest-api'
+import { ContactManager } from '@sphereon/ssi-sdk.contact-manager'
+import { ContactStore, DigitalCredentialStore, EventLoggerStore, IssuanceBrandingStore, PDStore } from '@sphereon/ssi-sdk.data-store'
+import { IIssuerInstanceArgs, OID4VCIIssuer } from '@sphereon/ssi-sdk.oid4vci-issuer'
 import {
-  ContactStore,
-  DigitalCredentialStore,
-  EventLoggerStore,
-  IssuanceBrandingStore,
-  PDStore,
-} from '@sphereon/ssi-sdk.data-store'
-import {IIssuerInstanceArgs, OID4VCIIssuer} from '@sphereon/ssi-sdk.oid4vci-issuer'
-import {
-  IIssuerInstanceOptions, IIssuerOptions,
+  IIssuerInstanceOptions,
+  IIssuerOptions,
   IIssuerOptsPersistArgs,
   IMetadataImportArgs,
   OID4VCIStore,
 } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
-import {IOID4VCIRestAPIOpts, IRequiredContext, OID4VCIRestAPI} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
-import {EventLogger} from '@sphereon/ssi-sdk.event-logger'
-import {RemoteServerApiServer} from '@sphereon/ssi-sdk.remote-server-rest-api'
-import {IssuanceBranding} from '@sphereon/ssi-sdk.issuance-branding'
-import {CredentialProofFormat, defaultHasher, LoggingEventType} from '@sphereon/ssi-types'
-import {createOID4VPRP, extractDidFromManagedIdentifier, getDefaultOID4VPRPOptions} from './utils/oid4vp'
-import {PresentationExchange} from '@sphereon/ssi-sdk.presentation-exchange'
-import {ISIOPv2RPRestAPIOpts, SIOPv2RPApiServer} from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-api'
-import {DidAuthSiopOpAuthenticator} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
-import {PublicKeyHosting} from '@sphereon/ssi-sdk.public-key-hosting'
-import {CredentialStore} from '@sphereon/ssi-sdk.credential-store'
-import {EbsiSupport} from '@sphereon/ssi-sdk.ebsi-support'
-import {OID4VCIHolder} from '@sphereon/ssi-sdk.oid4vci-holder'
-import {addDefaultsToOpts} from './utils/oid4vci'
-import {getCredentialDataSupplier} from './utils/oid4vciCredentialSuppliers'
-import {SIOPv2RP} from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
+import { IOID4VCIRestAPIOpts, IRequiredContext, OID4VCIRestAPI } from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
+import { EventLogger } from '@sphereon/ssi-sdk.event-logger'
+import { RemoteServerApiServer } from '@sphereon/ssi-sdk.remote-server-rest-api'
+import { IssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
+import { CredentialProofFormat, defaultHasher, LoggingEventType } from '@sphereon/ssi-types'
+import { createOID4VPRP, extractDidFromManagedIdentifier, getDefaultOID4VPRPOptions } from './utils/oid4vp'
+import { PresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
+import { ISIOPv2RPRestAPIOpts, SIOPv2RPApiServer } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-api'
+import { DidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
+import { PublicKeyHosting } from '@sphereon/ssi-sdk.public-key-hosting'
+import { CredentialStore } from '@sphereon/ssi-sdk.credential-store'
+import { EbsiSupport } from '@sphereon/ssi-sdk.ebsi-support'
+import { OID4VCIHolder } from '@sphereon/ssi-sdk.oid4vci-holder'
+import { addDefaultsToOpts } from './utils/oid4vci'
+import { getCredentialDataSupplier } from './utils/oid4vciCredentialSuppliers'
+import { SIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import {
   CONTACT_MANAGER_API_FEATURES,
   DID_API_FEATURES,
@@ -112,28 +107,25 @@ import {
   syncDefinitionsOpts,
   VC_API_FEATURES,
 } from './environment-vars-with-deps'
-import {dbConnection} from './database'
+import { dbConnection } from './database'
 import { KeyValueStore, KeyValueTypeORMStoreAdapter } from '@sphereon/ssi-sdk.kv-store-temp'
-import {IdentifierResolution} from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import {JwtService} from '@sphereon/ssi-sdk-ext.jwt-service'
-import {SDJwtPlugin} from '@sphereon/ssi-sdk.sd-jwt'
-import {generateSalt, verifySDJWTSignature} from './utils/CryptoUtils'
-import {animoFunkeCert, funkeTestCA, sphereonCA} from './trustanchors'
-import {MDLMdoc} from '@sphereon/ssi-sdk.mdl-mdoc'
-import {DataSources} from '@sphereon/ssi-sdk.agent-config'
-import {StatusListPlugin} from '@sphereon/ssi-sdk.vc-status-list-issuer'
-import {getOrCreateConfiguredStatusList} from './utils/statuslist'
-import {CredentialValidation} from '@sphereon/ssi-sdk.credential-validation'
-import {OIDFMetadataServer, OIDFMetadataStore} from '@sphereon/ssi-sdk.oidf-metatdata-server'
-import {IEndpointOpts} from '@sphereon/ssi-express-support'
-import {PdManagerApiServer} from '@sphereon/ssi-sdk.pd-manager-rest-api'
-import {LinkedVPManager} from '@sphereon/ssi-sdk.linked-vp'
-import {
-  ILinkedVPManagerAPIEndpointOpts,
-  LinkedVpApiServer,
-  LinkedVPManagerApiServerArgs,
-} from '@sphereon/ssi-sdk.linked-vp-rest-api'
-import {AbstractKeyManagementSystem} from '@veramo/key-manager'
+import { IdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { JwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
+import { SDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
+import { generateSalt, verifySDJWTSignature } from './utils/CryptoUtils'
+import { animoFunkeCert, funkeTestCA, sphereonCA } from './trustanchors'
+import { MDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
+import { DataSources } from '@sphereon/ssi-sdk.agent-config'
+import { StatusListPlugin } from '@sphereon/ssi-sdk.vc-status-list-issuer'
+import { getOrCreateConfiguredStatusList } from './utils/statuslist'
+import { CredentialValidation } from '@sphereon/ssi-sdk.credential-validation'
+import { OIDFMetadataServer, OIDFMetadataStore } from '@sphereon/ssi-sdk.oidf-metatdata-server'
+import { IEndpointOpts } from '@sphereon/ssi-express-support'
+import { PdManagerApiServer } from '@sphereon/ssi-sdk.pd-manager-rest-api'
+import { LinkedVPManager } from '@sphereon/ssi-sdk.linked-vp'
+import { ILinkedVPManagerAPIEndpointOpts, LinkedVpApiServer, LinkedVPManagerApiServerArgs } from '@sphereon/ssi-sdk.linked-vp-rest-api'
+import { AbstractKeyManagementSystem } from '@veramo/key-manager'
+import { ServiceMetadataPlugin } from './plugins/serviceMetadataPlugin'
 
 const cliMode: boolean = process.env.RUN_MODE === 'cli'
 
@@ -178,7 +170,7 @@ function buildKmsMap() {
     local: new SphereonKeyManagementSystem(privateKeyStore),
   }
 
-  if(REST_KMS_BASE_URL) {
+  if (REST_KMS_BASE_URL) {
     kmsMap['Digidentity KMS'] = new RestKeyManagementSystem({
       applicationId: REST_KMS_APPLICATION_ID,
       baseUrl: REST_KMS_BASE_URL,
@@ -208,9 +200,9 @@ const plugins: IAgentPlugin[] = [
     resolver,
   }),
   new CredentialPlugin(),
-  new VcdmCredentialPlugin({issuers: [jsonldProvider, vcdm2JoseProvider]}),
-  new ContactManager({store: new ContactStore(dbConnection)}),
-  new IssuanceBranding({store: new IssuanceBrandingStore(dbConnection)}),
+  new VcdmCredentialPlugin({ issuers: [jsonldProvider, vcdm2JoseProvider] }),
+  new ContactManager({ store: new ContactStore(dbConnection) }),
+  new IssuanceBranding({ store: new IssuanceBrandingStore(dbConnection) }),
   new EventLogger({
     eventTypes: [LoggingEventType.AUDIT],
     store: new EventLoggerStore(dbConnection),
@@ -218,12 +210,13 @@ const plugins: IAgentPlugin[] = [
   new PDManager({
     store: new PDStore(dbConnection),
   }),
-  new CredentialStore({store: new DigitalCredentialStore(dbConnection)}),
+  new CredentialStore({ store: new DigitalCredentialStore(dbConnection) }),
   new DidAuthSiopOpAuthenticator(),
-  new OID4VCIHolder({hasher: defaultHasher}),
+  new OID4VCIHolder({ hasher: defaultHasher }),
   new EbsiSupport(),
+  new ServiceMetadataPlugin({ dbConnection }),
   // The Animo funke cert is self-signed and not issued by a CA. Since we perform strict checks on certs, we blindly trust if for the Funke
-  new MDLMdoc({trustAnchors: [sphereonCA, funkeTestCA], opts: {blindlyTrustedAnchors: [animoFunkeCert]}}),
+  new MDLMdoc({ trustAnchors: [sphereonCA, funkeTestCA], opts: { blindlyTrustedAnchors: [animoFunkeCert] } }),
   new IdentifierResolution(),
   new JwtService(),
   new SDJwtPlugin({
@@ -242,7 +235,6 @@ const plugins: IAgentPlugin[] = [
 let oid4vpRP: SIOPv2RP | undefined
 
 if (!cliMode) {
-
   process.on('unhandledRejection', (reason, promise) => {
     console.error('Unhandled Rejection:', reason)
   })
@@ -253,24 +245,24 @@ if (!cliMode) {
       namespace: 'oid4vci_issuer',
       store: new KeyValueTypeORMStoreAdapter({
         dbConnection,
-        namespace: 'oid4vci_issuer'
-      })
+        namespace: 'oid4vci_issuer',
+      }),
     })
 
     const authMetadataStore = new KeyValueStore<AuthorizationServerMetadata>({
       namespace: 'oid4vci_auth',
       store: new KeyValueTypeORMStoreAdapter({
         dbConnection,
-        namespace: 'oid4vci_auth'
-      })
+        namespace: 'oid4vci_auth',
+      }),
     })
 
     const issuerOptsStore = new KeyValueStore<IIssuerOptions>({
       namespace: 'oid4vci_opts',
       store: new KeyValueTypeORMStoreAdapter({
         dbConnection,
-        namespace: 'oid4vci_opts'
-      })
+        namespace: 'oid4vci_opts',
+      }),
     })
 
     plugins.push(
@@ -292,7 +284,7 @@ if (!cliMode) {
   }
 
   if (IS_OID4VP_ENABLED) {
-    oid4vpRP = await createOID4VPRP({resolver})
+    oid4vpRP = await createOID4VPRP({ resolver })
     plugins.push(oid4vpRP)
     plugins.push(new PresentationExchange())
   }
@@ -309,7 +301,7 @@ const agent = createAgent<TAgentTypes>({
   plugins,
 }) as TAgent<TAgentTypes>
 export default agent
-export const context: IAgentContext<TAgentTypes> = {agent}
+export const context: IAgentContext<TAgentTypes> = { agent }
 
 let defaultDID: string | undefined
 let defaultKid: string | undefined
@@ -326,17 +318,19 @@ if (!cliMode) {
   if (defaultDID) {
     console.log(`[DID] default DID: ${defaultDID}`)
   }
-  defaultKid = await getDefaultKeyRef({did: defaultDID})
+  defaultKid = await getDefaultKeyRef({ did: defaultDID })
   console.log(`[DID] default key identifier: ${defaultKid}`)
   if ((DEFAULT_MODE.toLowerCase() === 'did' && !defaultDID) || !defaultKid) {
     console.warn('[DID] Agent has no default DID and Key Identifier!')
   }
 
-  const oid4vpOpts = IS_OID4VP_ENABLED ? await getDefaultOID4VPRPOptions({
-    did: defaultDID,
-    x5c: DEFAULT_X5C,
-    resolver,
-  }) : undefined
+  const oid4vpOpts = IS_OID4VP_ENABLED
+    ? await getDefaultOID4VPRPOptions({
+        did: defaultDID,
+        x5c: DEFAULT_X5C,
+        resolver,
+      })
+    : undefined
   if (oid4vpOpts && oid4vpRP) {
     oid4vpRP.setDefaultOpts(oid4vpOpts, context)
   }
@@ -348,7 +342,7 @@ if (!cliMode) {
 /**
  * Build a common express REST API configuration first, used by the exposed Routers/Services below
  */
-const expressSupport = expressBuilder().build({startListening: false})
+const expressSupport = expressBuilder().build({ startListening: false })
 
 /**
  * Authentication and authorization settings
@@ -419,12 +413,13 @@ if (!cliMode) {
         },
       },
     }
-    new SIOPv2RPApiServer({agent, expressSupport, opts})
+    new SIOPv2RPApiServer({ agent, expressSupport, opts })
     console.log('[OID4VP] SIOPv2 and OID4VP started: ' + (process.env.OID4VP_AGENT_BASE_URI ?? `http://localhost:${INTERNAL_PORT}`))
 
     if (IS_LINKED_VP_ENABLED) {
       new LinkedVpApiServer({
-        agent, expressSupport,
+        agent,
+        expressSupport,
         opts: {
           enableFeatures: ['generate-presentation'],
         },
@@ -475,7 +470,9 @@ if (!cliMode) {
           enabled: DID_WEB_SERVICE_FEATURES.includes('did-web-global-resolution'),
           // TODO: This does limit hosting to the frontend only, whilst the agent could be behind multiple reverse proxy
           // Reason is that nextjs rewrites return the internal IP address instead of the original
-          ...(process?.env?.BROWSER_PUBLIC_CLIENT_ID && {hostname: process.env.BROWSER_PUBLIC_CLIENT_ID.replace('https://', '').replace('http://', '')}),
+          ...(process?.env?.BROWSER_PUBLIC_CLIENT_ID && {
+            hostname: process.env.BROWSER_PUBLIC_CLIENT_ID.replace('https://', '').replace('http://', ''),
+          }),
         },
         enableFeatures: DID_WEB_SERVICE_FEATURES,
       },
@@ -531,9 +528,8 @@ if (!cliMode) {
   }
 
   if (IS_PDM_API_ENABLED) {
-    new PdManagerApiServer({agent, expressSupport})
+    new PdManagerApiServer({ agent, expressSupport })
   }
-
 
   /**
    * Enable the Veramo remote server API
@@ -558,7 +554,13 @@ if (!cliMode) {
   if (IS_OID4VCI_ENABLED) {
     oid4vciInstanceOpts.asArray.map(async (opts) =>
       issuerPersistToInstanceOpts(opts).then(async (instanceOpt) => {
-        const credentialIssuer = instanceOpt.credentialIssuer ?? opts.issuerOpts.idOpts?.issuer ?? process.env.OID4VCI_API_BASE_URL ?? opts.correlationId.startsWith('http') ? opts.correlationId : undefined
+        const credentialIssuer =
+          (instanceOpt.credentialIssuer ??
+          opts.issuerOpts.idOpts?.issuer ??
+          process.env.OID4VCI_API_BASE_URL ??
+          opts.correlationId.startsWith('http'))
+            ? opts.correlationId
+            : undefined
         if (!credentialIssuer) {
           throw Error(`No credential issuer could be deduced from the options: ${JSON.stringify(opts)}`)
         }
@@ -594,13 +596,12 @@ if (!cliMode) {
       await context.agent.oidfStoreImportMetadatas(oid4vpMetadataOpts.asArray)
     }
 
-    void OIDFMetadataServer.init({context, expressSupport})
+    void OIDFMetadataServer.init({ context, expressSupport })
   }
 
   if (IS_JWKS_HOSTING_ENABLED) {
-    new PublicKeyHosting({agent, expressSupport, opts: {hostingOpts: {enableFeatures: ['did-jwks', 'all-jwks']}}})
+    new PublicKeyHosting({ agent, expressSupport, opts: { hostingOpts: { enableFeatures: ['did-jwks', 'all-jwks'] } } })
   }
-
 
   if (IS_STATUS_LIST_ENABLED) {
     /*if(STATUS_LIST_ID && STATUS_LIST_CORRELATION_ID) {
@@ -645,19 +646,19 @@ if (!cliMode) {
     await getOrCreateConfiguredStatusList({
       issuer: defaultDID,
       keyRef: defaultKid,
-    }).catch(e => console.log(`ERROR statuslist`, e))
+    }).catch((e) => console.log(`ERROR statuslist`, e))
   }
 
   // Import presentation definitions from disk, get base filenames without file ext
   const baseNames = Object.keys(syncDefinitionsOpts)
   const queriesToImport: Array<ImportDcqlQueryItem> = baseNames
-    .map(baseName => {
+    .map((baseName) => {
       const dcqlQueryPayload = syncDefinitionsOpts[baseName]
       if (!isDcqlQuery(dcqlQueryPayload)) {
         return null
       }
 
-      const {queryId} = dcqlQueryPayload
+      const { queryId } = dcqlQueryPayload
       if (OID4VP_DEFINITIONS.length === 0 || OID4VP_DEFINITIONS.includes(queryId)) {
         console.log(`[OID4VP] Enabling DCQL query id '${queryId}'`)
 

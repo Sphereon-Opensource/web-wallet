@@ -4,6 +4,9 @@
     "type": {
       "type": "string",
       "oneOf": [
+        {"const": "einv-direct", "title": "eInvoicing - Direct"},
+        {"const": "einv-peppol", "title": "eInvoicing - PEPPOL"},
+        {"const": "einv-ppf-fr", "title": "eInvoicing - France PPF"},
         {"const": "linkedDomains", "title": "Linked domains"},
         {"const": "didCommMessaging", "title": "DIDComm messaging"},
         {"const": "credentialRegistry", "title": "Credential registry"},
@@ -16,7 +19,110 @@
     },
     "serviceEndpoint": {
       "type": "string"
+    },
+    "entityName": {
+      "type": "string",
+      "title": "Entity Name",
+      "description": "The name of the entity operating this eInvoicing channel"
+    },
+    "country": {
+      "type": "string",
+      "title": "Country",
+      "description": "ISO 3166-1 alpha-2 country code (e.g., NL, FR, DE)",
+      "pattern": "^[A-Za-z]{2}$",
+      "minLength": 2,
+      "maxLength": 2
+    },
+    "peppolParticipantId": {
+      "type": "string",
+      "title": "PEPPOL Participant ID",
+      "description": "PEPPOL Participant Identifier (e.g., iso6523-actorid-upis::0106:123456789)"
+    },
+    "peppolSmpUrl": {
+      "type": "string",
+      "title": "PEPPOL SMP URL",
+      "description": "URL of the organisation's PEPPOL SMP record (optional)"
+    },
+    "peppolAs4Endpoint": {
+      "type": "string",
+      "title": "PEPPOL AS4 Endpoint",
+      "description": "AS4 endpoint URL of the Access Point (optional)"
+    },
+    "ppfPlatformId": {
+      "type": "string",
+      "title": "PPF Platform ID",
+      "description": "Identifier on the French PPF (e.g., fr-ppf:pdp:provider-123)"
+    },
+    "ppfRecipientIds": {
+      "type": "string",
+      "title": "PPF Recipient IDs",
+      "description": "Recipient identifiers (SIREN/SIRET), comma-separated"
+    },
+    "ppfMode": {
+      "type": "string",
+      "title": "PPF Mode",
+      "description": "Connection mode on the French PPF",
+      "oneOf": [
+        {"const": "pdp", "title": "PDP (Plateforme de Dématérialisation Partenaire)"},
+        {"const": "direct", "title": "Direct connection"},
+        {"const": "via-pdp", "title": "Via PDP"}
+      ]
+    },
+    "ppfApiEndpoint": {
+      "type": "string",
+      "title": "PPF API Endpoint",
+      "description": "API endpoint for PPF connection (optional)"
     }
   },
-  "required": ["type", "id", "serviceEndpoint"]
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "type": {"enum": ["linkedDomains", "didCommMessaging", "credentialRegistry", "openID4VCI", "openID4VP"]}
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "required": ["serviceEndpoint"]
+      },
+      "else": true
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {"enum": ["einv-direct", "einv-peppol", "einv-ppf-fr"]}
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "required": ["entityName", "country"]
+      },
+      "else": true
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {"const": "einv-peppol"}
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "required": ["peppolParticipantId"]
+      },
+      "else": true
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {"const": "einv-ppf-fr"}
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "required": ["ppfPlatformId", "ppfRecipientIds", "ppfMode"]
+      },
+      "else": true
+    }
+  ],
+  "required": ["type", "id"]
 }
