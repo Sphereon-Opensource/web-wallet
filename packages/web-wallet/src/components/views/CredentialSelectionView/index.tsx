@@ -93,7 +93,8 @@ const CredentialSelectionView: React.FC<CredentialSelectionViewProps> = ({
         <InformationRequestViewTitleStyled>The following information will be shared</InformationRequestViewTitleStyled>
       )}
       <InformationRequestViewParagraphStyled>{'Purpose'}</InformationRequestViewParagraphStyled>
-      <InformationRequestViewDescriptionStyled>{ fallbackPurpose ?? 'TODO'}</InformationRequestViewDescriptionStyled> {/*TODO SSISDK-41 implement purpose from credential_sets*/}
+      <InformationRequestViewDescriptionStyled>{fallbackPurpose ?? 'TODO'}</InformationRequestViewDescriptionStyled>{' '}
+      {/*TODO SSISDK-41 implement purpose from credential_sets*/}
       <InformationRequestViewParagraphStyled>{'Suitable credentials'}</InformationRequestViewParagraphStyled>
       <CredentialSelection key={`credSel${index}`} credentialSummaryItems={credentialSummaryItems} onSelect={handleCredentialSelect} />
       {selectedCredential && (

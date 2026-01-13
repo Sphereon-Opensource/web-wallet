@@ -4,10 +4,7 @@ import {getAgent} from '@agent'
 import {getIssuerCorrelationId} from '@/src/agent/environment'
 import {capitalize} from '@material-ui/core'
 
-export function schemaToClaims(
-  schema: CredentialSchema,
-  basePath: Array<string | number | null> = [],
-): ClaimsDescriptionV1_0_15[] {
+export function schemaToClaims(schema: CredentialSchema, basePath: Array<string | number | null> = []): ClaimsDescriptionV1_0_15[] {
   const claims: ClaimsDescriptionV1_0_15[] = []
 
   if (schema.type === 'object' && schema.properties) {
@@ -16,9 +13,7 @@ export function schemaToClaims(
     for (const [key, propSchema] of Object.entries(schema.properties)) {
       const nextPath = [...basePath, key]
 
-      const isLeaf =
-        !propSchema.properties &&
-        propSchema.type !== 'object'
+      const isLeaf = !propSchema.properties && propSchema.type !== 'object'
 
       if (isLeaf) {
         claims.push({
@@ -28,7 +23,7 @@ export function schemaToClaims(
         })
       } else {
         const nestedClaims = schemaToClaims(propSchema, nextPath)
-        nestedClaims.forEach((c) => {
+        nestedClaims.forEach(c => {
           if (required.has(key)) c.mandatory = true
         })
 
@@ -59,7 +54,6 @@ export const toCredentialConfiguration = (args: ToCredentialConfigurationArgs): 
     cryptographicBindingMethodsSupported = ['did:web', 'did:jwk'],
     credentialSigningAlgValuesSupported = ['ES256'],
     proofTypesSupported,
-
   } = args.options
 
   const baseConfig = {
@@ -89,7 +83,11 @@ export const toCredentialConfiguration = (args: ToCredentialConfigurationArgs): 
   }
 }
 
-export const updateOid4vciMetadata = async (identifier: string, credentialConfiguration: CredentialConfigurationSupportedV1_0_15, previousIdentifier?: string): Promise<void> => {
+export const updateOid4vciMetadata = async (
+  identifier: string,
+  credentialConfiguration: CredentialConfigurationSupportedV1_0_15,
+  previousIdentifier?: string,
+): Promise<void> => {
   const issuerCorrelationId = getIssuerCorrelationId()
   if (!issuerCorrelationId) {
     return Promise.reject('Env var BROWSER_PUBLIC_ISSUER_CORRELATION_ID is missing')
@@ -111,19 +109,20 @@ export const updateOid4vciMetadata = async (identifier: string, credentialConfig
       delete metadata.credential_configurations_supported[previousIdentifier]
     }
 
-    return await getAgent().oid4vciStorePersistMetadata({
-      metadataType: 'issuer',
-      correlationId: issuerCorrelationId,
-      metadata: {
-        ...metadata,
-        credential_configurations_supported: {
-          ...metadata.credential_configurations_supported,
-          [identifier]: credentialConfiguration,
+    return await getAgent()
+      .oid4vciStorePersistMetadata({
+        metadataType: 'issuer',
+        correlationId: issuerCorrelationId,
+        metadata: {
+          ...metadata,
+          credential_configurations_supported: {
+            ...metadata.credential_configurations_supported,
+            [identifier]: credentialConfiguration,
+          },
         },
-      },
-    })
+      })
       .then(() => getAgent().oid4vciRefreshInstanceMetadata({credentialIssuer: getIssuerCorrelationId()}))
-      .catch((e) => Promise.reject(Error(`Failed to update oid4vci metadata. ${e.message}`)))
+      .catch(e => Promise.reject(Error(`Failed to update oid4vci metadata. ${e.message}`)))
   }
 }
 
@@ -140,12 +139,13 @@ export const removeCredentialConfigurationFromOid4vciMetadata = async (identifie
   if (metadata) {
     delete metadata.credential_configurations_supported[identifier]
 
-    return await getAgent().oid4vciStorePersistMetadata({
-      metadataType: 'issuer',
-      correlationId: issuerCorrelationId,
-      metadata,
-    })
-    .then(() => getAgent().oid4vciRefreshInstanceMetadata({credentialIssuer: getIssuerCorrelationId()}))
-    .catch((e) => Promise.reject(Error(`Failed to update oid4vci metadata. ${e.message}`)))
+    return await getAgent()
+      .oid4vciStorePersistMetadata({
+        metadataType: 'issuer',
+        correlationId: issuerCorrelationId,
+        metadata,
+      })
+      .then(() => getAgent().oid4vciRefreshInstanceMetadata({credentialIssuer: getIssuerCorrelationId()}))
+      .catch(e => Promise.reject(Error(`Failed to update oid4vci metadata. ${e.message}`)))
   }
 }

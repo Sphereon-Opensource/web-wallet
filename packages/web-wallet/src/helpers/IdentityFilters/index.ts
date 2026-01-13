@@ -13,7 +13,7 @@ export function getMatchingIdentities(parties: Party[], correlationId: string): 
     })
     .filter(val => !!val)
 
-    return ids as Array<{identity: Identity; party: Party}>
+  return ids as Array<{identity: Identity; party: Party}>
 }
 
 export function getMatchingIdentity(parties: Party[], correlationId: string): {identity: Identity; party: Party} | undefined {

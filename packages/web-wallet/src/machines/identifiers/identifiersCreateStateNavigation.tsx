@@ -22,7 +22,7 @@ import {IdentifiersCreateContext} from '@typings/machine/identifiers/create'
 import {CoreActions, JsonFormsCore} from '@jsonforms/core'
 import {getAgent} from '@agent'
 import {ManagedKeyInfo, TKeyType} from '@veramo/core'
-import { getEnv } from '@/src/services/env'
+import {getEnv} from '@/src/services/env'
 
 // Supported key types - adjust based on your requirements
 const SUPPORTED_KEY_TYPES: TKeyType[] = ['Ed25519', 'Secp256k1', 'Secp256r1', 'X25519', 'RSA']
@@ -78,9 +78,7 @@ export const IdentifiersCreateContextProvider = (props: any): JSX.Element => {
         // Add method-specific filtering logic here if needed
         // For example, for did:web you might want to filter by supported key types
         if (method === 'web') {
-          filteredKeys = keysData.data.filter((key: ManagedKeyInfo) =>
-            SUPPORTED_KEY_TYPES.includes(key.type),
-          )
+          filteredKeys = keysData.data.filter((key: ManagedKeyInfo) => SUPPORTED_KEY_TYPES.includes(key.type))
         }
       }
 
@@ -97,7 +95,7 @@ export const IdentifiersCreateContextProvider = (props: any): JSX.Element => {
           ...addKeySchema.properties,
           selectedKeyId: {
             type: 'string',
-              title: 'Key',
+            title: 'Key',
             oneOf: keyOptions,
           },
         },
@@ -107,71 +105,79 @@ export const IdentifiersCreateContextProvider = (props: any): JSX.Element => {
     }
   }, [keysData, identifierData?.data?.method])
 
-  const identifierKeyMiddleware = useCallback((
-    state: Omit<JsonFormsCore, 'data'> & {data: IdentifierKey},
-    action: CoreActions,
-    defaultReducer: (
-      state: JsonFormsCore,
+  const identifierKeyMiddleware = useCallback(
+    (
+      state: Omit<JsonFormsCore, 'data'> & {data: IdentifierKey},
       action: CoreActions,
-    ) => Omit<JsonFormsCore, 'data'> & {
-      data: IdentifierKey
-    },
-  ) => {
-    const newState = defaultReducer(state, action)
-    // Only initialize defaults if the data object doesn't have the required fields yet
-    // This prevents infinite re-render loops by not modifying data that's already initialized
-    if (newState?.data && !newState.data.hasOwnProperty('action')) {
-      newState.data = {
-        ...newState.data,
-        action: newState.schema?.properties?.['action']?.default ?? 'generate',
-        purposes: newState.data.purposes || ['assertionMethod', 'authentication'],
+      defaultReducer: (
+        state: JsonFormsCore,
+        action: CoreActions,
+      ) => Omit<JsonFormsCore, 'data'> & {
+        data: IdentifierKey
+      },
+    ) => {
+      const newState = defaultReducer(state, action)
+      // Only initialize defaults if the data object doesn't have the required fields yet
+      // This prevents infinite re-render loops by not modifying data that's already initialized
+      if (newState?.data && !newState.data.hasOwnProperty('action')) {
+        newState.data = {
+          ...newState.data,
+          action: newState.schema?.properties?.['action']?.default ?? 'generate',
+          purposes: newState.data.purposes || ['assertionMethod', 'authentication'],
+        }
       }
-    }
-    return newState
-  }, [])
+      return newState
+    },
+    [],
+  )
 
-  const identifierMiddleware = useCallback((
-    state: Omit<JsonFormsCore, 'data'> & {data: KeyManagementIdentifier},
-    action: CoreActions,
-    defaultReducer: (
-      state: JsonFormsCore,
+  const identifierMiddleware = useCallback(
+    (
+      state: Omit<JsonFormsCore, 'data'> & {data: KeyManagementIdentifier},
       action: CoreActions,
-    ) => Omit<JsonFormsCore, 'data'> & {
-      data: KeyManagementIdentifier
-    },
-  ) => {
-    const newState = defaultReducer(state, action)
-    // Only initialize defaults if the data object doesn't have the type field yet
-    // This prevents infinite re-render loops by not modifying data that's already initialized
-    if (newState?.data && !newState.data.hasOwnProperty('type')) {
-      getAgent().didManagerGetProviders().then(method => {
-        const agentMethods = method.map(did => did.replace('did:', '').toLowerCase())
-        const schemaMethods = newState.schema?.properties?.['method']?.oneOf?.map(oneOf => oneOf.const.toLowerCase() as string) ?? []
-        console.log(`TODO: filter against Agent methods: ${agentMethods.join(',')}, schema: ${schemaMethods.join(',')}`)
-        // TODO: Filter out the schema method to the agent enabled methods
-      })
-      const props = newState?.schema?.properties
-      // Unfortunately setting the default value in the schema does not work for the first entry. Could be because of the name: 'type'
-      newState.data = {
-        ...newState.data,
-        type: 'did',
-        method: props?.method?.default,
-        network: props?.['network']?.default,
-        web: {
-          hostName: getEnv('BROWSER_PUBLIC_CLIENT_ID') ?? getEnv('NEXTAUTH_URL') ?? '',
-          path: '/.well-known',
-        },
-        ebsi: {
-          tao: {
-            name: props?.['ebsi']?.properties?.['tao'].properties?.name?.default,
-            url: props?.['ebsi']?.properties?.['tao'].properties?.url?.default,
+      defaultReducer: (
+        state: JsonFormsCore,
+        action: CoreActions,
+      ) => Omit<JsonFormsCore, 'data'> & {
+        data: KeyManagementIdentifier
+      },
+    ) => {
+      const newState = defaultReducer(state, action)
+      // Only initialize defaults if the data object doesn't have the type field yet
+      // This prevents infinite re-render loops by not modifying data that's already initialized
+      if (newState?.data && !newState.data.hasOwnProperty('type')) {
+        getAgent()
+          .didManagerGetProviders()
+          .then(method => {
+            const agentMethods = method.map(did => did.replace('did:', '').toLowerCase())
+            const schemaMethods = newState.schema?.properties?.['method']?.oneOf?.map(oneOf => oneOf.const.toLowerCase() as string) ?? []
+            console.log(`TODO: filter against Agent methods: ${agentMethods.join(',')}, schema: ${schemaMethods.join(',')}`)
+            // TODO: Filter out the schema method to the agent enabled methods
+          })
+        const props = newState?.schema?.properties
+        // Unfortunately setting the default value in the schema does not work for the first entry. Could be because of the name: 'type'
+        newState.data = {
+          ...newState.data,
+          type: 'did',
+          method: props?.method?.default,
+          network: props?.['network']?.default,
+          web: {
+            hostName: getEnv('BROWSER_PUBLIC_CLIENT_ID') ?? getEnv('NEXTAUTH_URL') ?? '',
+            path: '/.well-known',
           },
-          executeLedgerOperation: true,
-        },
+          ebsi: {
+            tao: {
+              name: props?.['ebsi']?.properties?.['tao'].properties?.name?.default,
+              url: props?.['ebsi']?.properties?.['tao'].properties?.url?.default,
+            },
+            executeLedgerOperation: true,
+          },
+        }
       }
-    }
-    return newState
-  }, [])
+      return newState
+    },
+    [],
+  )
 
   useEffect(() => {
     void createIdentifierNavigationListener(step, navigate)

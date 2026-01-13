@@ -94,9 +94,7 @@ export const IdentifiersEditContextProvider = (props: {children: React.ReactNode
         const method = identifierForEdit.data.did.split(':')[1]
         // Add method-specific filtering logic here if needed
         if (method === 'web') {
-          filteredKeys = keysData.data.filter((key: ManagedKeyInfo) =>
-            SUPPORTED_KEY_TYPES.includes(key.type),
-          )
+          filteredKeys = keysData.data.filter((key: ManagedKeyInfo) => SUPPORTED_KEY_TYPES.includes(key.type))
         }
       }
 
@@ -123,54 +121,60 @@ export const IdentifiersEditContextProvider = (props: {children: React.ReactNode
     }
   }, [keysData, identifierForEdit])
 
-  const identifierKeyMiddleware = useCallback((
-    state: Omit<JsonFormsCore, 'data'> & {data: IdentifierKey},
-    action: CoreActions,
-    defaultReducer: (
-      state: JsonFormsCore,
+  const identifierKeyMiddleware = useCallback(
+    (
+      state: Omit<JsonFormsCore, 'data'> & {data: IdentifierKey},
       action: CoreActions,
-    ) => Omit<JsonFormsCore, 'data'> & {
-      data: IdentifierKey
-    },
-  ) => {
-    const newState = defaultReducer(state, action)
-    // Only initialize defaults if the data object doesn't have the required fields yet
-    // This prevents infinite re-render loops by not modifying data that's already initialized
-    if (newState?.data && !newState.data.hasOwnProperty('action')) {
-      newState.data = {
-        ...newState.data,
-        action: newState.schema?.properties?.['action']?.default ?? 'generate',
-        purposes: newState.data.purposes || ['assertionMethod', 'authentication'],
+      defaultReducer: (
+        state: JsonFormsCore,
+        action: CoreActions,
+      ) => Omit<JsonFormsCore, 'data'> & {
+        data: IdentifierKey
+      },
+    ) => {
+      const newState = defaultReducer(state, action)
+      // Only initialize defaults if the data object doesn't have the required fields yet
+      // This prevents infinite re-render loops by not modifying data that's already initialized
+      if (newState?.data && !newState.data.hasOwnProperty('action')) {
+        newState.data = {
+          ...newState.data,
+          action: newState.schema?.properties?.['action']?.default ?? 'generate',
+          purposes: newState.data.purposes || ['assertionMethod', 'authentication'],
+        }
       }
-    }
-    return newState
-  }, [])
+      return newState
+    },
+    [],
+  )
 
-  const identifierMiddleware = useCallback((
-    state: Omit<JsonFormsCore, 'data'> & {data: KeyManagementIdentifier},
-    action: CoreActions,
-    defaultReducer: (
-      state: JsonFormsCore,
+  const identifierMiddleware = useCallback(
+    (
+      state: Omit<JsonFormsCore, 'data'> & {data: KeyManagementIdentifier},
       action: CoreActions,
-    ) => Omit<JsonFormsCore, 'data'> & {
-      data: KeyManagementIdentifier
-    },
-  ) => {
-    const newState = defaultReducer(state, action)
-    if (identifierForEdit?.data && (!newState.data || Object.keys(newState.data).length === 0)) {
-      const identifier = identifierForEdit.data
-      const provider = identifier.provider || ''
-      const method = provider.replace('did:', '') || identifier.did.split(':')[1]
+      defaultReducer: (
+        state: JsonFormsCore,
+        action: CoreActions,
+      ) => Omit<JsonFormsCore, 'data'> & {
+        data: KeyManagementIdentifier
+      },
+    ) => {
+      const newState = defaultReducer(state, action)
+      if (identifierForEdit?.data && (!newState.data || Object.keys(newState.data).length === 0)) {
+        const identifier = identifierForEdit.data
+        const provider = identifier.provider || ''
+        const method = provider.replace('did:', '') || identifier.did.split(':')[1]
 
-      newState.data = {
-        ...newState.data,
-        type: 'did',
-        method,
-        alias: identifier.alias,
+        newState.data = {
+          ...newState.data,
+          type: 'did',
+          method,
+          alias: identifier.alias,
+        }
       }
-    }
-    return newState
-  }, [identifierForEdit?.data])
+      return newState
+    },
+    [identifierForEdit?.data],
+  )
 
   useEffect(() => {
     if (identifierForEdit?.data && !identifierData) {
@@ -358,7 +362,6 @@ export const IdentifiersEditContextProvider = (props: {children: React.ReactNode
   const onServiceEndpointChange = async (data: JSONFormState): Promise<void> => {
     setServiceEndpointData(data)
   }
-
 
   const onCancel = useCallback((): void => {
     navigate(`${MainRoute.KEY_MANAGEMENT}/${KeyManagementRoute.IDENTIFIERS}`)

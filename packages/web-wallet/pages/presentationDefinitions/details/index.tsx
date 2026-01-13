@@ -1,13 +1,5 @@
 import React, {FC, ReactElement, useEffect, useState} from 'react'
-import {
-  CreateResponse,
-  FormAction,
-  HttpError,
-  UpdateResponse,
-  useForm,
-  UseFormProps,
-  useTranslate,
-} from '@refinedev/core'
+import {CreateResponse, FormAction, HttpError, UpdateResponse, useForm, UseFormProps, useTranslate} from '@refinedev/core'
 
 import {ComboBox, IconButton, PrimaryButton, SecondaryButton, TextInputField} from '@sphereon/ui-components.ssi-react'
 import {useNavigate, useParams} from 'react-router-dom'
@@ -46,9 +38,7 @@ const PresentationDefinitionPage: FC<Props> = (props: Props): ReactElement => {
 
   const [query, setQuery] = useState<string | undefined>()
   const [partialDefinitionItem, setPartialDefinitionItem] = React.useState<PartialDcqlQueryItem>({})
-  const {onFinish, queryResult} = useForm<DcqlQueryItem, HttpError, PartialDcqlQueryItem>(
-    buildUseFormOpts(selectFormAction(mode), id),
-  )
+  const {onFinish, queryResult} = useForm<DcqlQueryItem, HttpError, PartialDcqlQueryItem>(buildUseFormOpts(selectFormAction(mode), id))
 
   const headerLabels: HeaderLabels = (() => {
     const pathText: string[] = [translate('presentation_definition_details_path_label')]
@@ -83,23 +73,25 @@ const PresentationDefinitionPage: FC<Props> = (props: Props): ReactElement => {
     if (Object.keys(partialDefinitionItem).length === 0) {
       // For create mode, set default immediately regardless of loading state
       if (mode === 'create') {
-        setQuery('{\n' +
-          '  "credentials": [\n' +
-          '    {\n' +
-          '      "id": "changeme",\n' +
-          '      "require_cryptographic_holder_binding": true,\n' +
-          '      "multiple": false,\n' +
-          '      "format": "dc+sd-jwt",\n' +
-          '      "claims": [\n' +
-          '        {\n' +
-          '          "path": [\n' +
-          '            "somePath"\n' +
-          '          ]\n' +
-          '        }\n' +
-          '      ]\n' +
-          '    }\n' +
-          '  ]\n' +
-          '}')
+        setQuery(
+          '{\n' +
+            '  "credentials": [\n' +
+            '    {\n' +
+            '      "id": "changeme",\n' +
+            '      "require_cryptographic_holder_binding": true,\n' +
+            '      "multiple": false,\n' +
+            '      "format": "dc+sd-jwt",\n' +
+            '      "claims": [\n' +
+            '        {\n' +
+            '          "path": [\n' +
+            '            "somePath"\n' +
+            '          ]\n' +
+            '        }\n' +
+            '      ]\n' +
+            '    }\n' +
+            '  ]\n' +
+            '}',
+        )
       } else if (!isLoading && entityResponse?.data) {
         const item = entityResponse.data
         setPartialDefinitionItem(item)
@@ -134,8 +126,7 @@ const PresentationDefinitionPage: FC<Props> = (props: Props): ReactElement => {
     }
     partialDefinitionItem.query = JSON.parse(query)
 
-    const addResult: CreateResponse<DcqlQueryItem> | UpdateResponse<DcqlQueryItem> | void =
-      await onFinish(partialDefinitionItem)
+    const addResult: CreateResponse<DcqlQueryItem> | UpdateResponse<DcqlQueryItem> | void = await onFinish(partialDefinitionItem)
     if (addResult && (addResult as CreateResponse<DcqlQueryItem>).data) {
       const resultData = (addResult as CreateResponse<DcqlQueryItem>).data
       setPartialDefinitionItem(resultData)
@@ -201,7 +192,7 @@ const PresentationDefinitionPage: FC<Props> = (props: Props): ReactElement => {
       if (error instanceof ValiError) {
         const errorMessages = error.issues.map(issue => {
           const pathStr = issue.path
-            ?.map((segment:any) => {
+            ?.map((segment: any) => {
               if (segment.type === 'object') {
                 return segment.key
               }
@@ -224,7 +215,6 @@ const PresentationDefinitionPage: FC<Props> = (props: Props): ReactElement => {
     }
   }
 
-
   return (
     <div className={style.container}>
       <div className={style.presentationDefinitionDetailsContainer}>
@@ -235,8 +225,7 @@ const PresentationDefinitionPage: FC<Props> = (props: Props): ReactElement => {
               <IconButton icon={ButtonIcon.COPY} onClick={() => query && copyToClipboard(query)} />
             </div>
             {mode !== 'create' && (
-              <ComboBox options={actionComboOptions} onChange={handleActionComboBoxChange}
-                        defaultValue={getDefaultActionValue()} />
+              <ComboBox options={actionComboOptions} onChange={handleActionComboBoxChange} defaultValue={getDefaultActionValue()} />
             )}
           </div>
         </div>
@@ -279,10 +268,7 @@ const PresentationDefinitionPage: FC<Props> = (props: Props): ReactElement => {
     </div>
   )
 
-  function buildUseFormOpts(
-    formAction: FormAction,
-    idToLoad?: string,
-  ): UseFormProps<DcqlQueryItem, HttpError, Partial<DcqlQueryItem>> {
+  function buildUseFormOpts(formAction: FormAction, idToLoad?: string): UseFormProps<DcqlQueryItem, HttpError, Partial<DcqlQueryItem>> {
     if (!idToLoad && (formAction === 'edit' || formAction === 'clone')) {
       throw new Error(`Mode ${formAction} requires idToLoad to be set`)
     }
@@ -309,7 +295,6 @@ const selectFormAction = (mode: Mode): FormAction => {
   }
 }
 
-export const getStaticProps = async ({locale = 'en'}: {locale?: string}) =>
-  staticPropsWithSST({locale})
+export const getStaticProps = async ({locale = 'en'}: {locale?: string}) => staticPropsWithSST({locale})
 
 export default PresentationDefinitionPage

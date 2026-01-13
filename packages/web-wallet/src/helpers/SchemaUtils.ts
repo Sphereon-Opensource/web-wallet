@@ -1,6 +1,5 @@
 import {CredentialSchema, CredentialSchemaClaim, CredentialUISchema} from '@typings'
 
-
 /**
  * Recursively generates the disclosure frame value structure based on non-required fields
  * in the schema. This creates the nested _sd arrays for selective disclosure.
@@ -53,21 +52,21 @@ export function enrichSchemaWithDisclosureFrame(schema: CredentialSchema): Crede
   }
 
   const disclosureFrameProperty: any = {
-    description: "Frame defining which fields can be selectively disclosed",
-    type: "object",
-    properties: {}
+    description: 'Frame defining which fields can be selectively disclosed',
+    type: 'object',
+    properties: {},
   }
 
   // Build the properties structure based on the disclosure frame value
   if (disclosureFrameValue._sd && Object.keys(disclosureFrameValue).length === 1) {
     // Simple case: only _sd at root level
     disclosureFrameProperty.properties._sd = {
-      description: "Array of field names that can be selectively disclosed",
-      type: "array",
+      description: 'Array of field names that can be selectively disclosed',
+      type: 'array',
       items: {
-        type: "string"
+        type: 'string',
       },
-      default: disclosureFrameValue._sd
+      default: disclosureFrameValue._sd,
     }
   } else {
     // Complex case: nested structure with multiple levels
@@ -79,8 +78,8 @@ export function enrichSchemaWithDisclosureFrame(schema: CredentialSchema): Crede
     ...schema,
     properties: {
       ...schema.properties,
-      disclosureFrame: disclosureFrameProperty
-    }
+      disclosureFrame: disclosureFrameProperty,
+    },
   }
 }
 
@@ -97,54 +96,56 @@ export function enrichSchemaWithStatusList(schema: CredentialSchema, statusListU
   }
 
   const statusListProperty = {
-    description: "Status list information for credential status verification",
-    type: "object",
+    description: 'Status list information for credential status verification',
+    type: 'object',
     properties: {
       uri: {
-        description: "URI of the status list",
-        type: "string",
-        format: "uri",
-        default: statusListUri
+        description: 'URI of the status list',
+        type: 'string',
+        format: 'uri',
+        default: statusListUri,
       },
       idx: {
-        description: "Index in the status list",
-        type: "string",
-        default: "0"
-      }
+        description: 'Index in the status list',
+        type: 'string',
+        default: '0',
+      },
     },
-    required: ["uri", "idx"]
+    required: ['uri', 'idx'],
   }
 
   return {
     ...schema,
     properties: {
       ...schema.properties,
-      status_list: statusListProperty
-    }
+      status_list: statusListProperty,
+    },
   }
 }
 
-export const normalizeSchemaInput = (input: any): Array<{ name: string; schema: any }> => {
+export const normalizeSchemaInput = (input: any): Array<{name: string; schema: any}> => {
   if (Array.isArray(input)) {
-    return input.map((claim) => ({
+    return input.map(claim => ({
       name: claim.claimName,
-      schema: claim
+      schema: claim,
     }))
   }
 
   if (input?.type === 'object' && input?.properties && !Array.isArray(input.properties)) {
     return Object.entries(input.properties).map(([name, schema]) => ({
       name,
-      schema
+      schema,
     }))
   }
 
   return []
 }
 
-export const buildCredentialSchemas = async (claims: any): Promise<{schema: CredentialSchema; uiSchema: CredentialUISchema | Array<CredentialUISchema>}> => {
-  const schema: CredentialSchema = "credentialClaims" in claims ? buildCredentialSchema(claims.credentialClaims) : claims
-  const uiSchema = "credentialClaims" in claims ? buildCredentialUISchema(claims.credentialClaims) : buildCredentialUISchema(claims)
+export const buildCredentialSchemas = async (
+  claims: any,
+): Promise<{schema: CredentialSchema; uiSchema: CredentialUISchema | Array<CredentialUISchema>}> => {
+  const schema: CredentialSchema = 'credentialClaims' in claims ? buildCredentialSchema(claims.credentialClaims) : claims
+  const uiSchema = 'credentialClaims' in claims ? buildCredentialUISchema(claims.credentialClaims) : buildCredentialUISchema(claims)
 
   return {schema, uiSchema}
 }
@@ -164,7 +165,7 @@ export const buildCredentialSchema = (claims: Array<CredentialSchemaClaim>): Cre
     } else if (claim.type === 'date') {
       properties[claim.claimName] = {
         type: 'string',
-        format: 'date'
+        format: 'date',
       }
     } else {
       properties[claim.claimName] = {type: claim.type}
@@ -182,41 +183,41 @@ export const buildCredentialSchema = (claims: Array<CredentialSchemaClaim>): Cre
   }
 }
 
-export const buildCredentialUISchema = (input: any, basePath: string = '#/properties', isRoot: boolean = true): CredentialUISchema | Array<CredentialUISchema> => {
+export const buildCredentialUISchema = (
+  input: any,
+  basePath: string = '#/properties',
+  isRoot: boolean = true,
+): CredentialUISchema | Array<CredentialUISchema> => {
   const elements: CredentialUISchema[] = []
   const normalized = normalizeSchemaInput(input)
 
-  normalized.forEach(({ name, schema }) => {
+  normalized.forEach(({name, schema}) => {
     const path = `${basePath}/${name}`
     const isObject = schema.type === 'object' && schema.properties
 
     if (isObject) {
-      const nextInput = Array.isArray(schema.properties)
-        ? schema.properties
-        : schema
+      const nextInput = Array.isArray(schema.properties) ? schema.properties : schema
 
       elements.push({
         type: 'Group',
         label: name,
-        elements: buildCredentialUISchema(nextInput, `${path}/properties`, false) as CredentialUISchema[]
+        elements: buildCredentialUISchema(nextInput, `${path}/properties`, false) as CredentialUISchema[],
       })
     } else {
       elements.push({
         type: 'Control',
         label: name,
-        scope: path
+        scope: path,
       })
     }
   })
 
-  return isRoot
-    ? { type: 'VerticalLayout', elements }
-    : elements
+  return isRoot ? {type: 'VerticalLayout', elements} : elements
 }
 
 export const noEmptyPropertiesRecursive = (items: Array<any>): boolean => {
   return items.every(item => {
-    const itemType = item.type;
+    const itemType = item.type
 
     if (itemType !== 'object') {
       return true
@@ -230,10 +231,10 @@ export const noEmptyPropertiesRecursive = (items: Array<any>): boolean => {
   })
 }
 
-export const transformAdvancedSchema = (schema: any): { credentialClaims: any[] } => {
+export const transformAdvancedSchema = (schema: any): {credentialClaims: any[]} => {
   const resolveType = (value: any): string => {
-    if (value.type === "string" && value.format === "date") {
-      return "date"
+    if (value.type === 'string' && value.format === 'date') {
+      return 'date'
     }
 
     return value.type
@@ -243,7 +244,7 @@ export const transformAdvancedSchema = (schema: any): { credentialClaims: any[] 
     if (!sch.properties) return []
 
     return Object.entries(sch.properties)
-      .filter(([key]) => key !== "disclosureFrame")
+      .filter(([key]) => key !== 'disclosureFrame')
       .map(([key, value]) => {
         const claim: any = {
           claimName: key,
@@ -254,7 +255,7 @@ export const transformAdvancedSchema = (schema: any): { credentialClaims: any[] 
           claim.required = true
         }
 
-        if (value.type === "object") {
+        if (value.type === 'object') {
           claim.properties = transform(value)
         }
 
@@ -263,6 +264,6 @@ export const transformAdvancedSchema = (schema: any): { credentialClaims: any[] 
   }
 
   return {
-    credentialClaims: transform(schema)
+    credentialClaims: transform(schema),
   }
 }

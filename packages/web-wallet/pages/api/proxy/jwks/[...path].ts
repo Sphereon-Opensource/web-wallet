@@ -1,9 +1,6 @@
 import type {NextApiRequest, NextApiResponse} from 'next'
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse,
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const agentBaseUrl = process.env.BROWSER_PUBLIC_AGENT_BASE_URL
   const path = Array.isArray(req.query.path) ? req.query.path.join('/') : req.query.path
 

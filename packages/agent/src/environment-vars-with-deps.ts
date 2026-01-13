@@ -1,13 +1,13 @@
-import {env} from '@sphereon/ssi-express-support'
-import {eventLoggerAuditMethods} from '@sphereon/ssi-sdk.event-logger'
-import {oid4vciHolderContextMethods} from '@sphereon/ssi-sdk.oid4vci-holder'
-import {contactManagerMethods} from '@sphereon/ssi-sdk.contact-manager'
-import {sphereonKeyManagerMethods} from '@sphereon/ssi-sdk-ext.key-manager'
-import {didAuthSiopOpAuthenticatorMethods} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
-import {ebsiSupportMethods} from '@sphereon/ssi-sdk.ebsi-support'
-import {issuanceBrandingMethods} from '@sphereon/ssi-sdk.issuance-branding'
-import {ImportDcqlQueryItem, pdManagerMethods} from '@sphereon/ssi-sdk.pd-manager'
-import {credentialStoreMethods} from '@sphereon/ssi-sdk.credential-store'
+import { env } from '@sphereon/ssi-express-support'
+import { eventLoggerAuditMethods } from '@sphereon/ssi-sdk.event-logger'
+import { oid4vciHolderContextMethods } from '@sphereon/ssi-sdk.oid4vci-holder'
+import { contactManagerMethods } from '@sphereon/ssi-sdk.contact-manager'
+import { sphereonKeyManagerMethods } from '@sphereon/ssi-sdk-ext.key-manager'
+import { didAuthSiopOpAuthenticatorMethods } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
+import { ebsiSupportMethods } from '@sphereon/ssi-sdk.ebsi-support'
+import { issuanceBrandingMethods } from '@sphereon/ssi-sdk.issuance-branding'
+import { ImportDcqlQueryItem, pdManagerMethods } from '@sphereon/ssi-sdk.pd-manager'
+import { credentialStoreMethods } from '@sphereon/ssi-sdk.credential-store'
 import {
   ENV_VAR_PREFIX,
   IDENTIFIER_OPTIONS_PATH,
@@ -17,50 +17,48 @@ import {
   OID4VP_RP_METADATA_PATH,
   OID4VP_RP_OPTIONS_PATH,
 } from './environment-vars'
-import {loadJsonFileMap, loadJsonFiles} from './utils'
-import {IIdentifierConfigOpts, OID4VPInstanceOpts} from './types'
-import {
-  IIssuerMetadataImportArgs,
-  IIssuerOptsImportArgs,
-  oid4vciStoreMethods
-} from '@sphereon/ssi-sdk.oid4vci-issuer-store'
-import {vcApiFeatures} from '@sphereon/ssi-sdk.w3c-vc-api'
-import {ContactManagerMRestApiFeatures} from '@sphereon/ssi-sdk.contact-manager-rest-api'
-import {statusListFeatures} from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
-import {DidApiFeatures, DidWebServiceFeatures} from '@sphereon/ssi-sdk.uni-resolver-registrar-api'
-import {identifierResolutionContextMethods} from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import {credentialValidationMethods} from '@sphereon/ssi-sdk.credential-validation'
-import {FederationMetadataImportArgs} from '@sphereon/ssi-sdk.oidf-metatdata-server'
-import {linkedVPManagerMethods} from '@sphereon/ssi-sdk.linked-vp'
+import { loadJsonFileMap, loadJsonFiles } from './utils'
+import { IIdentifierConfigOpts, OID4VPInstanceOpts } from './types'
+import { IIssuerMetadataImportArgs, IIssuerOptsImportArgs, oid4vciStoreMethods } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
+import { vcApiFeatures } from '@sphereon/ssi-sdk.w3c-vc-api'
+import { ContactManagerMRestApiFeatures } from '@sphereon/ssi-sdk.contact-manager-rest-api'
+import { statusListFeatures } from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
+import { DidApiFeatures, DidWebServiceFeatures } from '@sphereon/ssi-sdk.uni-resolver-registrar-api'
+import { identifierResolutionContextMethods } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { credentialValidationMethods } from '@sphereon/ssi-sdk.credential-validation'
+import { FederationMetadataImportArgs } from '@sphereon/ssi-sdk.oidf-metatdata-server'
+import { linkedVPManagerMethods } from '@sphereon/ssi-sdk.linked-vp'
 import { oid4vciIssuerMethods } from '@sphereon/ssi-sdk.oid4vci-issuer'
 
 export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATURES', ENV_VAR_PREFIX)
   ? (env('REMOTE_SERVER_API_FEATURES', ENV_VAR_PREFIX)?.split(',') as string[])
   : [
       ...eventLoggerAuditMethods,
-    ...oid4vciHolderContextMethods,
-    ...contactManagerMethods,
-    ...sphereonKeyManagerMethods,
-    ...didAuthSiopOpAuthenticatorMethods,
-    'didManagerCreate',
-    'didManagerGetProviders',
-    'didManagerFind',
-    'didManagerGet',
-    'didManagerSetAlias',
-    'didManagerRemoveKey',
-    'didManagerAddKey',
-    'didManagerAddService',
-    'didManagerRemoveService',
-    ...oid4vciIssuerMethods,
-    'createVerifiablePresentation',
-    ...ebsiSupportMethods,
-    ...issuanceBrandingMethods,
-    ...pdManagerMethods,
-    ...credentialStoreMethods,
-    ...identifierResolutionContextMethods,
-    ...credentialValidationMethods,
-    ...oid4vciStoreMethods,...oid4vciIssuerMethods,'crsGetUniqueCredentials', // FIXME in SSI_SDK
-    // fixme: import from respective modules
+      ...oid4vciHolderContextMethods,
+      ...contactManagerMethods,
+      ...sphereonKeyManagerMethods,
+      ...didAuthSiopOpAuthenticatorMethods,
+      'didManagerCreate',
+      'didManagerGetProviders',
+      'didManagerFind',
+      'didManagerGet',
+      'didManagerSetAlias',
+      'didManagerRemoveKey',
+      'didManagerAddKey',
+      'didManagerAddService',
+      'didManagerRemoveService',
+      ...oid4vciIssuerMethods,
+      'createVerifiablePresentation',
+      ...ebsiSupportMethods,
+      ...issuanceBrandingMethods,
+      ...pdManagerMethods,
+      ...credentialStoreMethods,
+      ...identifierResolutionContextMethods,
+      ...credentialValidationMethods,
+      ...oid4vciStoreMethods,
+      ...oid4vciIssuerMethods,
+      'crsGetUniqueCredentials', // FIXME in SSI_SDK
+      // fixme: import from respective modules
       'createSdJwtVc',
       'createSdJwtPresentation',
       'verifySdJwtVc',
@@ -71,8 +69,11 @@ export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATU
       'jwtCreateJwsCompactSignature',
       'jwtVerifyJwsCompactSignature',
       'jwtVerifyJwsCompactSignature',
-    ...linkedVPManagerMethods
-  ]
+      ...linkedVPManagerMethods,
+      // Service metadata methods for eInvoicing
+      'updateServiceMetadata',
+      'getServiceMetadata',
+    ]
 
 export const oid4vpInstanceOpts = loadJsonFiles<OID4VPInstanceOpts>({ path: OID4VP_RP_OPTIONS_PATH })
 

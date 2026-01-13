@@ -78,9 +78,7 @@ async function getUnifiedVC(rawDocument: any) {
   const wrappedCredential = CredentialMapper.toWrappedVerifiableCredential(rawDocument, {hasher: defaultHasher})
   let uniformVerifiableCredential: IVerifiableCredential
   if (CredentialMapper.isSdJwtDecodedCredential(wrappedCredential.credential)) {
-    return sdJwtDecodedCredentialToUniformCredential(
-      wrappedCredential.credential as SdJwtDecodedVerifiableCredential,
-    )
+    return sdJwtDecodedCredentialToUniformCredential(wrappedCredential.credential as SdJwtDecodedVerifiableCredential)
   } else if (CredentialMapper.isSdJwtEncoded(wrappedCredential.credential)) {
     const asyncHasher = (data: string | ArrayBuffer, algorithm: string) => Promise.resolve(defaultHasher(data, algorithm))
     const decodedSdJwt = await CredentialMapper.decodeSdJwtVcAsync(wrappedCredential.credential, asyncHasher)
@@ -110,22 +108,13 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
   const partyResults = useList<Party, HttpError>({resource: 'parties'})
   const [showCreateSharedIdModal, setShowCreateSharedIdModal] = useState(false)
 
-
   useEffect(() => {
     const fetchBranding = async () => {
       if (!credentialResult.data?.data) {
         return
       }
 
-      const {
-        hash,
-        issuerCorrelationId,
-        subjectCorrelationId,
-        rawDocument,
-        linkedVpId,
-        linkedVpFrom,
-        linkedVpUntil,
-      } = credentialResult.data.data
+      const {hash, issuerCorrelationId, subjectCorrelationId, rawDocument, linkedVpId, linkedVpFrom, linkedVpUntil} = credentialResult.data.data
 
       try {
         const issuerParties: Party[] = await getAgent().cmGetContacts({
@@ -134,8 +123,8 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
 
         const subjectParties = subjectCorrelationId
           ? await getAgent().cmGetContacts({
-            filter: [{identities: {identifier: {correlationId: subjectCorrelationId}}}],
-          })
+              filter: [{identities: {identifier: {correlationId: subjectCorrelationId}}}],
+            })
           : []
 
         // Use BrandingSync service for efficient credential branding retrieval
@@ -225,9 +214,13 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
 
     return (
       <div>
-        <div>{translate('credential_details_published_since_label')}: {new Date(credentialSummary.linkedVp.linkedVpFrom).toLocaleString()}</div>
+        <div>
+          {translate('credential_details_published_since_label')}: {new Date(credentialSummary.linkedVp.linkedVpFrom).toLocaleString()}
+        </div>
         {credentialSummary.linkedVp.linkedVpUntil && (
-          <div>{translate('credential_details_published_until_label')}: {new Date(credentialSummary.linkedVp.linkedVpUntil).toLocaleString()}</div>
+          <div>
+            {translate('credential_details_published_until_label')}: {new Date(credentialSummary.linkedVp.linkedVpUntil).toLocaleString()}
+          </div>
         )}
       </div>
     )
@@ -249,7 +242,9 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
           <JSONDataView
             data={{
               type: credentialSummary.title,
-              issuer: credentialSummary.issuer, ...(termsOfUse && {termsOfUse}), ...filteredSubject,
+              issuer: credentialSummary.issuer,
+              ...(termsOfUse && {termsOfUse}),
+              ...filteredSubject,
             }}
             shouldExpandNodeInitially={true}
           />
@@ -277,14 +272,15 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
             <div className={style.publishContainer}>
               <SSISwitchItem
                 label={translate('credential_details_published_label')}
-                checked={!!(credentialSummary.linkedVp?.linkedVpId)}
+                checked={!!credentialSummary.linkedVp?.linkedVpId}
                 onChange={onTogglePublished}
                 tooltip={buildLinkedVPInfo()}
               />
             </div>
           )}
         </div>
-      </div>)
+      </div>
+    )
   }
 
   const getActivityContent = (): ReactElement => {
@@ -548,17 +544,11 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
         <CredentialMiniCardView {...credentialCardViewProps} />
       </div>
       <SSITabView routes={routes} />
-      {showCreateSharedIdModal && (
-        <PublishLinkedVPModal
-          onClose={handleCloseModal}
-          onSubmit={handlePublishVP}
-        />
-      )}
+      {showCreateSharedIdModal && <PublishLinkedVPModal onClose={handleCloseModal} onSubmit={handlePublishVP} />}
     </div>
   )
 }
 
-export const getStaticProps = async ({locale = 'en'}: {locale?: string}) =>
-  staticPropsWithSST({locale})
+export const getStaticProps = async ({locale = 'en'}: {locale?: string}) => staticPropsWithSST({locale})
 
 export default ShowCredentialDetails

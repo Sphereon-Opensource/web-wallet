@@ -35,12 +35,9 @@ import SelectCredentialsPage from '../../pages/oid4vci/selectCredentials'
 import PinVerificationPage from '../../pages/oid4vci/pinVerification'
 import OrganizationContactsCreatePage from '../../pages/organizationContacts/create'
 import {OrganizationContactMachineContextProvider} from '@machines/contacts/organizationContactsStateNavigation'
-import CreateOrganizationContactOrganizationalInfoContent
-  from 'src/components/views/CreateOrganizationContactOrganizationalInfoContent'
-import CreateOrganizationContactReviewContactContent
-  from '@components/views/CreateOrganizationContactReviewContactContent'
-import CreateOrganizationContactPhysicalAddressContent
-  from '@components/views/CreateOrganizationContactPhysicalAddressContent'
+import CreateOrganizationContactOrganizationalInfoContent from 'src/components/views/CreateOrganizationContactOrganizationalInfoContent'
+import CreateOrganizationContactReviewContactContent from '@components/views/CreateOrganizationContactReviewContactContent'
+import CreateOrganizationContactPhysicalAddressContent from '@components/views/CreateOrganizationContactPhysicalAddressContent'
 import CreateNaturalPersonPhysicalAddressContent from '@components/views/CreateNaturalPersonPhysicalAddressContent'
 import IdentifiersListPage from '../../pages/keyManagement/identifiers'
 import IdentifierCreatePage from '../../pages/keyManagement/identifiers/create'
@@ -97,7 +94,7 @@ const KeycloakLoginPage = (props: PropsWithChildren<any>) => {
 }
 
 const CredentialDesignerEditWrapper: FC = (): ReactElement => {
-  const { id } = useParams()
+  const {id} = useParams()
   return (
     <CredentialDesignerEditContextProvider key={id}>
       <CredentialDesignerEditPage />
@@ -111,10 +108,7 @@ const AppRouter: React.FC = () => {
       <Routes>
         <Route
           element={
-            <Authenticated
-                key={'securePageAuthentication'} fallback={<KeycloakLoginPage />}
-                appendCurrentPathToQuery={true}
-            >
+            <Authenticated key={'securePageAuthentication'} fallback={<KeycloakLoginPage />} appendCurrentPathToQuery={true}>
               <Outlet />
             </Authenticated>
           }>
@@ -151,12 +145,9 @@ const AppRouter: React.FC = () => {
                   <ContactsCreatePage />
                 </NaturalPersonContextProvider>
               }>
-              <Route path={NaturalPersonCreationRoute.PERSONAL_INFO}
-                     element={<CreateNaturalPersonPersonalInfoContent />} />
-              <Route path={NaturalPersonCreationRoute.PHYSICAL_ADDRESS}
-                     element={<CreateNaturalPersonPhysicalAddressContent />} />
-              <Route path={NaturalPersonCreationRoute.ORGANIZATION}
-                     element={<CreateNaturalPersonOrganizationContent />} />
+              <Route path={NaturalPersonCreationRoute.PERSONAL_INFO} element={<CreateNaturalPersonPersonalInfoContent />} />
+              <Route path={NaturalPersonCreationRoute.PHYSICAL_ADDRESS} element={<CreateNaturalPersonPhysicalAddressContent />} />
+              <Route path={NaturalPersonCreationRoute.ORGANIZATION} element={<CreateNaturalPersonOrganizationContent />} />
               <Route path={NaturalPersonCreationRoute.ROLE} element={<CreateNaturalPersonRoleContent />} />
               <Route path={NaturalPersonCreationRoute.REVIEW} element={<CreateNaturalPersonReviewContactContent />} />
             </Route>
@@ -167,12 +158,9 @@ const AppRouter: React.FC = () => {
                   <OrganizationContactsCreatePage />
                 </OrganizationContactMachineContextProvider>
               }>
-              <Route path={OrganizationContactCreationRoute.ORGANIZATION_INFO}
-                     element={<CreateOrganizationContactOrganizationalInfoContent />} />
-              <Route path={OrganizationContactCreationRoute.PHYSICAL_ADDRESS}
-                     element={<CreateOrganizationContactPhysicalAddressContent />} />
-              <Route path={OrganizationContactCreationRoute.REVIEW}
-                     element={<CreateOrganizationContactReviewContactContent />} />
+              <Route path={OrganizationContactCreationRoute.ORGANIZATION_INFO} element={<CreateOrganizationContactOrganizationalInfoContent />} />
+              <Route path={OrganizationContactCreationRoute.PHYSICAL_ADDRESS} element={<CreateOrganizationContactPhysicalAddressContent />} />
+              <Route path={OrganizationContactCreationRoute.REVIEW} element={<CreateOrganizationContactReviewContactContent />} />
             </Route>
             <Route path={MainRoute.SUB_ID} element={<ShowContactDetails />} />
           </Route>
@@ -197,16 +185,14 @@ const AppRouter: React.FC = () => {
                     <CredentialDesignerCreatePage />
                   </CredentialDesignerCreateContextProvider>
                 }>
-                    <Route path={CredentialDesignerRoute.DETAILS} element={ <CredentialDesignerDetailsCreateContent/> } />
-                    <Route path={CredentialDesignerRoute.VISUAL_DESIGN} element={ <CredentialDesignerVisualDesignCreateContent /> } />
-                    <Route path={CredentialDesignerRoute.CLAIMS} element={ <CredentialDesignerClaimsCreateContent /> } />
+                <Route path={CredentialDesignerRoute.DETAILS} element={<CredentialDesignerDetailsCreateContent />} />
+                <Route path={CredentialDesignerRoute.VISUAL_DESIGN} element={<CredentialDesignerVisualDesignCreateContent />} />
+                <Route path={CredentialDesignerRoute.CLAIMS} element={<CredentialDesignerClaimsCreateContent />} />
               </Route>
-              <Route
-                path={`${MainRoute.SUB_EDIT}/${MainRoute.SUB_ID}`}
-                element={<CredentialDesignerEditWrapper />}>
-                <Route path={CredentialDesignerRoute.DETAILS} element={ <CredentialDesignerDetailsEditContent /> } />
-                <Route path={CredentialDesignerRoute.VISUAL_DESIGN} element={ <CredentialDesignerVisualDesignEditContent /> } />
-                <Route path={CredentialDesignerRoute.CLAIMS} element={ <CredentialDesignerClaimsEditContent /> } />
+              <Route path={`${MainRoute.SUB_EDIT}/${MainRoute.SUB_ID}`} element={<CredentialDesignerEditWrapper />}>
+                <Route path={CredentialDesignerRoute.DETAILS} element={<CredentialDesignerDetailsEditContent />} />
+                <Route path={CredentialDesignerRoute.VISUAL_DESIGN} element={<CredentialDesignerVisualDesignEditContent />} />
+                <Route path={CredentialDesignerRoute.CLAIMS} element={<CredentialDesignerClaimsEditContent />} />
               </Route>
             </Route>
             <Route path={MainRoute.SUB_ID} element={<ShowCredentialDetails credentialRole={CredentialRole.HOLDER} />} />
@@ -242,8 +228,7 @@ const AppRouter: React.FC = () => {
                 }>
                 <Route path={CreateIdentifierRoute.TYPE} element={<CreateIdentifierSelectTypeContent />} />
                 <Route path={CreateIdentifierRoute.KEYS} element={<CreateIdentifierKeysContent />} />
-                <Route path={CreateIdentifierRoute.SERVICE_ENDPOINTS}
-                       element={<CreateIdentifierAddServiceEndpointContent mode="create"/>} />
+                <Route path={CreateIdentifierRoute.SERVICE_ENDPOINTS} element={<CreateIdentifierAddServiceEndpointContent mode="create" />} />
                 <Route path={CreateIdentifierRoute.SUMMARY} element={<CreateIdentifierSummaryContent />} />
               </Route>
               <Route
@@ -255,8 +240,7 @@ const AppRouter: React.FC = () => {
                 }>
                 <Route path={EditIdentifierRoute.ALIAS} element={<EditIdentifierContent />} />
                 <Route path={EditIdentifierRoute.KEYS} element={<EditIdentifierKeysContent />} />
-                <Route path={EditIdentifierRoute.SERVICE_ENDPOINTS}
-                       element={<CreateIdentifierAddServiceEndpointContent mode="edit"/>} />
+                <Route path={EditIdentifierRoute.SERVICE_ENDPOINTS} element={<CreateIdentifierAddServiceEndpointContent mode="edit" />} />
               </Route>
             </Route>
             <Route path={KeyManagementRoute.KEYS}>
@@ -267,8 +251,7 @@ const AppRouter: React.FC = () => {
             <Route index element={<PresentationDefinitionsListPage />} />
             <Route path={MainRoute.SUB_ID} element={<PresentationDefinitionPage mode="show" />}></Route>
             <Route path={MainRoute.SUB_CREATE} element={<PresentationDefinitionPage mode="create" />}></Route>
-            <Route path={`${MainRoute.SUB_EDIT}/${MainRoute.SUB_ID}`}
-                   element={<PresentationDefinitionPage mode="edit" />}></Route>
+            <Route path={`${MainRoute.SUB_EDIT}/${MainRoute.SUB_ID}`} element={<PresentationDefinitionPage mode="edit" />}></Route>
           </Route>
         </Route>
         <Route

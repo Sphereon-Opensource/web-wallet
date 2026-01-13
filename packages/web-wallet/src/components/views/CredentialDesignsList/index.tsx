@@ -36,16 +36,16 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
     ],
     meta: {
       idColumnName: 'id',
-    }
+    },
   })
 
   const onDelete = async (data: Row<CredentialDesignTableItem>): Promise<void> => {
     return deleteCredential({
       resource: DataResource.CREDENTIAL_DESIGNS,
-      id: data.original.id
+      id: data.original.id,
     })
-    .then(() => removeCredentialConfigurationFromOid4vciMetadata(data.original.name))
-    .catch(e => Promise.reject(Error(e.message)))
+      .then(() => removeCredentialConfigurationFromOid4vciMetadata(data.original.name))
+      .catch(e => Promise.reject(Error(e.message)))
   }
 
   const onShow = async (data: Row<CredentialDesignTableItem>): Promise<void> => {
@@ -60,34 +60,33 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
     edit(DataResource.CREDENTIAL_DESIGNS, data.original.id)
   }
 
-
   const columns: ColumnHeader<CredentialDesignTableItem>[] = [
     {
-        accessor: row => {
-            return {
-                ...(row.credentialDesignBranding?.backgroundImage && {
-                    backgroundImage: {
-                        uri: row.credentialDesignBranding.backgroundImage.uri
-                    },
-                }),
-                ...(row.credentialDesignBranding?.logo && {
-                    logo: {
-                        uri: row.credentialDesignBranding.logo.uri,
-                        dimensions: {
-                            width: row.credentialDesignBranding.logo.dimensions?.width,
-                            height: row.credentialDesignBranding.logo.dimensions?.height,
-                        }
-                    }
-                }),
-                backgroundColor: row.credentialDesignBranding?.backgroundColor ?? undefined,
-                logoColor: row.credentialDesignBranding?.textColor ?? undefined
-            }
-        },
-        label: translate('credential_design_fields_card'),
-        type: TableCellType.CREDENTIAL_CARD,
-        columnOptions: {
-            columnWidth: 120,
-        },
+      accessor: row => {
+        return {
+          ...(row.credentialDesignBranding?.backgroundImage && {
+            backgroundImage: {
+              uri: row.credentialDesignBranding.backgroundImage.uri,
+            },
+          }),
+          ...(row.credentialDesignBranding?.logo && {
+            logo: {
+              uri: row.credentialDesignBranding.logo.uri,
+              dimensions: {
+                width: row.credentialDesignBranding.logo.dimensions?.width,
+                height: row.credentialDesignBranding.logo.dimensions?.height,
+              },
+            },
+          }),
+          backgroundColor: row.credentialDesignBranding?.backgroundColor ?? undefined,
+          logoColor: row.credentialDesignBranding?.textColor ?? undefined,
+        }
+      },
+      label: translate('credential_design_fields_card'),
+      type: TableCellType.CREDENTIAL_CARD,
+      columnOptions: {
+        columnWidth: 120,
+      },
     },
     {
       accessor: 'name',
@@ -135,11 +134,11 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
               caption: translate('credential_design_actions_delete'),
               icon: ButtonIcon.DELETE,
               onClick: onDelete,
-            }
-          ]
-        }
-      }
-    }
+            },
+          ],
+        },
+      },
+    },
   ]
 
   const buildActionList = (): Array<Button> => {
@@ -182,23 +181,25 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
     }
   }
 
-  return <div>
-    <SSITableView
-      data={designsData}
-      columns={columns}
-      actions={buildActionList()}
-      onRowClick={onShow}
-      onRowDoubleClick={onEdit}
-      pagination={{
-        page: current,
-        count: Math.ceil(totalDesigns / pageSize),
-        onChange: onPageChange,
-        goToInputId: 'custom-goToInput',
-        containerStyle: {marginTop: '20px'},
-        onKeyDown: onPageChangeKeyDown,
-      }}
-    />
-  </div>
+  return (
+    <div>
+      <SSITableView
+        data={designsData}
+        columns={columns}
+        actions={buildActionList()}
+        onRowClick={onShow}
+        onRowDoubleClick={onEdit}
+        pagination={{
+          page: current,
+          count: Math.ceil(totalDesigns / pageSize),
+          onChange: onPageChange,
+          goToInputId: 'custom-goToInput',
+          containerStyle: {marginTop: '20px'},
+          onKeyDown: onPageChangeKeyDown,
+        }}
+      />
+    </div>
+  )
 }
 
 export default CredentialDesignsList

@@ -36,9 +36,9 @@ const CredentialsCreatePage: FC = () => {
     console.log('submit qr clicked')
   }
 
-  const onSubmitUrl = async (walletUrl:string): Promise<void> => {
+  const onSubmitUrl = async (walletUrl: string): Promise<void> => {
     console.log('send to wallet', walletUrl)
-    window.open(walletUrl, '_blank');
+    window.open(walletUrl, '_blank')
   }
 
   const generateQr = async (): Promise<QRValueResult> => {
@@ -51,19 +51,24 @@ const CredentialsCreatePage: FC = () => {
       schemaOpts: {schema: credentialType?.schema},
       payload: {
         type: credentialType.credentialType,
-        ...credentialFormData.data
+        ...credentialFormData.data,
       },
     })
-    return qrValueGenerator({
-      credentialPayload: payloadWithSchema.payload,
-      credentialGenerationMethod: 'JSON_SCHEMA',
-    }, {credentials: credentialType.credentialType})
+    return qrValueGenerator(
+      {
+        credentialPayload: payloadWithSchema.payload,
+        credentialGenerationMethod: 'JSON_SCHEMA',
+      },
+      {credentials: credentialType.credentialType},
+    )
   }
 
   return (
     <div className={style.container}>
       {showCredentialQRCodeModal && <QRCodeModal qrValueGenerator={generateQr} onClose={onCloseCredentialQRCodeModal} onSubmit={onSubmitQr} />}
-      {showCredentialWalletUrlModal && <WalletURLModal qrValueGenerator={generateQr} onClose={onCloseCredentialWalletUrlModal} onSubmit={onSubmitUrl} />}
+      {showCredentialWalletUrlModal && (
+        <WalletURLModal qrValueGenerator={generateQr} onClose={onCloseCredentialWalletUrlModal} onSubmit={onSubmitUrl} />
+      )}
       <PageHeaderBar path={translate('issue_credential_path_label')} />
       <div className={style.contentContainer}>
         <div className={style.outletContainer}>
@@ -111,7 +116,6 @@ const CredentialsCreatePage: FC = () => {
   )
 }
 
-export const getStaticProps = async ({locale = 'en'}: {locale?: string}) =>
-  staticPropsWithSST({locale})
+export const getStaticProps = async ({locale = 'en'}: {locale?: string}) => staticPropsWithSST({locale})
 
 export default CredentialsCreatePage

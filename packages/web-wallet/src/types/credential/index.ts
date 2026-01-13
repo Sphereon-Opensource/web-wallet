@@ -130,7 +130,7 @@ export class CredentialTableItem {
   }
 }
 
-export type CredentialSchemaClaimType = "object" | "string" | "number" | "boolean" | "array" | "date"
+export type CredentialSchemaClaimType = 'object' | 'string' | 'number' | 'boolean' | 'array' | 'date'
 
 export type CredentialSchemaClaim = {
   claimName: string
@@ -139,10 +139,10 @@ export type CredentialSchemaClaim = {
   properties?: Array<CredentialSchemaClaim>
 }
 
-export type CredentialSchema  = {
+export type CredentialSchema = {
   type: string
   properties?: Record<string, any>
-  items?: CredentialSchema | CredentialSchema[];
+  items?: CredentialSchema | CredentialSchema[]
   required?: Array<string>
 }
 
@@ -156,6 +156,6 @@ export type CredentialUISchema = {
 export type CredentialGenerationMethod = 'TEMPLATE' | 'JSON_SCHEMA'
 export type CredentialSupplierConfigWithHashOrId = {hashOrId: string}
 export type CredentialSupplierConfigWithCredentialPayload = {
-  credentialPayload: CredentialPayload | Partial<CredentialPayload>,
+  credentialPayload: CredentialPayload | Partial<CredentialPayload>
   credentialGenerationMethod: CredentialGenerationMethod
 }

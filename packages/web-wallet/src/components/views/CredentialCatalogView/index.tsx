@@ -23,7 +23,7 @@ const CredentialCatalogView: FC<Props> = ({items = [], onClick}): ReactElement =
   const onCatalogDisplayModeChange = async (selection: ValueSelection): Promise<void> => {
     setCatalogDisplayMode(selection.value as CatalogDisplayMode)
   }
-  
+
   const handleItemClick = async (item: CredentialCatalogItem): Promise<void> => {
     try {
       await onClick?.(item)
@@ -127,9 +127,7 @@ const CredentialCatalogView: FC<Props> = ({items = [], onClick}): ReactElement =
           defaultValue={credentialCatalogDisplayModes[0]}
         />
       </div>
-      {catalogDisplayMode === CatalogDisplayMode.CARD_VIEW && (
-        <div className={style.cardViewContainer}>{getCredentialCardElements()}</div>
-      )}
+      {catalogDisplayMode === CatalogDisplayMode.CARD_VIEW && <div className={style.cardViewContainer}>{getCredentialCardElements()}</div>}
       {catalogDisplayMode === CatalogDisplayMode.LIST_VIEW && (
         <div className={style.listViewContainer}>
           <SSITableView<CredentialCatalogItem>

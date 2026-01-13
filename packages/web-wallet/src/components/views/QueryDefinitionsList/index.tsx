@@ -165,13 +165,7 @@ const QueryDefinitionsList: FC<Props> = (props: Props): ReactElement => {
 
   const data = results.data.data.map(value => ({...value, actions: ''}))
   return (
-    <SSITableView<DcqlQueryMenuItem>
-      key={short.generate()}
-      data={data}
-      columns={columns}
-      actions={buildActionList()}
-      onRowClick={onShowDefinition}
-    />
+    <SSITableView<DcqlQueryMenuItem> key={short.generate()} data={data} columns={columns} actions={buildActionList()} onRowClick={onShowDefinition} />
   )
 }
 

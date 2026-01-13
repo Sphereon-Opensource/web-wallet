@@ -1,8 +1,4 @@
-import {
-  CredentialDefinitionJwtVcJsonLdAndLdpVcV1_0_15,
-  CredentialsSupportedDisplay,
-  ProofTypesSupported,
-} from '@sphereon/oid4vci-common'
+import {CredentialDefinitionJwtVcJsonLdAndLdpVcV1_0_15, CredentialsSupportedDisplay, ProofTypesSupported} from '@sphereon/oid4vci-common'
 import {CredentialSchema} from '@/src/types'
 
 export type ToCredentialConfigurationArgs = {
@@ -20,9 +16,9 @@ export type CredentialConfigurationOptionsCommon = {
 }
 
 export type SdJwtFormatOptions = CredentialConfigurationOptionsCommon & {
-  format: 'dc+sd-jwt' | 'vc+sd-jwt';
-  vct: string;
-};
+  format: 'dc+sd-jwt' | 'vc+sd-jwt'
+  vct: string
+}
 
 export type JsonLDFormatOptions = CredentialConfigurationOptionsCommon & {
   format: 'ldp_vc' | 'jwt_vc_json-ld'
@@ -38,8 +34,4 @@ export type MdocFormatOptions = CredentialConfigurationOptionsCommon & {
   format: 'mso_mdoc'
   doctype: string
 }
-export type CredentialConfigurationOptions =
-  | SdJwtFormatOptions
-  | JsonLDFormatOptions
-  | JWTFormatOptions
-  | MdocFormatOptions
+export type CredentialConfigurationOptions = SdJwtFormatOptions | JsonLDFormatOptions | JWTFormatOptions | MdocFormatOptions

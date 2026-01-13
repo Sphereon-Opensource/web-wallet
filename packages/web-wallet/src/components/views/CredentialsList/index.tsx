@@ -117,12 +117,13 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
               branding: filteredCredentialBrandings.length ? filteredCredentialBrandings[0].localeBranding : undefined,
               issuer: issuerPartyIdentity?.party,
               subject: subjectPartyIdentity?.party,
-              ...(credential.linkedVpId && credential.linkedVpFrom && {
-                linkedVp: {
-                  linkedVpId: credential.linkedVpId,
-                  linkedVpFrom: credential.linkedVpFrom,
-                },
-              }),
+              ...(credential.linkedVpId &&
+                credential.linkedVpFrom && {
+                  linkedVp: {
+                    linkedVpId: credential.linkedVpId,
+                    linkedVpFrom: credential.linkedVpFrom,
+                  },
+                }),
             })
 
             return CredentialTableItem.from(credential, partyData.data, credentialSummary)
@@ -309,10 +310,7 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
   const onImportCredential = async (file: File): Promise<void> => {
     const rawCredential = await file.text()
     const uniformCredential = CredentialMapper.toUniformCredential(rawCredential, {hasher: defaultHasher})
-    const {
-      issuerName,
-      issuerAlias,
-    } = getCredentialIssuerNameAndAlias({verifiableCredential: uniformCredential as VerifiableCredential})
+    const {issuerName, issuerAlias} = getCredentialIssuerNameAndAlias({verifiableCredential: uniformCredential as VerifiableCredential})
     const correlationId = CredentialMapper.issuerCorrelationIdFromIssuerType(uniformCredential.issuer)
     const filter: FindPartyArgs = [
       {
@@ -417,27 +415,24 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
     return <div>{translate('data_provider_loading_message')}</div>
   }
 
-  return <div>
-    {showImportCredentialModal && (
-      <ImportFileModal
-        headerTitle={translate('import_credential_modal_header_title')}
-        headerSubTitle={translate('import_credential_modal_header_subtitle')}
-        dragBoxCaption={translate('import_credential_modal_dragbox_caption')}
-        dragBoxDescription={translate('import_credential_modal_dragbox_description')}
-        validationMessage={translate('import_credential_modal_validation_message')}
-        onImportFile={onImportCredential}
-        onValidateFile={onValidateCredential}
-        onClose={onCloseImportCredentialModal}
-      />
-    )}
+  return (
+    <div>
+      {showImportCredentialModal && (
+        <ImportFileModal
+          headerTitle={translate('import_credential_modal_header_title')}
+          headerSubTitle={translate('import_credential_modal_header_subtitle')}
+          dragBoxCaption={translate('import_credential_modal_dragbox_caption')}
+          dragBoxDescription={translate('import_credential_modal_dragbox_description')}
+          validationMessage={translate('import_credential_modal_validation_message')}
+          onImportFile={onImportCredential}
+          onValidateFile={onValidateCredential}
+          onClose={onCloseImportCredentialModal}
+        />
+      )}
 
-    <SSITableView
-      data={credentialTableItems}
-      columns={columns}
-      actions={buildActionList()}
-      onRowClick={onShowCredentialDetails}
-    />
-  </div>
+      <SSITableView data={credentialTableItems} columns={columns} actions={buildActionList()} onRowClick={onShowCredentialDetails} />
+    </div>
+  )
 }
 
 export default CredentialsList

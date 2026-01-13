@@ -108,7 +108,6 @@ const ContactsCreatePage: FC = () => {
   )
 }
 
-export const getStaticProps = async ({locale = 'en'}: {locale?: string}) =>
-  staticPropsWithSST({locale})
+export const getStaticProps = async ({locale = 'en'}: {locale?: string}) => staticPropsWithSST({locale})
 
 export default ContactsCreatePage

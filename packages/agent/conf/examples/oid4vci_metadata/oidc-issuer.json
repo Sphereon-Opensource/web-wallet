@@ -1,20 +1,17 @@
 {
-  "correlationId": "http://my-hostname-or-ip:5010/oidc/oid4vci",
+  "correlationId": "https://5a533518725f.ngrok.app/oidc/oid4vci",
   "overwriteExisting": true,
   "metadataType": "issuer",
   "metadata": {
-    "credential_issuer": "http://my-hostname-or-ip:5010/oidc/oid4vci",
-    "credential_endpoint": "http://my-hostname-or-ip:5010/oidc/oid4vci/credentials",
+    "credential_issuer": "https://5a533518725f.ngrok.app/oidc/oid4vci",
+    "credential_endpoint": "https://5a533518725f.ngrok.app/oidc/oid4vci/credentials",
     "authorization_servers": ["https://auth01.test.sphereon.com/auth/realms/vdx"],
     "client_name": "OIDC example",
     "client_uri": "https://findynet.fi",
     "logo_uri": "https://findynet.fi/wp-content/uploads/2024/02/findynet-logo.png",
     "tos_uri": "https://sphereon.com/sphereon-wallet-terms-and-conditions",
     "policy_uri": "https://sphereon.com/sphereon-wallet-privacy-policy",
-    "contacts": [
-      "dev@sphereon.com",
-      "support@sphereon.com"
-    ],
+    "contacts": ["dev@sphereon.com", "support@sphereon.com"],
     "display": [
       {
         "name": "OIDC Issuer",
@@ -24,13 +21,8 @@
     "credential_configurations_supported": {
       "PensionSdJwt": {
         "format": "vc+sd-jwt",
-        "cryptographic_binding_methods_supported": [
-          "did:web",
-          "did:jwk"
-        ],
-        "cryptographic_suites_supported": [
-          "ES256"
-        ],
+        "cryptographic_binding_methods_supported": ["did:web", "did:jwk"],
+        "cryptographic_suites_supported": ["ES256"],
         "display": [
           {
             "name": "PensionCredential",
@@ -80,9 +72,7 @@
                 "lang": "nl-NL"
               }
             ],
-            "path": [
-              "Pension"
-            ]
+            "path": ["Pension"]
           },
           {
             "display": [
@@ -97,10 +87,7 @@
                 "lang": "nl-NL"
               }
             ],
-            "path": [
-              "Pension",
-              "startDate"
-            ]
+            "path": ["Pension", "startDate"]
           },
           {
             "display": [
@@ -115,10 +102,7 @@
                 "lang": "nl-NL"
               }
             ],
-            "path": [
-              "Pension",
-              "endDate"
-            ]
+            "path": ["Pension", "endDate"]
           },
           {
             "display": [
@@ -133,9 +117,7 @@
                 "lang": "nl-NL"
               }
             ],
-            "path": [
-              "Person"
-            ]
+            "path": ["Person"]
           },
           {
             "display": [
@@ -150,27 +132,17 @@
                 "lang": "nl-NL"
               }
             ],
-            "path": [
-              "Person",
-              "personal_administrative_number"
-            ]
+            "path": ["Person", "personal_administrative_number"]
           }
         ],
         "credential_definition": {
-          "type": [
-            "PensionSdJwt"
-          ]
+          "type": ["PensionSdJwt"]
         }
       },
       "PensionCredential": {
         "format": "jwt_vc_json",
-        "cryptographic_binding_methods_supported": [
-          "did:web",
-          "did:jwk"
-        ],
-        "cryptographic_suites_supported": [
-          "ES256"
-        ],
+        "cryptographic_binding_methods_supported": ["did:web", "did:jwk"],
+        "cryptographic_suites_supported": ["ES256"],
         "display": [
           {
             "name": "PensionCredential",
@@ -373,10 +345,7 @@
           }
         },
         "credential_definition": {
-          "type": [
-            "VerifiableCredential",
-            "PensionCredential"
-          ]
+          "type": ["VerifiableCredential", "PensionCredential"]
         }
       }
     },
@@ -384,16 +353,12 @@
       "templates_base_dir": "templates",
       "template_mappings": [
         {
-          "credential_config_ids": [
-            "PensionCredential"
-          ],
+          "credential_config_ids": ["PensionCredential"],
           "template_path": "PensionCredential.hbs.json",
           "format": "jwt_vc_json"
         },
         {
-          "credential_config_ids": [
-            "PensionSdJwt"
-          ],
+          "credential_config_ids": ["PensionSdJwt"],
           "template_path": "PensionSdJwt.hbs.json",
           "format": "vc+sd-jwt"
         }

@@ -4,7 +4,7 @@ import {useNavigate, useOutletContext} from 'react-router-dom'
 import {HttpError, useCreate} from '@refinedev/core'
 import {toCredentialConfiguration, updateOid4vciMetadata} from '@/src/services/credentials/credentialDesignService'
 import {ImageAttributes} from '@sphereon/ui-components.core'
-import { buildCredentialSchemas } from '@/src/helpers/SchemaUtils'
+import {buildCredentialSchemas} from '@/src/helpers/SchemaUtils'
 import {
   CredentialDesignBrandingDTO,
   CredentialDesignDTO,
@@ -12,9 +12,9 @@ import {
   DataResource,
   MainRoute,
   StoreCredentialDesignArgs,
-  UIContextType
+  UIContextType,
 } from '@typings'
-import {getImageSizes} from '@helpers/Images';
+import {getImageSizes} from '@helpers/Images'
 
 export type CredentialDesignerCreateContextType = UIContextType & {
   isAdvancedMode: boolean
@@ -59,35 +59,26 @@ const CredentialDesignerCreateContextProvider = (props: any): ReactElement => {
   const [disabled, setDisabled] = useState<boolean>(true)
   const [credentialDesignerDetailsFormData, setCredentialDesignerDetailsFormData] = useState<JSONFormState>({
     data: {
-      "format": "dc+sd-jwt",
-      "cryptographic_binding_methods_supported": [
-        "did:web",
-        "did:jwk",
-      ],
-      "credential_signing_alg_values_supported": [
-        "ES256"
-      ],
-      "proof_types_supported": {
-        "jwt": {
-          "proof_signing_alg_values_supported": [
-            "ES256"
-          ]
-        }
-      }
-    }
+      format: 'dc+sd-jwt',
+      cryptographic_binding_methods_supported: ['did:web', 'did:jwk'],
+      credential_signing_alg_values_supported: ['ES256'],
+      proof_types_supported: {
+        jwt: {
+          proof_signing_alg_values_supported: ['ES256'],
+        },
+      },
+    },
   })
   const [credentialDesignerClaimsFormData, setCredentialDesignerClaimsFormData] = useState<JSONFormState>({
     data: {
-      credentialClaims: [
-        {}
-      ]
-    }
+      credentialClaims: [{}],
+    },
   })
   const [credentialDesignerVisualDesignFormData, setCredentialDesignerVisualDesignFormData] = useState<JSONFormState>({
     data: {
-      "background_color": "#7276f7",
-      "text_color": "#fbfbfb"
-    }
+      background_color: '#7276f7',
+      text_color: '#fbfbfb',
+    },
   })
   const [credentialDesignerVisualDesignBackgroundImage, setCredentialDesignerVisualDesignBackgroundImage] = useState<ImageAttributes | undefined>()
   const [credentialDesignerVisualDesignLogo, setCredentialDesignerVisualDesignLogo] = useState<ImageAttributes | undefined>()
@@ -114,7 +105,8 @@ const CredentialDesignerCreateContextProvider = (props: any): ReactElement => {
       }
     } else if (step === 3) {
       const disabled = !isAdvancedMode
-        ? ((credentialDesignerClaimsFormData?.errors?.length ?? 0) > 0 || !noEmptyPropertiesRecursive(credentialDesignerClaimsFormData?.data?.credentialClaims ?? []))
+        ? (credentialDesignerClaimsFormData?.errors?.length ?? 0) > 0 ||
+          !noEmptyPropertiesRecursive(credentialDesignerClaimsFormData?.data?.credentialClaims ?? [])
         : false
 
       setDisabled(disabled)
@@ -128,7 +120,7 @@ const CredentialDesignerCreateContextProvider = (props: any): ReactElement => {
 
   const noEmptyPropertiesRecursive = (items: Array<any>): boolean => {
     return items.every(item => {
-      const itemType = item.type;
+      const itemType = item.type
 
       if (itemType !== 'object') {
         return true
@@ -147,9 +139,9 @@ const CredentialDesignerCreateContextProvider = (props: any): ReactElement => {
     if (nextStep <= maxInteractiveSteps) {
       setStep(nextStep)
     } else if (
-        credentialDesignerDetailsFormData?.data !== undefined &&
-        credentialDesignerVisualDesignFormData?.data !== undefined &&
-        credentialDesignerClaimsFormData?.data !== undefined
+      credentialDesignerDetailsFormData?.data !== undefined &&
+      credentialDesignerVisualDesignFormData?.data !== undefined &&
+      credentialDesignerClaimsFormData?.data !== undefined
     ) {
       const schemas = await buildCredentialSchemas(credentialDesignerClaimsFormData.data)
       await onCreate({
@@ -170,7 +162,7 @@ const CredentialDesignerCreateContextProvider = (props: any): ReactElement => {
           proofTypesSupported: credentialDesignerDetailsFormData.data.proof_types_supported,
           scope: credentialDesignerDetailsFormData.data.scope,
         },
-        isAdvancedSchema: !("credentialClaims" in credentialDesignerClaimsFormData.data)
+        isAdvancedSchema: !('credentialClaims' in credentialDesignerClaimsFormData.data),
       })
       const credentialConfiguration = toCredentialConfiguration({
         identifier: credentialDesignerDetailsFormData.data.identifier,
@@ -182,18 +174,13 @@ const CredentialDesignerCreateContextProvider = (props: any): ReactElement => {
           vct: credentialDesignerDetailsFormData.data.vct ?? credentialDesignerDetailsFormData.data.identifier,
           cryptographicBindingMethodsSupported: credentialDesignerDetailsFormData.data.cryptographic_binding_methods_supported,
           proofTypesSupported: credentialDesignerDetailsFormData.data.proof_types_supported,
-          scope: credentialDesignerDetailsFormData.data.scope
-        }
+          scope: credentialDesignerDetailsFormData.data.scope,
+        },
       })
       await updateOid4vciMetadata(credentialDesignerDetailsFormData.data.identifier, credentialConfiguration)
       navigate(`${MainRoute.CREDENTIALS}/${MainRoute.DESIGNS}`)
     }
-  }, [
-    step,
-    credentialDesignerClaimsFormData,
-    credentialDesignerDetailsFormData,
-    credentialDesignerVisualDesignFormData
-  ])
+  }, [step, credentialDesignerClaimsFormData, credentialDesignerDetailsFormData, credentialDesignerVisualDesignFormData])
 
   const onBack = useCallback(async (): Promise<void> => {
     const nextStep: number = step - maxAutoSteps
@@ -234,14 +221,16 @@ const CredentialDesignerCreateContextProvider = (props: any): ReactElement => {
               ...(dimensions && {
                 dimensions: {
                   width: dimensions.width,
-                  height: dimensions.height
-                }
-              })
-            })
+                  height: dimensions.height,
+                },
+              }),
+            }),
           )
-          .catch(() => setCredentialDesignerVisualDesignBackgroundImage({
-            uri: state.data.background_image?.uri
-          }))
+          .catch(() =>
+            setCredentialDesignerVisualDesignBackgroundImage({
+              uri: state.data.background_image?.uri,
+            }),
+          )
       } else {
         setCredentialDesignerVisualDesignBackgroundImage(undefined)
       }
@@ -256,14 +245,16 @@ const CredentialDesignerCreateContextProvider = (props: any): ReactElement => {
               ...(dimensions && {
                 dimensions: {
                   width: dimensions.width,
-                  height: dimensions.height
-                }
-              })
-            })
+                  height: dimensions.height,
+                },
+              }),
+            }),
           )
-          .catch(() => setCredentialDesignerVisualDesignLogo({
-            uri: state.data.logo?.uri
-          }))
+          .catch(() =>
+            setCredentialDesignerVisualDesignLogo({
+              uri: state.data.logo?.uri,
+            }),
+          )
       } else {
         setCredentialDesignerVisualDesignLogo(undefined)
       }
@@ -271,7 +262,7 @@ const CredentialDesignerCreateContextProvider = (props: any): ReactElement => {
   }
 
   const onCreate = async (args: StoreCredentialDesignArgs): Promise<void> => {
-    await createCredentialDesign({ values: args })
+    await createCredentialDesign({values: args})
   }
 
   return (
@@ -291,7 +282,7 @@ const CredentialDesignerCreateContextProvider = (props: any): ReactElement => {
         credentialDesignerVisualDesignFormData,
         credentialDesignerVisualDesignBackgroundImage,
         credentialDesignerVisualDesignLogo,
-        onCredentialDesignerVisualDesignFormDataChange
+        onCredentialDesignerVisualDesignFormDataChange,
       }}>
       {children}
     </CredentialDesignerCreateContext.Provider>

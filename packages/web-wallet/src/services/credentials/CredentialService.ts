@@ -1,10 +1,7 @@
 import {CredentialPayload} from '@veramo/core'
 import {JsonSchema} from '@jsonforms/core'
 import {QRValueResult} from '@components/modals/QRCodeModal'
-import {
-  IOID4VCIClientCreateOfferUriRequestArgs,
-  IOID4VCIClientCreateOfferUriResponse,
-} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-client'
+import {IOID4VCIClientCreateOfferUriRequestArgs, IOID4VCIClientCreateOfferUriResponse} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-client'
 import {getAgent} from '@agent'
 import Debug, {Debugger} from 'debug'
 import {CommonCredentialOfferFormat} from '@sphereon/oid4vci-common'
@@ -12,7 +9,6 @@ import {v4 as uuidv4} from 'uuid'
 import {CredentialSupplierConfigWithCredentialPayload, CredentialSupplierConfigWithHashOrId} from '@typings'
 
 const debug: Debugger = Debug('sphereon:cloud-wallet:credentialService')
-
 
 function isHashOrId(
   credentialDataSupplierInput: {hashOrId: string} | {credentialPayload: Partial<CredentialPayload>},
@@ -57,7 +53,6 @@ export const createCredentialPayloadWithSchema = (
   }
 }
 
-
 function mergeSchemaDefaults(data: any, schema: JsonSchema): any {
   if (!schema.properties) return data
 
@@ -77,7 +72,6 @@ function mergeSchemaDefaults(data: any, schema: JsonSchema): any {
 
   return result
 }
-
 
 export async function qrValueGenerator(
   credentialDataSupplierInput: CredentialSupplierConfigWithHashOrId | CredentialSupplierConfigWithCredentialPayload,

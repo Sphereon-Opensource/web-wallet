@@ -14,15 +14,7 @@ import {ManagedKeyInfo} from '@veramo/core'
 
 const CreateIdentifierKeysContent: FC = (): ReactElement => {
   const translate = useTranslate()
-  const {
-    keys,
-    onSetKeys,
-    onKeyDataChange,
-    keyData,
-    capabilitiesInfo,
-    identifierKeyMiddleware,
-    keySchema,
-  } = useIdentifierCreateOutletContext()
+  const {keys, onSetKeys, onKeyDataChange, keyData, capabilitiesInfo, identifierKeyMiddleware, keySchema} = useIdentifierCreateOutletContext()
 
   // Memoize ajv instance to prevent re-creation on every render
   const ajv = useMemo(() => createAjv({useDefaults: 'empty', coerceTypes: true}), [])
@@ -123,8 +115,7 @@ const CreateIdentifierKeysContent: FC = (): ReactElement => {
         {title: translate('create_identifier_keys_card_key_purpose_label'), value: key.purposes.join(', ')},
       ]
 
-      return <SelectionField key={key.id} value={key.alias} details={details}
-                             onRemove={key.readonly ? undefined : onRemove} />
+      return <SelectionField key={key.id} value={key.alias} details={details} onRemove={key.readonly ? undefined : onRemove} />
     })
   }
   const maxKeysReached = capabilitiesInfo && keys.length >= capabilitiesInfo.identifierCapability.maxKeys

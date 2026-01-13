@@ -25,7 +25,7 @@ const CredentialDesignerCreatePage: FC = (): ReactElement => {
     step,
     maxInteractiveSteps,
     onBack,
-    onNext
+    onNext,
   } = useCredentialDesignerCreateMachine()
 
   return (
@@ -44,17 +44,11 @@ const CredentialDesignerCreatePage: FC = (): ReactElement => {
               credentialDesignerClaimsFormData,
               onCredentialDesignerClaimsFormDataChange,
               credentialDesignerVisualDesignBackgroundImage,
-              credentialDesignerVisualDesignLogo
+              credentialDesignerVisualDesignLogo,
             }}
           />
           <div style={{display: 'flex', flexDirection: 'row'}}>
-            {step > 1 &&
-              <SecondaryButton
-                style={{width: 180}}
-                caption={translate('action_back_label')}
-                onClick={onBack}
-              />
-            }
+            {step > 1 && <SecondaryButton style={{width: 180}} caption={translate('action_back_label')} onClick={onBack} />}
             <PrimaryButton
               style={{width: 180, marginLeft: 'auto'}}
               caption={step === maxInteractiveSteps ? translate('action_save_label') : translate('action_proceed_label')}
@@ -84,7 +78,7 @@ const CredentialDesignerCreatePage: FC = (): ReactElement => {
               {
                 title: translate('design_credential_claims_structure_step_title'),
                 description: translate('design_credential_claims_structure_step_description'),
-              }
+              },
             ]}
             activeStep={step}
           />
@@ -94,7 +88,6 @@ const CredentialDesignerCreatePage: FC = (): ReactElement => {
   )
 }
 
-export const getStaticProps = async ({locale = 'en'}: {locale?: string}) =>
-  staticPropsWithSST({locale})
+export const getStaticProps = async ({locale = 'en'}: {locale?: string}) => staticPropsWithSST({locale})
 
 export default CredentialDesignerCreatePage

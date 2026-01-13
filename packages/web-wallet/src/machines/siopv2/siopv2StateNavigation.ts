@@ -20,9 +20,9 @@ import debug from 'debug'
 import {InformationRequestPageState} from '@/pages/siopv2/informationRequest'
 import {Format} from '@sphereon/pex-models'
 import {IdentityOrigin} from '@sphereon/ssi-sdk.data-store-types'
-import { getAgent } from '@agent'
+import {getAgent} from '@agent'
 import {ConnectionType, CorrelationIdentifierType, PartyOrigin, PartyTypeType} from '@sphereon/ssi-sdk.data-store-types'
-import { CredentialRole } from '@sphereon/ssi-types'
+import {CredentialRole} from '@sphereon/ssi-types'
 
 const handleNavigation = async (
   path: string,

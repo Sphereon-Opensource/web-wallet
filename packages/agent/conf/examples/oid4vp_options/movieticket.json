@@ -1,55 +1,30 @@
 {
   "queryId": "MovieTicket",
   "rpOpts": {
-    "supportedVersions": [
-      1000,
-      280
-    ],
+    "supportedVersions": [1000, 280],
     "responseMode": "direct_post",
     "clientMetadataOpts": {
-      "id_token_signing_alg_values_supported": [
-        "ES256"
-      ],
-      "request_object_signing_alg_values_supported": [
-        "ES256"
-      ],
-      "response_types_supported": [
-        "id_token",
-        "vp_token"
-      ],
+      "id_token_signing_alg_values_supported": ["ES256"],
+      "request_object_signing_alg_values_supported": ["ES256"],
+      "response_types_supported": ["id_token", "vp_token"],
       "client_name": "Movie tickets-r-us",
       "vp_formats_supported": {
         "jwt_vc_json": {
-          "alg_values": [
-            "ES256"
-          ]
+          "alg_values": ["ES256"]
         },
         "jwt_vp_json": {
-          "alg_values": [
-            "ES256"
-          ]
+          "alg_values": ["ES256"]
         },
         "jwt_vc": {
-          "alg_values": [
-            "ES256"
-          ]
+          "alg_values": ["ES256"]
         },
         "jwt_vp": {
-          "alg_values": [
-            "ES256"
-          ]
+          "alg_values": ["ES256"]
         }
       },
-      "scopes_supported": [
-        "openid did_authn"
-      ],
-      "subject_types_supported": [
-        "pairwise"
-      ],
-      "subject_syntax_types_supported": [
-        "did:web",
-        "did:jwk"
-      ],
+      "scopes_supported": ["openid did_authn"],
+      "subject_types_supported": ["pairwise"],
+      "subject_syntax_types_supported": ["did:web", "did:jwk"],
       "passBy": "VALUE"
     },
     "didOpts": {

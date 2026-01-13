@@ -146,7 +146,8 @@ function ShowAssetDetails() {
             <div className={style.detailsCredentialCardCaption}>{translate('asset_details_credential_card_caption')}</div>
             <SSICredentialCardView
               header={{
-                credentialTitle: credential?.name ?? credential?.credentialSubject?.items?.[0]?.name ?? getEnv('BROWSER_PUBLIC_TEMP_CREDENTIAL_TITLE'),
+                credentialTitle:
+                  credential?.name ?? credential?.credentialSubject?.items?.[0]?.name ?? getEnv('BROWSER_PUBLIC_TEMP_CREDENTIAL_TITLE'),
                 credentialSubtitle:
                   credential?.description ??
                   credential?.credentialSubject?.items?.[0]?.description ??
@@ -285,7 +286,7 @@ function ShowAssetDetails() {
 
   // FIXME at this point the asset needs to be defined or we need to take action
   const assetData: Asset = asset.data?.data!
-  
+
   return (
     <div className={style.container}>
       {showCredentialQRCodeModal && <QRCodeModal qrValueGenerator={generateQr} onClose={onCloseModal} onSubmit={onSubmitModal} />}
@@ -302,7 +303,6 @@ function ShowAssetDetails() {
   )
 }
 
-export const getStaticProps = async ({locale = 'en'}: {locale?: string}) =>
-  staticPropsWithSST({locale})
+export const getStaticProps = async ({locale = 'en'}: {locale?: string}) => staticPropsWithSST({locale})
 
 export default ShowAssetDetails

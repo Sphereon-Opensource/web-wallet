@@ -34,7 +34,7 @@ export function loadJsonFiles<T>({ path }: { path: string }): {
         asArray.push(object)
       }
     } catch (e) {
-      throw Error(`${(e as Error).message} for file ${path}/${fileName}`, {cause: e})
+      throw Error(`${(e as Error).message} for file ${path}/${fileName}`, { cause: e })
     }
   })
   return { names, fileNames: files, asObject, asArray }
@@ -45,16 +45,16 @@ export function loadJsonFiles<T>({ path }: { path: string }): {
  *
  * @param path The path to search for files with .json extension
  */
-export function loadJsonFileMap<T>({path}: {path: string}): Record<string, T> {
+export function loadJsonFileMap<T>({ path }: { path: string }): Record<string, T> {
   if (!fs.existsSync(path)) {
     console.log(`WARN: Path ${path} does not exist. Will not load json files`)
     return {}
   }
 
   const fileMap: Record<string, T> = {}
-  const fileNames = fs.readdirSync(path).filter(file => file.match(/\.json$/))
+  const fileNames = fs.readdirSync(path).filter((file) => file.match(/\.json$/))
 
-  fileNames.forEach(fileName => {
+  fileNames.forEach((fileName) => {
     try {
       const match = fileName.match(/^(.*?)\.json$/)
       if (match) {
@@ -62,7 +62,7 @@ export function loadJsonFileMap<T>({path}: {path: string}): Record<string, T> {
         fileMap[baseName] = JSON.parse(fs.readFileSync(`${path}/${fileName}`, 'utf8')) as T
       }
     } catch (e) {
-      throw Error(`${(e as Error).message} for file ${path}/${fileName}`, {cause: e})
+      throw Error(`${(e as Error).message} for file ${path}/${fileName}`, { cause: e })
     }
   })
 

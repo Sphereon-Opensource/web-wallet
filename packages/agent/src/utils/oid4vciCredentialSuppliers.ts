@@ -1,18 +1,13 @@
-import {
-  CredentialDataSupplier,
-  CredentialDataSupplierArgs,
-  CredentialDataSupplierResult,
-  CredentialSignerCallback,
-} from '@sphereon/oid4vci-issuer'
-import {TemplateVCGenerator} from './templateManager'
-import {CredentialRequestV1_0_15, OID4VCICredentialFormat, ProofOfPossession} from '@sphereon/oid4vci-common'
-import {CONF_PATH} from '../environment-vars'
+import { CredentialDataSupplier, CredentialDataSupplierArgs, CredentialDataSupplierResult, CredentialSignerCallback } from '@sphereon/oid4vci-issuer'
+import { TemplateVCGenerator } from './templateManager'
+import { CredentialRequestV1_0_15, OID4VCICredentialFormat, ProofOfPossession } from '@sphereon/oid4vci-common'
+import { CONF_PATH } from '../environment-vars'
 import {
   CredentialSupplierConfigWithCredentialPayload,
   CredentialSupplierConfigWithHashOrId,
   CredentialSupplierConfigWithTemplateSupport,
 } from '../types'
-import {normalizeFilePath} from './generic'
+import { normalizeFilePath } from './generic'
 import agent from '../agent'
 import {
   CredentialMapper,
@@ -22,8 +17,8 @@ import {
   SdJwtDecodedVerifiableCredentialPayload,
   W3CVerifiableCredential,
 } from '@sphereon/ssi-types'
-import {CredentialPayload} from '@veramo/core'
-import {decodeJWT} from 'did-jwt'
+import { CredentialPayload } from '@veramo/core'
+import { decodeJWT } from 'did-jwt'
 
 const templateVCGenerator = new TemplateVCGenerator()
 
@@ -87,8 +82,10 @@ class TemplateCredentialDataSupplier {
 
   // TODO Refactor, this is the TemplateCredentialDataSupplier & defaultCredentialDataSupplier smacked together
   public async generateCredentialData(args: CredentialDataSupplierArgs): Promise<CredentialDataSupplierResult> {
-    const {credentialRequest} = args
-    const credentialDataSupplierInput = args.credentialDataSupplierInput as CredentialSupplierConfigWithCredentialPayload | CredentialSupplierConfigWithHashOrId
+    const { credentialRequest } = args
+    const credentialDataSupplierInput = args.credentialDataSupplierInput as
+      | CredentialSupplierConfigWithCredentialPayload
+      | CredentialSupplierConfigWithHashOrId
     if (!credentialDataSupplierInput) {
       throw Error(`Agent needs a credential data supplier input upfront`)
     }
@@ -152,9 +149,7 @@ class TemplateCredentialDataSupplier {
         }
 
         if (!kid) {
-          const errorMsg = decodeErrors.length > 0
-            ? `No kid value found. Decode errors: ${decodeErrors.join('; ')}`
-            : 'No kid value found'
+          const errorMsg = decodeErrors.length > 0 ? `No kid value found. Decode errors: ${decodeErrors.join('; ')}` : 'No kid value found'
           throw Error(errorMsg)
         }
 
@@ -170,10 +165,9 @@ class TemplateCredentialDataSupplier {
       credential = credentialPayload as ICredential
     }
 
-
     // FIXME!!! Temp hack to see that the credential data is probably coming from the web wallet's JSON schema generator already providing a valid credential payload
-    if (!('credentialGenerationMethod' in credentialDataSupplierInput)
-      || credentialDataSupplierInput.credentialGenerationMethod !== 'JSON_SCHEMA') { // TODO === CredentialGenerationMethod.TEMPLATE when demo's fixed
+    if (!('credentialGenerationMethod' in credentialDataSupplierInput) || credentialDataSupplierInput.credentialGenerationMethod !== 'JSON_SCHEMA') {
+      // TODO === CredentialGenerationMethod.TEMPLATE when demo's fixed
       const credentialSupplierConfig = args.credentialSupplierConfig as CredentialSupplierConfigWithTemplateSupport
       const requestedConfigId = (credentialRequest as CredentialRequestV1_0_15).credential_configuration_id
       if (credentialSupplierConfig.template_mappings) {
@@ -185,11 +179,7 @@ class TemplateCredentialDataSupplier {
         })
 
         if (templateMapping) {
-          const templatePath = normalizeFilePath(
-            CONF_PATH,
-            credentialSupplierConfig.templates_base_dir,
-            templateMapping.template_path,
-          )
+          const templatePath = normalizeFilePath(CONF_PATH, credentialSupplierConfig.templates_base_dir, templateMapping.template_path)
           credential = templateVCGenerator.generateCredential(templatePath, credential ?? args.credentialDataSupplierInput)
           if (!credential) {
             throw new Error(`Credential generation failed for template ${templatePath}`)
@@ -219,7 +209,7 @@ class TemplateCredentialDataSupplier {
     }
 
     const formattedCredential: ICredential | SdJwtDecodedVerifiableCredentialPayload = {
-      ...credential as ICredential,
+      ...(credential as ICredential),
     }
 
     // credential.type to vct
@@ -230,11 +220,9 @@ class TemplateCredentialDataSupplier {
 
         if ((!('vct' in formattedCredential) || formattedCredential.vct === 'VerifiableCredential') && cred.type && Array.isArray(cred.type)) {
           const types = cred.type as string[]
-          const vct = types
-            .filter(value => value !== 'VerifiableCredential')
-            .find(value => !!value)
+          const vct = types.filter((value) => value !== 'VerifiableCredential').find((value) => !!value)
           if (vct) {
-            (formattedCredential as any).vct = vct
+            ;(formattedCredential as any).vct = vct
           }
         }
 
@@ -263,7 +251,7 @@ class TemplateCredentialDataSupplier {
       case 'jwt_vc_json-ld':
       case 'ldp_vc':
         if (!('@context' in formattedCredential)) {
-          (formattedCredential as any)['@context'] = 'https://www.w3.org/2018/credentials/v1'
+          ;(formattedCredential as any)['@context'] = 'https://www.w3.org/2018/credentials/v1'
         }
         break
     }

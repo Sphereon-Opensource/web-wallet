@@ -5,14 +5,9 @@ export const isNonEmptyString = (input?: string): boolean => {
 export const camelToSnakeCase = (str: string) => str.replace(/(?<!^)[A-Z]/g, (letter: string) => `_${letter.toLowerCase()}`)
 
 export const toCamelCase = (str: string): string => {
-  return str
-    .replace(/[-_\s]+(.)?/g, (_, c) => (c ? c.toUpperCase() : ""))
-    .replace(/^(.)/, (m) => m.toLowerCase())
+  return str.replace(/[-_\s]+(.)?/g, (_, c) => (c ? c.toUpperCase() : '')).replace(/^(.)/, m => m.toLowerCase())
 }
 
 export const toPascalCase = (str: string): string => {
-  return str
-    .replace(/[-_\s]+(.)?/g, (_, c) => (c ? c.toUpperCase() : ""))
-    .replace(/^(.)/, (m) => m.toUpperCase())
+  return str.replace(/[-_\s]+(.)?/g, (_, c) => (c ? c.toUpperCase() : '')).replace(/^(.)/, m => m.toUpperCase())
 }
-

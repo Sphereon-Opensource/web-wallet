@@ -8,8 +8,8 @@
 import { config as dotenvConfig } from 'dotenv-flow'
 import { resolve } from 'path'
 import { env } from '@sphereon/ssi-express-support'
-import {StatusListType} from '@sphereon/ssi-types'
-import * as process from "node:process";
+import { StatusListType } from '@sphereon/ssi-types'
+import * as process from 'node:process'
 dotenvConfig()
 
 /*********************************************************************************************************************
@@ -45,22 +45,22 @@ export const DB_ENCRYPTION_KEY = env('DB_ENCRYPTION_KEY', ENV_VAR_PREFIX) ?? '29
 
 let dbType = env('DB_TYPE', ENV_VAR_PREFIX)
 if (!dbType) {
-    if (DB_URL) {
-        if (DB_URL.includes('sqlite')) {
-            dbType = 'sqlite'
-        } else if (DB_URL.startsWith('http') || DB_URL.startsWith('postgres')) {
-            dbType = 'postgres'
-        } else {
-            dbType = 'postgres'
-        }
+  if (DB_URL) {
+    if (DB_URL.includes('sqlite')) {
+      dbType = 'sqlite'
+    } else if (DB_URL.startsWith('http') || DB_URL.startsWith('postgres')) {
+      dbType = 'postgres'
+    } else {
+      dbType = 'postgres'
     }
+  }
 }
 if (!dbType) {
-    if (DB_HOST || DB_PORT) {
-        dbType = 'postgres'
-    }
-} else if (dbType.toLowerCase().includes('postgres')) {
+  if (DB_HOST || DB_PORT) {
     dbType = 'postgres'
+  }
+} else if (dbType.toLowerCase().includes('postgres')) {
+  dbType = 'postgres'
 }
 export const DB_TYPE = dbType ?? 'postgres'
 process.env[`${ENV_VAR_PREFIX}${DB_TYPE}`] = DB_TYPE // make sure we sync back in case we did not have it above
@@ -92,7 +92,6 @@ export const IS_CONTACT_MANAGER_ENABLED = toBoolean(process.env.CONTACT_MANAGER_
 export const IS_JWKS_HOSTING_ENABLED = toBoolean(process.env.JWKS_HOSTING_ENABLED, true)
 export const IS_STATUS_LIST_ENABLED = toBoolean(process.env.IS_STATUS_LIST_ENABLED, true)
 export const IS_FEDERATION_ENABLED = toBoolean(process.env.IS_FEDERATION_ENABLED, false)
-
 
 export const STATUS_LIST_API_BASE_PATH = env('STATUS_LIST_API_BASE_PATH', ENV_VAR_PREFIX) ?? VC_API_BASE_PATH
 export const STATUS_LIST_ISSUER = env('STATUS_LIST_ISSUER', ENV_VAR_PREFIX) ?? DEFAULT_DID

@@ -9,7 +9,7 @@ import {oid4vciCredentialLocaleBrandingFrom} from '@sphereon/ssi-sdk.oid4vci-hol
 import PageHeaderBar from '@components/bars/PageHeaderBar'
 import {staticPropsWithSST} from '@/src/i18n/server'
 import {CredentialConfigurationSupported, CredentialConfigurationSupportedV1_0_15, CredentialsSupportedDisplay} from '@sphereon/oid4vci-common'
-import { getAgent } from '@agent'
+import {getAgent} from '@agent'
 import style from './index.module.css'
 import {CredentialCatalogItem} from '@typings'
 import CredentialCatalogView from '@components/views/CredentialCatalogView'
@@ -74,7 +74,9 @@ const ShowContactDetails: FC = (): ReactElement => {
         credentialBranding[configId] = await Promise.all(
           (credentialsConfigSupported.display ?? []).map(
             async (display: CredentialsSupportedDisplay): Promise<IBasicCredentialLocaleBranding> =>
-              await getAgent().ibCredentialLocaleBrandingFrom({localeBranding: await oid4vciCredentialLocaleBrandingFrom({credentialDisplay: display})}),
+              await getAgent().ibCredentialLocaleBrandingFrom({
+                localeBranding: await oid4vciCredentialLocaleBrandingFrom({credentialDisplay: display}),
+              }),
           ),
         )
       }),
@@ -96,44 +98,33 @@ const ShowContactDetails: FC = (): ReactElement => {
     }
 
     const credentialIssuer = (() => {
-      const identities = partyData?.data.identities ?? [];
+      const identities = partyData?.data.identities ?? []
 
       const httpsUrlIdentities = identities.filter(
         identity =>
           identity.roles.includes(CredentialRole.ISSUER) &&
           identity.identifier?.type === 'url' &&
-          identity.identifier?.correlationId?.startsWith('https')
-      );
+          identity.identifier?.correlationId?.startsWith('https'),
+      )
 
       // Pick the one with the longest url
-      const httpsUrlIdentity = httpsUrlIdentities.length > 0
-            ? httpsUrlIdentities.reduce((longest, current) =>
-                (current.identifier?.correlationId?.length ?? 0) > (longest.identifier?.correlationId?.length ?? 0)
-                    ? current
-                    : longest
+      const httpsUrlIdentity =
+        httpsUrlIdentities.length > 0
+          ? httpsUrlIdentities.reduce((longest, current) =>
+              (current.identifier?.correlationId?.length ?? 0) > (longest.identifier?.correlationId?.length ?? 0) ? current : longest,
             )
-            : undefined;
+          : undefined
 
-      const urlIdentity = identities.find(
-        identity =>
-          identity.roles.includes(CredentialRole.ISSUER) &&
-          identity.identifier?.type === 'url'
-      );
+      const urlIdentity = identities.find(identity => identity.roles.includes(CredentialRole.ISSUER) && identity.identifier?.type === 'url')
 
-      const anyIssuer = identities.find(identity =>
-        identity.roles.includes(CredentialRole.ISSUER)
-      );
+      const anyIssuer = identities.find(identity => identity.roles.includes(CredentialRole.ISSUER))
 
-      const chosen = httpsUrlIdentity ?? urlIdentity ?? anyIssuer;
+      const chosen = httpsUrlIdentity ?? urlIdentity ?? anyIssuer
 
-      const correlationId = chosen?.identifier?.correlationId?.replace('did:web:', 'https://');
+      const correlationId = chosen?.identifier?.correlationId?.replace('did:web:', 'https://')
 
-      return correlationId
-        ? correlationId.startsWith('http')
-          ? correlationId
-          : `https://${correlationId}`
-        : undefined;
-    })();
+      return correlationId ? (correlationId.startsWith('http') ? correlationId : `https://${correlationId}`) : undefined
+    })()
 
     if (!credentialIssuer) {
       return
@@ -141,8 +132,13 @@ const ShowContactDetails: FC = (): ReactElement => {
 
     OpenID4VCIClient.fromCredentialIssuer({
       credentialIssuer,
-      createAuthorizationRequestURL: false
-    }).then(setOpenID4VCIClient).catch(error => {console.error(error); return})
+      createAuthorizationRequestURL: false,
+    })
+      .then(setOpenID4VCIClient)
+      .catch(error => {
+        console.error(error)
+        return
+      })
   }, [id, isLoading])
 
   useEffect(() => {
@@ -256,7 +252,6 @@ const ShowContactDetails: FC = (): ReactElement => {
   )
 }
 
-export const getStaticProps = async ({locale = 'en'}: {locale?: string}) =>
-  staticPropsWithSST({locale})
+export const getStaticProps = async ({locale = 'en'}: {locale?: string}) => staticPropsWithSST({locale})
 
 export default ShowContactDetails

@@ -119,11 +119,7 @@ const PublishLinkedVPModal: FC<Props> = (props: Props): ReactElement | null => {
       return
     }
 
-    await onSubmit(
-      linkedVpId,
-      shareFromSpecificDate ? linkedVpFrom : undefined,
-      shareIndefinitely ? undefined : linkedVpUntil,
-    )
+    await onSubmit(linkedVpId, shareFromSpecificDate ? linkedVpFrom : undefined, shareIndefinitely ? undefined : linkedVpUntil)
   }
 
   const handleCancel = async (): Promise<void> => {
@@ -187,7 +183,7 @@ const PublishLinkedVPModal: FC<Props> = (props: Props): ReactElement | null => {
             </div>
           </div>
 
-          <div className={style.switchFormField} onMouseDown={(e) => e.preventDefault()}>
+          <div className={style.switchFormField} onMouseDown={e => e.preventDefault()}>
             <SSISwitchItem
               label={translate('create_shared_id_share_from_specific_date_label')}
               checked={shareFromSpecificDate}
@@ -231,7 +227,7 @@ const PublishLinkedVPModal: FC<Props> = (props: Props): ReactElement | null => {
             )}
           </div>
 
-          <div className={style.switchFormField} onMouseDown={(e) => e.preventDefault()}>
+          <div className={style.switchFormField} onMouseDown={e => e.preventDefault()}>
             <SSISwitchItem
               label={translate('create_shared_id_share_indefinitely_label')}
               checked={shareIndefinitely}
@@ -273,11 +269,7 @@ const PublishLinkedVPModal: FC<Props> = (props: Props): ReactElement | null => {
 
           <div className={style.buttonContainer}>
             <SecondaryButton caption={translate('action_cancel_label')} onClick={handleCancel} />
-            <PrimaryButton
-              style={{minWidth: 180}}
-              caption={translate('action_create_label')}
-              onClick={handleSubmit}
-            />
+            <PrimaryButton style={{minWidth: 180}} caption={translate('action_create_label')} onClick={handleSubmit} />
           </div>
         </div>
       </div>

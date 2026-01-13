@@ -23,13 +23,7 @@ type JsonEditorProps = {
 
 const defaultQuery = '{\n\t\n}'
 
-const JsonEditor: FC<JsonEditorProps> = ({
-                                           initialPayload,
-                                           isNewDocument,
-                                           isReadOnly,
-                                           customValidator,
-                                           onEditorContentChanged,
-                                         }) => {
+const JsonEditor: FC<JsonEditorProps> = ({initialPayload, isNewDocument, isReadOnly, customValidator, onEditorContentChanged}) => {
   const [editorView, setEditorView] = useState<EditorView | null>(null)
   const initialContent = initialPayload !== undefined && initialPayload.length > 0 ? initialPayload : isNewDocument ? defaultQuery : ''
   const [editorContent, setEditorContent] = useState<string>('')

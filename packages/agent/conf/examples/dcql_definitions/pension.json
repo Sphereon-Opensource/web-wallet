@@ -10,46 +10,26 @@
         "require_cryptographic_holder_binding": true,
         "multiple": false,
         "meta": {
-          "vct_values": [
-            "PensionSdJwt"
-          ]
+          "vct_values": ["PensionSdJwt"]
         },
         "claims": [
           {
-            "path": [
-              "Person",
-              "personal_administrative_number"
-            ]
+            "path": ["Person", "personal_administrative_number"]
           },
           {
-            "path": [
-              "Person",
-              "family_name"
-            ]
+            "path": ["Person", "family_name"]
           },
           {
-            "path": [
-              "Pension",
-              "startDate"
-            ]
+            "path": ["Pension", "startDate"]
           },
           {
-            "path": [
-              "Pension",
-              "endDate"
-            ]
+            "path": ["Pension", "endDate"]
           },
           {
-            "path": [
-              "Pension",
-              "typeCode"
-            ]
+            "path": ["Pension", "typeCode"]
           },
           {
-            "path": [
-              "Pension",
-              "provisional"
-            ]
+            "path": ["Pension", "provisional"]
           }
         ]
       }

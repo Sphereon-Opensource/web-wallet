@@ -21,12 +21,11 @@ import {CredentialDesignEntity, SdJwtFormatOptions, StoreCredentialDesignArgs} f
 export const credentialDesignDataProvider = (): DataProvider => ({
   getList: async <TData extends BaseRecord = BaseRecord>({resource, pagination, filters, sort}: GetListParams): Promise<GetListResponse<TData>> => {
     const client = supabaseServiceClient()
-    const { current = 1, pageSize = 10 } = pagination || {}
+    const {current = 1, pageSize = 10} = pagination || {}
     const from = (current - 1) * pageSize
     const to = current * pageSize - 1
-    let query = client
-      .from('meta_data_set')
-      .select(`
+    let query = client.from('meta_data_set').select(
+      `
         *,
         meta_data_keys:meta_data_keys!fk_meta_data_set (
           *,
@@ -47,9 +46,11 @@ export const credentialDesignDataProvider = (): DataProvider => ({
             dimensions:ImageDimensions!FK_ImageAttributes_dimensionsId (*)
           )
         )
-    `, { count: 'exact' })
+    `,
+      {count: 'exact'},
+    )
     query = query.range(from, to)
-    const { data, error, count } = await query
+    const {data, error, count} = await query
 
     if (error) {
       throw new Error(error.message)
@@ -59,14 +60,15 @@ export const credentialDesignDataProvider = (): DataProvider => ({
 
     return {
       data: result as TData[],
-      total: count ?? (data?.length ?? 0)
+      total: count ?? data?.length ?? 0,
     }
   },
   getOne: async <TData extends BaseRecord = BaseRecord>({resource, id}: GetOneParams): Promise<GetOneResponse<TData>> => {
     const client = supabaseServiceClient()
     const result = await client
       .from('meta_data_set')
-      .select(`
+      .select(
+        `
         *,
         meta_data_keys:meta_data_keys!fk_meta_data_set (
           *,
@@ -87,39 +89,39 @@ export const credentialDesignDataProvider = (): DataProvider => ({
             dimensions:ImageDimensions!FK_ImageAttributes_dimensionsId (*)
           )
         )
-      `)
+      `,
+      )
       .eq('id', id)
       .single()
 
     const data = new CredentialDesignEntity(result.data).asDTO() as unknown
 
     return {
-      data: data as TData
+      data: data as TData,
     }
   },
-  create: async <TData extends BaseRecord = BaseRecord, TVariables = {}>({resource, variables, meta}: CreateParams<TVariables>): Promise<CreateResponse<TData>> => {
+  create: async <TData extends BaseRecord = BaseRecord, TVariables = {}>({
+    resource,
+    variables,
+    meta,
+  }: CreateParams<TVariables>): Promise<CreateResponse<TData>> => {
     const client = supabaseServiceClient()
     // @ts-ignore
-    const { name, schema, uiSchema, branding, statusListUri, options, isAdvancedSchema } = variables
+    const {name, schema, uiSchema, branding, statusListUri, options, isAdvancedSchema} = variables
 
     // Enrich the schema with disclosureFrame (for non-required fields) and statusList (if URI provided)
     const enrichedSchema = enrichSchemaWithStatusList(enrichSchemaWithDisclosureFrame(schema), statusListUri)
 
     let formStepId
-    const formStepResult = await client
-      .from('form_step')
-      .select('*')
-      .eq('form_id', 'credentialIssuanceWizard').single()
+    const formStepResult = await client.from('form_step').select('*').eq('form_id', 'credentialIssuanceWizard').single()
 
     if (!formStepResult.data) {
       const formStep = {
         form_id: 'credentialIssuanceWizard',
         step_nr: 1,
-        order: 1
+        order: 1,
       }
-      const result  = await client.from('form_step').insert([
-        formStep
-      ]).single()
+      const result = await client.from('form_step').insert([formStep]).single()
       formStepId = (result.data as any).id
     } else {
       formStepId = formStepResult.data.id
@@ -137,12 +139,14 @@ export const credentialDesignDataProvider = (): DataProvider => ({
       p_credential_signing_alg_values_supported: options.credentialSigningAlgValuesSupported ?? [],
       p_proof_types_supported: options.proofTypesSupported ?? {},
       p_advanced_schema: isAdvancedSchema ?? false,
-      p_branding: branding ? {
-        logo: branding.logo,
-        background_image: branding.backgroundImage,
-        text_color: branding.textColor,
-        background_color: branding.backgroundColor,
-      } : null
+      p_branding: branding
+        ? {
+            logo: branding.logo,
+            background_image: branding.backgroundImage,
+            text_color: branding.textColor,
+            background_color: branding.backgroundColor,
+          }
+        : null,
     })
 
     if (error) {
@@ -152,29 +156,28 @@ export const credentialDesignDataProvider = (): DataProvider => ({
     const result = new CredentialDesignEntity(data).asDTO() as unknown
 
     return {
-      data: result as TData
+      data: result as TData,
     }
   },
-  createMany: async <TData extends BaseRecord = BaseRecord, TVariables = {}>({resource, variables, meta}: CreateManyParams<TVariables>): Promise<CreateManyResponse<TData>> => {
+  createMany: async <TData extends BaseRecord = BaseRecord, TVariables = {}>({
+    resource,
+    variables,
+    meta,
+  }: CreateManyParams<TVariables>): Promise<CreateManyResponse<TData>> => {
     const client = supabaseServiceClient()
     // @ts-ignore
-    const { credentialDesigns } = variables
+    const {credentialDesigns} = variables
 
     let formStepId
-    const formStepResult = await client
-      .from('form_step')
-      .select('*')
-      .eq('form_id', 'credentialIssuanceWizard').single()
+    const formStepResult = await client.from('form_step').select('*').eq('form_id', 'credentialIssuanceWizard').single()
 
     if (!formStepResult.data) {
       const formStep = {
         form_id: 'credentialIssuanceWizard',
         step_nr: 1,
-        order: 1
+        order: 1,
       }
-      const result  = await client.from('form_step').insert([
-        formStep
-      ]).single()
+      const result = await client.from('form_step').insert([formStep]).single()
       formStepId = (result.data as any).id
     } else {
       formStepId = formStepResult.data.id
@@ -194,30 +197,36 @@ export const credentialDesignDataProvider = (): DataProvider => ({
           p_credential_signing_alg_values_supported: design.options.credentialSigningAlgValuesSupported ?? [],
           p_proof_types_supported: design.options.proofTypesSupported ?? {},
           p_advanced_schema: design.isAdvancedSchema ?? false,
-          p_branding: design.branding ? {
-            logo: design.branding.logo,
-            background_image: design.branding.backgroundImage,
-            text_color: design.branding.textColor,
-            background_color: design.branding.backgroundColor,
-          } : null
-        })
-      )
+          p_branding: design.branding
+            ? {
+                logo: design.branding.logo,
+                background_image: design.branding.backgroundImage,
+                text_color: design.branding.textColor,
+                background_color: design.branding.backgroundColor,
+              }
+            : null,
+        }),
+      ),
     )
 
     const data: TData[] = results.map((result: any) => new CredentialDesignEntity(result).asDTO())
 
-    return { data }
+    return {data}
   },
-  update: async <TData extends BaseRecord = BaseRecord, TVariables = {}>({resource, id, variables}: UpdateParams<TVariables>): Promise<UpdateResponse<TData>> => {
+  update: async <TData extends BaseRecord = BaseRecord, TVariables = {}>({
+    resource,
+    id,
+    variables,
+  }: UpdateParams<TVariables>): Promise<UpdateResponse<TData>> => {
     const client = supabaseServiceClient()
     // @ts-ignore
-    const { name, schema, uiSchema, branding, options, isAdvancedSchema } = variables
+    const {name, schema, uiSchema, branding, options, isAdvancedSchema} = variables
 
-    if ((options.format !== 'dc+sd-jwt' || options.format !== 'vc+sd-jwt')) {
+    if (options.format !== 'dc+sd-jwt' || options.format !== 'vc+sd-jwt') {
       delete options.vct
     }
 
-    const { data, error } = await client.rpc('update_credential_design', {
+    const {data, error} = await client.rpc('update_credential_design', {
       p_set_id: id,
       p_identifier: name,
       p_credential_format: options.format,
@@ -229,12 +238,14 @@ export const credentialDesignDataProvider = (): DataProvider => ({
       p_credential_signing_alg_values_supported: options.credentialSigningAlgValuesSupported ?? [],
       p_proof_types_supported: options.proofTypesSupported ?? {},
       p_advanced_schema: isAdvancedSchema ?? false,
-      p_branding: branding ? {
-        logo: branding.logo,
-        background_image: branding.backgroundImage,
-        text_color: branding.textColor,
-        background_color: branding.backgroundColor,
-      } : null
+      p_branding: branding
+        ? {
+            logo: branding.logo,
+            background_image: branding.backgroundImage,
+            text_color: branding.textColor,
+            background_color: branding.backgroundColor,
+          }
+        : null,
     })
 
     if (error) {
@@ -242,17 +253,16 @@ export const credentialDesignDataProvider = (): DataProvider => ({
     }
 
     return {
-      data: data as TData
+      data: data as TData,
     }
   },
-  deleteOne: async <TData extends BaseRecord = BaseRecord, TVariables = {}>({resource, id}: DeleteOneParams<TVariables>): Promise<DeleteOneResponse<TData>> => {
+  deleteOne: async <TData extends BaseRecord = BaseRecord, TVariables = {}>({
+    resource,
+    id,
+  }: DeleteOneParams<TVariables>): Promise<DeleteOneResponse<TData>> => {
     const client = supabaseServiceClient()
 
-    const { data, error } = await client
-      .from('meta_data_set')
-      .delete()
-      .eq('id', id)
-      .single()
+    const {data, error} = await client.from('meta_data_set').delete().eq('id', id).single()
 
     if (error) {
       throw new Error(error.message)
@@ -263,10 +273,10 @@ export const credentialDesignDataProvider = (): DataProvider => ({
     }
 
     return {
-      data: data as TData
+      data: data as TData,
     }
   },
   getApiUrl: (): string => {
     throw Error('Not implemented')
-  }
+  },
 })

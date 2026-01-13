@@ -11,7 +11,7 @@ import {ObjectStorage} from '@objectstorage'
 import {OnDocumentLoadSuccess} from 'react-pdf/src/shared/types'
 
 // Import PDF.js worker
-pdfjs.GlobalWorkerOptions.workerSrc ='/pdf.worker.min.js'
+pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js'
 
 export type Props = {
   pdfPath: string

@@ -77,18 +77,19 @@ const InformationRequestPage: React.FC = (): ReactElement => {
         />
       </div>
       <div className={style.shareCredentialsDataContainer}>
-        {dcqlQuery.credentials?.map((credential:DcqlCredentialQuery, index) => {
-            return ( // FIXME how to map which credential?
-              <CredentialSelectionView
-                key={credential.id}
-                credentialRole={CredentialRole.HOLDER}
-                credential={credential}
-                selectableCredentials={selectableCredentialsMap.get(credential.id) ?? []}
-                fallbackPurpose={''} // TODO SSISDK-41
-                index={index}
-                onSelect={handleCredentialSelect}
-              />
-            )
+        {dcqlQuery.credentials?.map((credential: DcqlCredentialQuery, index) => {
+          return (
+            // FIXME how to map which credential?
+            <CredentialSelectionView
+              key={credential.id}
+              credentialRole={CredentialRole.HOLDER}
+              credential={credential}
+              selectableCredentials={selectableCredentialsMap.get(credential.id) ?? []}
+              fallbackPurpose={''} // TODO SSISDK-41
+              index={index}
+              onSelect={handleCredentialSelect}
+            />
+          )
         })}
 
         <div className={style.buttonContainer}>
@@ -105,7 +106,6 @@ const InformationRequestPage: React.FC = (): ReactElement => {
   )
 }
 
-export const getStaticProps = async ({locale = 'en'}: {locale?: string}) =>
-  staticPropsWithSST({locale})
+export const getStaticProps = async ({locale = 'en'}: {locale?: string}) => staticPropsWithSST({locale})
 
 export default InformationRequestPage

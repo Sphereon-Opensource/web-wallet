@@ -65,37 +65,27 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
   const [disabled, setDisabled] = useState<boolean>(true)
   const [credentialDesignerDetailsFormData, setCredentialDesignerDetailsFormData] = useState<JSONFormState>({
     data: {
-      "format": "dc+sd-jwt",
-      "cryptographic_binding_methods_supported": [
-        "did:web",
-        "did:jwk",
-      ],
-      "credential_signing_alg_values_supported": [
-        "ES256",
-        "RS256"
-      ],
-      "proof_types_supported": {
-        "jwt": {
-          "proof_signing_alg_values_supported": [
-            "ES256"
-          ]
-        }
-      }
-    }
+      format: 'dc+sd-jwt',
+      cryptographic_binding_methods_supported: ['did:web', 'did:jwk'],
+      credential_signing_alg_values_supported: ['ES256', 'RS256'],
+      proof_types_supported: {
+        jwt: {
+          proof_signing_alg_values_supported: ['ES256'],
+        },
+      },
+    },
   })
   const [credentialDesignerClaimsFormData, setCredentialDesignerClaimsFormData] = useState<JSONFormState>({
     data: {
-      credentialClaims: [
-        {}
-      ]
-    }
+      credentialClaims: [{}],
+    },
   })
 
   const [credentialDesignerVisualDesignFormData, setCredentialDesignerVisualDesignFormData] = useState<JSONFormState>({
     data: {
-      "background_color": "#7276f7",
-      "text_color": "#fbfbfb"
-    }
+      background_color: '#7276f7',
+      text_color: '#fbfbfb',
+    },
   })
 
   const [credentialDesignerVisualDesignBackgroundImage, setCredentialDesignerVisualDesignBackgroundImage] = useState<ImageAttributes | undefined>()
@@ -117,36 +107,26 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
         // FIXME for now just resetting everything as we do not have support yet to rehydrate the fields again
         setCredentialDesignerDetailsFormData({
           data: {
-            "format": "dc+sd-jwt",
-            "cryptographic_binding_methods_supported": [
-              "did:web",
-              "did:jwk",
-            ],
-            "credential_signing_alg_values_supported": [
-              "ES256",
-              "RS256"
-            ],
-            "proof_types_supported": {
-              "jwt": {
-                "proof_signing_alg_values_supported": [
-                  "ES256"
-                ]
-              }
-            }
-          }
+            format: 'dc+sd-jwt',
+            cryptographic_binding_methods_supported: ['did:web', 'did:jwk'],
+            credential_signing_alg_values_supported: ['ES256', 'RS256'],
+            proof_types_supported: {
+              jwt: {
+                proof_signing_alg_values_supported: ['ES256'],
+              },
+            },
+          },
         })
         setCredentialDesignerClaimsFormData({
           data: {
-            credentialClaims: [
-              {}
-            ]
-          }
+            credentialClaims: [{}],
+          },
         })
         setCredentialDesignerVisualDesignFormData({
           data: {
-            "background_color": "#7276f7",
-            "text_color": "#fbfbfb"
-          }
+            background_color: '#7276f7',
+            text_color: '#fbfbfb',
+          },
         })
       }
     }
@@ -172,7 +152,8 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
       }
     } else if (step === 3) {
       const disabled = !advancedMode
-        ? ((credentialDesignerClaimsFormData?.errors?.length ?? 0) > 0 || !noEmptyPropertiesRecursive(credentialDesignerClaimsFormData?.data?.credentialClaims ?? []))
+        ? (credentialDesignerClaimsFormData?.errors?.length ?? 0) > 0 ||
+          !noEmptyPropertiesRecursive(credentialDesignerClaimsFormData?.data?.credentialClaims ?? [])
         : false
 
       setDisabled(disabled)
@@ -186,7 +167,7 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
 
   const noEmptyPropertiesRecursive = (items: Array<any>): boolean => {
     return items.every(item => {
-      const itemType = item.type;
+      const itemType = item.type
 
       if (itemType !== 'object') {
         return true
@@ -212,10 +193,10 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
             schema: buildResult.schema,
             uiSchema: buildResult.uiSchema,
             branding: new CredentialDesignBrandingDTO({
-                backgroundColor: credentialDesignerVisualDesignFormData.data?.background_color,
-                textColor: credentialDesignerVisualDesignFormData.data?.text_color,
-                backgroundImage: credentialDesignerVisualDesignBackgroundImage,
-                logo: credentialDesignerVisualDesignLogo,
+              backgroundColor: credentialDesignerVisualDesignFormData.data?.background_color,
+              textColor: credentialDesignerVisualDesignFormData.data?.text_color,
+              backgroundImage: credentialDesignerVisualDesignBackgroundImage,
+              logo: credentialDesignerVisualDesignLogo,
             }),
             options: {
               format: credentialDesignerDetailsFormData.data.format,
@@ -224,9 +205,8 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
               cryptographicBindingMethodsSupported: credentialDesignerDetailsFormData.data.cryptographic_binding_methods_supported,
               proofTypesSupported: credentialDesignerDetailsFormData.data.proof_types_supported,
               scope: credentialDesignerDetailsFormData.data.scope,
-            }
-          })
-          .then(() => {
+            },
+          }).then(() => {
             const credentialConfiguration = toCredentialConfiguration({
               identifier: credentialDesignerDetailsFormData.data.identifier,
               schema: buildResult.schema,
@@ -237,8 +217,8 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
                 vct: credentialDesignerDetailsFormData.data.vct ?? credentialDesignerDetailsFormData.data.identifier,
                 cryptographicBindingMethodsSupported: credentialDesignerDetailsFormData.data.cryptographic_binding_methods_supported,
                 proofTypesSupported: credentialDesignerDetailsFormData.data.proof_types_supported,
-                scope: credentialDesignerDetailsFormData.data.scope
-              }
+                scope: credentialDesignerDetailsFormData.data.scope,
+              },
             })
             void updateOid4vciMetadata(credentialDesignerDetailsFormData.data.identifier, credentialConfiguration)
           })
@@ -255,7 +235,7 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
   }, [step])
 
   const onModeChange = useCallback(async (): Promise<void> => {
-      setAdvancedMode(prev => !prev)
+    setAdvancedMode(prev => !prev)
   }, [advancedMode])
 
   const onCredentialDesignerDetailsFormDataChange = async (state: JSONFormState): Promise<void> => {
@@ -278,14 +258,16 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
               ...(dimensions && {
                 dimensions: {
                   width: dimensions.width,
-                  height: dimensions.height
-                }
-              })
-            })
+                  height: dimensions.height,
+                },
+              }),
+            }),
           )
-          .catch(() => setCredentialDesignerVisualDesignBackgroundImage({
-            uri: state.data.background_image?.uri
-          }))
+          .catch(() =>
+            setCredentialDesignerVisualDesignBackgroundImage({
+              uri: state.data.background_image?.uri,
+            }),
+          )
       } else {
         setCredentialDesignerVisualDesignBackgroundImage(undefined)
       }
@@ -300,14 +282,16 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
               ...(dimensions && {
                 dimensions: {
                   width: dimensions.width,
-                  height: dimensions.height
-                }
-              })
-            })
+                  height: dimensions.height,
+                },
+              }),
+            }),
           )
-          .catch(() => setCredentialDesignerVisualDesignLogo({
-            uri: state.data.logo?.uri
-          }))
+          .catch(() =>
+            setCredentialDesignerVisualDesignLogo({
+              uri: state.data.logo?.uri,
+            }),
+          )
       } else {
         setCredentialDesignerVisualDesignLogo(undefined)
       }
@@ -315,10 +299,10 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
   }
 
   const buildCredentialSchemas = async (
-    claims: any
+    claims: any,
   ): Promise<{schema: CredentialSchema; uiSchema: CredentialUISchema | Array<CredentialUISchema>}> => {
-    const schema: CredentialSchema = "credentialClaims" in claims ? buildCredentialSchema(claims.credentialClaims) : claims
-    const uiSchema = "credentialClaims" in claims ? buildCredentialUISchema(claims.credentialClaims) : buildCredentialUISchema(claims)
+    const schema: CredentialSchema = 'credentialClaims' in claims ? buildCredentialSchema(claims.credentialClaims) : claims
+    const uiSchema = 'credentialClaims' in claims ? buildCredentialUISchema(claims.credentialClaims) : buildCredentialUISchema(claims)
 
     return {schema, uiSchema}
   }
@@ -333,7 +317,7 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
       } else if (claim.type === 'array') {
         properties[claim.claimName] = {
           type: 'array',
-          items: { type: 'string' }
+          items: {type: 'string'},
         }
       } else {
         properties[claim.claimName] = {type: claim.type}
@@ -351,18 +335,18 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
     }
   }
 
-  const normalizeSchemaInput = (input: any): Array<{ name: string; schema: any }> => {
+  const normalizeSchemaInput = (input: any): Array<{name: string; schema: any}> => {
     if (Array.isArray(input)) {
-      return input.map((claim) => ({
+      return input.map(claim => ({
         name: claim.claimName,
-        schema: claim
+        schema: claim,
       }))
     }
 
     if (input?.type === 'object' && input?.properties && !Array.isArray(input.properties)) {
       return Object.entries(input.properties).map(([name, schema]) => ({
         name,
-        schema
+        schema,
       }))
     }
 
@@ -374,40 +358,35 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
     basePath: string = '#/properties',
     isRoot: boolean = true,
   ): CredentialUISchema | Array<CredentialUISchema> => {
-
     const elements: CredentialUISchema[] = []
     const normalized = normalizeSchemaInput(input)
 
-    normalized.forEach(({ name, schema }) => {
+    normalized.forEach(({name, schema}) => {
       const path = `${basePath}/${name}`
       const isObject = schema.type === 'object' && schema.properties
 
       if (isObject) {
-        const nextInput = Array.isArray(schema.properties)
-          ? schema.properties
-          : schema
+        const nextInput = Array.isArray(schema.properties) ? schema.properties : schema
 
         elements.push({
           type: 'Group',
           label: name,
-          elements: buildCredentialUISchema(nextInput, `${path}/properties`, false) as CredentialUISchema[]
+          elements: buildCredentialUISchema(nextInput, `${path}/properties`, false) as CredentialUISchema[],
         })
       } else {
         elements.push({
           type: 'Control',
           label: name,
-          scope: path
+          scope: path,
         })
       }
     })
 
-    return isRoot
-      ? { type: 'VerticalLayout', elements }
-      : elements
+    return isRoot ? {type: 'VerticalLayout', elements} : elements
   }
 
   const storeCredentialSchema = async (args: StoreCredentialSchemaArgs): Promise<void> => {
-    await mutateAsync({ values: args })
+    await mutateAsync({values: args})
   }
 
   return (

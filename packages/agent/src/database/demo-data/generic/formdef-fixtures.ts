@@ -29,8 +29,6 @@ export async function addFormDefsGeneric() {
                                                             timestamp_value)
                                VALUES ('${keyIdMovie}', 1, 'MovieTicket', NULL, NULL, NULL)`)
 
-
-
   response = await ds.query(`INSERT INTO meta_data_set(tenant_id, name)
                              VALUES (NULL, 'Swimmingpool')
                                RETURNING id`)
@@ -49,8 +47,6 @@ export async function addFormDefsGeneric() {
                                                           timestamp_value)
                              VALUES ('${keyIdSwimmingpool}', 1, 'Swimmingpool', NULL, NULL, NULL)`)
 
-
-
   response = await ds.query(`INSERT INTO meta_data_set(tenant_id, name)
                              VALUES (NULL, 'Employee')
                                RETURNING id`)
@@ -68,9 +64,6 @@ export async function addFormDefsGeneric() {
   response = await ds.query(`INSERT INTO meta_data_values(key_id, index, text_value, number_value, boolean_value,
                                                           timestamp_value)
                              VALUES ('${keyIdEmployee}', 1, 'Employee', NULL, NULL, NULL)`)
-
-
-
 
   // Form step
   response = await ds.query(`INSERT INTO form_step(tenant_id, form_id, step_nr, "order")
@@ -94,9 +87,6 @@ export async function addFormDefsGeneric() {
   await ds.query(`INSERT INTO form_step_to_schema_definition(form_step_id, schema_definition_id)
                     VALUES ('${formStepId}', '${response[0].id}')`)
 
-
-
-
   response = await ds.query(`INSERT INTO schema_definition (tenant_id, extends_id, correlation_id, schema_type, entity_type, schema,
                                                               meta_data_set_id)
                                VALUES (NULL, NULL, 'Swimmingpool', 'UI_Form', 'VC', '${JSON.stringify(swimmingpoolUISchema)}',
@@ -112,9 +102,6 @@ export async function addFormDefsGeneric() {
                                RETURNING id`)
   await ds.query(`INSERT INTO form_step_to_schema_definition(form_step_id, schema_definition_id)
                     VALUES ('${formStepId}', '${response[0].id}')`)
-
-
-
 
   response = await ds.query(`INSERT INTO schema_definition (tenant_id, extends_id, correlation_id, schema_type, entity_type, schema,
                                                               meta_data_set_id)

@@ -12,12 +12,11 @@ const CredentialDesignsListPage: React.FC = () => {
   return (
     <div className={style.container}>
       <AppHeaderBar title={translate('credential_designs_overview_title')} />
-      <CredentialDesignsList allowCreateCredentialDesign={getEnv('BROWSER_PUBLIC_DISABLE_CREDENTIAL_DESIGN_INTERFACE') !== 'true'}/>
+      <CredentialDesignsList allowCreateCredentialDesign={getEnv('BROWSER_PUBLIC_DISABLE_CREDENTIAL_DESIGN_INTERFACE') !== 'true'} />
     </div>
   )
 }
 
-export const getStaticProps = async ({locale = 'en'}: {locale?: string}) =>
-  staticPropsWithSST({locale})
+export const getStaticProps = async ({locale = 'en'}: {locale?: string}) => staticPropsWithSST({locale})
 
 export default CredentialDesignsListPage

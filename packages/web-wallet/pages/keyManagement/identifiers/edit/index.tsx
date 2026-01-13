@@ -67,11 +67,7 @@ const IdentifierEditPage: FC = () => {
             <SecondaryButton caption={translate('action_back_label')} onClick={onBack} />
             <PrimaryButton
               style={{marginLeft: 'auto'}}
-              caption={
-                step === maxInteractiveSteps
-                  ? translate('action_update_label')
-                  : translate('action_proceed_label')
-              }
+              caption={step === maxInteractiveSteps ? translate('action_update_label') : translate('action_proceed_label')}
               onClick={onNext}
               disabled={disabled}
             />
@@ -85,7 +81,6 @@ const IdentifierEditPage: FC = () => {
   )
 }
 
-export const getStaticProps = async ({locale = 'en'}: {locale?: string}) =>
-  staticPropsWithSST({locale})
+export const getStaticProps = async ({locale = 'en'}: {locale?: string}) => staticPropsWithSST({locale})
 
 export default IdentifierEditPage

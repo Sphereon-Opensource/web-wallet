@@ -1,8 +1,8 @@
 {
-  "correlationId": "http://my-hostname-or-ip:5010/1stparty/oid4vci",
+  "correlationId": "https://5a533518725f.ngrok.app/1stparty/oid4vci",
   "definitionId": "PensionCredential",
   "issuerOpts": {
-    "iss": "http://my-hostname-or-ip:5010",
+    "iss": "https://5a533518725f.ngrok.app",
     "didOpts": {
       "checkLinkedDomains": "if_present",
       "identifierOpts": {
@@ -26,8 +26,8 @@
     },
     "authorizationChallengeOpts": {
       "enabled": true,
-      "createAuthRequestUriEndpointPath": "http://my-hostname-or-ip:5010/oid4vp/webapp/definitions/:definitionId/auth-requests",
-      "verifyAuthResponseEndpointPath": "http://my-hostname-or-ip:5010/oid4vp/webapp/auth-status"
+      "createAuthRequestUriEndpointPath": "https://5a533518725f.ngrok.app/oid4vp/webapp/definitions/:definitionId/auth-requests",
+      "verifyAuthResponseEndpointPath": "https://5a533518725f.ngrok.app/oid4vp/webapp/auth-status"
     }
   }
 }

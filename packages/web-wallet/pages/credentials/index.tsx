@@ -4,7 +4,7 @@ import AppHeaderBar from '@components/bars/AppHeaderBar'
 import CredentialsList from '@components/views/CredentialsList'
 import style from './index.module.css'
 import {staticPropsWithSST} from '@/src/i18n/server'
-import { CredentialRole } from '@sphereon/ssi-types'
+import {CredentialRole} from '@sphereon/ssi-types'
 import {getEnv} from '@/src/services/env'
 
 const CredentialsListPage: React.FC = () => {
@@ -18,7 +18,6 @@ const CredentialsListPage: React.FC = () => {
   )
 }
 
-export const getStaticProps = async ({locale = 'en'}: {locale?: string}) =>
-  staticPropsWithSST({locale})
+export const getStaticProps = async ({locale = 'en'}: {locale?: string}) => staticPropsWithSST({locale})
 
 export default CredentialsListPage

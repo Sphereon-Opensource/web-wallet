@@ -1,4 +1,4 @@
 export type RegisterDidOnLedgerArgs = {
-    did: string
-    credentialIssuer: string
+  did: string
+  credentialIssuer: string
 }

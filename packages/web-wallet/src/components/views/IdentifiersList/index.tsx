@@ -163,14 +163,7 @@ const IdentifiersList: FC<Props> = (props: Props): ReactElement => {
 
   const data = keyManagementIdentifiers.map(value => ({...value, actions: ''}))
 
-  return (
-    <SSITableView<KeyManagementIdentifierWithActions>
-      key={short.generate()}
-      data={data}
-      columns={columns}
-      actions={buildActionList()}
-    />
-  )
+  return <SSITableView<KeyManagementIdentifierWithActions> key={short.generate()} data={data} columns={columns} actions={buildActionList()} />
 }
 
 export default IdentifiersList

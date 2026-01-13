@@ -1,18 +1,16 @@
-import {
-  DB_TYPE,
-} from '../environment-vars'
+import { DB_TYPE } from '../environment-vars'
 
 console.log(`Database type '${DB_TYPE}' is being used`) // This forces the env to be loaded before typeorm
 
-import {addContactsRWS} from './demo-data/rws/contact-fixtures'
-import {addContactsKonkuk} from './demo-data/konkuk/contact-fixtures'
-import {addFormDefsKonkuk} from './demo-data/konkuk/formdef-fixtures'
-import {addFormDefsBelastingdienst} from './demo-data/belastingdienst/formdef-fixtures'
+import { addContactsRWS } from './demo-data/rws/contact-fixtures'
+import { addContactsKonkuk } from './demo-data/konkuk/contact-fixtures'
+import { addFormDefsKonkuk } from './demo-data/konkuk/formdef-fixtures'
+import { addFormDefsBelastingdienst } from './demo-data/belastingdienst/formdef-fixtures'
 import * as process from 'node:process'
 import * as fs from 'node:fs/promises'
 import * as path from 'node:path'
-import {addFormDefs, removeMetadataSet} from './formdef-fixtures'
-import {addFormDefsGeneric} from './demo-data/generic/formdef-fixtures'
+import { addFormDefs, removeMetadataSet } from './formdef-fixtures'
+import { addFormDefsGeneric } from './demo-data/generic/formdef-fixtures'
 
 // Define allowed fixture and demo values
 const allowedFixtureVals = ['contacts', 'formdefs'] as const
@@ -30,7 +28,7 @@ type Demo = PredefinedDemo | string
  */
 async function handleDemo(fixtureType: FixtureType, demo: Demo) {
   try {
-//    const defaultDID = await getDefaultDID()
+    //    const defaultDID = await getDefaultDID()
 
     switch (fixtureType) {
       case 'contacts':
@@ -42,9 +40,7 @@ async function handleDemo(fixtureType: FixtureType, demo: Demo) {
             await addContactsKonkuk()
             break
           default:
-            throw new Error(
-              `Unsupported demo type for contacts: "${demo}". Allowed demos: ${allowedDemoVals.join(', ')}`,
-            )
+            throw new Error(`Unsupported demo type for contacts: "${demo}". Allowed demos: ${allowedDemoVals.join(', ')}`)
         }
         break
       case 'formdefs':
@@ -69,18 +65,14 @@ async function handleDemo(fixtureType: FixtureType, demo: Demo) {
           const directoryExists = await directoryExistsAsync(fixturesDirectory)
 
           if (!directoryExists) {
-            throw new Error(
-              `The specified fixtures directory "${fixturesDirectory}" does not exist.`,
-            )
+            throw new Error(`The specified fixtures directory "${fixturesDirectory}" does not exist.`)
           }
 
           const configPath = path.join(fixturesDirectory, 'form-fixtures.json')
           const configExists = await fileExistsAsync(configPath)
 
           if (!configExists) {
-            throw new Error(
-              `The fixtures directory "${fixturesDirectory}" does not contain a "form-fixtures.json" file.`,
-            )
+            throw new Error(`The fixtures directory "${fixturesDirectory}" does not contain a "form-fixtures.json" file.`)
           }
 
           // Call the generic addFormDefs function with the directory
@@ -88,15 +80,11 @@ async function handleDemo(fixtureType: FixtureType, demo: Demo) {
         }
         break
       default:
-        throw new Error(
-          `Unsupported fixture type: "${fixtureType}". Allowed types: ${allowedFixtureVals.join(', ')}`,
-        )
+        throw new Error(`Unsupported fixture type: "${fixtureType}". Allowed types: ${allowedFixtureVals.join(', ')}`)
     }
 
     console.log(`##### Demo data start ##########################################`)
-    console.log(
-      `Demo data initialized for type "${fixtureType}" and demo "${demo}"`,
-    )
+    console.log(`Demo data initialized for type "${fixtureType}" and demo "${demo}"`)
     console.log(`##### Demo data end ##########################################`)
   } catch (error) {
     console.log(`##### Demo error ##########################################`)
@@ -148,7 +136,7 @@ function examples() {
  * @param args - Array of command-line arguments.
  * @returns An object containing fixture and demo.
  */
-function parseArgs(args?: string[]): {fixture: FixtureType; demo: Demo} {
+function parseArgs(args?: string[]): { fixture: FixtureType; demo: Demo } {
   if (!args || args.length !== 2) {
     console.log(
       `Expected exactly two arguments: fixture and demo. Fixture values one of: "${allowedFixtureVals.join('", "')}", demo values can be one of: "${allowedDemoVals.join('", "')}" or a directory path.`,
@@ -175,14 +163,12 @@ function parseArgs(args?: string[]): {fixture: FixtureType; demo: Demo} {
 
   if (!isPredefined && !isValidPath(demo)) {
     console.log(`Invalid demo: "${demo}".`)
-    console.log(
-      `Allowed demos: "${allowedDemoVals.join('", "')}" or a valid directory path.`,
-    )
+    console.log(`Allowed demos: "${allowedDemoVals.join('", "')}" or a valid directory path.`)
     examples()
     process.exit(1)
   }
 
-  return {fixture: fixture as FixtureType, demo: isPredefined ? demoLower : demo}
+  return { fixture: fixture as FixtureType, demo: isPredefined ? demoLower : demo }
 }
 
 /**
@@ -227,7 +213,7 @@ async function main() {
     return
   }
 
-  const {fixture, demo} = parseArgs(filteredArgs)
+  const { fixture, demo } = parseArgs(filteredArgs)
   await handleDemo(fixture, demo)
 }
 

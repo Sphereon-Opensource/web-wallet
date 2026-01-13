@@ -44,11 +44,11 @@ export async function getOrCreateConfiguredStatusList(args?: { issuer?: string; 
         id: STATUS_LIST_ID,
         statusList2021: {
           statusPurpose: STATUS_LIST_PURPOSE,
-          indexingDirection: 'rightToLeft'
+          indexingDirection: 'rightToLeft',
         },
         length: Number.parseInt(STATUS_LIST_LENGTH),
         issuer: args?.issuer ?? STATUS_LIST_ISSUER ?? DEFAULT_DID!,
-        keyRef: args?.keyRef
+        keyRef: args?.keyRef,
       },
       context,
     )

@@ -41,10 +41,34 @@ export type Tao = {
   url: string
 }
 
+// eInvoicing service data structure
+export type EInvoiceServiceData = {
+  vct: string
+  entityName: string
+  country: string
+  documentIdentifiers: string[]
+  processIdentifiers: string[]
+  transportType: string
+  // Direct-specific
+  endpoint?: string
+  // PEPPOL-specific
+  peppolParticipantId?: string
+  peppolSmpUrl?: string
+  peppolAs4Endpoint?: string
+  // PPF-FR-specific
+  ppfPlatformId?: string
+  ppfRecipientIds?: string[]
+  ppfMode?: 'pdp' | 'direct' | 'via-pdp'
+  ppfApiEndpoint?: string
+}
+
 export type IdentifierServiceEndpoint = {
   id: string
   type: string
   serviceEndpoint: string
+  description?: string
+  // eInvoicing-specific data (optional)
+  einvoice?: EInvoiceServiceData
 }
 
 export type IdentifierKey = {

@@ -1,6 +1,6 @@
 type BrowserEnv = {
-  [key: string]: string;
-};
+  [key: string]: string
+}
 
 class EnvManager {
   private env: BrowserEnv = {}
@@ -42,9 +42,9 @@ class EnvManager {
     if (!this.loaded) {
       console.warn(
         `Attempting to access env var "${key}" before environment is loaded. (value is "${value}")` +
-        'Make sure to call envManager.load() in _app.tsx\n' +
-        'Stack trace:',
-        new Error().stack
+          'Make sure to call envManager.load() in _app.tsx\n' +
+          'Stack trace:',
+        new Error().stack,
       )
     }
     return value

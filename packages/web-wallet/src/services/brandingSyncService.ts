@@ -120,10 +120,7 @@ class BrandingIndexedDB {
     const store = tx.objectStore(STORE_NAME)
 
     // Clear and add all brandings in parallel
-    await Promise.all([
-      this.promisifyRequest(store.clear()),
-      ...brandings.map(b => this.promisifyRequest(store.add(b))),
-    ])
+    await Promise.all([this.promisifyRequest(store.clear()), ...brandings.map(b => this.promisifyRequest(store.add(b)))])
 
     await this.waitForTx(tx)
   }
@@ -167,10 +164,7 @@ class BrandingIndexedDB {
     const db = await this.getDB()
     const tx = db.transaction([STORE_NAME, METADATA_STORE], 'readwrite')
 
-    await Promise.all([
-      this.promisifyRequest(tx.objectStore(STORE_NAME).clear()),
-      this.promisifyRequest(tx.objectStore(METADATA_STORE).clear()),
-    ])
+    await Promise.all([this.promisifyRequest(tx.objectStore(STORE_NAME).clear()), this.promisifyRequest(tx.objectStore(METADATA_STORE).clear())])
 
     await this.waitForTx(tx)
   }
@@ -350,12 +344,10 @@ export class BrandingSyncService extends EventEmitter {
    * @returns Sync result with all, changed, and deleted brandings
    */
   public async sync(force: boolean = false): Promise<ISyncResult> {
-
     // Prevent concurrent syncs
     if (this.isSyncing) {
       throw new Error('Sync already in progress')
     }
-
 
     // Wait for initialization to complete
     await this.initPromise
@@ -660,10 +652,10 @@ export class BrandingSyncService extends EventEmitter {
       lastUpdatedAt: toDate(branding.lastUpdatedAt),
       localeBranding: Array.isArray(branding.localeBranding)
         ? branding.localeBranding.map((l: any) => ({
-          ...l,
-          createdAt: toDate(l.createdAt),
-          lastUpdatedAt: toDate(l.lastUpdatedAt),
-        }))
+            ...l,
+            createdAt: toDate(l.createdAt),
+            lastUpdatedAt: toDate(l.lastUpdatedAt),
+          }))
         : [],
     }
   }

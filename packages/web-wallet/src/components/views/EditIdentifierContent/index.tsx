@@ -8,13 +8,7 @@ import style from './index.module.css'
 
 const EditIdentifierContent: FC = (): ReactElement => {
   const translate = useTranslate()
-  const {
-    onIdentifierDataChange,
-    identifierData,
-    identifierMiddleware,
-    identifierSchema,
-    isLoading,
-  } = useIdentifiersEditContext()
+  const {onIdentifierDataChange, identifierData, identifierMiddleware, identifierSchema, isLoading} = useIdentifiersEditContext()
   const ajv = createAjv({coerceTypes: true})
 
   if (isLoading || !identifierSchema) {

@@ -16,26 +16,13 @@ export const menuItemFrom = (item: MenuItem | MenuSeparator, allItems: MenuItem[
     return <div className={styles.separator} />
   }
 
-  const shouldEnd = allItems.some(otherItem =>
-    otherItem !== item &&
-    otherItem.path.startsWith(item.path + '/'),
-  )
+  const shouldEnd = allItems.some(otherItem => otherItem !== item && otherItem.path.startsWith(item.path + '/'))
 
-  return <SideNavigationItem
-    key={item.path}
-    label={item.label}
-    icon={item.icon}
-    href={item.path}
-    end={shouldEnd}
-  />
+  return <SideNavigationItem key={item.path} label={item.label} icon={item.icon} href={item.path} end={shouldEnd} />
 }
 
 export const menuGroupFrom = (item: MenuGroup, allMenuItems: MenuItem[]): ReactElement => {
-  return <SideNavigationGroup
-    label={item.label}
-    items={item.items}
-    allMenuItems={allMenuItems}
-  />
+  return <SideNavigationGroup label={item.label} items={item.items} allMenuItems={allMenuItems} />
 }
 const SideNavigationBar: FC<Props> = (props: Props): ReactElement => {
   const {style} = props
@@ -93,11 +80,11 @@ const SideNavigationBar: FC<Props> = (props: Props): ReactElement => {
             <div className={styles.menuContainer}>
               {blockType === 'group'
                 ? menuGroupFrom(block[0] as MenuGroup, allMenuItems)
-                : block.map((item, itemIndex): ReactElement => (
-                  <React.Fragment key={itemIndex}>
-                    {menuItemFrom(item as MenuItem, allMenuItems)}
-                  </React.Fragment>
-                ))}
+                : block.map(
+                    (item, itemIndex): ReactElement => (
+                      <React.Fragment key={itemIndex}>{menuItemFrom(item as MenuItem, allMenuItems)}</React.Fragment>
+                    ),
+                  )}
             </div>
           )}
         </Fragment>
@@ -111,9 +98,7 @@ const SideNavigationBar: FC<Props> = (props: Props): ReactElement => {
         <Listbox<RoleData>
           // TODO SSISDK-19 replace dummy data for the Listbox
           items={roleConfig}
-          renderItem={(role: RoleData) =>
-            <RoleViewItem role={role.role} />
-          }
+          renderItem={(role: RoleData) => <RoleViewItem role={role.role} />}
           onChange={onChangeRole}
           menuTitle={translate('roles_selection_label')}
         />

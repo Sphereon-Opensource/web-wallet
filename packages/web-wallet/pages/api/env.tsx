@@ -1,13 +1,10 @@
 import type {NextApiRequest, NextApiResponse} from 'next'
 
 type EnvResponse = {
-  [key: string]: string;
-};
+  [key: string]: string
+}
 
-export default function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<EnvResponse>,
-) {
+export default function handler(req: NextApiRequest, res: NextApiResponse<EnvResponse>) {
   // Filter and return only BROWSER_PUBLIC_ environment variables
   const browserEnv = Object.keys(process.env)
     .filter(key => key.startsWith('BROWSER_PUBLIC_'))

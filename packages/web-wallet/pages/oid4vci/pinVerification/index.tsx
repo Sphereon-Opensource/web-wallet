@@ -7,7 +7,6 @@ const PinVerificationPage: React.FC = (): ReactElement => {
   return <div className={style.container} />
 }
 
-export const getStaticProps = async ({locale = 'en'}: {locale?: string}) =>
-  staticPropsWithSST({locale})
+export const getStaticProps = async ({locale = 'en'}: {locale?: string}) => staticPropsWithSST({locale})
 
 export default PinVerificationPage

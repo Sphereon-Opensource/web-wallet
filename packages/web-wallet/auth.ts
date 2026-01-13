@@ -3,7 +3,7 @@ import 'next-auth/jwt'
 
 import Keycloak from 'next-auth/providers/keycloak'
 
-const nextAuthUrl = process.env.NEXTAUTH_URL  || 'http://localhost:3000'
+const nextAuthUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
 
 const isIP = (url: string) => {
   const hostname = new URL(url).hostname

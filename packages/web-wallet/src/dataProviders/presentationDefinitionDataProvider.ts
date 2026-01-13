@@ -14,7 +14,7 @@ import {
   UpdateParams,
   UpdateResponse,
 } from '@refinedev/core'
-import { getAgent } from '@agent'
+import {getAgent} from '@agent'
 import type {DcqlQueryItem, FindDcqlQueryArgs} from '@sphereon/ssi-sdk.data-store-types'
 import type {DcqlQueryItemFilter} from '@sphereon/ssi-sdk.data-store-types'
 import {DataResource} from '@typings'

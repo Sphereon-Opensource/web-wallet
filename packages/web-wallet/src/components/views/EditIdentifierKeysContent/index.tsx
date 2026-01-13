@@ -14,17 +14,8 @@ import {ManagedKeyInfo} from '@veramo/core'
 
 const EditIdentifierKeysContent: FC = (): ReactElement => {
   const translate = useTranslate()
-  const {
-    keys,
-    onSetKeys,
-    onKeyDataChange,
-    keyData,
-    capabilitiesInfo,
-    identifierKeyMiddleware,
-    keySchema,
-    isLoading,
-    identifier,
-  } = useIdentifiersEditContext()
+  const {keys, onSetKeys, onKeyDataChange, keyData, capabilitiesInfo, identifierKeyMiddleware, keySchema, isLoading, identifier} =
+    useIdentifiersEditContext()
 
   // Memoize ajv instance to prevent re-creation on every render
   const ajv = useMemo(() => createAjv({useDefaults: 'empty', coerceTypes: true}), [])

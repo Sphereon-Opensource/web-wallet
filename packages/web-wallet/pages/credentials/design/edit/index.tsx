@@ -26,7 +26,7 @@ const CredentialDesignerEditPage: FC = (): ReactElement => {
     maxInteractiveSteps,
     onBack,
     onNext,
-    editData
+    editData,
   } = useCredentialDesignerEditMachine()
 
   return (
@@ -46,24 +46,19 @@ const CredentialDesignerEditPage: FC = (): ReactElement => {
               onCredentialDesignerClaimsFormDataChange,
               credentialDesignerVisualDesignBackgroundImage,
               credentialDesignerVisualDesignLogo,
-              editData
+              editData,
             }}
           />
           <div style={{display: 'flex', flexDirection: 'row'}}>
-            {step > 1 &&
-              <SecondaryButton
-                style={{width: 180}}
-                caption={translate('action_back_label')}
-                onClick={onBack}
-              />
-            }
+            {step > 1 && <SecondaryButton style={{width: 180}} caption={translate('action_back_label')} onClick={onBack} />}
             <PrimaryButton
               style={{width: 180, marginLeft: 'auto'}}
-              caption={step === maxInteractiveSteps
-                ? editData
-                  ? translate('action_save_label')
-                  : translate('action_publish_label')
-                : translate('action_proceed_label')
+              caption={
+                step === maxInteractiveSteps
+                  ? editData
+                    ? translate('action_save_label')
+                    : translate('action_publish_label')
+                  : translate('action_proceed_label')
               }
               onClick={onNext}
               disabled={disabled}
@@ -91,7 +86,7 @@ const CredentialDesignerEditPage: FC = (): ReactElement => {
               {
                 title: translate('design_credential_claims_structure_step_title'),
                 description: translate('design_credential_claims_structure_step_description'),
-              }
+              },
             ]}
             activeStep={step}
           />
@@ -101,7 +96,6 @@ const CredentialDesignerEditPage: FC = (): ReactElement => {
   )
 }
 
-export const getStaticProps = async ({locale = 'en'}: {locale?: string}) =>
-  staticPropsWithSST({locale})
+export const getStaticProps = async ({locale = 'en'}: {locale?: string}) => staticPropsWithSST({locale})
 
 export default CredentialDesignerEditPage

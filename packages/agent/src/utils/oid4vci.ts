@@ -6,7 +6,7 @@ import {
   IIssuerOptions,
   IIssuerOptsPersistArgs,
   OID4VCIStore,
-  IIssuerOptsImportArgs
+  IIssuerOptsImportArgs,
 } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import { createDidResolver } from './did'
 import { oid4vciInstanceOpts, oid4vciMetadataOpts } from '../environment-vars-with-deps'
@@ -18,9 +18,11 @@ import {
 import { agentContext } from '@sphereon/ssi-sdk.core'
 import agent from '../agent'
 import { IIdentifier } from '@veramo/core'
-import { ClientMetadata } from "@sphereon/oid4vci-common";
+import { ClientMetadata } from '@sphereon/oid4vci-common'
 
-export function toImportIssuerOptions(args?: { oid4vciInstanceOpts: (IIssuerOptsImportArgs & {asClientOpts?: ClientMetadata})[] }): (IIssuerOptsImportArgs & {asClientOpts?: ClientMetadata})[] {
+export function toImportIssuerOptions(args?: {
+  oid4vciInstanceOpts: (IIssuerOptsImportArgs & { asClientOpts?: ClientMetadata })[]
+}): (IIssuerOptsImportArgs & { asClientOpts?: ClientMetadata })[] {
   return args?.oid4vciInstanceOpts ?? oid4vciInstanceOpts.asArray
 }
 

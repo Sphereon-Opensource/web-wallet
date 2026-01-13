@@ -31,6 +31,7 @@ import {
   DataStoreIssuanceBrandingMigrations,
   DataStoreMachineStateMigrations,
   DataStorePresentationDefinitionMigrations,
+  DataStoreServiceMigrations,
   DataStoreStatusListMigrations,
 } from '@sphereon/ssi-sdk.data-store'
 import { kvStoreMigrations, KeyValueStoreEntity } from '@sphereon/ssi-sdk.kv-store-temp'
@@ -90,6 +91,7 @@ const sqliteConfig: SqliteConnectionOptions = {
     ...DataStoreDigitalCredentialMigrations,
     ...DataStoreMachineStateMigrations,
     ...DataStorePresentationDefinitionMigrations,
+    ...DataStoreServiceMigrations,
     ...kvStoreMigrations,
   ],
   migrationsRun: false, // We run migrations from code to ensure proper ordering with Redux
@@ -133,6 +135,7 @@ const postgresConfig: PostgresConnectionOptions = validatePostgresOptions({
     ...DataStoreDigitalCredentialMigrations,
     ...DataStoreMachineStateMigrations,
     ...DataStorePresentationDefinitionMigrations,
+    ...DataStoreServiceMigrations,
     ...WebWalletMigrations,
     ...kvStoreMigrations,
   ],

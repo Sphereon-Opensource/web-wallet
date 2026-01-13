@@ -180,8 +180,23 @@ const replaceServices = async (did: string, currentServices: any[], newServices:
           id: service.id,
           type: service.type,
           serviceEndpoint: service.serviceEndpoint,
+          description: service.description,
         },
       })
+
+      // Update metadata for services with eInvoice data
+      if (service.einvoice) {
+        try {
+          await getAgent().updateServiceMetadata({
+            serviceId: service.id,
+            did,
+            metadata: {einvoice: service.einvoice},
+          })
+          console.log(`Updated metadata for service ${service.id}`)
+        } catch (metadataError) {
+          console.warn(`Failed to update metadata for service ${service.id}:`, metadataError)
+        }
+      }
     }
   } catch (error) {
     console.error('Error updating services:', error)
@@ -348,6 +363,26 @@ export const identifiersDataProvider = (): DataProvider => ({
         // @ts-ignore
         getAgentContext(),
       )
+    }
+
+    // Update metadata for services with eInvoice data
+    // Veramo's didManagerCreate doesn't persist custom metadata, so we need to update it separately
+    if (variables.services) {
+      for (const service of variables.services) {
+        if (service.einvoice) {
+          try {
+            await getAgent().updateServiceMetadata({
+              serviceId: service.id,
+              did: identifier.did,
+              metadata: {einvoice: service.einvoice},
+            })
+            console.log(`Updated metadata for service ${service.id}`)
+          } catch (metadataError) {
+            console.warn(`Failed to update metadata for service ${service.id}:`, metadataError)
+            // Don't fail the entire operation if metadata update fails
+          }
+        }
+      }
     }
 
     return {

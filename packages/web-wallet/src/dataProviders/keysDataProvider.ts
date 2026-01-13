@@ -15,7 +15,7 @@ import {
   UpdateResponse,
 } from '@refinedev/core'
 import {PartialKey} from '@sphereon/ssi-sdk-ext.key-manager'
-import { getAgent } from '@agent'
+import {getAgent} from '@agent'
 import {KeyManagementSystem} from '@typings'
 
 // TODO CWALL-242 further implement

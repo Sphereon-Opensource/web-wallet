@@ -128,8 +128,10 @@ async function storePartyRelationship(leftId: string, rightId: string): Promise<
 
 // TODO refactor this service
 export const addParty = async (args: AddContactArgs): Promise<RealParty> => {
-  return getAgent().cmAddContact(args).catch((error: Error) => {
-    console.error(error) // log with stack trace
-    return Promise.reject(Error(`Unable to create contact. Error: ${error}`))
-  })
+  return getAgent()
+    .cmAddContact(args)
+    .catch((error: Error) => {
+      console.error(error) // log with stack trace
+      return Promise.reject(Error(`Unable to create contact. Error: ${error}`))
+    })
 }

@@ -7,7 +7,7 @@ import {
   OID4VCIMachineStates,
 } from '@sphereon/ssi-sdk.oid4vci-holder'
 import {SimpleEventsOf} from 'xstate'
-import type { IBasicCredentialLocaleBranding} from '@sphereon/ssi-sdk.data-store-types'
+import type {IBasicCredentialLocaleBranding} from '@sphereon/ssi-sdk.data-store-types'
 import {ConnectionType, CorrelationIdentifierType} from '@sphereon/ssi-sdk.data-store-types'
 import {getIssuerName} from '@sphereon/oid4vci-common'
 import debug from 'debug'
@@ -27,7 +27,7 @@ import {
 } from '@typings'
 import {toNonPersistedCredentialSummary} from '@sphereon/ui-components.credential-branding'
 import {AuthorizationCodeState} from '@/pages/oid4vci/AuthorizationCodeUrl'
-import { getAgent } from '@agent'
+import {getAgent} from '@agent'
 import {OID4VCI_STATE_STORAGE_KEY} from '@/app'
 import {IdentityOrigin} from '@sphereon/ssi-sdk.data-store-types'
 import {CredentialRole} from '@sphereon/ssi-types'
@@ -285,7 +285,7 @@ export const oid4vciStateNavigationListener = async (oid4vciMachine: OID4VCIMach
   } else if (state.matches(OID4VCIMachineStates.verifyPin)) {
     return navigatePINVerification({oid4vciMachine, state, onNext, onBack, abortController})
   } else if (state.matches(OID4VCIMachineStates.initiateAuthorizationRequest)) {
-    console.log('==== initiateAuthorizationRequest', state);
+    console.log('==== initiateAuthorizationRequest', state)
 
     return navigateAuthorizationCodeURL({oid4vciMachine, state, onNext, onBack, abortController})
   } else if (state.matches(OID4VCIMachineStates.reviewCredentials)) {

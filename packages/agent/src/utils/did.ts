@@ -37,7 +37,7 @@ export function createDidResolver() {
 }
 
 export async function createDidProviders() {
-  const { SphereonKeyDidProvider } = await import('@sphereon/ssi-sdk-ext.did-provider-key');
+  const { SphereonKeyDidProvider } = await import('@sphereon/ssi-sdk-ext.did-provider-key')
 
   return {
     [`${DID_PREFIX}:${DIDMethods.DID_WEB}`]: new WebDIDProvider({

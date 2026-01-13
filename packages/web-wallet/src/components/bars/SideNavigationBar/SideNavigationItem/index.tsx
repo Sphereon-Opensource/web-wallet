@@ -15,70 +15,62 @@ import KeyIcon from '@sphereon/ui-components.ssi-react/dist/components/assets/ic
 import UXIcon from '@sphereon/ui-components.ssi-react/dist/components/assets/icons/UX'
 
 type Props = {
-    label: string
-    icon?: MenuIcon
-    isDisabled?: boolean
-    href: string
-    end?: boolean
-    style?: CSSProperties
+  label: string
+  icon?: MenuIcon
+  isDisabled?: boolean
+  href: string
+  end?: boolean
+  style?: CSSProperties
 }
 
 const SideNavigationItem: FC<Props> = (props: Props): ReactElement => {
-    const { label, icon, href, isDisabled = false, end = false, style } = props
+  const {label, icon, href, isDisabled = false, end = false, style} = props
 
   const getIconElement = (icon: MenuIcon): ReactElement => {
     switch (icon) {
       case 'contact':
-        return <ContactIcon size={16}/>
+        return <ContactIcon size={16} />
       case 'notification':
-        return <BellIcon size={16}/>
+        return <BellIcon size={16} />
       case 'activity':
-        return <ActivityIcon size={12}/>
+        return <ActivityIcon size={12} />
       case 'credential':
-        return <CredentialIcon size={13}/>
+        return <CredentialIcon size={13} />
       case 'issuedCredential':
-        return <IssuedCredentialIcon size={18}/>
+        return <IssuedCredentialIcon size={18} />
       case 'issueCredential':
-        return <IssueCredentialIcon size={18}/>
+        return <IssueCredentialIcon size={18} />
       case 'contactOverview':
-        return <ContactOverviewIcon size={16}/>
+        return <ContactOverviewIcon size={16} />
       case 'addContact':
-        return <AddContactIcon size={16}/>
+        return <AddContactIcon size={16} />
       case 'identifier':
-        return <IdentifierIcon size={16}/>
+        return <IdentifierIcon size={16} />
       case 'management':
-        return <ManagementIcon size={20}/>
+        return <ManagementIcon size={20} />
       case 'key':
-        return <KeyIcon size={24}/>
+        return <KeyIcon size={24} />
       case 'design':
-        return <UXIcon size={18}/>
+        return <UXIcon size={18} />
       default:
-        return <div/>
+        return <div />
     }
   }
-    return (
-      <NavLink
-        style={{...style}}
-        to={href}
-        end={end}
-        className={({ isActive }) => clsx(
-          styles.container,
-          {
-            [styles.containerActive]: isActive && !isDisabled,
-            [styles.containerDisabled]: isDisabled,
-          }
-        )}
-      >
-        {icon &&
-          <div className={styles.iconContainer}>
-            {getIconElement(icon)}
-          </div>
-        }
-        <span className={styles.label}>
-          {label}
-        </span>
-      </NavLink>
-    )
+  return (
+    <NavLink
+      style={{...style}}
+      to={href}
+      end={end}
+      className={({isActive}) =>
+        clsx(styles.container, {
+          [styles.containerActive]: isActive && !isDisabled,
+          [styles.containerDisabled]: isDisabled,
+        })
+      }>
+      {icon && <div className={styles.iconContainer}>{getIconElement(icon)}</div>}
+      <span className={styles.label}>{label}</span>
+    </NavLink>
+  )
 }
 
 export default SideNavigationItem

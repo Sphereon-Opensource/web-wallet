@@ -66,9 +66,7 @@ export class MetaDataKeysEntity {
     Object.assign(this, init)
 
     if (init?.meta_data_values) {
-        this.meta_data_values = init?.meta_data_values.map(value => new MetaDataValuesEntity(
-            value
-        ))
+      this.meta_data_values = init?.meta_data_values.map(value => new MetaDataValuesEntity(value))
     }
 
     deleteUndefinedProps(this)
@@ -84,7 +82,7 @@ export class MetaDataKeysEntity {
       setId: entity.set_id,
       key: entity.key,
       valueType: entity.value_type,
-      values: values ?? entity.meta_data_values?.map(value => value.asDTO())
+      values: values ?? entity.meta_data_values?.map(value => value.asDTO()),
     })
   }
 }
@@ -110,7 +108,7 @@ export class MetaDataKeysDTO {
       set_id: dto.setId,
       key: dto.key,
       value_type: dto.valueType,
-      meta_data_values: dto.values?.map(value => value.asEntity())
+      meta_data_values: dto.values?.map(value => value.asEntity()),
     })
   }
 }

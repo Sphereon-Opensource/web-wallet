@@ -1,13 +1,13 @@
 // FIXME this is a quick & dirty, create a proper typeorm based implementation
 
-import {promises as fs} from 'fs'
+import { promises as fs } from 'fs'
 import path from 'path'
-import {getDbConnection} from './databaseService'
-import {DB_CONNECTION_NAME} from '../environment-vars'
+import { getDbConnection } from './databaseService'
+import { DB_CONNECTION_NAME } from '../environment-vars'
 
-type Schema = {schemaType: string; schemaFile: string}
-type Key = {key: string; valueType: string; values: any[]}
-type MetadataSet = {name: string; keys: Key[]; schemas?: Schema[]}
+type Schema = { schemaType: string; schemaFile: string }
+type Key = { key: string; valueType: string; values: any[] }
+type MetadataSet = { name: string; keys: Key[]; schemas?: Schema[] }
 
 type Fixtures = {
   entityType: string
@@ -58,9 +58,11 @@ async function getOrCreateFormDefinitionAndLink(
   if (rows.length > 0) {
     formDefId = rows[0].id
     // Update if any fields changed
-    if (rows[0].name !== formName ||
+    if (
+      rows[0].name !== formName ||
       (rows[0].description ?? null) !== (formDescription ?? null) ||
-      (rows[0].machine_id ?? null) !== (machineId ?? null)) {
+      (rows[0].machine_id ?? null) !== (machineId ?? null)
+    ) {
       await queryRunner.query(
         `UPDATE form_definition
          SET name = $2,
@@ -170,11 +172,7 @@ async function getOrCreateMetadataSet(queryRunner: any, setName: string): Promis
   return resp[0].id
 }
 
-async function upsertKeyWithValues(
-  queryRunner: any,
-  setId: number,
-  keyObj: {key: string; valueType: string; values: any[]},
-): Promise<void> {
+async function upsertKeyWithValues(queryRunner: any, setId: number, keyObj: { key: string; valueType: string; values: any[] }): Promise<void> {
   // Find existing key
   let rows = await queryRunner.query(
     `SELECT id, value_type
@@ -197,9 +195,12 @@ async function upsertKeyWithValues(
       )
     }
     // Delete old values to replace with new ones
-    await queryRunner.query(`DELETE
+    await queryRunner.query(
+      `DELETE
                              FROM meta_data_values
-                             WHERE key_id = $1`, [keyId])
+                             WHERE key_id = $1`,
+      [keyId],
+    )
   } else {
     const resp = await queryRunner.query(
       `INSERT INTO meta_data_keys(set_id, key, value_type)
@@ -215,9 +216,7 @@ async function upsertKeyWithValues(
     const textValue = typeof v === 'string' ? v : null
     const numberValue = typeof v === 'number' ? v : null
     const booleanValue = typeof v === 'boolean' ? v : null
-    const timestampValue = (v && typeof v === 'object' && typeof v.toISOString === 'function')
-      ? v.toISOString()
-      : null
+    const timestampValue = v && typeof v === 'object' && typeof v.toISOString === 'function' ? v.toISOString() : null
 
     await queryRunner.query(
       `INSERT INTO meta_data_values(key_id, index, text_value, number_value, boolean_value, timestamp_value)
@@ -291,9 +290,12 @@ export async function removeMetadataSet(setName: string): Promise<void> {
   await queryRunner.startTransaction()
 
   try {
-    const set = await queryRunner.query(`SELECT id
+    const set = await queryRunner.query(
+      `SELECT id
                                 FROM meta_data_set
-                                WHERE name = $1`, [setName])
+                                WHERE name = $1`,
+      [setName],
+    )
     if (set.length === 0) {
       await queryRunner.rollbackTransaction()
       return
@@ -327,9 +329,12 @@ export async function removeMetadataSet(setName: string): Promise<void> {
     )
 
     // Delete values
-    const keys = await queryRunner.query(`SELECT id
+    const keys = await queryRunner.query(
+      `SELECT id
                                  FROM meta_data_keys
-                                 WHERE set_id = $1`, [setId])
+                                 WHERE set_id = $1`,
+      [setId],
+    )
     for (const k of keys) {
       await queryRunner.query(
         `DELETE

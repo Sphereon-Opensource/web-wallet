@@ -11,9 +11,9 @@ import TextInputField from '@components/fields/TextInputField'
 const debug: Debugger = Debug('sphereon:ui-components:qr')
 
 export type QRValueResult = {
-  id: string;
-  uriValue: string;
-  expiryInSec?: number;
+  id: string
+  uriValue: string
+  expiryInSec?: number
   onExpiry: (expired: QRValueResult) => Promise<void>
 }
 
@@ -28,8 +28,8 @@ interface Props {
   onSubmit: (walletUrl: string) => Promise<void>
 }
 
-const urlRegex = /^(https?:\/\/)(([a-z\d]([a-z\d-]*[a-z\d])?\.)+[a-z]{2,}|localhost|([a-z\d]([a-z\d-]*[a-z\d])?\.local)|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})(:\d+)?(\/[-a-z\d%_.~+]*)*(\?[;&a-z\d%_.~+=-]*)?(\#[-a-z\d_]*)?$/i
-
+const urlRegex =
+  /^(https?:\/\/)(([a-z\d]([a-z\d-]*[a-z\d])?\.)+[a-z]{2,}|localhost|([a-z\d]([a-z\d-]*[a-z\d])?\.local)|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})(:\d+)?(\/[-a-z\d%_.~+]*)*(\?[;&a-z\d%_.~+=-]*)?(\#[-a-z\d_]*)?$/i
 
 const WalletURLModal: FC<Props> = (props: Props): ReactElement => {
   const {qrValueGenerator, onClose, onSubmit} = props
@@ -70,7 +70,7 @@ const WalletURLModal: FC<Props> = (props: Props): ReactElement => {
     const queryString = credentialOfferURI.uriValue.split('://')[1] ?? '' // FIXME
     return mergeQueryParams(webWalletAddressValue, queryString)
   }
-  
+
   const onWebWalletAddressChange = async (event: ChangeEvent<HTMLInputElement>): Promise<void> => {
     setWebWalletAddressValue(('' + event.target.value).trim())
   }
@@ -83,8 +83,7 @@ const WalletURLModal: FC<Props> = (props: Props): ReactElement => {
 
   return (
     <div className={style.overlay}>
-      <div className={style.container}
-           onClick={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => event.stopPropagation()}>
+      <div className={style.container} onClick={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => event.stopPropagation()}>
         <div className={style.headerContainer}>
           <div className={style.headerCaptionContainer}>
             <div className={style.titleCaption}>{translate('credential_wallet_url_title')}</div>
@@ -99,27 +98,30 @@ const WalletURLModal: FC<Props> = (props: Props): ReactElement => {
       </div>
 
       <div className={style.urlContainer}>
-        {error ? <div>{error.message}</div> : credentialOfferURI
-          ? <div>
+        {error ? (
+          <div>{error.message}</div>
+        ) : credentialOfferURI ? (
+          <div>
             <TextInputField
               label={{
                 caption: translate('credential_wallet_url'),
               }}
-              style={{ width: '80%' }}
+              style={{width: '80%'}}
               type={'text'}
               value={webWalletAddressValue}
               onChange={onWebWalletAddressChange}
             />
           </div>
-          : <RotateLoader size={15} color={'#7276F7'} />}
+        ) : (
+          <RotateLoader size={15} color={'#7276F7'} />
+        )}
       </div>
 
       <div className={style.formButtonsContainer}>
         <PrimaryButton
           style={{width: 180, marginLeft: 'auto'}}
           caption={translate('credential_wallet_url_get_credential_action')}
-          disabled={webWalletAddressValue.length === 0
-            || !urlRegex.test(webWalletAddressValue)}
+          disabled={webWalletAddressValue.length === 0 || !urlRegex.test(webWalletAddressValue)}
           onClick={() => onSubmit(buildCredentialOfferURI())}
         />
       </div>
