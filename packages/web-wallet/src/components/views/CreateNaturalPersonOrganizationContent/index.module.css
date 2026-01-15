@@ -1,48 +1,51 @@
 .createNaturalPersonOrganizationFormContainer {
     display: flex;
     flex-direction: column;
-    margin-bottom: auto;
+    gap: 20px;
+    background-color: white;
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid #E5E7EB;
+    max-width: 700px;
 }
 
 .createNaturalPersonOrganizationFormContainer > div > input[class^="TextInputField" i] {
-    width: 582px;
+    width: 100%;
+    max-width: 582px;
 }
 
 .titleCaption {
-    color: #000;
-    font-size: 24px;
-    font-style: normal;
-    font-weight: 500;
+    color: #1F2937;
+    font-size: 18px;
+    font-weight: 600;
     line-height: normal;
+    margin: 0;
 }
 
 .subTitleCaption {
-    max-width: 910px;
-    margin-bottom: 22px;
-    color: rgba(48, 48, 48);
+    color: #6B7280;
     font-size: 14px;
-    font-style: normal;
     font-weight: 400;
-    line-height: normal;
-    width: 765px;
+    line-height: 1.5;
+    margin: 0 0 8px 0;
 }
 
 .contactAddSelectOrganizationLabel {
-  font-weight: 600;
-  font-size: 16px;
-  color: #303030;
+    font-weight: 600;
+    font-size: 14px;
+    color: #374151;
 }
 
 .contactAddSelectOrganizationOptionalLabel {
-  font-weight: normal;
-  font-size: 16px;
-  color: #8D9099;
-  margin-left: 4px;
-  font-style: italic;
+    font-weight: normal;
+    font-size: 14px;
+    color: #9CA3AF;
+    margin-left: 4px;
+    font-style: italic;
 }
 
 .labelsContainer {
-  display: flex;
-  align-items: baseline;
-  margin-top: 48px;
+    display: flex;
+    align-items: baseline;
+    margin-top: 8px;
 }

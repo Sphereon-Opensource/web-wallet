@@ -68,6 +68,11 @@ process.env[`${ENV_VAR_PREFIX}${DB_TYPE}`] = DB_TYPE // make sure we sync back i
 export const INTERNAL_HOSTNAME_OR_IP = env('INTERNAL_HOSTNAME_OR_IP', ENV_VAR_PREFIX) ?? env('HOSTNAME', ENV_VAR_PREFIX) ?? '0.0.0.0'
 export const INTERNAL_PORT = env('PORT', ENV_VAR_PREFIX) ? Number.parseInt(env('PORT', ENV_VAR_PREFIX)!) : 5000
 export const EXTERNAL_HOSTNAME = env('EXTERNAL_HOSTNAME', ENV_VAR_PREFIX) ?? 'localhost'
+export const EXTERNAL_PORT = env('EXTERNAL_PORT', ENV_VAR_PREFIX) ? Number.parseInt(env('EXTERNAL_PORT', ENV_VAR_PREFIX)!) : 443
+
+// Base URI for agent (without path suffix) - used for public asset URLs, etc.
+// Defaults to internal for local dev; set AGENT_BASE_URI explicitly for production (e.g., https://example.com)
+export const AGENT_BASE_URI = env('AGENT_BASE_URI', ENV_VAR_PREFIX) ?? `http://${INTERNAL_HOSTNAME_OR_IP}:${INTERNAL_PORT}`
 export const DEFAULT_X5C = env('DEFAULT_X5C', ENV_VAR_PREFIX)?.split(/[, ]/)
 export const DEFAULT_MODE = env('DEFAULT_MODE', ENV_VAR_PREFIX) ?? 'did' //did, jwk or x5c
 export const DEFAULT_DID = env('DEFAULT_DID', ENV_VAR_PREFIX)
@@ -133,6 +138,17 @@ export const OID4VP_RP_OPTIONS_PATH = `${CONF_PATH}/oid4vp_options`
 export const OID4VP_RP_METADATA_PATH = `${CONF_PATH}/oid4vp_metadata`
 
 export const IS_PDM_API_ENABLED = toBoolean(process.env.PDM_API_ENABLED, true)
+
+export const IS_INBOX_ENABLED = toBoolean(process.env.INBOX_ENABLED, false)
+export const INBOX_API_BASE_PATH = env('INBOX_API_BASE_PATH', ENV_VAR_PREFIX) ?? ''
+
+// Asset (document store) configuration
+export const ASSET_API_BASE_PATH = env('ASSET_API_BASE_PATH', ENV_VAR_PREFIX) ?? ''
+export const ASSET_PUBLIC_BASE_PATH = env('ASSET_PUBLIC_BASE_PATH', ENV_VAR_PREFIX) ?? '/api/assets'
+export const ASSET_STORAGE_PATH = env('ASSET_STORAGE_PATH', ENV_VAR_PREFIX)
+// ASSET_BASE_URI defaults to AGENT_BASE_URI for external hosting (public evidence URLs)
+export const ASSET_BASE_URI = env('ASSET_BASE_URI', ENV_VAR_PREFIX) ?? AGENT_BASE_URI
+export const ASSET_DEFAULT_AVAILABILITY_YEARS = parseInt(env('ASSET_DEFAULT_AVAILABILITY_YEARS', ENV_VAR_PREFIX) ?? '7', 10)
 
 export const REST_KMS_BASE_URL = env('REST_KMS_BASE_URL', ENV_VAR_PREFIX) ?? 'http://localhost:8080'
 export const REST_KMS_PROVIDER_ID = env('REST_KMS_PROVIDER_ID', ENV_VAR_PREFIX)

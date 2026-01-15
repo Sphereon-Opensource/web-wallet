@@ -16,6 +16,7 @@ import { ISphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
 import { IPDManager } from '@sphereon/ssi-sdk.pd-manager'
 import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { IPEXInstanceOptions, ISIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
+import { IDidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
 import { CredentialSupplierConfig } from '@sphereon/oid4vci-common'
 import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
@@ -28,6 +29,8 @@ import { IOIDFMetadataStore } from '@sphereon/ssi-sdk.oidf-metatdata-server'
 import { IVcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
 import { ILinkedVPManager } from '@sphereon/ssi-sdk.linked-vp'
 import { IServiceMetadata } from '../plugins/serviceMetadataPlugin'
+import { IInboxPlugin } from '../plugins/inboxPlugin'
+import { IAssetPlugin } from '../plugins/assetPlugin'
 
 export const DID_PREFIX = 'did'
 
@@ -52,13 +55,16 @@ export type TAgentTypes = IDIDManager &
   IIdentifierResolution &
   IJwtService &
   ISIOPv2RP &
+  IDidAuthSiopOpAuthenticator &
   ImDLMdoc &
   ICredentialValidation &
   IStatusListPlugin &
   IOIDFMetadataStore &
   ICredentialVerifier &
   ILinkedVPManager &
-  IServiceMetadata
+  IServiceMetadata &
+  IInboxPlugin &
+  IAssetPlugin
 
 /**
  * The Key Management System (name) to use. Currently, there is only one KMS

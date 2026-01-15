@@ -14,6 +14,7 @@ import {
   INTERNAL_PORT,
   IS_CONTACT_MANAGER_ENABLED,
   IS_FEDERATION_ENABLED,
+  IS_INBOX_ENABLED,
   IS_JWKS_HOSTING_ENABLED,
   IS_LINKED_VP_ENABLED,
   IS_OID4VCI_ENABLED,
@@ -55,6 +56,7 @@ import { KeyManagementSystem, SecretBox } from '@veramo/kms-local'
 import { RestKeyManagementSystem } from '@sphereon/ssi-sdk.kms-rest'
 import { SphereonKeyManagementSystem } from '@sphereon/ssi-sdk-ext.kms-local'
 import {
+  addEInvoicingServicesToDID,
   createDidProviders,
   createDidResolver,
   expressBuilder,
@@ -126,6 +128,13 @@ import { LinkedVPManager } from '@sphereon/ssi-sdk.linked-vp'
 import { ILinkedVPManagerAPIEndpointOpts, LinkedVpApiServer, LinkedVPManagerApiServerArgs } from '@sphereon/ssi-sdk.linked-vp-rest-api'
 import { AbstractKeyManagementSystem } from '@veramo/key-manager'
 import { ServiceMetadataPlugin } from './plugins/serviceMetadataPlugin'
+import { InboxPlugin } from './plugins/inboxPlugin'
+import { AssetPlugin } from './plugins/assetPlugin'
+import { InboxApiServer } from './api/inboxApiServer'
+import { AssetApiServer } from './api/assetApiServer'
+import { EInvoiceApiServer } from './api/einvoiceApiServer'
+import { processVerifiedPresentation } from './utils/inboxVerificationHandler'
+import { hasInboxContext } from './utils/inboxCredentialHandler'
 
 const cliMode: boolean = process.env.RUN_MODE === 'cli'
 
@@ -215,6 +224,7 @@ const plugins: IAgentPlugin[] = [
   new OID4VCIHolder({ hasher: defaultHasher }),
   new EbsiSupport(),
   new ServiceMetadataPlugin({ dbConnection }),
+  ...(IS_INBOX_ENABLED ? [new InboxPlugin({ dbConnection }), new AssetPlugin({ dbConnection })] : []),
   // The Animo funke cert is self-signed and not issued by a CA. Since we perform strict checks on certs, we blindly trust if for the Funke
   new MDLMdoc({ trustAnchors: [sphereonCA, funkeTestCA], opts: { blindlyTrustedAnchors: [animoFunkeCert] } }),
   new IdentifierResolution(),
@@ -317,6 +327,10 @@ if (!cliMode) {
   defaultDID = await getDefaultDID()
   if (defaultDID) {
     console.log(`[DID] default DID: ${defaultDID}`)
+    // Add eInvoicing service endpoints to the default DID if inbox is enabled
+    if (IS_INBOX_ENABLED) {
+      await addEInvoicingServicesToDID(defaultDID).catch((e) => console.log(`[eInvoice] Error adding services: ${e}`))
+    }
   }
   defaultKid = await getDefaultKeyRef({ did: defaultDID })
   console.log(`[DID] default key identifier: ${defaultKid}`)
@@ -384,6 +398,67 @@ if (!cliMode) {
     if (!expressSupport) {
       throw Error('Express support needs to be configured when exposing OID4VP')
     }
+
+    // Add middleware to intercept successful OID4VP verifications for inbox credential linking
+    // This runs BEFORE the SDK's verification endpoint and wraps the response to detect success
+    if (IS_INBOX_ENABLED) {
+      const basePath = process.env.OID4VP_AGENT_BASE_PATH ?? ''
+      expressSupport.express.use(`${basePath}/siop/queries/:queryId/auth-responses/:correlationId`, (req, res, next) => {
+        if (req.method !== 'POST') {
+          return next()
+        }
+
+        const { correlationId, queryId } = req.params
+
+        // Only intercept if there's inbox context for this correlation
+        if (!hasInboxContext(correlationId)) {
+          return next()
+        }
+
+        console.log(`[Inbox] Intercepting auth-response for correlation ${correlationId}`)
+
+        // Track if we've already triggered processing (to avoid double processing)
+        let processed = false
+
+        const triggerProcessing = () => {
+          if (processed) return
+          const statusCode = res.statusCode || 200
+          if (statusCode >= 200 && statusCode < 300) {
+            processed = true
+            console.log(`[Inbox] Successful verification detected for ${correlationId}, processing credentials`)
+
+            // Process the verified presentation asynchronously
+            setImmediate(async () => {
+              try {
+                await processVerifiedPresentation(agent, correlationId, queryId)
+              } catch (error) {
+                console.error(`[Inbox] Error processing verified presentation:`, error)
+              }
+            })
+          }
+        }
+
+        // Store original methods
+        const originalJson = res.json.bind(res)
+        const originalSend = res.send.bind(res)
+
+        // Override json to detect successful responses
+        res.json = function (body: any) {
+          triggerProcessing()
+          return originalJson(body)
+        }
+
+        // Override send to detect successful responses (SDK uses send, not json)
+        res.send = function (body?: any) {
+          triggerProcessing()
+          return originalSend(body)
+        }
+
+        next()
+      })
+      console.log('[Inbox] OID4VP verification interceptor registered')
+    }
+
     const opts: ISIOPv2RPRestAPIOpts = {
       enableFeatures: ['siop', 'rp-status'],
       endpointOpts: {
@@ -529,6 +604,15 @@ if (!cliMode) {
 
   if (IS_PDM_API_ENABLED) {
     new PdManagerApiServer({ agent, expressSupport })
+  }
+
+  /**
+   * Enable the Inbox API for receiving credentials via OID4VP
+   */
+  if (IS_INBOX_ENABLED && expressSupport) {
+    new InboxApiServer({ agent, expressSupport })
+    new AssetApiServer({ agent, expressSupport })
+    new EInvoiceApiServer({ agent, expressSupport })
   }
 
   /**

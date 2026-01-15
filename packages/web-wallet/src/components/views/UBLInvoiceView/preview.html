@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UBL Invoice View - Design Preview</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #F2F2F2;
+      color: #303030;
+      padding: 24px;
+    }
+
+    .preview-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .preview-title {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 24px;
+      color: #303030;
+    }
+
+    .preview-section {
+      margin-bottom: 48px;
+    }
+
+    .preview-section-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #7276F7;
+    }
+
+    /* Invoice Card - Summary View */
+    .invoice-card {
+      display: flex;
+      width: 582px;
+      border-radius: 8px;
+      border: 1px solid #C4C5CA;
+      background: #FFFFFF;
+      overflow: hidden;
+      flex-direction: row;
+    }
+
+    .invoice-card-accent {
+      width: 5px;
+      background: linear-gradient(180deg, #7276F7 0%, #7C40E8 100%);
+      flex-shrink: 0;
+    }
+
+    .invoice-card-accent.paid {
+      background: #00C249;
+    }
+
+    .invoice-card-accent.overdue {
+      background: #D74500;
+    }
+
+    .invoice-card-accent.pending {
+      background: #F5A623;
+    }
+
+    .invoice-card-content {
+      display: flex;
+      flex-direction: column;
+      padding: 16px 20px;
+      flex: 1;
+      gap: 12px;
+    }
+
+    .invoice-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .invoice-card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #303030;
+    }
+
+    .invoice-card-subtitle {
+      font-size: 12px;
+      font-weight: 400;
+      color: #8D9099;
+      margin-top: 2px;
+    }
+
+    .invoice-status-badge {
+      display: inline-flex;
+      padding: 4px 12px;
+      border-radius: 16px;
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .invoice-status-badge.valid {
+      background: rgba(0, 194, 73, 0.1);
+      color: #00C249;
+      border: 1px solid #00C249;
+    }
+
+    .invoice-status-badge.pending {
+      background: rgba(245, 166, 35, 0.1);
+      color: #F5A623;
+      border: 1px solid #F5A623;
+    }
+
+    .invoice-status-badge.overdue {
+      background: rgba(215, 69, 0, 0.1);
+      color: #D74500;
+      border: 1px solid #D74500;
+    }
+
+    .invoice-card-row {
+      display: flex;
+      gap: 24px;
+    }
+
+    .invoice-card-field {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 100px;
+    }
+
+    .invoice-card-label {
+      font-size: 10px;
+      font-weight: 400;
+      color: #8D9099;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .invoice-card-value {
+      font-size: 14px;
+      font-weight: 500;
+      color: #303030;
+    }
+
+    .invoice-card-value.amount {
+      font-size: 18px;
+      font-weight: 600;
+      color: #7276F7;
+    }
+
+    .invoice-card-divider {
+      height: 1px;
+      background: #E3E3E3;
+      margin: 4px 0;
+    }
+
+    .invoice-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .invoice-card-evidence {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #7276F7;
+      cursor: pointer;
+    }
+
+    .invoice-card-evidence:hover {
+      text-decoration: underline;
+    }
+
+    .invoice-card-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .invoice-action-btn {
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+    }
+
+    .invoice-action-btn.primary {
+      background: linear-gradient(135deg, #7276F7 0%, #7C40E8 100%);
+      color: #FFFFFF;
+    }
+
+    .invoice-action-btn.primary:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .invoice-action-btn.secondary {
+      background: #FFFFFF;
+      color: #7276F7;
+      border: 1px solid #7276F7;
+    }
+
+    .invoice-action-btn.secondary:hover {
+      background: rgba(114, 118, 247, 0.05);
+    }
+
+    /* Full Detail View */
+    .invoice-detail-container {
+      width: 700px;
+      background: #FFFFFF;
+      border-radius: 8px;
+      border: 1px solid #C4C5CA;
+      overflow: hidden;
+    }
+
+    .invoice-detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      border-bottom: 1px solid #E3E3E3;
+      background: linear-gradient(135deg, rgba(114, 118, 247, 0.05) 0%, rgba(124, 64, 232, 0.05) 100%);
+    }
+
+    .invoice-detail-title-section {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .invoice-detail-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #303030;
+    }
+
+    .invoice-detail-subtitle {
+      font-size: 13px;
+      color: #8D9099;
+    }
+
+    .invoice-detail-tabs {
+      display: flex;
+      border-bottom: 1px solid #E3E3E3;
+      background: #FBFBFB;
+    }
+
+    .invoice-detail-tab {
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #8D9099;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .invoice-detail-tab:hover {
+      color: #7276F7;
+    }
+
+    .invoice-detail-tab.active {
+      color: #7276F7;
+      border-bottom-color: #7276F7;
+    }
+
+    .invoice-detail-body {
+      padding: 24px;
+    }
+
+    .invoice-detail-section {
+      margin-bottom: 24px;
+    }
+
+    .invoice-detail-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .invoice-detail-section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #303030;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #E3E3E3;
+    }
+
+    .invoice-detail-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .invoice-detail-grid.two-col {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .invoice-detail-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .invoice-detail-label {
+      font-size: 11px;
+      font-weight: 400;
+      color: #8D9099;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .invoice-detail-value {
+      font-size: 14px;
+      font-weight: 500;
+      color: #303030;
+    }
+
+    .invoice-detail-value.highlight {
+      color: #7276F7;
+      font-weight: 600;
+    }
+
+    /* Amounts Summary Box */
+    .amounts-summary {
+      background: linear-gradient(135deg, rgba(114, 118, 247, 0.05) 0%, rgba(124, 64, 232, 0.05) 100%);
+      border-radius: 6px;
+      padding: 16px;
+      border: 1px solid rgba(114, 118, 247, 0.2);
+    }
+
+    .amounts-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+    }
+
+    .amounts-row:not(:last-child) {
+      border-bottom: 1px solid rgba(114, 118, 247, 0.15);
+    }
+
+    .amounts-row.total {
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .amounts-label {
+      color: #8D9099;
+      font-size: 13px;
+    }
+
+    .amounts-value {
+      color: #303030;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .amounts-row.total .amounts-label,
+    .amounts-row.total .amounts-value {
+      color: #7276F7;
+      font-size: 16px;
+    }
+
+    /* Line Items Table */
+    .line-items-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .line-items-table th {
+      text-align: left;
+      padding: 10px 12px;
+      background: #FBFBFB;
+      font-weight: 500;
+      font-size: 11px;
+      color: #8D9099;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #E3E3E3;
+    }
+
+    .line-items-table td {
+      padding: 12px;
+      border-bottom: 1px solid #E3E3E3;
+      color: #303030;
+    }
+
+    .line-items-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .line-items-table .text-right {
+      text-align: right;
+    }
+
+    /* Evidence/Documents Section */
+    .evidence-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .evidence-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      background: #FBFBFB;
+      border-radius: 6px;
+      border: 1px solid #E3E3E3;
+      gap: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .evidence-item:hover {
+      border-color: #7276F7;
+      background: rgba(114, 118, 247, 0.03);
+    }
+
+    .evidence-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #7276F7 0%, #7C40E8 100%);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .evidence-info {
+      flex: 1;
+    }
+
+    .evidence-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: #303030;
+    }
+
+    .evidence-meta {
+      font-size: 11px;
+      color: #8D9099;
+      margin-top: 2px;
+    }
+
+    .evidence-hash {
+      font-family: monospace;
+      font-size: 10px;
+      color: #8D9099;
+      background: #E3E3E3;
+      padding: 2px 6px;
+      border-radius: 3px;
+      margin-left: auto;
+    }
+
+    /* Party Info Card */
+    .party-card {
+      background: #FBFBFB;
+      border-radius: 6px;
+      padding: 16px;
+      border: 1px solid #E3E3E3;
+    }
+
+    .party-card-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #7276F7;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .party-card-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #303030;
+      margin-bottom: 8px;
+    }
+
+    .party-card-detail {
+      font-size: 13px;
+      color: #8D9099;
+      line-height: 1.5;
+    }
+
+    /* Credential Info Banner */
+    .credential-banner {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: rgba(0, 194, 73, 0.08);
+      border-radius: 6px;
+      border: 1px solid rgba(0, 194, 73, 0.3);
+      margin-bottom: 24px;
+    }
+
+    .credential-banner-icon {
+      width: 32px;
+      height: 32px;
+      background: #00C249;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 14px;
+    }
+
+    .credential-banner-text {
+      flex: 1;
+    }
+
+    .credential-banner-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #00C249;
+    }
+
+    .credential-banner-subtitle {
+      font-size: 11px;
+      color: #8D9099;
+    }
+
+    /* Preview Layout */
+    .preview-row {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .preview-note {
+      font-size: 12px;
+      color: #8D9099;
+      margin-top: 8px;
+      font-style: italic;
+    }
+
+    /* Icons (SVG inline) */
+    .icon-document {
+      width: 16px;
+      height: 16px;
+    }
+
+    .icon-check {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* Issuer Badge */
+    .issuer-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background: rgba(114, 118, 247, 0.1);
+      border-radius: 4px;
+      font-size: 11px;
+      color: #7276F7;
+    }
+
+    .issuer-badge-dot {
+      width: 6px;
+      height: 6px;
+      background: #00C249;
+      border-radius: 50%;
+    }
+  </style>
+</head>
+<body>
+  <div class="preview-container">
+    <h1 class="preview-title">UBL Invoice View - Component Design Preview</h1>
+
+    <!-- Summary Card Views -->
+    <div class="preview-section">
+      <h2 class="preview-section-title">Summary View (Card) - For Inbox List & Sending</h2>
+      <p class="preview-note">This compact card view shows key credential fields for quick scanning in lists</p>
+
+      <div class="preview-row" style="margin-top: 16px;">
+        <!-- Valid/Paid Status -->
+        <div class="invoice-card">
+          <div class="invoice-card-accent paid"></div>
+          <div class="invoice-card-content">
+            <div class="invoice-card-header">
+              <div>
+                <div class="invoice-card-title">Invoice #INV-2024-00847</div>
+                <div class="invoice-card-subtitle">ACME Corporation B.V.</div>
+              </div>
+              <span class="invoice-status-badge valid">Verified</span>
+            </div>
+            <div class="invoice-card-row">
+              <div class="invoice-card-field">
+                <span class="invoice-card-label">Invoice Date</span>
+                <span class="invoice-card-value">2024-01-15</span>
+              </div>
+              <div class="invoice-card-field">
+                <span class="invoice-card-label">Due Date</span>
+                <span class="invoice-card-value">2024-02-15</span>
+              </div>
+              <div class="invoice-card-field">
+                <span class="invoice-card-label">Currency</span>
+                <span class="invoice-card-value">EUR</span>
+              </div>
+            </div>
+            <div class="invoice-card-divider"></div>
+            <div class="invoice-card-row">
+              <div class="invoice-card-field">
+                <span class="invoice-card-label">Subtotal</span>
+                <span class="invoice-card-value">8,450.00</span>
+              </div>
+              <div class="invoice-card-field">
+                <span class="invoice-card-label">Tax (21%)</span>
+                <span class="invoice-card-value">1,774.50</span>
+              </div>
+              <div class="invoice-card-field">
+                <span class="invoice-card-label">Total</span>
+                <span class="invoice-card-value amount">10,224.50</span>
+              </div>
+            </div>
+            <div class="invoice-card-footer">
+              <div class="invoice-card-evidence">
+                <svg class="icon-document" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14,2 14,8 20,8"/>
+                </svg>
+                2 evidence files
+              </div>
+              <div class="invoice-card-actions">
+                <button class="invoice-action-btn secondary">View Details</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pending Status -->
+        <div class="invoice-card">
+          <div class="invoice-card-accent pending"></div>
+          <div class="invoice-card-content">
+            <div class="invoice-card-header">
+              <div>
+                <div class="invoice-card-title">Invoice #INV-2024-00912</div>
+                <div class="invoice-card-subtitle">Tech Solutions Ltd.</div>
+              </div>
+              <span class="invoice-status-badge pending">Pending</span>
+            </div>
+            <div class="invoice-card-row">
+              <div class="invoice-card-field">
+                <span class="invoice-card-label">Invoice Date</span>
+                <span class="invoice-card-value">2024-01-20</span>
+              </div>
+              <div class="invoice-card-field">
+                <span class="invoice-card-label">Due Date</span>
+                <span class="invoice-card-value">2024-02-20</span>
+              </div>
+              <div class="invoice-card-field">
+                <span class="invoice-card-label">Currency</span>
+                <span class="invoice-card-value">EUR</span>
+              </div>
+            </div>
+            <div class="invoice-card-divider"></div>
+            <div class="invoice-card-row">
+              <div class="invoice-card-field">
+                <span class="invoice-card-label">Subtotal</span>
+                <span class="invoice-card-value">3,200.00</span>
+              </div>
+              <div class="invoice-card-field">
+                <span class="invoice-card-label">Tax (21%)</span>
+                <span class="invoice-card-value">672.00</span>
+              </div>
+              <div class="invoice-card-field">
+                <span class="invoice-card-label">Total</span>
+                <span class="invoice-card-value amount">3,872.00</span>
+              </div>
+            </div>
+            <div class="invoice-card-footer">
+              <div class="invoice-card-evidence">
+                <svg class="icon-document" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14,2 14,8 20,8"/>
+                </svg>
+                1 evidence file
+              </div>
+              <div class="invoice-card-actions">
+                <button class="invoice-action-btn secondary">View Details</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Full Detail View -->
+    <div class="preview-section">
+      <h2 class="preview-section-title">Full Detail View - Complete Invoice Information</h2>
+      <p class="preview-note">Expandable detail view showing all UBL invoice fields including line items</p>
+
+      <div class="invoice-detail-container" style="margin-top: 16px;">
+        <div class="invoice-detail-header">
+          <div class="invoice-detail-title-section">
+            <div class="invoice-detail-title">Invoice #INV-2024-00847</div>
+            <div class="invoice-detail-subtitle">eInvoice Credential - urn:org:fides:einvoice:1</div>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: center;">
+            <span class="issuer-badge">
+              <span class="issuer-badge-dot"></span>
+              Issued by ACME Corporation B.V.
+            </span>
+            <span class="invoice-status-badge valid">Verified</span>
+          </div>
+        </div>
+
+        <div class="invoice-detail-tabs">
+          <div class="invoice-detail-tab active">Summary</div>
+          <div class="invoice-detail-tab">Line Items</div>
+          <div class="invoice-detail-tab">Parties</div>
+          <div class="invoice-detail-tab">Evidence</div>
+          <div class="invoice-detail-tab">Credential</div>
+        </div>
+
+        <div class="invoice-detail-body">
+          <!-- Credential Verification Banner -->
+          <div class="credential-banner">
+            <div class="credential-banner-icon">
+              <svg class="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <polyline points="20,6 9,17 4,12"/>
+              </svg>
+            </div>
+            <div class="credential-banner-text">
+              <div class="credential-banner-title">Verifiable Credential Validated</div>
+              <div class="credential-banner-subtitle">Signature verified - Issued Jan 15, 2024 by did:web:acme.example.com</div>
+            </div>
+          </div>
+
+          <!-- Invoice Information -->
+          <div class="invoice-detail-section">
+            <div class="invoice-detail-section-title">Invoice Information</div>
+            <div class="invoice-detail-grid">
+              <div class="invoice-detail-field">
+                <span class="invoice-detail-label">Invoice ID</span>
+                <span class="invoice-detail-value highlight">INV-2024-00847</span>
+              </div>
+              <div class="invoice-detail-field">
+                <span class="invoice-detail-label">Invoice Date</span>
+                <span class="invoice-detail-value">2024-01-15</span>
+              </div>
+              <div class="invoice-detail-field">
+                <span class="invoice-detail-label">Due Date</span>
+                <span class="invoice-detail-value">2024-02-15</span>
+              </div>
+              <div class="invoice-detail-field">
+                <span class="invoice-detail-label">Currency</span>
+                <span class="invoice-detail-value">EUR</span>
+              </div>
+              <div class="invoice-detail-field">
+                <span class="invoice-detail-label">Invoice Type</span>
+                <span class="invoice-detail-value">Commercial Invoice</span>
+              </div>
+              <div class="invoice-detail-field">
+                <span class="invoice-detail-label">Payment Terms</span>
+                <span class="invoice-detail-value">Net 30</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Amounts Summary -->
+          <div class="invoice-detail-section">
+            <div class="invoice-detail-section-title">Amount Summary</div>
+            <div class="amounts-summary">
+              <div class="amounts-row">
+                <span class="amounts-label">Tax Exclusive Amount</span>
+                <span class="amounts-value">EUR 8,450.00</span>
+              </div>
+              <div class="amounts-row">
+                <span class="amounts-label">Tax Amount (21% VAT)</span>
+                <span class="amounts-value">EUR 1,774.50</span>
+              </div>
+              <div class="amounts-row total">
+                <span class="amounts-label">Tax Inclusive Amount</span>
+                <span class="amounts-value">EUR 10,224.50</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Parties Preview -->
+          <div class="invoice-detail-section">
+            <div class="invoice-detail-section-title">Trading Partners</div>
+            <div class="invoice-detail-grid two-col">
+              <div class="party-card">
+                <div class="party-card-title">Supplier</div>
+                <div class="party-card-name">ACME Corporation B.V.</div>
+                <div class="party-card-detail">
+                  VAT: NL123456789B01<br/>
+                  Stationsplein 45<br/>
+                  1012 AB Amsterdam, Netherlands
+                </div>
+              </div>
+              <div class="party-card">
+                <div class="party-card-title">Customer</div>
+                <div class="party-card-name">Tech Solutions Ltd.</div>
+                <div class="party-card-detail">
+                  VAT: NL987654321B01<br/>
+                  Weena 505<br/>
+                  3013 AL Rotterdam, Netherlands
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Evidence Documents -->
+          <div class="invoice-detail-section">
+            <div class="invoice-detail-section-title">Evidence Documents</div>
+            <div class="evidence-list">
+              <div class="evidence-item">
+                <div class="evidence-icon">UBL</div>
+                <div class="evidence-info">
+                  <div class="evidence-name">invoice-2024-00847.xml</div>
+                  <div class="evidence-meta">UBL 2.1 Invoice Document - 45.2 KB</div>
+                </div>
+                <span class="evidence-hash">z3Qa7...xK9m</span>
+              </div>
+              <div class="evidence-item">
+                <div class="evidence-icon">PDF</div>
+                <div class="evidence-info">
+                  <div class="evidence-name">invoice-2024-00847.pdf</div>
+                  <div class="evidence-meta">Human-readable invoice - 128.5 KB</div>
+                </div>
+                <span class="evidence-hash">z8Fb2...nL4p</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Line Items Detail View -->
+    <div class="preview-section">
+      <h2 class="preview-section-title">Line Items Tab View</h2>
+      <p class="preview-note">Detailed breakdown of invoice line items from UBL document</p>
+
+      <div class="invoice-detail-container" style="margin-top: 16px; width: 800px;">
+        <div class="invoice-detail-header">
+          <div class="invoice-detail-title-section">
+            <div class="invoice-detail-title">Invoice #INV-2024-00847</div>
+            <div class="invoice-detail-subtitle">Line Items (3 items)</div>
+          </div>
+          <span class="invoice-status-badge valid">Verified</span>
+        </div>
+
+        <div class="invoice-detail-tabs">
+          <div class="invoice-detail-tab">Summary</div>
+          <div class="invoice-detail-tab active">Line Items</div>
+          <div class="invoice-detail-tab">Parties</div>
+          <div class="invoice-detail-tab">Evidence</div>
+          <div class="invoice-detail-tab">Credential</div>
+        </div>
+
+        <div class="invoice-detail-body">
+          <table class="line-items-table">
+            <thead>
+              <tr>
+                <th style="width: 40px;">#</th>
+                <th>Description</th>
+                <th class="text-right" style="width: 80px;">Quantity</th>
+                <th class="text-right" style="width: 100px;">Unit Price</th>
+                <th class="text-right" style="width: 80px;">VAT %</th>
+                <th class="text-right" style="width: 120px;">Line Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>
+                  <strong>Software Development Services</strong><br/>
+                  <span style="color: #8D9099; font-size: 12px;">Custom API integration - January 2024</span>
+                </td>
+                <td class="text-right">80 hrs</td>
+                <td class="text-right">EUR 85.00</td>
+                <td class="text-right">21%</td>
+                <td class="text-right"><strong>EUR 6,800.00</strong></td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>
+                  <strong>Cloud Hosting Services</strong><br/>
+                  <span style="color: #8D9099; font-size: 12px;">AWS infrastructure - January 2024</span>
+                </td>
+                <td class="text-right">1 mo</td>
+                <td class="text-right">EUR 1,200.00</td>
+                <td class="text-right">21%</td>
+                <td class="text-right"><strong>EUR 1,200.00</strong></td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>
+                  <strong>Technical Support</strong><br/>
+                  <span style="color: #8D9099; font-size: 12px;">Premium support package</span>
+                </td>
+                <td class="text-right">1 mo</td>
+                <td class="text-right">EUR 450.00</td>
+                <td class="text-right">21%</td>
+                <td class="text-right"><strong>EUR 450.00</strong></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div style="margin-top: 24px;">
+            <div class="amounts-summary" style="max-width: 300px; margin-left: auto;">
+              <div class="amounts-row">
+                <span class="amounts-label">Subtotal</span>
+                <span class="amounts-value">EUR 8,450.00</span>
+              </div>
+              <div class="amounts-row">
+                <span class="amounts-label">VAT 21%</span>
+                <span class="amounts-value">EUR 1,774.50</span>
+              </div>
+              <div class="amounts-row total">
+                <span class="amounts-label">Total</span>
+                <span class="amounts-value">EUR 10,224.50</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,233 @@
+/**
+ * InboxSidebar Styles
+ *
+ * Responsive sidebar with theme support.
+ * Uses CSS custom properties for theming.
+ */
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: var(--sidebar-width-default, 240px);
+  min-width: var(--sidebar-width-default, 240px);
+  background-color: var(--theme-sidebar-bg, #FFFFFF);
+  border-right: 1px solid var(--theme-sidebar-border, #E3E3E3);
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.header {
+  padding: var(--theme-space-4, 16px) var(--theme-space-4, 16px) var(--theme-space-3, 12px);
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  font-size: var(--theme-font-size-sm, 12px);
+  font-weight: var(--theme-font-weight-semibold, 600);
+  color: var(--theme-text-secondary, #8D9099);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.navigation {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.inboxSection {
+  display: flex;
+  flex-direction: column;
+}
+
+.inboxItem {
+  display: flex;
+  align-items: center;
+  gap: var(--theme-space-3, 12px);
+  padding: var(--theme-space-3, 12px) var(--theme-space-4, 16px);
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  transition: background-color var(--theme-transition-fast, 0.1s ease);
+}
+
+.inboxItem:hover {
+  background-color: var(--theme-sidebar-item-hover, #F5F5F5);
+}
+
+.inboxItem.inboxActive {
+  background-color: var(--theme-sidebar-item-active, rgba(114, 118, 247, 0.1));
+}
+
+.inboxIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--theme-text-secondary, #8D9099);
+  flex-shrink: 0;
+}
+
+.inboxActive .inboxIcon {
+  color: var(--theme-color-primary, #7276F7);
+}
+
+.inboxName {
+  flex: 1;
+  font-size: var(--theme-font-size-md, 14px);
+  font-weight: var(--theme-font-weight-medium, 500);
+  color: var(--theme-text-primary, #303030);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.inboxCount {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 var(--theme-space-2, 8px);
+  background-color: var(--theme-color-primary, #7276F7);
+  color: var(--theme-text-inverse, #FFFFFF);
+  font-size: var(--theme-font-size-xs, 10px);
+  font-weight: var(--theme-font-weight-semibold, 600);
+  border-radius: var(--theme-radius-full, 9999px);
+  flex-shrink: 0;
+}
+
+/* Folder List */
+.folderList {
+  display: flex;
+  flex-direction: column;
+  padding-left: var(--theme-space-6, 24px);
+  margin-bottom: var(--theme-space-2, 8px);
+}
+
+.folderListHeader {
+  padding: var(--theme-space-2, 8px) var(--theme-space-4, 16px);
+  font-size: var(--theme-font-size-xs, 10px);
+  font-weight: var(--theme-font-weight-medium, 500);
+  color: var(--theme-text-tertiary, #ACACAC);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.folderItem {
+  display: flex;
+  align-items: center;
+  gap: var(--theme-space-2, 8px);
+  padding: var(--theme-space-2, 8px) var(--theme-space-4, 16px);
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  border-radius: var(--theme-radius-sm, 4px);
+  margin-right: var(--theme-space-2, 8px);
+  transition: background-color var(--theme-transition-fast, 0.1s ease);
+}
+
+.folderItem:hover {
+  background-color: var(--theme-sidebar-item-hover, #F5F5F5);
+}
+
+.folderItem.folderActive {
+  background-color: var(--theme-sidebar-item-active, rgba(114, 118, 247, 0.1));
+}
+
+.folderIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--theme-text-secondary, #8D9099);
+  flex-shrink: 0;
+}
+
+.folderActive .folderIcon {
+  color: var(--theme-color-primary, #7276F7);
+}
+
+.folderName {
+  flex: 1;
+  font-size: var(--theme-font-size-sm, 12px);
+  color: var(--theme-text-primary, #303030);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.channelTag {
+  padding: 2px var(--theme-space-2, 8px);
+  background-color: var(--theme-bg-tertiary, #ECECEC);
+  color: var(--theme-text-secondary, #8D9099);
+  font-size: var(--theme-font-size-xs, 10px);
+  font-weight: var(--theme-font-weight-medium, 500);
+  border-radius: var(--theme-radius-sm, 4px);
+  flex-shrink: 0;
+}
+
+.folderCount {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  background-color: var(--theme-color-warning, #F5A623);
+  color: var(--theme-text-inverse, #FFFFFF);
+  font-size: 9px;
+  font-weight: var(--theme-font-weight-semibold, 600);
+  border-radius: var(--theme-radius-full, 9999px);
+  flex-shrink: 0;
+}
+
+/* ===========================
+ * RESPONSIVE STYLES
+ * =========================== */
+
+/* Tablet: Narrower sidebar */
+@media (max-width: 1023px) {
+  .sidebar {
+    width: 220px;
+    min-width: 220px;
+  }
+
+  .folderName {
+    max-width: 100px;
+  }
+}
+
+/* Mobile: Hidden by default, full width when shown */
+@media (max-width: 767px) {
+  .sidebar {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    min-width: 100%;
+    z-index: var(--theme-z-modal, 300);
+  }
+
+  .sidebar.mobileVisible {
+    display: flex;
+  }
+
+  .header {
+    padding-top: var(--theme-space-6, 24px);
+  }
+
+  .inboxItem {
+    padding: var(--theme-space-4, 16px);
+    min-height: 48px;
+  }
+
+  .folderItem {
+    padding: var(--theme-space-3, 12px) var(--theme-space-4, 16px);
+    min-height: 44px;
+  }
+}

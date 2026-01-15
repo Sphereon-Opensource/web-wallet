@@ -1,9 +1,7 @@
 import {Authenticated, ErrorComponent, useLogin} from '@refinedev/core'
 import React, {FC, PropsWithChildren, ReactElement, useEffect} from 'react'
-import {Outlet, Route, Routes, useParams} from 'react-router-dom'
+import {Navigate, Outlet, Route, Routes, useParams} from 'react-router-dom'
 import AssetsListPage from '../../pages/assets'
-import AssetsCreatePage from '../../pages/assets/create'
-import ShowAssetDetails from '../../pages/assets/show'
 import WorkflowListPage from '../../pages/workflows'
 import ContactsListPage from '../../pages/contacts'
 import DocumentsListPage from '../../pages/documents'
@@ -13,12 +11,6 @@ import {NaturalPersonContextProvider} from '@machines/contacts/contactsStateNavi
 import CreateNaturalPersonOrganizationContent from '@components/views/CreateNaturalPersonOrganizationContent'
 import CreateNaturalPersonReviewContactContent from '@components/views/CreateNaturalPersonReviewContactContent'
 import CreateNaturalPersonRoleContent from '@components/views/CreateNaturalPersonRoleContent'
-import {AssetContextProvider} from '@machines/assets/assetsStateNavigation'
-import AddOwnerContactToAsset from '@components/views/AddOwnerContactToAsset'
-import DefineAssetProductContent from 'src/components/views/DefineAssetProductContent'
-import AddDocumentsContent from '@components/views/AddDocumentsContent'
-import GetAssetSummaryContent from 'src/components/views/GetAssetSummaryContent'
-import GetPublishAssetContent from 'src/components/views/GetPublishAssetContent'
 import CredentialsListPage from '../../pages/credentials'
 import CredentialsCreatePage from '../../pages/credentials/create'
 import {CredentialsCreateContextProvider} from '@machines/credentials/credentialCreateStateNavigation'
@@ -45,11 +37,12 @@ import CreateIdentifierSelectTypeContent from 'src/components/views/CreateIdenti
 import {IdentifiersCreateContextProvider} from '@machines/identifiers/identifiersCreateStateNavigation'
 import PresentationDefinitionsListPage from 'pages/presentationDefinitions'
 import {
-  AssetCreateSubRoute,
   ContactRoute,
   CreateIdentifierRoute,
   CredentialDesignerRoute,
   EditIdentifierRoute,
+  EInvoiceCreateRoute,
+  InboxRoute,
   IssueCredentialRoute,
   KeyManagementRoute,
   MainRoute,
@@ -84,6 +77,16 @@ import CredentialDesignerDetailsEditContent from '@components/views/CredentialDe
 import CredentialDesignerVisualDesignEditContent from '@components/views/CredentialDesignerVisualDesignEditContent'
 import CredentialDesignerVisualDesignCreateContent from '@components/views/CredentialDesignerVisualDesignCreateContent'
 import CredentialDesignerClaimsEditContent from '@components/views/CredentialDesignerClaimsEditContent'
+import EInvoiceListPage from '../../pages/einvoice'
+import EInvoiceCreatePage from '../../pages/einvoice/create'
+import SentInvoiceDetailPage from '../../pages/einvoice/sent/[id]'
+import InboxPage from '../../pages/inbox'
+import InboxItemDetailPage from '../../pages/inbox/[inboxName]/[folderName]/[id]'
+import {EInvoiceCreateContextProvider} from '@machines/einvoice/eInvoiceCreateStateNavigation'
+import EInvoiceDetailsContent from '@components/views/EInvoiceDetailsContent'
+import EInvoiceRecipientContent from '@components/views/EInvoiceRecipientContent'
+import EInvoiceEvidenceContent from '@components/views/EInvoiceEvidenceContent'
+import EInvoiceReviewContent from '@components/views/EInvoiceReviewContent'
 
 const KeycloakLoginPage = (props: PropsWithChildren<any>) => {
   const {mutate: login} = useLogin()
@@ -118,20 +121,6 @@ const AppRouter: React.FC = () => {
         })}*/}
           <Route path={MainRoute.ASSETS}>
             <Route index element={<AssetsListPage />} />
-            <Route
-              path={MainRoute.SUB_CREATE}
-              element={
-                <AssetContextProvider>
-                  <AssetsCreatePage />
-                </AssetContextProvider>
-              }>
-              <Route path={AssetCreateSubRoute.CONTACTS} element={<AddOwnerContactToAsset />} />
-              <Route path={AssetCreateSubRoute.PRODUCTS} element={<DefineAssetProductContent />} />
-              <Route path={AssetCreateSubRoute.DOCUMENTS} element={<AddDocumentsContent />} />
-              <Route path={AssetCreateSubRoute.SUMMARY} element={<GetAssetSummaryContent />} />
-              <Route path={AssetCreateSubRoute.PUBLISH} element={<GetPublishAssetContent />} />
-            </Route>
-            <Route path={MainRoute.SUB_ID} element={<ShowAssetDetails />} />
           </Route>
           <Route path={MainRoute.WORKFLOW}>
             <Route index element={<WorkflowListPage />} />
@@ -196,6 +185,27 @@ const AppRouter: React.FC = () => {
               </Route>
             </Route>
             <Route path={MainRoute.SUB_ID} element={<ShowCredentialDetails credentialRole={CredentialRole.HOLDER} />} />
+          </Route>
+          <Route path={MainRoute.EINVOICE}>
+            <Route index element={<EInvoiceListPage />} />
+            <Route
+              path={MainRoute.SUB_CREATE}
+              element={
+                <EInvoiceCreateContextProvider>
+                  <EInvoiceCreatePage />
+                </EInvoiceCreateContextProvider>
+              }>
+              <Route path={EInvoiceCreateRoute.DETAILS} element={<EInvoiceDetailsContent />} />
+              <Route path={EInvoiceCreateRoute.RECIPIENT} element={<EInvoiceRecipientContent />} />
+              <Route path={EInvoiceCreateRoute.EVIDENCE} element={<EInvoiceEvidenceContent />} />
+              <Route path={EInvoiceCreateRoute.REVIEW} element={<EInvoiceReviewContent />} />
+            </Route>
+            <Route path="sent/:id" element={<SentInvoiceDetailPage />} />
+            <Route path={MainRoute.SUB_ID} element={<InboxItemDetailPage />} />
+          </Route>
+          <Route path={MainRoute.INBOX}>
+            <Route index element={<InboxPage />} />
+            <Route path={`${InboxRoute.SUB_INBOX_NAME}/${InboxRoute.SUB_FOLDER_NAME}/${MainRoute.SUB_ID}`} element={<InboxItemDetailPage />} />
           </Route>
           <Route path={MainRoute.DOCUMENTS}>
             <Route index element={<DocumentsListPage />} />

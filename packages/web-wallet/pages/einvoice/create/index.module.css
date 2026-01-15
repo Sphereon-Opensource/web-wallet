@@ -1,0 +1,116 @@
+.container {
+    background-color: #F4F4FF;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.contentContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 32px;
+    padding: 31px 24px;
+    align-items: flex-start;
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.outletContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 0;
+    width: 100%;
+    max-width: 700px;
+}
+
+.buttonsContainer {
+    display: flex;
+    gap: 16px;
+    justify-content: flex-end;
+    padding-top: 16px;
+    margin-top: 8px;
+}
+
+.scrollableContent {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.loadingContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 48px;
+}
+
+.errorContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 24px;
+    background-color: #FEE2E2;
+    border-radius: 8px;
+    color: #DC2626;
+}
+
+.primaryButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    min-width: 120px;
+    background-color: #7276F7;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: inherit;
+    transition: background-color 0.2s, opacity 0.2s;
+}
+
+.primaryButton:hover {
+    background-color: #5558C9;
+}
+
+.primaryButton:disabled {
+    background-color: #C4C5CA;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.secondaryButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    min-width: 100px;
+    background-color: transparent;
+    color: #7276F7;
+    border: 1px solid #7276F7;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: inherit;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.secondaryButton:hover {
+    background-color: rgba(114, 118, 247, 0.1);
+}
+
+.secondaryButton:disabled {
+    border-color: #C4C5CA;
+    color: #C4C5CA;
+    cursor: not-allowed;
+}

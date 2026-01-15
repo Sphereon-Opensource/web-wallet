@@ -116,6 +116,18 @@ const createAgentInstance = (): TAgent<TAgentTypes> => {
         // Service metadata methods for eInvoicing
         'updateServiceMetadata',
         'getServiceMetadata',
+        // Inbox methods for eInvoice inbox
+        'inboxGetAll',
+        'inboxGet',
+        'inboxFolderGetByInbox',
+        'inboxCredentialList',
+        'inboxCredentialDelete',
+        'inboxSendToRecipient',
+        // Credential state update for inbox approve/reject
+        'crsUpdateCredentialState',
+        // Credential delete
+        'crsDeleteCredential',
+        'crsDeleteCredentials',
       ],
     }),
     new OID4VCIHolder({

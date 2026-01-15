@@ -175,6 +175,55 @@ export async function getOrCreateDIDWebFromEnv(): Promise<IIdentifierConfigResul
   return [{ identifier: { identifier } }] as IIdentifierConfigResult[]
 }
 
+/**
+ * Add eInvoicing service endpoints to a DID document.
+ * This enables the DID to receive eInvoices via the inbox endpoint.
+ *
+ * Services added:
+ * - urn:org:fides:einv-direct:1 - Direct eInvoicing capability
+ */
+export async function addEInvoicingServicesToDID(did: string, baseUrl?: string): Promise<void> {
+  const identifier = await getIdentifier(did)
+  if (!identifier) {
+    console.log(`[eInvoice] Cannot add services: DID ${did} not found`)
+    return
+  }
+
+  // Determine the base URL for the inbox endpoint
+  const inboxBaseUrl = baseUrl || process.env.OID4VP_AGENT_BASE_URI || `http://localhost:${process.env.PORT ?? 5000}`
+
+  // Check if eInvoicing service already exists
+  const existingService = identifier.services?.find(
+    (s) => s.type === 'urn:org:fides:einv-direct:1' || s.type === 'EInvoiceInbox'
+  )
+
+  if (existingService) {
+    console.log(`[eInvoice] eInvoicing service already exists for DID ${did}`)
+    return
+  }
+
+  // Add the Direct eInvoicing capability service
+  try {
+    await agent.didManagerAddService({
+      did,
+      service: {
+        id: `${did}#einvoice-direct`,
+        type: 'urn:org:fides:einv-direct:1',
+        serviceEndpoint: {
+          endpoint: `${inboxBaseUrl}/inbox/invoices/direct-inbox`,
+          vct: ['urn:org:fides:einvoice:1'],
+        },
+      },
+    })
+    console.log(`[eInvoice] Added Direct eInvoicing service to DID ${did}`)
+  } catch (error: any) {
+    // Service might already exist in the DB but not in-memory identifier
+    if (!error.message?.includes('already exists')) {
+      console.error(`[eInvoice] Failed to add eInvoicing service: ${error.message}`)
+    }
+  }
+}
+
 export async function getOrCreateIdentifiersFromFS(): Promise<IIdentifierConfigResult[]> {
   if (!IDENTIFIER_IMPORT_MODE.toLowerCase().includes('file')) {
     return []

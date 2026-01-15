@@ -17,13 +17,15 @@ function toPexInstanceOptions(
 ): IPEXInstanceOptions[] {
   const result: IPEXInstanceOptions[] = []
   oid4vpInstanceOpts.map((opt) => {
-    if (opt.rpOpts && !opt.rpOpts.identifierOpts.resolveOpts) {
+    if (opt.rpOpts) {
+      // Ensure identifierOpts exists before accessing its properties
       if (!opt.rpOpts.identifierOpts) {
         // @ts-ignore
         opt.rpOpts.identifierOpts = { resolveOpts: { resolver: opts?.resolver ?? createDidResolver() } }
       }
-      opt.rpOpts.identifierOpts.resolveOpts = { ...opt.rpOpts.identifierOpts.resolveOpts }
-      if (!opt.rpOpts.identifierOpts.resolveOpts.resolver) {
+      if (!opt.rpOpts.identifierOpts.resolveOpts) {
+        opt.rpOpts.identifierOpts.resolveOpts = { resolver: opts?.resolver ?? createDidResolver() }
+      } else if (!opt.rpOpts.identifierOpts.resolveOpts.resolver) {
         opt.rpOpts.identifierOpts.resolveOpts.resolver = opts?.resolver ?? createDidResolver()
       }
       const rpOpts = opt.rpOpts

@@ -245,7 +245,8 @@ export const transformAdvancedSchema = (schema: any): {credentialClaims: any[]} 
 
     return Object.entries(sch.properties)
       .filter(([key]) => key !== 'disclosureFrame')
-      .map(([key, value]) => {
+      .map(([key, rawValue]) => {
+        const value = rawValue as any
         const claim: any = {
           claimName: key,
           type: resolveType(value),

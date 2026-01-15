@@ -1,4 +1,4 @@
-import React, {FC, ReactElement, useEffect, useState} from 'react'
+import React, {FC, ReactElement, useEffect, useRef, useState} from 'react'
 import {HttpError, useList, useOne, useTranslate} from '@refinedev/core'
 import {TabViewRoute} from '@sphereon/ui-components.core'
 import {useBrandingSync} from '@services/brandingSyncService'
@@ -18,7 +18,7 @@ import style from './index.module.css'
 import {CredentialTableItem, DataResource} from '@typings'
 import type {NaturalPerson, Organization, Party} from '@sphereon/ssi-sdk.data-store-types'
 import {PartyTypeType} from '@sphereon/ssi-sdk.data-store-types'
-import {useParams} from 'react-router-dom'
+import {useNavigate, useParams} from 'react-router-dom'
 import {staticPropsWithSST} from '@/src/i18n/server'
 import {getAgent} from '@agent'
 import PublishLinkedVPModal from '@components/modals/PublishLinkedVP'
@@ -91,6 +91,7 @@ async function getUnifiedVC(rawDocument: any) {
 const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
   const {credentialRole} = props
   const translate = useTranslate()
+  const navigate = useNavigate()
   const params = useParams()
   const {id} = params
   const truncationLength: number = getEnvInt('BROWSER_PUBLIC_TRUNCATION_LENGTH', 8)
@@ -107,6 +108,9 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
 
   const partyResults = useList<Party, HttpError>({resource: 'parties'})
   const [showCreateSharedIdModal, setShowCreateSharedIdModal] = useState(false)
+
+  // Track which credential hash we've synced for to avoid re-syncing
+  const lastSyncedHashRef = useRef<string | null>(null)
 
   useEffect(() => {
     const fetchBranding = async () => {
@@ -128,8 +132,11 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
           : []
 
         // Use BrandingSync service for efficient credential branding retrieval
-        // First ensure we have the latest brandings
-        await syncBrandings()
+        // Only sync if we haven't already synced for this credential
+        if (lastSyncedHashRef.current !== hash) {
+          await syncBrandings()
+          lastSyncedHashRef.current = hash
+        }
 
         // Then get brandings from cache filtered by vcHash
         const credentialBrandings = brandingSync.getBrandingsByVcHash(hash)
@@ -153,7 +160,9 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
     }
 
     void fetchBranding()
-  }, [credentialResult.data, syncBrandings, brandingSync])
+    // Note: syncBrandings and brandingSync are stable references from useBrandingSync
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [credentialResult.data, credentialRole])
 
   if (credentialResult.isLoading || partyResults.isLoading || !credentialSummary) {
     return <div>{translate('data_provider_loading_message')}</div>
@@ -537,11 +546,21 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
     },
   ]
 
+  const handleClose = () => {
+    navigate('/credentials')
+  }
+
   return (
     <div className={style.container}>
       <PageHeaderBar path={translate('credential_details_path_label')} />
       <div className={style.headerContainer}>
         <CredentialMiniCardView {...credentialCardViewProps} />
+        <button className={style.closeButton} onClick={handleClose} aria-label="Close">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
       </div>
       <SSITabView routes={routes} />
       {showCreateSharedIdModal && <PublishLinkedVPModal onClose={handleCloseModal} onSubmit={handlePublishVP} />}

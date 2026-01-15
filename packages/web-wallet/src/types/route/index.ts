@@ -4,6 +4,8 @@ export enum MainRoute {
   CONTACTS = '/contacts',
   CREDENTIALS = '/credentials',
   DOCUMENTS = '/documents',
+  EINVOICE = '/einvoice',
+  INBOX = '/inbox',
   EN_CREDENTIALS = '/en/credentials',
   NL_CREDENTIALS = '/nl/credentials',
   ROOT = '/',
@@ -98,4 +100,17 @@ export enum EditIdentifierRoute {
   ALIAS = 'alias',
   KEYS = 'keys',
   SERVICE_ENDPOINTS = 'service_endpoints',
+}
+
+export enum EInvoiceCreateRoute {
+  DETAILS = 'details',
+  RECIPIENT = 'recipient',
+  EVIDENCE = 'evidence',
+  REVIEW = 'review',
+}
+
+export enum InboxRoute {
+  // Dynamic inbox routes: /inbox/:inboxName/:folderName/:id
+  SUB_INBOX_NAME = ':inboxName',
+  SUB_FOLDER_NAME = ':folderName',
 }

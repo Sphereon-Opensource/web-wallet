@@ -2,11 +2,10 @@ import React, {FC} from 'react'
 import style from './index.module.css'
 import {useTranslate} from '@refinedev/core'
 import {ProgressStepIndicator, PrimaryButton, SecondaryButton} from '@sphereon/ui-components.ssi-react'
+import PageHeaderBar from '@components/bars/PageHeaderBar'
 import {Outlet} from 'react-router-dom'
 import {useNaturalPersonMachine} from '@typings'
 import {staticPropsWithSST} from '@/src/i18n/server'
-
-const FINISH_STEP = 5
 
 const ContactsCreatePage: FC = () => {
   const translate = useTranslate()
@@ -34,20 +33,9 @@ const ContactsCreatePage: FC = () => {
 
   return (
     <div className={style.container}>
-      <div className={style.contactCreateContainer}>
-        <div className={style.headerContainer}>
-          <div className={style.pathCaption}>{translate('contacts_overview_path_label')}</div>
-          <div className={style.currentPathCaption}>{translate('contacts_create_title')}</div>
-        </div>
-        <div className={style.contactCreateContentContainer}>
-          {step <= maxInteractiveSteps && (
-            <div className={style.contactCreateCaption}>
-              {translate('steps_label', {
-                step,
-                maxSteps: maxInteractiveSteps,
-              })}
-            </div>
-          )}
+      <PageHeaderBar path={translate('contact_create_person_path_label', 'Contacts / Add Individual')} />
+      <div className={style.contentContainer}>
+        <div className={style.outletContainer}>
           <Outlet
             context={{
               onFirstNameChanged,
@@ -67,38 +55,42 @@ const ContactsCreatePage: FC = () => {
             }}
           />
           <div className={style.buttonsContainer}>
-            <SecondaryButton style={{width: 109}} caption={translate('action_back_label')} onClick={onBack} />
+            {step > 1 && (
+              <SecondaryButton
+                style={{width: 109}}
+                caption={translate('action_back_label', 'Back')}
+                onClick={onBack}
+              />
+            )}
             <PrimaryButton
               style={{width: 180, marginLeft: 'auto'}}
-              caption={step === FINISH_STEP ? translate('action_finish_label') : translate('action_proceed_label')}
+              caption={step === maxInteractiveSteps ? translate('action_finish_label', 'Finish') : translate('action_proceed_label', 'Next')}
               onClick={onNext}
               disabled={disabled}
             />
           </div>
         </div>
-      </div>
-      <div className={style.contactCreateGuideContainer}>
         <ProgressStepIndicator
           steps={[
             {
-              title: translate('contact_create_natural_person_step_title'),
-              description: translate('contact_create_natural_person_step_description'),
+              title: translate('contact_create_natural_person_step_title', 'Personal Info'),
+              description: translate('contact_create_natural_person_step_description', 'Enter personal details'),
             },
             {
-              title: translate('contact_create_address_title'),
-              description: translate('contact_create_address_description'),
+              title: translate('contact_create_address_title', 'Address'),
+              description: translate('contact_create_address_description', 'Enter physical address'),
             },
             {
-              title: translate('contact_create_organization_step_title'),
-              description: translate('contact_create_organization_step_description'),
+              title: translate('contact_create_organization_step_title', 'Organization'),
+              description: translate('contact_create_organization_step_description', 'Link to organization'),
             },
             {
-              title: translate('contact_create_role_step_title'),
-              description: translate('contact_create_role_step_description'),
+              title: translate('contact_create_role_step_title', 'Role'),
+              description: translate('contact_create_role_step_description', 'Assign contact role'),
             },
             {
-              title: translate('contact_create_summary_step_title'),
-              description: translate('contact_create_summary_step_description'),
+              title: translate('contact_create_summary_step_title', 'Review'),
+              description: translate('contact_create_summary_step_description', 'Review and confirm'),
             },
           ]}
           activeStep={step}

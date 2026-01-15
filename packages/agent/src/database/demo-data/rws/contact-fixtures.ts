@@ -1,5 +1,5 @@
 import type { NonPersistedIdentity } from '@sphereon/ssi-sdk.data-store-types'
-import { CorrelationIdentifierType, PartyOrigin, PartyTypeType } from '@sphereon/ssi-sdk.data-store-types'
+import { CorrelationIdentifierType, PartyOrigin, PartyTypeType, IdentityOrigin } from '@sphereon/ssi-sdk.data-store-types'
 import { IIdentifier } from '@veramo/core'
 import agent from '../../../agent'
 import { v4 } from 'uuid'
@@ -19,10 +19,15 @@ const PRIVATE_DID3_KEY_HEX = '90868704b3bb2bdd27e2e831654c4adb2ea7e4f0e090d03aa3
 const PRIVATE_DID4_KEY_HEX = 'f367873323bf0dd701ec972d8a17aee7a9dcad13bd6deb64e8653da113094261'
 const PRIVATE_DID5_KEY_HEX = 'a167873323bf1ed701ec972d8a17aee7aaecad13bd6deb64e8653da113094256'
 const PRIVATE_DID6_KEY_HEX = 'a167873323bf0dd701ec972d8a17aee7aaecad13bd6deb64e8653da113094256'
+const PRIVATE_DID7_KEY_HEX = 'b267873323bf0dd701ec972d8a17aee7aaecad13bd6deb64e8653da113094257'
+const SPHEREON_DID = 'did:web:sphereon.ngrok.dev'
+const SPHEREON_HOSTNAME = 'sphereon.ngrok.dev'
+const SPHEREON_INBOX_NAME = 'invoices'
 const toContactIdentityDTO = (contact: Record<string, any>, identifier: IIdentifier): NonPersistedIdentity => {
   console.log(`Contact received did ${identifier.did}, contact: ${JSON.stringify(contact)}`, identifier.did)
   return {
     alias: identifier.alias ?? contact.displayName,
+    origin: IdentityOrigin.INTERNAL,
     roles: [CredentialRole.ISSUER],
     identifier: {
       type: CorrelationIdentifierType.DID,
@@ -33,19 +38,31 @@ const toContactIdentityDTO = (contact: Record<string, any>, identifier: IIdentif
 
 export async function addContactsRWS() {
   try {
-    const personContactType = await agent.cmAddContactType({
-      name: 'people',
-      origin: PartyOrigin.INTERNAL,
-      type: PartyTypeType.NATURAL_PERSON,
-      tenantId: v4(),
-    })
+    // Get or create contact types (idempotent)
+    let personContactType
+    let organizationalContactType
 
-    const organizationalContactType = await agent.cmAddContactType({
-      name: 'organizations',
-      origin: PartyOrigin.INTERNAL,
-      type: PartyTypeType.ORGANIZATION,
-      tenantId: v4(),
-    })
+    const existingTypes = await agent.cmGetContactTypes()
+    personContactType = existingTypes.find((ct: { type: string }) => ct.type === PartyTypeType.NATURAL_PERSON)
+    organizationalContactType = existingTypes.find((ct: { type: string }) => ct.type === PartyTypeType.ORGANIZATION)
+
+    if (!personContactType) {
+      personContactType = await agent.cmAddContactType({
+        name: 'people',
+        origin: PartyOrigin.INTERNAL,
+        type: PartyTypeType.NATURAL_PERSON,
+        tenantId: v4(),
+      })
+    }
+
+    if (!organizationalContactType) {
+      organizationalContactType = await agent.cmAddContactType({
+        name: 'organizations',
+        origin: PartyOrigin.INTERNAL,
+        type: PartyTypeType.ORGANIZATION,
+        tenantId: v4(),
+      })
+    }
 
     const persona1 = {
       firstName: 'Wendy',
@@ -159,8 +176,255 @@ export async function addContactsRWS() {
     organization3.identities = [toContactIdentityDTO(organization3, identifier)]
     await agent.cmAddContact(organization3)
     // did:ion:EiDobUdzuIh5U8UDtbe6y-Zx1LpiO_AsqlsT-gMZa6vCvA:eyJkZWx0YSI6eyJwYXRjaGVzIjpbeyJhY3Rpb24iOiJyZXBsYWNlIiwiZG9jdW1lbnQiOnsicHVibGljS2V5cyI6W3siaWQiOiJzZ3MiLCJwdWJsaWNLZXlKd2siOnsiY3J2Ijoic2VjcDI1NmsxIiwia3R5IjoiRUMiLCJ4IjoiamNhbm1FcC1HbU9QN1F6RjFkdlJ2YTkwSmRQQlFqTDNmQ1h5eWNmU3RyRSIsInkiOiJfV0FpMlplMWI4SFBLT1Zza2x1bWl3SE9wNW9MZnV1SzY1VmNieE5IejJvIn0sInB1cnBvc2VzIjpbImF1dGhlbnRpY2F0aW9uIiwiYXNzZXJ0aW9uTWV0aG9kIl0sInR5cGUiOiJFY2RzYVNlY3AyNTZrMVZlcmlmaWNhdGlvbktleTIwMTkifV19fV0sInVwZGF0ZUNvbW1pdG1lbnQiOiJFaURJTzZRODNadjJBSUdPWG9nUWx1WGxKcDU3NllTQTlnNHVRdTM1Q0VXNGN3In0sInN1ZmZpeERhdGEiOnsiZGVsdGFIYXNoIjoiRWlEQWgzN2dhOWMwaGFlVXd6R2tWam03aFJXSF82T19mdFJwWloyRnpmWHJJQSIsInJlY292ZXJ5Q29tbWl0bWVudCI6IkVpQzVUOWk1TUo1c0ZvRWg4OHE3SmtPallDUDFwRDg0eTgwTUs0QmVCZnhiSmcifX0
+
+    // Organization with eInvoicing service endpoints for testing eInvoice wizard
+    const organization4 = {
+      legalName: 'Acme Corporation B.V.',
+      displayName: 'Acme Corp',
+      contactType: organizationalContactType,
+      uri: 'acme-corp.nl',
+    } as AddContactArgs
+
+    identifier = await agent.didManagerCreate(
+      existingDidConfigWithEInvoice(DIDMethods.DID_WEB, 'acme-auth', PRIVATE_DID7_KEY_HEX, {
+        alias: 'did:web:localhost:acme',
+        type: 'Secp256r1',
+      }),
+    )
+    organization4.identities = [toContactIdentityDTO(organization4, identifier)]
+    await agent.cmAddContact(organization4)
+    console.log('[Demo] Added eInvoice-capable contact: Acme Corporation B.V.')
+
   } catch (e) {
     console.log(e)
+  }
+
+  // Sphereon organization - uses the DID loaded from config file
+  // Add eInvoice services to the existing DID and create contact
+  // This runs independently of other contacts so it succeeds even if others fail
+  try {
+    const existingTypes = await agent.cmGetContactTypes()
+    const organizationalContactType = existingTypes.find((ct: { type: string }) => ct.type === PartyTypeType.ORGANIZATION)
+    if (organizationalContactType) {
+      await addSphereonOrganization(organizationalContactType)
+    } else {
+      console.log('[Demo] No organization contact type found. Cannot create Sphereon contact.')
+    }
+  } catch (e) {
+    console.log('[Demo] Error in Sphereon organization creation:', e)
+  }
+}
+
+/**
+ * Add Sphereon organization with eInvoice service endpoints
+ * Uses the DID that was loaded from config file (did:web:sphereon.ngrok.dev)
+ */
+async function addSphereonOrganization(organizationalContactType: any) {
+  try {
+    // Check if the Sphereon DID exists (should be loaded from config)
+    let sphereonIdentifier
+    try {
+      sphereonIdentifier = await agent.didManagerGet({ did: SPHEREON_DID })
+    } catch (e) {
+      console.log(`[Demo] Sphereon DID ${SPHEREON_DID} not found. Skipping Sphereon contact creation.`)
+      console.log('[Demo] To create this DID, ensure the config file exists in conf/dids/')
+      return
+    }
+
+    if (!sphereonIdentifier) {
+      console.log('[Demo] Sphereon DID not available. Skipping contact creation.')
+      return
+    }
+
+    console.log(`[Demo] Found Sphereon DID: ${sphereonIdentifier.did}`)
+
+    // Always ensure inbox exists (idempotent) - needed for eInvoice services
+    await ensureInboxExists(SPHEREON_DID, SPHEREON_INBOX_NAME, `eInvoice inbox`)
+
+    // Add eInvoice services to the DID if they don't exist
+    const existingServices = sphereonIdentifier.services || []
+    const hasDirectInbox = existingServices.some((s: { type: string }) => s.type === 'einv-direct')
+    const hasPeppolInbox = existingServices.some((s: { type: string }) => s.type === 'einv-peppol')
+
+    // Also ensure folders exist even if services already exist (use service id as folder name)
+    for (const service of existingServices) {
+      if (service.type === 'einv-direct' || service.type === 'einv-peppol') {
+        await ensureInboxFolderExists(SPHEREON_INBOX_NAME, service.id, service.description || `${service.type} inbox`)
+      }
+    }
+
+    if (!hasDirectInbox) {
+      console.log('[Demo] Adding einv-direct service to Sphereon DID...')
+      await addEInvoiceServiceWithInbox({
+        did: SPHEREON_DID,
+        hostname: SPHEREON_HOSTNAME,
+        serviceId: 'direct',
+        serviceType: 'einv-direct',
+        description: 'Direct eInvoicing endpoint for Sphereon',
+        einvoice: {
+          entityName: 'Sphereon B.V.',
+          country: 'NL',
+          vct: 'urn:org:fides:einv-direct:1',
+          documentIdentifiers: ['urn:fdc:peppol.eu:UBL:2.0:invoice', 'urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:D22A'],
+          processIdentifiers: ['urn:fdc:peppol.eu:2017:poacc:billing:01:1.0'],
+          transportType: 'HTTP',
+        },
+      })
+    }
+
+    if (!hasPeppolInbox) {
+      console.log('[Demo] Adding einv-peppol service to Sphereon DID...')
+      await addEInvoiceServiceWithInbox({
+        did: SPHEREON_DID,
+        hostname: SPHEREON_HOSTNAME,
+        serviceId: 'peppol',
+        serviceType: 'einv-peppol',
+        description: 'PEPPOL eInvoicing endpoint for Sphereon',
+        einvoice: {
+          entityName: 'Sphereon B.V.',
+          country: 'NL',
+          vct: 'urn:org:fides:einv-peppol:1',
+          peppolParticipantId: '0106:87654321',
+          documentIdentifiers: ['urn:fdc:peppol.eu:poacc:billing:3:invoice'],
+          processIdentifiers: ['urn:fdc:peppol.eu:2017:poacc:billing:01:1.0'],
+          transportType: 'PEPPOL',
+        },
+      })
+    }
+
+    // Create Sphereon organization contact
+    // Check if Sphereon contact already exists (idempotent)
+    const existingContacts = await agent.cmGetContacts({})
+    const existingSphereon = existingContacts.find(
+      (contact: { contact?: { legalName?: string; displayName?: string } }) =>
+        contact.contact?.legalName === 'Sphereon B.V.' || contact.contact?.displayName === 'Sphereon',
+    )
+
+    if (!existingSphereon) {
+      const sphereonOrg = {
+        legalName: 'Sphereon B.V.',
+        displayName: 'Sphereon',
+        contactType: organizationalContactType,
+        uri: 'sphereon.com',
+      } as AddContactArgs
+
+      sphereonOrg.identities = [
+        {
+          alias: 'Sphereon eInvoice Wallet',
+          origin: IdentityOrigin.INTERNAL,
+          roles: [CredentialRole.ISSUER, CredentialRole.HOLDER, CredentialRole.VERIFIER],
+          identifier: {
+            type: CorrelationIdentifierType.DID,
+            correlationId: sphereonIdentifier.did,
+          },
+        } as NonPersistedIdentity,
+      ]
+
+      await agent.cmAddContact(sphereonOrg)
+      console.log(`[Demo] Added eInvoice-capable contact: Sphereon B.V. (DID: ${sphereonIdentifier.did})`)
+    } else {
+      console.log('[Demo] Sphereon contact already exists. Skipping contact creation.')
+    }
+  } catch (e) {
+    console.log('[Demo] Error adding Sphereon organization:', e)
+  }
+}
+
+interface EInvoiceServiceConfig {
+  did: string
+  hostname: string
+  serviceId: string
+  serviceType: string
+  description: string
+  einvoice: {
+    entityName: string
+    country: string
+    vct: string
+    documentIdentifiers: string[]
+    processIdentifiers: string[]
+    transportType: string
+    peppolParticipantId?: string
+  }
+}
+
+/**
+ * Add eInvoice service endpoint and ensure corresponding inbox/folder exists
+ * Uses serviceId as folder name, derives inbox name from SPHEREON_INBOX_NAME constant
+ */
+async function addEInvoiceServiceWithInbox(config: EInvoiceServiceConfig) {
+  const { did, hostname, serviceId, serviceType, description, einvoice } = config
+  const inboxName = SPHEREON_INBOX_NAME
+  const folderName = serviceId
+
+  // Ensure inbox exists
+  await ensureInboxExists(did, inboxName, `eInvoice inbox for ${einvoice.entityName}`)
+
+  // Ensure folder exists (using serviceId as folder name)
+  await ensureInboxFolderExists(inboxName, folderName, description)
+
+  // Add service to DID
+  await agent.didManagerAddService({
+    did,
+    service: {
+      id: serviceId,
+      type: serviceType,
+      serviceEndpoint: {
+        url: `https://${hostname}/inbox/${inboxName}/${folderName}`,
+        einvoice,
+      },
+      description,
+    },
+  })
+}
+
+/**
+ * Ensure inbox exists for a DID (idempotent)
+ */
+async function ensureInboxExists(did: string, inboxName: string, description: string) {
+  try {
+    const existingInbox = await agent.inboxGet({ name: inboxName }).catch(() => null)
+    if (existingInbox) {
+      console.log(`[Demo] Inbox "${inboxName}" already exists.`)
+      return existingInbox
+    }
+
+    console.log(`[Demo] Creating inbox "${inboxName}" for DID ${did}...`)
+    const inbox = await agent.inboxCreate({
+      name: inboxName,
+      did: did,
+      description: description,
+    })
+    console.log(`[Demo] Created inbox "${inboxName}"`)
+    return inbox
+  } catch (e) {
+    console.log(`[Demo] Error creating inbox "${inboxName}":`, e)
+    return null
+  }
+}
+
+/**
+ * Ensure inbox folder exists (idempotent)
+ */
+async function ensureInboxFolderExists(inboxName: string, folderName: string, description: string, dcqlQueryId: string = 'einvoice') {
+  try {
+    const existingFolder = await agent.inboxFolderGet({ inboxName, folderName }).catch(() => null)
+    if (existingFolder) {
+      console.log(`[Demo] Folder "${folderName}" in inbox "${inboxName}" already exists.`)
+      return existingFolder
+    }
+
+    console.log(`[Demo] Creating folder "${folderName}" in inbox "${inboxName}" with DCQL query "${dcqlQueryId}"...`)
+    const folder = await agent.inboxFolderCreate({
+      inboxName: inboxName,
+      name: folderName,
+      dcqlQueryId: dcqlQueryId,
+      description: description,
+    })
+    console.log(`[Demo] Created folder "${folderName}"`)
+    return folder
+  } catch (e) {
+    console.log(`[Demo] Error creating folder "${folderName}":`, e)
+    return null
   }
 }
 
@@ -235,6 +499,84 @@ function existingDidConfig(
   } else {
     options = { services }
   }
+  return {
+    provider: `did:${method}`,
+    options,
+    services,
+    ...(opts?.alias && { alias: opts.alias }),
+  }
+}
+
+/**
+ * Create DID configuration with eInvoicing service endpoints for testing
+ */
+function existingDidConfigWithEInvoice(
+  method: DIDMethods,
+  kid: string,
+  privateDIDKeyHex: String,
+  opts?: { alias?: string; type?: TKeyType },
+) {
+  // eInvoicing service endpoints
+  const services = [
+    {
+      id: 'einv-direct-inbox',
+      type: 'einv-direct',
+      serviceEndpoint: 'http://localhost:5010/api/inbox/acme/direct',
+      description: 'Direct eInvoicing endpoint for Acme Corporation',
+      einvoice: {
+        entityName: 'Acme Corporation B.V.',
+        country: 'NL',
+        vct: 'urn:org:fides:einv-direct:1',
+        documentIdentifiers: ['urn:fdc:peppol.eu:UBL:2.0:invoice', 'urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:D22A'],
+        processIdentifiers: ['urn:fdc:peppol.eu:2017:poacc:billing:01:1.0'],
+        transportType: 'HTTP',
+      },
+    },
+    {
+      id: 'einv-peppol-inbox',
+      type: 'einv-peppol',
+      serviceEndpoint: 'http://localhost:5010/api/inbox/acme/peppol',
+      description: 'PEPPOL eInvoicing endpoint for Acme Corporation',
+      einvoice: {
+        entityName: 'Acme Corporation B.V.',
+        country: 'NL',
+        vct: 'urn:org:fides:einv-peppol:1',
+        peppolParticipantId: '0106:12345678',
+        documentIdentifiers: ['urn:fdc:peppol.eu:poacc:billing:3:invoice'],
+        processIdentifiers: ['urn:fdc:peppol.eu:2017:poacc:billing:01:1.0'],
+        transportType: 'PEPPOL',
+      },
+    },
+  ]
+
+  let options = {}
+  if (method === DIDMethods.DID_WEB) {
+    options = {
+      kid,
+      keys: [
+        {
+          key: {
+            privateKeyHex: privateDIDKeyHex,
+            kid,
+            type: opts?.type ?? 'Secp256r1',
+          },
+          type: opts?.type ?? 'Secp256r1',
+          isController: true,
+        } as IKeyOpts,
+      ],
+    }
+  } else if (method === DIDMethods.DID_JWK) {
+    options = {
+      kid,
+      key: {
+        privateKeyHex: privateDIDKeyHex,
+        kid,
+        type: opts?.type ?? 'Secp256r1',
+        keyType: opts?.type ?? 'Secp256r1',
+      },
+    }
+  }
+
   return {
     provider: `did:${method}`,
     options,

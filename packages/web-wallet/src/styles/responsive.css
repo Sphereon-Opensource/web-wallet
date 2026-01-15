@@ -1,0 +1,228 @@
+/*
+ * Responsive Utilities
+ *
+ * This file provides responsive layout utilities using CSS custom properties
+ * and media queries. Components should use these for consistent breakpoint handling.
+ *
+ * Breakpoints:
+ * - xs: 480px  (small mobile)
+ * - sm: 640px  (large mobile)
+ * - md: 768px  (tablet)
+ * - lg: 1024px (small desktop)
+ * - xl: 1280px (large desktop)
+ * - 2xl: 1536px (extra large)
+ */
+
+:root {
+  /* Container max-widths at different breakpoints */
+  --container-xs: 100%;
+  --container-sm: 100%;
+  --container-md: 100%;
+  --container-lg: 960px;
+  --container-xl: 1200px;
+  --container-2xl: 1400px;
+
+  /* Sidebar widths - responsive */
+  --sidebar-width-collapsed: 60px;
+  --sidebar-width-default: 240px;
+  --sidebar-width-expanded: 280px;
+
+  /* Detail panel widths - responsive */
+  --detail-panel-width-sm: 100%;
+  --detail-panel-width-md: 380px;
+  --detail-panel-width-lg: 420px;
+  --detail-panel-width-xl: 480px;
+
+  /* Table cell minimum widths */
+  --table-cell-min-xs: 80px;
+  --table-cell-min-sm: 100px;
+  --table-cell-min-md: 120px;
+  --table-cell-min-lg: 150px;
+
+  /* Layout visibility flags (1 = visible, 0 = hidden) */
+  --show-sidebar: 1;
+  --show-detail-inline: 0;
+  --show-table-actions: 1;
+}
+
+/* Mobile first - base styles */
+@media (max-width: 479px) {
+  :root {
+    --show-sidebar: 0;
+    --show-detail-inline: 1;
+    --show-table-actions: 0;
+    --detail-panel-width: 100%;
+  }
+}
+
+/* Small mobile and up */
+@media (min-width: 480px) {
+  :root {
+    --show-sidebar: 0;
+    --show-detail-inline: 1;
+    --detail-panel-width: 100%;
+  }
+}
+
+/* Tablet and up */
+@media (min-width: 768px) {
+  :root {
+    --show-sidebar: 1;
+    --show-detail-inline: 0;
+    --detail-panel-width: var(--detail-panel-width-md);
+  }
+}
+
+/* Small desktop and up */
+@media (min-width: 1024px) {
+  :root {
+    --show-sidebar: 1;
+    --show-detail-inline: 0;
+    --show-table-actions: 1;
+    --detail-panel-width: var(--detail-panel-width-lg);
+  }
+}
+
+/* Large desktop and up */
+@media (min-width: 1280px) {
+  :root {
+    --detail-panel-width: var(--detail-panel-width-xl);
+  }
+}
+
+/* ===========================
+ * UTILITY CLASSES
+ * =========================== */
+
+/* Hide on mobile */
+.hide-mobile {
+  display: block;
+}
+
+@media (max-width: 767px) {
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+/* Hide on desktop */
+.hide-desktop {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .hide-desktop {
+    display: block !important;
+  }
+}
+
+/* Show only on mobile */
+.show-mobile-only {
+  display: none !important;
+}
+
+@media (max-width: 767px) {
+  .show-mobile-only {
+    display: block !important;
+  }
+}
+
+/* Flex direction utilities */
+.flex-responsive {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .flex-responsive {
+    flex-direction: row;
+  }
+}
+
+/* Text truncation */
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Responsive text alignment */
+.text-center-mobile {
+  text-align: left;
+}
+
+@media (max-width: 767px) {
+  .text-center-mobile {
+    text-align: center;
+  }
+}
+
+/* Full width on mobile */
+.full-width-mobile {
+  width: auto;
+}
+
+@media (max-width: 767px) {
+  .full-width-mobile {
+    width: 100% !important;
+  }
+}
+
+/* Stack on mobile */
+.stack-mobile {
+  flex-direction: row;
+  gap: var(--theme-space-4);
+}
+
+@media (max-width: 767px) {
+  .stack-mobile {
+    flex-direction: column;
+  }
+}
+
+/* Responsive padding */
+.responsive-padding {
+  padding: var(--theme-space-6);
+}
+
+@media (max-width: 767px) {
+  .responsive-padding {
+    padding: var(--theme-space-4);
+  }
+}
+
+@media (max-width: 479px) {
+  .responsive-padding {
+    padding: var(--theme-space-3);
+  }
+}
+
+/* Responsive gap */
+.responsive-gap {
+  gap: var(--theme-space-6);
+}
+
+@media (max-width: 767px) {
+  .responsive-gap {
+    gap: var(--theme-space-4);
+  }
+}
+
+/* Scrollable container */
+.scrollable {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Touch-friendly targets */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+@media (min-width: 1024px) {
+  .touch-target {
+    min-height: auto;
+    min-width: auto;
+  }
+}

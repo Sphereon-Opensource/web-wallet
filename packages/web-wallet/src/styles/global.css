@@ -1,7 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+@import './theme.css';
+@import './responsive.css';
 
 html {
-    font-family: Poppins sans-serif;
+    font-family: var(--theme-font-family);
+    font-size: 16px;
+    line-height: var(--theme-line-height-normal);
+    overflow: hidden;
+    height: 100%;
 }
 
 .menu {
@@ -21,9 +27,12 @@ html {
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Poppins', serif;
+  font-family: var(--theme-font-family);
   user-select: none;
-  background-color: #FBFBFB;
+  background-color: var(--theme-bg-primary);
+  color: var(--theme-text-primary);
+  overflow: hidden;
+  height: 100%;
 }
 
 :root {

@@ -14,7 +14,7 @@ import {
   CredentialUISchema,
   DataResource,
   MainRoute,
-  StoreCredentialSchemaArgs,
+  StoreCredentialDesignArgs,
   UIContextType,
 } from '@typings'
 
@@ -192,6 +192,7 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
             name: credentialDesignerDetailsFormData.data.identifier,
             schema: buildResult.schema,
             uiSchema: buildResult.uiSchema,
+            isAdvancedSchema: advancedMode,
             branding: new CredentialDesignBrandingDTO({
               backgroundColor: credentialDesignerVisualDesignFormData.data?.background_color,
               textColor: credentialDesignerVisualDesignFormData.data?.text_color,
@@ -385,7 +386,7 @@ const CredentialDesignerContextProvider = (props: any): ReactElement => {
     return isRoot ? {type: 'VerticalLayout', elements} : elements
   }
 
-  const storeCredentialSchema = async (args: StoreCredentialSchemaArgs): Promise<void> => {
+  const storeCredentialSchema = async (args: StoreCredentialDesignArgs): Promise<void> => {
     await mutateAsync({values: args})
   }
 

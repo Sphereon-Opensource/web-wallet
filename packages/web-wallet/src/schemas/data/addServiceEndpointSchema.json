@@ -85,7 +85,7 @@
       "then": {
         "required": ["serviceEndpoint"]
       },
-      "else": true
+      "else": {}
     },
     {
       "if": {
@@ -97,7 +97,7 @@
       "then": {
         "required": ["entityName", "country"]
       },
-      "else": true
+      "else": {}
     },
     {
       "if": {
@@ -109,7 +109,7 @@
       "then": {
         "required": ["peppolParticipantId"]
       },
-      "else": true
+      "else": {}
     },
     {
       "if": {
@@ -121,7 +121,7 @@
       "then": {
         "required": ["ppfPlatformId", "ppfRecipientIds", "ppfMode"]
       },
-      "else": true
+      "else": {}
     }
   ],
   "required": ["type", "id"]

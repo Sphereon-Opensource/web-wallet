@@ -8,13 +8,17 @@
 .main {
   display: flex;
   flex-direction: row;
-  flex-grow: 1
+  flex-grow: 1;
+  overflow: hidden;
+  min-height: 0;
 }
 
 .fragment {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  overflow: hidden;
+  min-height: 0;
 }
 
 .sideNavigationContainer {

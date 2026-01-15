@@ -1,0 +1,156 @@
+/**
+ * Inbox Item Detail Page Styles
+ *
+ * Full-page wrapper for UBLInvoiceDetailView.
+ * Provides proper layout and responsive behavior.
+ */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--theme-bg-primary, #FBFBFB);
+  overflow: hidden;
+}
+
+.main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: var(--theme-space-4, 16px) var(--theme-space-6, 24px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  min-height: 0;
+}
+
+.content {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===========================
+ * LOADING STATE
+ * =========================== */
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: var(--theme-space-10, 40px) var(--theme-space-6, 24px);
+  text-align: center;
+  color: var(--theme-text-secondary, #8D9099);
+}
+
+.loadingSpinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--theme-border-primary, #E8E8E8);
+  border-top-color: var(--theme-primary, #7276F7);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: var(--theme-space-4, 16px);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===========================
+ * NOT FOUND STATE
+ * =========================== */
+
+.notFound {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: var(--theme-space-10, 40px) var(--theme-space-6, 24px);
+  text-align: center;
+}
+
+.notFoundIcon {
+  margin-bottom: var(--theme-space-6, 24px);
+  color: var(--theme-text-tertiary, #ACACAC);
+}
+
+.notFoundTitle {
+  margin: 0 0 var(--theme-space-3, 12px);
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  font-size: var(--theme-font-size-xl, 20px);
+  font-weight: var(--theme-font-weight-semibold, 600);
+  color: var(--theme-text-primary, #303030);
+}
+
+.notFoundDescription {
+  margin: 0 0 var(--theme-space-6, 24px);
+  font-size: var(--theme-font-size-md, 14px);
+  color: var(--theme-text-secondary, #8D9099);
+  max-width: 400px;
+}
+
+.notFoundButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--theme-space-3, 12px) var(--theme-space-6, 24px);
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  font-size: var(--theme-font-size-md, 14px);
+  font-weight: var(--theme-font-weight-semibold, 600);
+  color: var(--theme-text-inverse, #FFFFFF);
+  background: linear-gradient(135deg, #7276F7 0%, #7C40E8 100%);
+  border: none;
+  border-radius: var(--theme-radius-md, 6px);
+  cursor: pointer;
+  transition: all var(--theme-transition-fast, 0.15s ease);
+}
+
+.notFoundButton:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* ===========================
+ * RESPONSIVE STYLES
+ * =========================== */
+
+/* Tablet */
+@media (max-width: 1023px) {
+  .main {
+    padding: var(--theme-space-4, 16px);
+  }
+
+  .content {
+    max-width: 100%;
+  }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+  .main {
+    padding: 0;
+  }
+
+  .content {
+    width: 100%;
+  }
+
+  .notFound {
+    padding: var(--theme-space-6, 24px) var(--theme-space-4, 16px);
+  }
+
+  .notFoundIcon svg {
+    width: 40px;
+    height: 40px;
+  }
+
+  .notFoundTitle {
+    font-size: var(--theme-font-size-lg, 18px);
+  }
+}

@@ -1,0 +1,38 @@
+.statusBadge {
+  display: inline-flex;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+/* Small variant for use in tables */
+.statusBadge.small {
+  padding: 3px 10px;
+  font-size: 10px;
+  letter-spacing: 0.3px;
+}
+
+/* Variant: valid (approved, verified, paid, active) */
+.statusBadge.valid {
+  background: rgba(0, 194, 73, 0.1);
+  color: #00C249;
+  border: 1px solid #00C249;
+}
+
+/* Variant: pending */
+.statusBadge.pending {
+  background: rgba(245, 166, 35, 0.1);
+  color: #F5A623;
+  border: 1px solid #F5A623;
+}
+
+/* Variant: error (invalid, rejected, overdue, expired) */
+.statusBadge.error {
+  background: rgba(215, 69, 0, 0.1);
+  color: #D74500;
+  border: 1px solid #D74500;
+}

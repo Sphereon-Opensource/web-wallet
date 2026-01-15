@@ -3,8 +3,7 @@ import {useParams} from 'react-router-dom'
 import {HttpError, useOne, useTranslation} from '@refinedev/core'
 import type {IBasicCredentialLocaleBranding, Party} from '@sphereon/ssi-sdk.data-store-types'
 import {OpenID4VCIClient} from '@sphereon/oid4vci-client'
-import {CredentialStatus, TabViewRoute} from '@sphereon/ui-components.core'
-import {ContactViewItem, SSITabView} from '@sphereon/ui-components.ssi-react'
+import {CredentialStatus} from '@sphereon/ui-components.core'
 import {oid4vciCredentialLocaleBrandingFrom} from '@sphereon/ssi-sdk.oid4vci-holder'
 import PageHeaderBar from '@components/bars/PageHeaderBar'
 import {staticPropsWithSST} from '@/src/i18n/server'
@@ -39,6 +38,8 @@ const ShowContactDetails: FC = (): ReactElement => {
   const [credentialsSupported, setCredentialsSupported] = useState<Record<string, CredentialConfigurationSupportedV1_0_15> | undefined>(undefined)
   const [credentialCatalogItems, setCredentialCatalogItems] = useState<Array<CredentialCatalogItem>>([])
   const [openID4VCIClient, setOpenID4VCIClient] = useState<OpenID4VCIClient>()
+  const [catalogAvailable, setCatalogAvailable] = useState(false)
+  const [activeTab, setActiveTab] = useState<ContactDetailsTabRoute>(ContactDetailsTabRoute.INFO)
 
   const {
     isLoading,
@@ -49,20 +50,22 @@ const ShowContactDetails: FC = (): ReactElement => {
     id,
   })
 
-  const getSupportedCredentials = (): Record<string, CredentialConfigurationSupportedV1_0_15> => {
+  const getSupportedCredentials = (): Record<string, CredentialConfigurationSupportedV1_0_15> | undefined => {
     try {
       if (!openID4VCIClient) {
-        throw Error('client not initialized')
+        return undefined
       }
 
       const supportedCredentials = openID4VCIClient.getCredentialsSupported()
       if (Array.isArray(supportedCredentials)) {
-        throw Error('Only OID4VCI v13 is supported for now')
+        console.warn('OID4VCI: Only v13+ is supported for credential catalog')
+        return undefined
       }
 
       return supportedCredentials
     } catch (error) {
-      throw Error(`Error fetching credential supported. ${error}`)
+      console.warn('OID4VCI: Error fetching supported credentials:', error)
+      return undefined
     }
   }
 
@@ -93,12 +96,12 @@ const ShowContactDetails: FC = (): ReactElement => {
   }
 
   useEffect(() => {
-    if (isLoading) {
+    if (isLoading || !partyData?.data) {
       return
     }
 
     const credentialIssuer = (() => {
-      const identities = partyData?.data.identities ?? []
+      const identities = partyData.data.identities ?? []
 
       const httpsUrlIdentities = identities.filter(
         identity =>
@@ -130,16 +133,28 @@ const ShowContactDetails: FC = (): ReactElement => {
       return
     }
 
+    // Validate it's a proper URL before attempting to fetch
+    try {
+      new URL(credentialIssuer)
+    } catch {
+      console.warn('OID4VCI: Invalid issuer URL, skipping metadata retrieval:', credentialIssuer)
+      return
+    }
+
     OpenID4VCIClient.fromCredentialIssuer({
       credentialIssuer,
       createAuthorizationRequestURL: false,
     })
-      .then(setOpenID4VCIClient)
-      .catch(error => {
-        console.error(error)
-        return
+      .then(client => {
+        setOpenID4VCIClient(client)
+        setCatalogAvailable(true)
       })
-  }, [id, isLoading])
+      .catch(error => {
+        // OID4VCI well-known metadata is optional - don't show errors for 404s or unavailable endpoints
+        console.warn('OID4VCI: Could not retrieve issuer metadata (this is optional):', error.message || error)
+        setCatalogAvailable(false)
+      })
+  }, [id, isLoading, partyData])
 
   useEffect(() => {
     if (openID4VCIClient === undefined) {
@@ -147,11 +162,13 @@ const ShowContactDetails: FC = (): ReactElement => {
     }
 
     const credentials = getSupportedCredentials()
-    setCredentialsSupported(credentials)
+    if (credentials) {
+      setCredentialsSupported(credentials)
+    }
   }, [openID4VCIClient])
 
   useEffect(() => {
-    if (credentialsSupported === undefined) {
+    if (credentialsSupported === undefined || !partyData?.data) {
       return
     }
 
@@ -166,7 +183,7 @@ const ShowContactDetails: FC = (): ReactElement => {
             logo: localeBranding?.logo,
             credentialTitle: localeBranding?.alias,
             credentialSubtitle: localeBranding?.description,
-            issuerName: partyData?.data.contact.displayName,
+            issuerName: partyData.data.contact.displayName,
             credentialStatus: CredentialStatus.VALID,
             textColor: localeBranding?.text?.color,
           },
@@ -175,7 +192,7 @@ const ShowContactDetails: FC = (): ReactElement => {
       })
       setCredentialCatalogItems(credentialCatalogItems)
     })
-  }, [credentialsSupported])
+  }, [credentialsSupported, partyData])
 
   if (isLoading) {
     return <div>{translate('data_provider_loading_message')}</div>
@@ -187,16 +204,116 @@ const ShowContactDetails: FC = (): ReactElement => {
 
   const party = partyData?.data
 
+  if (!party) {
+    return <div>{translate('data_provider_error_message')}</div>
+  }
+
   const onGetCredentialItem = async (item: CredentialCatalogItem): Promise<void> => {
     console.log(`Get credential clicked for type: ${item.configId}`)
   }
 
+  // Get role badges for header
+  const getRoleBadges = (): ReactElement[] => {
+    const badges: ReactElement[] = []
+    if (party.roles?.includes(CredentialRole.ISSUER)) {
+      badges.push(
+        <span key="issuer" className={`${style.roleBadge} ${style.roleBadgeIssuer}`}>
+          {translate('contact_role_issuer')}
+        </span>
+      )
+    }
+    if (party.roles?.includes(CredentialRole.VERIFIER)) {
+      badges.push(
+        <span key="verifier" className={`${style.roleBadge} ${style.roleBadgeVerifier}`}>
+          {translate('contact_role_verifier')}
+        </span>
+      )
+    }
+    if (party.roles?.includes(CredentialRole.HOLDER)) {
+      badges.push(
+        <span key="holder" className={`${style.roleBadge} ${style.roleBadgeHolder}`}>
+          {translate('contact_role_holder')}
+        </span>
+      )
+    }
+    return badges
+  }
+
+  // Build tabs array
+  const tabs: {id: ContactDetailsTabRoute; label: string}[] = [
+    {id: ContactDetailsTabRoute.INFO, label: translate('contact_details_contact_info_tab_label') as string},
+    {id: ContactDetailsTabRoute.ACTIVITY, label: translate('contact_details_activity_tab_label') as string},
+    ...(catalogAvailable && credentialCatalogItems.length > 0
+      ? [{id: ContactDetailsTabRoute.CREDENTIAL_CATALOG, label: translate('contact_details_credential_catalog_tab_label') as string}]
+      : []),
+    {id: ContactDetailsTabRoute.RELATIONS, label: translate('contact_details_relations_tab_label') as string},
+    {id: ContactDetailsTabRoute.IDENTIFIERS, label: translate('contact_details_identifiers_tab_label') as string},
+  ]
+
   const getContactInformationContent = (): ReactElement => {
-    return <div />
+    const contact = party.contact
+
+    return (
+      <>
+        <div className={style.infoCard}>
+          <div className={style.infoCardHeader}>
+            <div className={style.infoCardAvatar}>
+              {(contact.displayName || 'C')[0].toUpperCase()}
+            </div>
+            <div className={style.infoCardTitle}>
+              <div className={style.infoCardName}>{contact.displayName}</div>
+              <div className={style.infoCardSubtitle}>
+                {'legalName' in contact && contact.legalName ? contact.legalName : translate('contact_details_organization')}
+              </div>
+            </div>
+          </div>
+          <div className={style.infoCardGrid}>
+            {'legalName' in contact && contact.legalName && (
+              <div className={style.field}>
+                <span className={style.fieldLabel}>{translate('contact_details_legal_name')}</span>
+                <span className={style.fieldValue}>{contact.legalName}</span>
+              </div>
+            )}
+            {'firstName' in contact && contact.firstName && (
+              <div className={style.field}>
+                <span className={style.fieldLabel}>{translate('contact_details_first_name')}</span>
+                <span className={style.fieldValue}>{contact.firstName}</span>
+              </div>
+            )}
+            {'middleName' in contact && contact.middleName && (
+              <div className={style.field}>
+                <span className={style.fieldLabel}>{translate('contact_details_middle_name')}</span>
+                <span className={style.fieldValue}>{contact.middleName}</span>
+              </div>
+            )}
+            {'lastName' in contact && contact.lastName && (
+              <div className={style.field}>
+                <span className={style.fieldLabel}>{translate('contact_details_last_name')}</span>
+                <span className={style.fieldValue}>{contact.lastName}</span>
+              </div>
+            )}
+            {'email' in contact && contact.email && (
+              <div className={style.field}>
+                <span className={style.fieldLabel}>{translate('contact_details_email')}</span>
+                <span className={style.fieldValue}>{contact.email}</span>
+              </div>
+            )}
+            {'phoneNumber' in contact && contact.phoneNumber && (
+              <div className={style.field}>
+                <span className={style.fieldLabel}>{translate('contact_details_phone')}</span>
+                <span className={style.fieldValue}>{contact.phoneNumber}</span>
+              </div>
+            )}
+          </div>
+        </div>
+      </>
+    )
   }
 
   const getActivityContent = (): ReactElement => {
-    return <div />
+    return (
+      <div className={style.emptyText}>{translate('contact_details_no_activity')}</div>
+    )
   }
 
   const getCredentialCatalogContent = (): ReactElement => {
@@ -204,50 +321,119 @@ const ShowContactDetails: FC = (): ReactElement => {
   }
 
   const getRelationsContent = (): ReactElement => {
-    return <div />
+    return (
+      <div className={style.emptyText}>{translate('contact_details_no_relations')}</div>
+    )
   }
 
   const getIdentifiersContent = (): ReactElement => {
-    return <div />
+    const identities = party.identities ?? []
+
+    if (identities.length === 0) {
+      return (
+        <div className={style.emptyText}>{translate('contact_details_no_identifiers')}</div>
+      )
+    }
+
+    return (
+      <div className={style.identifiersGrid}>
+        {identities.map((identity, index) => {
+          const alias = identity.alias || `${translate('contact_details_identifier')} ${index + 1}`
+          const isIssuer = identity.roles?.includes(CredentialRole.ISSUER)
+          const isVerifier = identity.roles?.includes(CredentialRole.VERIFIER)
+
+          return (
+            <div key={identity.identifier?.correlationId || index} className={style.identifierCard}>
+              <div className={style.identifierCardHeader}>
+                <div className={`${style.identifierCardAccent} ${isIssuer ? style.identifierCardAccentSuccess : isVerifier ? style.identifierCardAccentPrimary : style.identifierCardAccentWarning}`} />
+                <div className={style.identifierCardInfo}>
+                  <div className={style.identifierCardType}>{identity.identifier?.type || 'Identifier'}</div>
+                  <div className={style.identifierCardAlias}>{alias}</div>
+                </div>
+              </div>
+              <div className={style.identifierCardBody}>
+                {identity.identifier?.correlationId && (
+                  <div className={style.identifierCardField}>
+                    <span className={style.identifierCardFieldLabel}>{translate('contact_details_identifier_value')}</span>
+                    <span className={style.identifierCardFieldValue}>{identity.identifier.correlationId}</span>
+                  </div>
+                )}
+                {identity.roles && identity.roles.length > 0 && (
+                  <div className={style.identifierCardRoles}>
+                    {identity.roles.map(role => (
+                      <span
+                        key={role}
+                        className={`${style.roleBadge} ${
+                          role === CredentialRole.ISSUER ? style.roleBadgeIssuer :
+                          role === CredentialRole.VERIFIER ? style.roleBadgeVerifier :
+                          style.roleBadgeHolder
+                        }`}
+                      >
+                        {role}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    )
   }
 
-  const routes: Array<TabViewRoute> = [
-    {
-      key: ContactDetailsTabRoute.INFO,
-      title: translate('contact_details_contact_info_tab_label'),
-      content: getContactInformationContent,
-    },
-    {
-      key: ContactDetailsTabRoute.ACTIVITY,
-      title: translate('contact_details_activity_tab_label'),
-      content: getActivityContent,
-    },
-    ...(party.roles.includes(CredentialRole.ISSUER)
-      ? [
-          {
-            key: ContactDetailsTabRoute.CREDENTIAL_CATALOG,
-            title: translate('contact_details_credential_catalog_tab_label'),
-            content: getCredentialCatalogContent,
-          },
-        ]
-      : []),
-    {
-      key: ContactDetailsTabRoute.RELATIONS,
-      title: translate('contact_details_relations_tab_label'),
-      content: getRelationsContent,
-    },
-    {
-      key: ContactDetailsTabRoute.IDENTIFIERS,
-      title: translate('contact_details_identifiers_tab_label'),
-      content: getIdentifiersContent,
-    },
-  ]
+  const renderTabContent = (): ReactElement => {
+    switch (activeTab) {
+      case ContactDetailsTabRoute.INFO:
+        return getContactInformationContent()
+      case ContactDetailsTabRoute.ACTIVITY:
+        return getActivityContent()
+      case ContactDetailsTabRoute.CREDENTIAL_CATALOG:
+        return getCredentialCatalogContent()
+      case ContactDetailsTabRoute.RELATIONS:
+        return getRelationsContent()
+      case ContactDetailsTabRoute.IDENTIFIERS:
+        return getIdentifiersContent()
+      default:
+        return getContactInformationContent()
+    }
+  }
 
   return (
-    <div className={style.container}>
+    <div className={style.pageContainer}>
       <PageHeaderBar path={translate('contact_details_path_label')} />
-      <ContactViewItem name={party.contact.displayName} uri={party.uri} roles={party.roles} logo={party.branding?.logo} />
-      <SSITabView routes={routes} />
+      <div className={style.container}>
+        {/* Header */}
+        <div className={style.header}>
+          <div className={style.titleSection}>
+            <div className={style.titleRow}>
+              <div className={style.title}>{party.contact.displayName}</div>
+              {getRoleBadges()}
+            </div>
+            <div className={style.subtitle}>
+              {party.uri || translate('contact_details_no_uri')}
+            </div>
+          </div>
+        </div>
+
+        {/* Tabs */}
+        <div className={style.tabs}>
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              className={`${style.tab} ${activeTab === tab.id ? style.tabActive : ''}`}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Body */}
+        <div className={style.body}>
+          {renderTabContent()}
+        </div>
+      </div>
     </div>
   )
 }

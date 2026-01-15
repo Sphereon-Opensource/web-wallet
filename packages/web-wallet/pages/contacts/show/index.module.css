@@ -1,5 +1,387 @@
-.container {
+.pageContainer {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+}
+
+.container {
+    width: 100%;
+    max-width: 800px;
+    background: #FFFFFF;
+    border-radius: 8px;
+    border: 1px solid #C4C5CA;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    margin: 24px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid #E3E3E3;
+    background: linear-gradient(135deg, rgba(114, 118, 247, 0.05) 0%, rgba(124, 64, 232, 0.05) 100%);
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.titleSection {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 200px;
+}
+
+.titleRow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #303030;
+}
+
+.subtitle {
+    font-size: 13px;
+    color: #8D9099;
+}
+
+.headerActions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.roleBadge {
+    display: inline-flex;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.roleBadgeIssuer {
+    background-color: rgba(45, 213, 197, 0.15);
+    color: #2CD5C5;
+    border: 1px solid #2CD5C5;
+}
+
+.roleBadgeVerifier {
+    background-color: rgba(114, 118, 247, 0.15);
+    color: #7276F7;
+    border: 1px solid #7276F7;
+}
+
+.roleBadgeHolder {
+    background-color: rgba(245, 166, 35, 0.15);
+    color: #F5A623;
+    border: 1px solid #F5A623;
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    border-bottom: 1px solid #E3E3E3;
+    background: #FBFBFB;
+    overflow-x: auto;
+}
+
+.tab {
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #8D9099;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    font-family: inherit;
+}
+
+.tab:hover {
+    color: #7276F7;
+}
+
+.tabActive {
+    color: #7276F7;
+    border-bottom-color: #7276F7;
+}
+
+/* Body */
+.body {
+    padding: 24px;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+}
+
+/* Section */
+.section {
+    margin-bottom: 24px;
+}
+
+.section:last-child {
+    margin-bottom: 0;
+}
+
+.sectionTitle {
+    font-size: 14px;
+    font-weight: 600;
+    color: #303030;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #E3E3E3;
+}
+
+/* Grid */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.gridThreeCol {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+/* Field */
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.fieldLabel {
+    font-size: 11px;
+    font-weight: 400;
+    color: #8D9099;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.fieldValue {
+    font-size: 14px;
+    font-weight: 500;
+    color: #303030;
+    word-break: break-word;
+}
+
+.fieldValueMono {
+    font-family: monospace;
+    font-size: 12px;
+}
+
+.fieldValueHighlight {
+    color: #7276F7;
+    font-weight: 600;
+}
+
+/* Identifiers Grid */
+.identifiersGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+}
+
+/* Identifier Card */
+.identifierCard {
+    display: flex;
+    flex-direction: column;
+    background: #FBFBFB;
+    border-radius: 6px;
+    border: 1px solid #E3E3E3;
+    overflow: hidden;
+}
+
+.identifierCardHeader {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid #E3E3E3;
+    gap: 12px;
+}
+
+.identifierCardAccent {
+    width: 4px;
+    height: 40px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.identifierCardAccentPrimary {
+    background: linear-gradient(180deg, #7276F7 0%, #7C40E8 100%);
+}
+
+.identifierCardAccentSuccess {
+    background: #00C249;
+}
+
+.identifierCardAccentWarning {
+    background: #F5A623;
+}
+
+.identifierCardInfo {
+    flex: 1;
+    min-width: 0;
+}
+
+.identifierCardType {
+    font-size: 11px;
+    font-weight: 600;
+    color: #8D9099;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.identifierCardAlias {
+    font-size: 14px;
+    font-weight: 600;
+    color: #303030;
+    margin-top: 2px;
+}
+
+.identifierCardBody {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.identifierCardField {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.identifierCardFieldLabel {
+    font-size: 11px;
+    font-weight: 400;
+    color: #8D9099;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.identifierCardFieldValue {
+    font-size: 13px;
+    font-weight: 500;
+    color: #303030;
+    word-break: break-all;
+    font-family: monospace;
+}
+
+.identifierCardRoles {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+}
+
+.identifierCardRole {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 500;
+}
+
+/* Empty state */
+.emptyText {
+    color: #8D9099;
+    text-align: center;
+    padding: 32px;
+    font-size: 14px;
+}
+
+/* Contact Info Card */
+.infoCard {
+    background: #FBFBFB;
+    border-radius: 6px;
+    border: 1px solid #E3E3E3;
+    padding: 20px;
+}
+
+.infoCardHeader {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #E3E3E3;
+}
+
+.infoCardAvatar {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, #7276F7 0%, #7C40E8 100%);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.infoCardTitle {
+    flex: 1;
+}
+
+.infoCardName {
+    font-size: 18px;
+    font-weight: 600;
+    color: #303030;
+}
+
+.infoCardSubtitle {
+    font-size: 13px;
+    color: #8D9099;
+    margin-top: 2px;
+}
+
+.infoCardGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        margin: 16px;
+        max-width: none;
+    }
+
+    .header {
+        padding: 16px;
+    }
+
+    .body {
+        padding: 16px;
+    }
+
+    .grid,
+    .infoCardGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .identifiersGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .tab {
+        padding: 12px 16px;
+        font-size: 13px;
+    }
 }

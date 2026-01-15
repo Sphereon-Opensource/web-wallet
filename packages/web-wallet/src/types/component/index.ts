@@ -97,6 +97,7 @@ export type MenuItem = {
   icon: MenuIcon
   path: string
   end?: boolean
+  topLevel?: boolean
 }
 
 export type MenuGroup = {
@@ -122,3 +123,7 @@ export type MenuIcon =
   | 'management'
   | 'key'
   | 'design'
+  | 'inbox'
+  | 'received'
+  | 'sent'
+  | 'asset'

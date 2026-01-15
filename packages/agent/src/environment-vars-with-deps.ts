@@ -58,6 +58,8 @@ export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATU
       ...oid4vciStoreMethods,
       ...oid4vciIssuerMethods,
       'crsGetUniqueCredentials', // FIXME in SSI_SDK
+      'crsDeleteCredential',
+      'crsDeleteCredentials',
       // fixme: import from respective modules
       'createSdJwtVc',
       'createSdJwtPresentation',
@@ -73,6 +75,13 @@ export const REMOTE_SERVER_API_FEATURES: string[] = env('REMOTE_SERVER_API_FEATU
       // Service metadata methods for eInvoicing
       'updateServiceMetadata',
       'getServiceMetadata',
+      // Inbox plugin methods
+      'inboxGetAll',
+      'inboxGet',
+      'inboxFolderGetByInbox',
+      'inboxCredentialList',
+      'inboxCredentialDelete',
+      'inboxSendToRecipient',
     ]
 
 export const oid4vpInstanceOpts = loadJsonFiles<OID4VPInstanceOpts>({ path: OID4VP_RP_OPTIONS_PATH })

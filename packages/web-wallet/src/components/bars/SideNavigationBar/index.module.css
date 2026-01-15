@@ -19,3 +19,36 @@
     background-color: var(--color-border-primary);
     margin-bottom: 5px;
 }
+
+/* Custom Role View Item */
+.roleViewItem {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    padding: 4px 6px;
+    gap: 8px;
+}
+
+.roleViewItemContent {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 2px;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.roleViewItemAccount {
+    font-family: var(--font-family, 'Poppins', sans-serif);
+    font-size: 12px;
+    text-align: left;
+    padding-right: 16px;
+    word-break: break-word;
+    color: var(--color-grey-600, #8D9099);
+}
+
+.roleViewItemName {
+    font-family: var(--font-family, 'Poppins', sans-serif);
+    font-size: 14px;
+    color: var(--color-grey-900, #303030);
+}

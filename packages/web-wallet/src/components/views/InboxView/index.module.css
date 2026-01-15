@@ -1,0 +1,143 @@
+/**
+ * InboxView Styles
+ *
+ * Main container styles with responsive layout.
+ * Composes sidebar, table, and detail panel.
+ */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--theme-bg-primary, #FBFBFB);
+  overflow: hidden;
+}
+
+.mainLayout {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Content area: table + detail panel */
+.contentArea {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Table section */
+.tableSection {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  transition: flex var(--theme-transition-normal, 0.15s ease);
+}
+
+.tableSectionWithDetail {
+  /* Shrinks when detail panel is open */
+}
+
+/* ===========================
+ * MOBILE MENU BUTTON
+ * =========================== */
+
+.mobileMenuButton {
+  display: none;
+  position: fixed;
+  top: 80px;
+  left: var(--theme-space-4, 16px);
+  z-index: calc(var(--theme-z-modal, 300) - 1);
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--theme-bg-card, #FFFFFF);
+  border: 1px solid var(--theme-border-primary, #E3E3E3);
+  border-radius: var(--theme-radius-lg, 8px);
+  box-shadow: var(--theme-shadow-md, 0 4px 6px rgba(0, 0, 0, 0.1));
+  cursor: pointer;
+  color: var(--theme-text-primary, #303030);
+}
+
+.mobileMenuButton:hover {
+  background-color: var(--theme-bg-secondary, #F5F5F5);
+}
+
+.mobileBackdrop {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--theme-bg-overlay, rgba(0, 0, 0, 0.5));
+  z-index: calc(var(--theme-z-modal, 300) - 1);
+}
+
+.sidebarMobileVisible {
+  display: flex !important;
+}
+
+/* ===========================
+ * RESPONSIVE STYLES
+ * =========================== */
+
+/* Large Desktop */
+@media (min-width: 1280px) {
+  .tableSection {
+    min-width: 600px;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .tableSection {
+    min-width: 500px;
+  }
+}
+
+/* Tablet: Detail panel overlays */
+@media (max-width: 1023px) {
+  .tableSectionWithDetail {
+    /* Table stays full width, detail overlays */
+  }
+}
+
+/* Mobile: Single column layout */
+@media (max-width: 767px) {
+  .mainLayout {
+    flex-direction: column;
+  }
+
+  .mobileMenuButton {
+    display: flex;
+  }
+
+  .mobileBackdrop {
+    display: block;
+  }
+
+  .contentArea {
+    flex-direction: column;
+  }
+
+  .tableSection {
+    flex: 1;
+    min-width: 100%;
+  }
+
+  .tableSectionWithDetail .tableSection {
+    /* Hide table when detail is shown on mobile */
+    display: none;
+  }
+}

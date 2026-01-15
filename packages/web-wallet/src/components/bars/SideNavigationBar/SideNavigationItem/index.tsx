@@ -1,5 +1,5 @@
-import React, {CSSProperties, FC, ReactElement} from 'react'
-import {NavLink} from 'react-router-dom'
+import React, {CSSProperties, FC, ReactElement, useMemo} from 'react'
+import {NavLink, useLocation} from 'react-router-dom'
 import clsx from 'clsx'
 import {ActivityIcon, BellIcon, ContactIcon, CredentialIcon} from '@sphereon/ui-components.ssi-react'
 
@@ -20,11 +20,37 @@ type Props = {
   isDisabled?: boolean
   href: string
   end?: boolean
+  topLevel?: boolean
   style?: CSSProperties
 }
 
 const SideNavigationItem: FC<Props> = (props: Props): ReactElement => {
-  const {label, icon, href, isDisabled = false, end = false, style} = props
+  const {label, icon, href, isDisabled = false, end = false, topLevel = false, style} = props
+  const location = useLocation()
+
+  // Check if this item should be active, considering query parameters
+  const isActiveWithQuery = useMemo(() => {
+    // Parse the href to separate path and query
+    const [hrefPath, hrefQuery] = href.split('?')
+    const currentPath = location.pathname
+    const currentQuery = location.search.substring(1) // Remove leading '?'
+
+    // If href has query params, we need exact match of both path and query param
+    if (hrefQuery) {
+      // Check if path matches
+      if (currentPath !== hrefPath) return false
+      // Check if the query param from href exists in current URL
+      const hrefParams = new URLSearchParams(hrefQuery)
+      const currentParams = new URLSearchParams(currentQuery)
+      for (const [key, value] of hrefParams.entries()) {
+        if (currentParams.get(key) !== value) return false
+      }
+      return true
+    }
+
+    // No query params in href - use default behavior (will be handled by NavLink)
+    return null
+  }, [href, location.pathname, location.search])
 
   const getIconElement = (icon: MenuIcon): ReactElement => {
     switch (icon) {
@@ -52,6 +78,37 @@ const SideNavigationItem: FC<Props> = (props: Props): ReactElement => {
         return <KeyIcon size={24} />
       case 'design':
         return <UXIcon size={18} />
+      case 'inbox':
+        return (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M22 12h-6l-2 3h-4l-2-3H2" />
+            <path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z" />
+          </svg>
+        )
+      case 'received':
+        return (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" />
+            <path d="M3 9h18" />
+            <path d="M9 21V9" />
+          </svg>
+        )
+      case 'sent':
+        return (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M22 2L11 13" />
+            <path d="M22 2L15 22L11 13L2 9L22 2Z" />
+          </svg>
+        )
+      case 'asset':
+        return (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="12" y1="18" x2="12" y2="12" />
+            <line x1="9" y1="15" x2="15" y2="15" />
+          </svg>
+        )
       default:
         return <div />
     }
@@ -61,12 +118,15 @@ const SideNavigationItem: FC<Props> = (props: Props): ReactElement => {
       style={{...style}}
       to={href}
       end={end}
-      className={({isActive}) =>
-        clsx(styles.container, {
-          [styles.containerActive]: isActive && !isDisabled,
+      className={({isActive}) => {
+        // Use custom query-aware check if available, otherwise use NavLink's isActive
+        const active = isActiveWithQuery !== null ? isActiveWithQuery : isActive
+        return clsx(styles.container, {
+          [styles.containerActive]: active && !isDisabled,
           [styles.containerDisabled]: isDisabled,
+          [styles.containerTopLevel]: topLevel,
         })
-      }>
+      }}>
       {icon && <div className={styles.iconContainer}>{getIconElement(icon)}</div>}
       <span className={styles.label}>{label}</span>
     </NavLink>

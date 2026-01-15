@@ -3,20 +3,89 @@ import {RoleType} from '@sphereon/ui-components.core'
 
 export const roleConfig: Array<RoleData> = [
   {
-    role: RoleType.ISSUER,
+    role: RoleType.HOLDER,
     navigation: [
       /*      {
-              type: "item",
-              label: "Notifications",
-              icon: "notification",
-              path: "/notifications"
-            },
-            {
-              type: "item",
-              label: "Activities",
-              icon: "activity",
-              path: "/activities"
-            }, */
+        type: "item",
+        label: "Notifications",
+        icon: "notification",
+        path: "/notifications"
+      },
+      {
+        type: "item",
+        label: "Activities",
+        icon: "activity",
+        path: "/activities"
+      },*/
+      {
+        type: 'separator',
+      },
+      {
+        type: 'item',
+        label: 'Inbox',
+        icon: 'inbox',
+        path: '/inbox',
+        topLevel: true,
+      },
+      {
+        type: 'group',
+        label: 'Document store',
+        items: [
+          {
+            type: 'item',
+            label: 'Credentials',
+            icon: 'credential',
+            path: '/credentials',
+          },
+          {
+            type: 'item',
+            label: 'Assets',
+            icon: 'asset',
+            path: '/assets',
+          },
+        ],
+      },
+      {
+        type: 'group',
+        label: 'eInvoices',
+        items: [
+          {
+            type: 'item',
+            label: 'Received',
+            icon: 'received',
+            path: '/einvoice?tab=received',
+          },
+          {
+            type: 'item',
+            label: 'Sent',
+            icon: 'sent',
+            path: '/einvoice?tab=sent',
+          },
+        ],
+      },
+      {
+        type: 'group',
+        label: 'Contacts',
+        items: [
+          {
+            type: 'item',
+            label: 'Overview',
+            icon: 'contactOverview',
+            path: '/contacts',
+          } /*,
+          {
+            type: "item",
+            label: "Add new contact",
+            icon: "addContact",
+            path: "/contacts/add"
+          }*/,
+        ],
+      },
+    ],
+  },
+  {
+    role: RoleType.ISSUER,
+    navigation: [
       {
         type: 'separator',
       },
@@ -28,7 +97,7 @@ export const roleConfig: Array<RoleData> = [
             type: 'item',
             label: 'Issued credentials',
             icon: 'issuedCredential',
-            path: '/credentials', // FIXME /credentials/issued
+            path: '/credentials',
           },
         ],
       },
@@ -65,81 +134,7 @@ export const roleConfig: Array<RoleData> = [
             label: 'Overview',
             icon: 'contactOverview',
             path: '/contacts',
-          } /*,
-          {
-            type: "item",
-            label: "Add new contact",
-            icon: "addContact",
-            path: "/contacts/add"
-          }*/,
-        ],
-      },
-    ],
-  },
-  {
-    role: RoleType.ADMIN,
-    navigation: [
-      /*      {
-              type: "item",
-              label: "Notifications",
-              icon: "notification",
-              path: "/notifications"
-            },
-            {
-              type: "item",
-              label: "Activities",
-              icon: "activity",
-              path: "/activities"
-            }, */
-      {
-        type: 'separator',
-      },
-      {
-        type: 'group',
-        label: 'Identifier management',
-        items: [
-          {
-            type: 'item',
-            label: 'Identifiers',
-            icon: 'identifier',
-            path: '/key-management/identifiers',
           },
-          {
-            type: 'item',
-            label: 'Keys',
-            icon: 'key',
-            path: '/key-management/keys',
-          },
-        ],
-      },
-      {
-        type: 'group',
-        label: 'Relying parties',
-        items: [
-          {
-            type: 'item',
-            label: 'Management',
-            icon: 'management',
-            path: '/query-management',
-          },
-        ],
-      },
-      {
-        type: 'group',
-        label: 'Contacts',
-        items: [
-          {
-            type: 'item',
-            label: 'Overview',
-            icon: 'contactOverview',
-            path: '/contacts',
-          } /*,
-          {
-            type: "item",
-            label: "Add new contact",
-            icon: "addContact",
-            path: "/contacts/add"
-          }*/,
         ],
       },
     ],
@@ -147,18 +142,6 @@ export const roleConfig: Array<RoleData> = [
   {
     role: RoleType.RELYING_PARTY,
     navigation: [
-      /*      {
-        type: "item",
-        label: "Notifications",
-        icon: "notification",
-        path: "/notifications"
-      },
-      {
-        type: "item",
-        label: "Activities",
-        icon: "activity",
-        path: "/activities"
-      },*/
       {
         type: 'separator',
       },
@@ -183,44 +166,44 @@ export const roleConfig: Array<RoleData> = [
             label: 'Overview',
             icon: 'contactOverview',
             path: '/contacts',
-          } /*,
-          {
-            type: "item",
-            label: "Add new contact",
-            icon: "addContact",
-            path: "/contacts/add"
-          }*/,
+          },
         ],
       },
     ],
   },
   {
-    role: RoleType.HOLDER,
+    role: RoleType.ADMIN,
     navigation: [
-      /*      {
-        type: "item",
-        label: "Notifications",
-        icon: "notification",
-        path: "/notifications"
-      },
-      {
-        type: "item",
-        label: "Activities",
-        icon: "activity",
-        path: "/activities"
-      },*/
       {
         type: 'separator',
       },
       {
         type: 'group',
-        label: 'Document store',
+        label: 'Identifier management',
         items: [
           {
             type: 'item',
-            label: 'Credentials',
-            icon: 'credential',
-            path: '/credentials',
+            label: 'Identifiers',
+            icon: 'identifier',
+            path: '/key-management/identifiers',
+          },
+          {
+            type: 'item',
+            label: 'Keys',
+            icon: 'key',
+            path: '/key-management/keys',
+          },
+        ],
+      },
+      {
+        type: 'group',
+        label: 'Verifiers',
+        items: [
+          {
+            type: 'item',
+            label: 'Management',
+            icon: 'management',
+            path: '/query-management',
           },
         ],
       },
@@ -233,13 +216,7 @@ export const roleConfig: Array<RoleData> = [
             label: 'Overview',
             icon: 'contactOverview',
             path: '/contacts',
-          } /*,
-          {
-            type: "item",
-            label: "Add new contact",
-            icon: "addContact",
-            path: "/contacts/add"
-          }*/,
+          },
         ],
       },
     ],

@@ -1,7 +1,12 @@
 import {getAgent} from '@agent'
 import {EventEmitter} from 'events'
 import {ICredentialBranding, IGetCredentialBrandingArgs} from '@sphereon/ssi-sdk.data-store-types'
-import {useEffect, useState} from 'react'
+import {useCallback, useEffect, useState} from 'react'
+
+/**
+ * Extended branding type with computed state for change tracking
+ */
+type ICredentialBrandingWithState = ICredentialBranding & {state: string}
 
 /**
  * IndexedDB configuration
@@ -457,7 +462,8 @@ export class BrandingSyncService extends EventEmitter {
     this.config.logger.debug?.('[BrandingSyncService] Performing full sync...')
 
     const startTime = Date.now()
-    const allBrandings = await this.fetchAllBrandings()
+    const fetchedBrandings = await this.fetchAllBrandings()
+    const allBrandings = this.ensureState(fetchedBrandings)
     const duration = Date.now() - startTime
 
     // Build new state map
@@ -513,12 +519,9 @@ export class BrandingSyncService extends EventEmitter {
 
     const startTime = Date.now()
 
-    // Call API with knownStates
-    const args: IGetCredentialBrandingArgs = {
-      knownStates: this.knownStates,
-    }
-
-    const fetchedBrandings = await getAgent().ibGetCredentialBranding(args)
+    // Fetch all brandings (API doesn't support incremental sync via knownStates)
+    // We compare states client-side to detect changes
+    const fetchedBrandings = await getAgent().ibGetCredentialBranding({})
     const brandingsWithState = this.ensureState(fetchedBrandings)
     const duration = Date.now() - startTime
 
@@ -579,10 +582,11 @@ export class BrandingSyncService extends EventEmitter {
    * Ensure all brandings have a state field
    * Computes state from lastUpdatedAt if not present (fallback)
    */
-  private ensureState(brandings: ICredentialBranding[]): ICredentialBranding[] {
+  private ensureState(brandings: ICredentialBranding[]): ICredentialBrandingWithState[] {
     return brandings.map(b => {
-      if (b.state && typeof b.state === 'string') {
-        return b
+      const bWithState = b as ICredentialBrandingWithState
+      if (bWithState.state && typeof bWithState.state === 'string') {
+        return bWithState
       }
 
       // Fallback: compute state from lastUpdatedAt timestamp
@@ -705,10 +709,30 @@ export function useBrandingSync(config?: IBrandingSyncConfig) {
     }
   }, [service])
 
+  // Stable sync function that handles "already syncing" gracefully
+  const sync = useCallback(
+    async (force?: boolean) => {
+      try {
+        return await service.sync(force)
+      } catch (error) {
+        // Ignore "Sync already in progress" errors - another sync will complete
+        if (error instanceof Error && error.message === 'Sync already in progress') {
+          console.debug('[useBrandingSync] Sync already in progress, skipping')
+          return undefined
+        }
+        throw error
+      }
+    },
+    [service],
+  )
+
+  // Stable clear function
+  const clear = useCallback(() => service.clearCache(), [service])
+
   return {
     brandings, // Current brandings (reactive)
     service, // Expose service for manual calls
-    sync: (force?: boolean) => service.sync(force), // Convenience method
-    clear: () => service.clearCache(), // Convenience method
+    sync, // Stable sync function
+    clear, // Stable clear function
   }
 }

@@ -1,0 +1,651 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    background-color: white;
+    padding: 24px;
+    border-radius: 8px;
+    max-width: 700px;
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sectionTitle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1F2937;
+    margin: 0;
+}
+
+.sectionTitle svg {
+    color: #4F46E5;
+}
+
+.description {
+    color: #6B7280;
+    font-size: 14px;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Info Box */
+.infoBox {
+    display: flex;
+    gap: 12px;
+    padding: 16px;
+    background-color: #EFF6FF;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #1E40AF;
+    line-height: 1.5;
+}
+
+.infoBox svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+/* Search Section */
+.searchSection {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.searchLabel {
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+}
+
+.searchContainer {
+    position: relative;
+}
+
+.searchInputWrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.searchIcon {
+    position: absolute;
+    left: 14px;
+    color: #9CA3AF;
+    pointer-events: none;
+}
+
+.searchInput {
+    width: 100%;
+    padding: 14px 44px;
+    border: 1px solid #D1D5DB;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.searchInput:focus {
+    outline: none;
+    border-color: #4F46E5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.searchInput:disabled {
+    background-color: #F3F4F6;
+    cursor: not-allowed;
+}
+
+.searchInput::placeholder {
+    color: #9CA3AF;
+}
+
+.clearSearchButton {
+    position: absolute;
+    right: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    background-color: #F3F4F6;
+    border: none;
+    border-radius: 6px;
+    color: #6B7280;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.clearSearchButton:hover {
+    background-color: #E5E7EB;
+    color: #374151;
+}
+
+/* Dropdown */
+.dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 4px;
+    background-color: white;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    z-index: 50;
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.dropdownBackdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+}
+
+.dropdownLoading,
+.dropdownEmpty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 32px;
+    color: #6B7280;
+    font-size: 14px;
+}
+
+.dropdownEmpty svg {
+    color: #9CA3AF;
+}
+
+/* Contact List */
+.contactList {
+    display: flex;
+    flex-direction: column;
+}
+
+.contactItem {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 16px;
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid #F3F4F6;
+    cursor: pointer;
+    text-align: left;
+    transition: background-color 0.15s;
+}
+
+.contactItem:last-child {
+    border-bottom: none;
+}
+
+.contactItem:hover {
+    background-color: #F9FAFB;
+}
+
+.contactAvatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: #EEF2FF;
+    color: #4F46E5;
+    border-radius: 50%;
+    font-size: 16px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.contactInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    flex: 1;
+}
+
+.contactName {
+    font-size: 14px;
+    font-weight: 500;
+    color: #1F2937;
+}
+
+.contactOrg {
+    font-size: 13px;
+    color: #6B7280;
+}
+
+.contactDid {
+    font-size: 12px;
+    color: #9CA3AF;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Loading Indicator */
+.loadingIndicator {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background-color: #F3F4F6;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #4B5563;
+}
+
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #E5E7EB;
+    border-top-color: #4F46E5;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Error Message */
+.errorMessage {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+    background-color: #FEF2F2;
+    border: 1px solid #FECACA;
+    border-radius: 8px;
+}
+
+.errorMessage svg {
+    flex-shrink: 0;
+    color: #DC2626;
+    margin-top: 2px;
+}
+
+.errorContent {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.errorTitle {
+    font-size: 14px;
+    font-weight: 600;
+    color: #991B1B;
+}
+
+.errorText {
+    font-size: 14px;
+    color: #DC2626;
+    line-height: 1.5;
+}
+
+.errorDismiss {
+    padding: 8px 16px;
+    background-color: #FECACA;
+    color: #991B1B;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s;
+}
+
+.errorDismiss:hover {
+    background-color: #FCA5A5;
+}
+
+/* Warning Card - for DID resolution failures or no endpoints */
+.warningCard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 24px;
+    background-color: #FFFBEB;
+    border: 2px solid #FCD34D;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.warningIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background-color: #FEF3C7;
+    border-radius: 50%;
+    color: #D97706;
+}
+
+.warningContent {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.warningTitle {
+    font-size: 16px;
+    font-weight: 600;
+    color: #92400E;
+}
+
+.warningText {
+    font-size: 14px;
+    color: #B45309;
+    line-height: 1.5;
+}
+
+.warningAction {
+    padding: 10px 20px;
+    background-color: #F59E0B;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.warningAction:hover {
+    background-color: #D97706;
+}
+
+/* Recipient Card */
+.recipientCard {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+    background-color: #F0FDF4;
+    border: 1px solid #86EFAC;
+    border-radius: 12px;
+}
+
+.recipientHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.recipientBadge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background-color: #DCFCE7;
+    color: #166534;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.recipientBadge svg {
+    color: #16A34A;
+}
+
+.clearButton {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background-color: white;
+    color: #6B7280;
+    border: 1px solid #E5E7EB;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.clearButton:hover {
+    background-color: #FEE2E2;
+    border-color: #FECACA;
+    color: #DC2626;
+}
+
+.recipientBody {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.recipientAvatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    background-color: #DCFCE7;
+    color: #166534;
+    border-radius: 50%;
+    font-size: 24px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.recipientDetails {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    flex: 1;
+}
+
+.recipientName {
+    font-size: 18px;
+    font-weight: 600;
+    color: #166534;
+}
+
+.recipientOrg {
+    font-size: 14px;
+    color: #15803D;
+}
+
+.recipientDid {
+    font-size: 13px;
+    color: #4ADE80;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.recipientEndpointSummary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background-color: #DCFCE7;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #166534;
+}
+
+.recipientEndpointSummary svg {
+    color: #16A34A;
+}
+
+/* Endpoint Section */
+.endpointSection {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+    background-color: #F9FAFB;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+}
+
+.endpointTitle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1F2937;
+}
+
+.endpointTitle svg {
+    color: #4F46E5;
+}
+
+.endpointDescription {
+    margin: 0;
+    font-size: 14px;
+    color: #6B7280;
+    line-height: 1.5;
+}
+
+.endpointList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.endpointCard {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    background-color: white;
+    border: 2px solid #E5E7EB;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+}
+
+.endpointCard:hover {
+    border-color: #A5B4FC;
+    background-color: #FAFAFA;
+}
+
+.endpointCardSelected {
+    border-color: #4F46E5;
+    background-color: #EEF2FF;
+}
+
+.endpointCardSelected:hover {
+    border-color: #4F46E5;
+    background-color: #EEF2FF;
+}
+
+.endpointHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.endpointTypeBadge {
+    display: inline-flex;
+    padding: 4px 10px;
+    background-color: #F3F4F6;
+    color: #4B5563;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.endpointCardSelected .endpointTypeBadge {
+    background-color: #C7D2FE;
+    color: #3730A3;
+}
+
+.selectedBadge {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    background-color: #4F46E5;
+    color: white;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.endpointDetails {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.endpointEntity {
+    font-size: 15px;
+    font-weight: 500;
+    color: #1F2937;
+}
+
+.endpointDesc {
+    font-size: 13px;
+    color: #6B7280;
+}
+
+.endpointCountry {
+    font-size: 12px;
+    color: #9CA3AF;
+}
+
+.endpointUrl {
+    font-size: 12px;
+    color: #9CA3AF;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: monospace;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .container {
+        padding: 16px;
+    }
+
+    .recipientBody {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .recipientAvatar {
+        width: 48px;
+        height: 48px;
+        font-size: 20px;
+    }
+
+    .errorMessage {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .errorDismiss {
+        align-self: stretch;
+        text-align: center;
+    }
+}

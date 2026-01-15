@@ -1,0 +1,263 @@
+/*
+ * Theme Configuration
+ *
+ * This file defines CSS custom properties for theming the application.
+ * All components should reference these variables for consistent styling
+ * and easy theme switching in the future.
+ */
+
+:root {
+  /* ===========================
+   * ROLE COLOR OVERRIDES
+   * Swapping Issuer (was red) and Admin (was aqua) colors
+   * =========================== */
+  --color-issuer: #2CD5C5;  /* Was aqua, now assigned to Issuer */
+  --color-admin: #F4003A;   /* Was red/magenta, now assigned to Admin */
+
+  /* ===========================
+   * COLOR PALETTE - LIGHT THEME
+   * =========================== */
+
+  /* Primary Colors */
+  --theme-color-primary: #7276F7;
+  --theme-color-primary-light: #A5A8FA;
+  --theme-color-primary-dark: #5558C9;
+  --theme-color-primary-bg: rgba(114, 118, 247, 0.1);
+
+  /* Secondary Colors */
+  --theme-color-secondary: #7C40E8;
+  --theme-color-secondary-light: #A77FF0;
+  --theme-color-secondary-dark: #5C2DB8;
+
+  /* Neutral Colors */
+  --theme-color-grey-50: #FBFBFB;
+  --theme-color-grey-100: #F5F5F5;
+  --theme-color-grey-200: #ECECEC;
+  --theme-color-grey-300: #E3E3E3;
+  --theme-color-grey-400: #C4C5CA;
+  --theme-color-grey-500: #ACACAC;
+  --theme-color-grey-600: #8D9099;
+  --theme-color-grey-700: #5A5A5A;
+  --theme-color-grey-800: #303030;
+  --theme-color-grey-900: #1A1A1A;
+
+  /* Status Colors */
+  --theme-color-success: #00C249;
+  --theme-color-success-light: rgba(0, 194, 73, 0.1);
+  --theme-color-warning: #F5A623;
+  --theme-color-warning-light: rgba(245, 166, 35, 0.1);
+  --theme-color-error: #D74500;
+  --theme-color-error-light: rgba(215, 69, 0, 0.1);
+  --theme-color-info: #0B81FF;
+  --theme-color-info-light: rgba(11, 129, 255, 0.1);
+
+  /* ===========================
+   * SEMANTIC COLORS
+   * =========================== */
+
+  /* Backgrounds */
+  --theme-bg-primary: var(--theme-color-grey-50);
+  --theme-bg-secondary: var(--theme-color-grey-100);
+  --theme-bg-tertiary: var(--theme-color-grey-200);
+  --theme-bg-hover: var(--theme-color-grey-200);
+  --theme-bg-selected: #B7B8D9;
+  --theme-bg-card: #FFFFFF;
+  --theme-bg-overlay: rgba(0, 0, 0, 0.5);
+
+  /* Text Colors */
+  --theme-text-primary: var(--theme-color-grey-800);
+  --theme-text-secondary: var(--theme-color-grey-600);
+  --theme-text-tertiary: var(--theme-color-grey-500);
+  --theme-text-inverse: #FFFFFF;
+  --theme-text-link: var(--theme-color-primary);
+  --theme-text-link-hover: var(--theme-color-primary-dark);
+
+  /* Borders */
+  --theme-border-primary: var(--theme-color-grey-300);
+  --theme-border-secondary: var(--theme-color-grey-500);
+  --theme-border-focus: var(--theme-color-primary);
+  --theme-border-error: var(--theme-color-error);
+
+  /* ===========================
+   * TYPOGRAPHY
+   * =========================== */
+
+  /* Font Family */
+  --theme-font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --theme-font-family-mono: 'SF Mono', 'Consolas', 'Liberation Mono', monospace;
+
+  /* Font Sizes */
+  --theme-font-size-xs: 10px;
+  --theme-font-size-sm: 12px;
+  --theme-font-size-md: 14px;
+  --theme-font-size-lg: 16px;
+  --theme-font-size-xl: 18px;
+  --theme-font-size-2xl: 20px;
+  --theme-font-size-3xl: 24px;
+  --theme-font-size-4xl: 32px;
+
+  /* Font Weights */
+  --theme-font-weight-normal: 400;
+  --theme-font-weight-medium: 500;
+  --theme-font-weight-semibold: 600;
+  --theme-font-weight-bold: 700;
+
+  /* Line Heights */
+  --theme-line-height-tight: 1.25;
+  --theme-line-height-normal: 1.5;
+  --theme-line-height-relaxed: 1.75;
+
+  /* ===========================
+   * SPACING
+   * =========================== */
+
+  --theme-space-0: 0;
+  --theme-space-1: 4px;
+  --theme-space-2: 8px;
+  --theme-space-3: 12px;
+  --theme-space-4: 16px;
+  --theme-space-5: 20px;
+  --theme-space-6: 24px;
+  --theme-space-8: 32px;
+  --theme-space-10: 40px;
+  --theme-space-12: 48px;
+  --theme-space-16: 64px;
+
+  /* ===========================
+   * BORDER RADIUS
+   * =========================== */
+
+  --theme-radius-sm: 4px;
+  --theme-radius-md: 6px;
+  --theme-radius-lg: 8px;
+  --theme-radius-xl: 12px;
+  --theme-radius-2xl: 16px;
+  --theme-radius-full: 9999px;
+
+  /* ===========================
+   * SHADOWS
+   * =========================== */
+
+  --theme-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --theme-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --theme-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --theme-shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+
+  /* ===========================
+   * TRANSITIONS
+   * =========================== */
+
+  --theme-transition-fast: 0.1s ease;
+  --theme-transition-normal: 0.15s ease;
+  --theme-transition-slow: 0.3s ease;
+
+  /* ===========================
+   * Z-INDEX SCALE
+   * =========================== */
+
+  --theme-z-base: 0;
+  --theme-z-dropdown: 100;
+  --theme-z-sticky: 200;
+  --theme-z-modal: 300;
+  --theme-z-overlay: 400;
+  --theme-z-tooltip: 500;
+
+  /* ===========================
+   * RESPONSIVE BREAKPOINTS
+   * (values for documentation, use media queries)
+   * =========================== */
+
+  --theme-breakpoint-xs: 480px;
+  --theme-breakpoint-sm: 640px;
+  --theme-breakpoint-md: 768px;
+  --theme-breakpoint-lg: 1024px;
+  --theme-breakpoint-xl: 1280px;
+  --theme-breakpoint-2xl: 1536px;
+
+  /* ===========================
+   * COMPONENT-SPECIFIC TOKENS
+   * =========================== */
+
+  /* Table */
+  --theme-table-header-bg: var(--theme-bg-primary);
+  --theme-table-header-text: var(--theme-text-secondary);
+  --theme-table-row-bg: var(--theme-bg-primary);
+  --theme-table-row-hover: var(--theme-bg-hover);
+  --theme-table-row-selected: var(--theme-bg-selected);
+  --theme-table-border: var(--theme-color-grey-500);
+
+  /* Tabs */
+  --theme-tab-text: var(--theme-text-primary);
+  --theme-tab-text-active: var(--theme-text-primary);
+  --theme-tab-border-active: var(--theme-color-primary);
+  --theme-tab-bg-hover: var(--theme-bg-secondary);
+
+  /* Sidebar */
+  --theme-sidebar-bg: var(--theme-bg-card);
+  --theme-sidebar-item-hover: var(--theme-bg-secondary);
+  --theme-sidebar-item-active: var(--theme-color-primary-bg);
+  --theme-sidebar-border: var(--theme-border-primary);
+
+  /* Cards */
+  --theme-card-bg: var(--theme-bg-card);
+  --theme-card-border: var(--theme-border-primary);
+  --theme-card-shadow: var(--theme-shadow-sm);
+
+  /* Buttons */
+  --theme-button-primary-bg: var(--theme-color-primary);
+  --theme-button-primary-text: var(--theme-text-inverse);
+  --theme-button-primary-hover: var(--theme-color-primary-dark);
+  --theme-button-secondary-bg: transparent;
+  --theme-button-secondary-text: var(--theme-color-primary);
+  --theme-button-secondary-border: var(--theme-color-primary);
+
+  /* Badges */
+  --theme-badge-success-bg: var(--theme-color-success-light);
+  --theme-badge-success-text: var(--theme-color-success);
+  --theme-badge-success-border: var(--theme-color-success);
+  --theme-badge-warning-bg: var(--theme-color-warning-light);
+  --theme-badge-warning-text: var(--theme-color-warning);
+  --theme-badge-warning-border: var(--theme-color-warning);
+  --theme-badge-error-bg: var(--theme-color-error-light);
+  --theme-badge-error-text: var(--theme-color-error);
+  --theme-badge-error-border: var(--theme-color-error);
+
+  /* Detail Panel */
+  --theme-panel-bg: var(--theme-bg-card);
+  --theme-panel-border: var(--theme-border-primary);
+  --theme-panel-header-bg: var(--theme-bg-secondary);
+}
+
+/* ===========================
+ * DARK THEME (Future)
+ * =========================== */
+
+[data-theme="dark"] {
+  /* Override color variables for dark mode */
+  --theme-bg-primary: #1A1A1A;
+  --theme-bg-secondary: #2A2A2A;
+  --theme-bg-tertiary: #3A3A3A;
+  --theme-bg-hover: #404040;
+  --theme-bg-selected: #4A4A6A;
+  --theme-bg-card: #252525;
+
+  --theme-text-primary: #F5F5F5;
+  --theme-text-secondary: #ACACAC;
+  --theme-text-tertiary: #8D9099;
+
+  --theme-border-primary: #404040;
+  --theme-border-secondary: #5A5A5A;
+
+  --theme-table-header-bg: #2A2A2A;
+  --theme-table-row-bg: #252525;
+  --theme-table-row-hover: #353535;
+
+  --theme-sidebar-bg: #1F1F1F;
+  --theme-sidebar-item-hover: #333333;
+
+  --theme-card-bg: #252525;
+  --theme-card-border: #404040;
+
+  --theme-panel-bg: #252525;
+  --theme-panel-header-bg: #2A2A2A;
+}

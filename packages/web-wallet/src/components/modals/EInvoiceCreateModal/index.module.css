@@ -1,0 +1,139 @@
+.overlay {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(217,217,217, 0.6);
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+.container {
+    border-radius: 24px;
+    background-color: #FBFBFB;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    max-width: 700px;
+    max-height: 90vh;
+    width: 100%;
+}
+
+.headerContainer {
+    display: flex;
+    flex-direction: row;
+    padding-left: 32px;
+    padding-right: 15px;
+    border-bottom: 1px solid #E3E3E3;
+}
+
+.headerCaptionContainer {
+    flex-grow: 1;
+    padding-top: 32px;
+    padding-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.headerCloseContainer {
+    margin-left: auto;
+    padding-top: 16px;
+}
+
+.closeButton {
+    display: flex;
+    aspect-ratio: 1;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+}
+
+.closeButton:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.titleCaption {
+    font-size: 22px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    color: #303030;
+}
+
+.subTitleCaption {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 0.14px;
+    color: #8D9099;
+}
+
+.contentContainer {
+    padding: 24px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    overflow-y: auto;
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.sectionTitle {
+    font-size: 14px;
+    font-weight: 600;
+    color: #303030;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.errorCaption {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 0.14px;
+    color: #D74500;
+    padding: 8px 12px;
+    background-color: rgba(215, 69, 0, 0.1);
+    border-radius: 8px;
+}
+
+.autoMatchNotice {
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    color: #00C249;
+    padding: 8px 12px;
+    background-color: rgba(0, 194, 73, 0.1);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.autoMatchNotice::before {
+    content: '\2713';
+    font-weight: bold;
+}
+
+.actionsContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid #E3E3E3;
+}
