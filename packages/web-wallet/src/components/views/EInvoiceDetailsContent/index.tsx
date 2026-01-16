@@ -3,6 +3,15 @@ import {useTranslate} from '@refinedev/core'
 import {useEInvoiceOutletContext} from '@machines/einvoice/eInvoiceCreateStateNavigation'
 import {UBLInvoiceDetailView} from '@components/views/UBLInvoiceView'
 import {UBLInvoiceData, InvoiceParty} from '@components/views/UBLInvoiceView/types'
+import {
+  FormRow,
+  FormGroup,
+  FormInput,
+  FormNumberInput,
+  FormSelect,
+  FormDivider,
+  FormSelectOption,
+} from '@components/fields'
 import style from './index.module.css'
 
 /**
@@ -112,189 +121,138 @@ const EInvoiceDetailsContent: FC = (): ReactElement => {
     status: 'draft',
   } : null
 
+  // Currency options for select
+  const currencyOptions: FormSelectOption[] = [
+    {value: 'EUR', label: 'EUR - Euro'},
+    {value: 'USD', label: 'USD - US Dollar'},
+    {value: 'GBP', label: 'GBP - British Pound'},
+    {value: 'CHF', label: 'CHF - Swiss Franc'},
+  ]
+
   // Render manual input form (fields become read-only when UBL is uploaded)
   const renderManualForm = () => (
     <div className={style.manualForm}>
-      <div className={style.formRow}>
-        <div className={style.formGroup}>
-          <label className={style.label}>
-            {translate('einvoice_invoice_id', 'Invoice ID')}
-            {!isFormReadOnly && <span className={style.required}>*</span>}
-          </label>
-          <input
-            className={`${style.input} ${isFormReadOnly ? style.inputReadOnly : ''}`}
+      <FormRow>
+        <FormGroup label={translate('einvoice_invoice_id', 'Invoice ID') as string} required={!isFormReadOnly}>
+          <FormInput
             type="text"
             value={formData.invoiceId || ''}
-            onChange={(e) => onFormDataChange({invoiceId: e.target.value})}
+            onChange={(value) => onFormDataChange({invoiceId: value})}
             placeholder="INV-001"
             readOnly={isFormReadOnly}
           />
-        </div>
-        <div className={style.formGroup}>
-          <label className={style.label}>
-            {translate('einvoice_invoice_date', 'Invoice Date')}
-            {!isFormReadOnly && <span className={style.required}>*</span>}
-          </label>
-          <input
-            className={`${style.input} ${isFormReadOnly ? style.inputReadOnly : ''}`}
+        </FormGroup>
+        <FormGroup label={translate('einvoice_invoice_date', 'Invoice Date') as string} required={!isFormReadOnly}>
+          <FormInput
             type="date"
             value={formData.invoiceDate || ''}
-            onChange={(e) => onFormDataChange({invoiceDate: e.target.value})}
+            onChange={(value) => onFormDataChange({invoiceDate: value})}
             readOnly={isFormReadOnly}
           />
-        </div>
-      </div>
+        </FormGroup>
+      </FormRow>
 
-      <div className={style.formRow}>
-        <div className={style.formGroup}>
-          <label className={style.label}>
-            {translate('einvoice_due_date', 'Due Date')}
-          </label>
-          <input
-            className={`${style.input} ${isFormReadOnly ? style.inputReadOnly : ''}`}
+      <FormRow>
+        <FormGroup label={translate('einvoice_due_date', 'Due Date') as string}>
+          <FormInput
             type="date"
             value={formData.dueDate || ''}
-            onChange={(e) => onFormDataChange({dueDate: e.target.value})}
+            onChange={(value) => onFormDataChange({dueDate: value})}
             readOnly={isFormReadOnly}
           />
-        </div>
-        <div className={style.formGroup}>
-          <label className={style.label}>
-            {translate('einvoice_currency', 'Currency')}
-            {!isFormReadOnly && <span className={style.required}>*</span>}
-          </label>
-          <select
-            className={`${style.input} ${isFormReadOnly ? style.inputReadOnly : ''}`}
+        </FormGroup>
+        <FormGroup label={translate('einvoice_currency', 'Currency') as string} required={!isFormReadOnly}>
+          <FormSelect
             value={formData.currencyCode || 'EUR'}
-            onChange={(e) => onFormDataChange({currencyCode: e.target.value})}
-            disabled={isFormReadOnly}
-          >
-            <option value="EUR">EUR - Euro</option>
-            <option value="USD">USD - US Dollar</option>
-            <option value="GBP">GBP - British Pound</option>
-            <option value="CHF">CHF - Swiss Franc</option>
-          </select>
-        </div>
-      </div>
+            options={currencyOptions}
+            onChange={(value) => onFormDataChange({currencyCode: value})}
+            readOnly={isFormReadOnly}
+          />
+        </FormGroup>
+      </FormRow>
 
-      <div className={style.formDivider} />
+      <FormDivider />
 
-      <div className={style.formRow}>
-        <div className={style.formGroup}>
-          <label className={style.label}>
-            {translate('einvoice_subtotal', 'Subtotal (excl. tax)')}
-            {!isFormReadOnly && <span className={style.required}>*</span>}
-          </label>
-          <input
-            className={`${style.input} ${isFormReadOnly ? style.inputReadOnly : ''}`}
-            type="number"
-            step="0.01"
-            min="0"
-            value={formData.taxExclusiveAmount || ''}
-            onChange={(e) => onFormDataChange({taxExclusiveAmount: parseFloat(e.target.value) || 0})}
+      <FormRow>
+        <FormGroup label={translate('einvoice_subtotal', 'Subtotal (excl. tax)') as string} required={!isFormReadOnly}>
+          <FormNumberInput
+            value={formData.taxExclusiveAmount || null}
+            onChange={(value) => onFormDataChange({taxExclusiveAmount: value})}
+            step={0.01}
+            min={0}
             placeholder="0.00"
             readOnly={isFormReadOnly}
           />
-        </div>
-        <div className={style.formGroup}>
-          <label className={style.label}>
-            {translate('einvoice_tax_amount', 'Tax Amount')}
-            {!isFormReadOnly && <span className={style.required}>*</span>}
-          </label>
-          <input
-            className={`${style.input} ${isFormReadOnly ? style.inputReadOnly : ''}`}
-            type="number"
-            step="0.01"
-            min="0"
-            value={formData.taxAmount || ''}
-            onChange={(e) => onFormDataChange({taxAmount: parseFloat(e.target.value) || 0})}
+        </FormGroup>
+        <FormGroup label={translate('einvoice_tax_amount', 'Tax Amount') as string} required={!isFormReadOnly}>
+          <FormNumberInput
+            value={formData.taxAmount || null}
+            onChange={(value) => onFormDataChange({taxAmount: value})}
+            step={0.01}
+            min={0}
             placeholder="0.00"
             readOnly={isFormReadOnly}
           />
-        </div>
-      </div>
+        </FormGroup>
+      </FormRow>
 
-      <div className={style.formRow}>
-        <div className={style.formGroup}>
-          <label className={style.label}>
-            {translate('einvoice_total', 'Total (incl. tax)')}
-            {!isFormReadOnly && <span className={style.required}>*</span>}
-          </label>
-          <input
-            className={`${style.input} ${isFormReadOnly ? style.inputReadOnly : ''}`}
-            type="number"
-            step="0.01"
-            min="0"
-            value={formData.taxInclusiveAmount || ''}
-            onChange={(e) => onFormDataChange({taxInclusiveAmount: parseFloat(e.target.value) || 0})}
+      <FormRow>
+        <FormGroup label={translate('einvoice_total', 'Total (incl. tax)') as string} required={!isFormReadOnly}>
+          <FormNumberInput
+            value={formData.taxInclusiveAmount || null}
+            onChange={(value) => onFormDataChange({taxInclusiveAmount: value})}
+            step={0.01}
+            min={0}
             placeholder="0.00"
             readOnly={isFormReadOnly}
           />
-        </div>
-        <div className={style.formGroup} />
-      </div>
+        </FormGroup>
+        <FormGroup><span /></FormGroup>
+      </FormRow>
 
-      <div className={style.formDivider} />
+      <FormDivider />
 
-      <div className={style.formRow}>
-        <div className={style.formGroup}>
-          <label className={style.label}>
-            {translate('einvoice_seller_name', 'Seller Name')}
-            {!isFormReadOnly && <span className={style.required}>*</span>}
-          </label>
-          <input
-            className={`${style.input} ${isFormReadOnly ? style.inputReadOnly : ''}`}
+      <FormRow>
+        <FormGroup label={translate('einvoice_seller_name', 'Seller Name') as string} required={!isFormReadOnly}>
+          <FormInput
             type="text"
             value={formData.sellerName || ''}
-            onChange={(e) => onFormDataChange({sellerName: e.target.value})}
+            onChange={(value) => onFormDataChange({sellerName: value})}
             placeholder="Your Company Name"
             readOnly={isFormReadOnly}
           />
-        </div>
-        <div className={style.formGroup}>
-          <label className={style.label}>
-            {translate('einvoice_seller_tax_id', 'Seller Tax ID')}
-          </label>
-          <input
-            className={`${style.input} ${isFormReadOnly ? style.inputReadOnly : ''}`}
+        </FormGroup>
+        <FormGroup label={translate('einvoice_seller_tax_id', 'Seller Tax ID') as string}>
+          <FormInput
             type="text"
             value={formData.sellerTaxId || ''}
-            onChange={(e) => onFormDataChange({sellerTaxId: e.target.value})}
+            onChange={(value) => onFormDataChange({sellerTaxId: value})}
             placeholder="NL123456789B01"
             readOnly={isFormReadOnly}
           />
-        </div>
-      </div>
+        </FormGroup>
+      </FormRow>
 
-      <div className={style.formRow}>
-        <div className={style.formGroup}>
-          <label className={style.label}>
-            {translate('einvoice_buyer_name', 'Buyer Name')}
-            {!isFormReadOnly && <span className={style.required}>*</span>}
-          </label>
-          <input
-            className={`${style.input} ${isFormReadOnly ? style.inputReadOnly : ''}`}
+      <FormRow>
+        <FormGroup label={translate('einvoice_buyer_name', 'Buyer Name') as string} required={!isFormReadOnly}>
+          <FormInput
             type="text"
             value={formData.buyerName || ''}
-            onChange={(e) => onFormDataChange({buyerName: e.target.value})}
+            onChange={(value) => onFormDataChange({buyerName: value})}
             placeholder="Customer Company Name"
             readOnly={isFormReadOnly}
           />
-        </div>
-        <div className={style.formGroup}>
-          <label className={style.label}>
-            {translate('einvoice_buyer_tax_id', 'Buyer Tax ID')}
-          </label>
-          <input
-            className={`${style.input} ${isFormReadOnly ? style.inputReadOnly : ''}`}
+        </FormGroup>
+        <FormGroup label={translate('einvoice_buyer_tax_id', 'Buyer Tax ID') as string}>
+          <FormInput
             type="text"
             value={formData.buyerTaxId || ''}
-            onChange={(e) => onFormDataChange({buyerTaxId: e.target.value})}
+            onChange={(value) => onFormDataChange({buyerTaxId: value})}
             placeholder="DE987654321"
             readOnly={isFormReadOnly}
           />
-        </div>
-      </div>
+        </FormGroup>
+      </FormRow>
     </div>
   )
 

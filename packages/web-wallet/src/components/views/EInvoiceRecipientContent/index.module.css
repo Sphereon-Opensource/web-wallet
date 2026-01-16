@@ -20,16 +20,16 @@
     gap: 12px;
     font-size: 18px;
     font-weight: 600;
-    color: #1F2937;
+    color: var(--tw-gray-800);
     margin: 0;
 }
 
 .sectionTitle svg {
-    color: #4F46E5;
+    color: var(--theme-color-accent);
 }
 
 .description {
-    color: #6B7280;
+    color: var(--theme-text-secondary);
     font-size: 14px;
     margin: 0;
     line-height: 1.5;
@@ -40,10 +40,10 @@
     display: flex;
     gap: 12px;
     padding: 16px;
-    background-color: #EFF6FF;
+    background-color: var(--tw-blue-50);
     border-radius: 8px;
     font-size: 14px;
-    color: #1E40AF;
+    color: var(--tw-blue-800);
     line-height: 1.5;
 }
 
@@ -62,7 +62,7 @@
 .searchLabel {
     font-size: 14px;
     font-weight: 500;
-    color: #374151;
+    color: var(--tw-gray-700);
 }
 
 .searchContainer {
@@ -78,14 +78,14 @@
 .searchIcon {
     position: absolute;
     left: 14px;
-    color: #9CA3AF;
+    color: var(--theme-text-tertiary);
     pointer-events: none;
 }
 
 .searchInput {
     width: 100%;
     padding: 14px 44px;
-    border: 1px solid #D1D5DB;
+    border: 1px solid var(--tw-gray-300);
     border-radius: 8px;
     font-size: 14px;
     transition: border-color 0.2s, box-shadow 0.2s;
@@ -93,17 +93,17 @@
 
 .searchInput:focus {
     outline: none;
-    border-color: #4F46E5;
+    border-color: var(--theme-color-accent);
     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
 .searchInput:disabled {
-    background-color: #F3F4F6;
+    background-color: var(--tw-gray-100);
     cursor: not-allowed;
 }
 
 .searchInput::placeholder {
-    color: #9CA3AF;
+    color: var(--theme-text-tertiary);
 }
 
 .clearSearchButton {
@@ -115,17 +115,17 @@
     width: 28px;
     height: 28px;
     padding: 0;
-    background-color: #F3F4F6;
+    background-color: var(--tw-gray-100);
     border: none;
     border-radius: 6px;
-    color: #6B7280;
+    color: var(--theme-text-secondary);
     cursor: pointer;
     transition: background-color 0.2s, color 0.2s;
 }
 
 .clearSearchButton:hover {
-    background-color: #E5E7EB;
-    color: #374151;
+    background-color: var(--tw-gray-200);
+    color: var(--tw-gray-700);
 }
 
 /* Dropdown */
@@ -136,7 +136,7 @@
     right: 0;
     margin-top: 4px;
     background-color: white;
-    border: 1px solid #E5E7EB;
+    border: 1px solid var(--tw-gray-200);
     border-radius: 8px;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
     z-index: 50;
@@ -157,12 +157,12 @@
     align-items: center;
     gap: 12px;
     padding: 32px;
-    color: #6B7280;
+    color: var(--theme-text-secondary);
     font-size: 14px;
 }
 
 .dropdownEmpty svg {
-    color: #9CA3AF;
+    color: var(--theme-text-tertiary);
 }
 
 /* Contact List */
@@ -179,7 +179,7 @@
     padding: 12px 16px;
     background-color: transparent;
     border: none;
-    border-bottom: 1px solid #F3F4F6;
+    border-bottom: 1px solid var(--tw-gray-100);
     cursor: pointer;
     text-align: left;
     transition: background-color 0.15s;
@@ -190,7 +190,7 @@
 }
 
 .contactItem:hover {
-    background-color: #F9FAFB;
+    background-color: var(--tw-gray-50);
 }
 
 .contactAvatar {
@@ -199,8 +199,8 @@
     justify-content: center;
     width: 40px;
     height: 40px;
-    background-color: #EEF2FF;
-    color: #4F46E5;
+    background-color: var(--theme-color-accent-bg);
+    color: var(--theme-color-accent);
     border-radius: 50%;
     font-size: 16px;
     font-weight: 600;
@@ -218,17 +218,17 @@
 .contactName {
     font-size: 14px;
     font-weight: 500;
-    color: #1F2937;
+    color: var(--tw-gray-800);
 }
 
 .contactOrg {
     font-size: 13px;
-    color: #6B7280;
+    color: var(--theme-text-secondary);
 }
 
 .contactDid {
     font-size: 12px;
-    color: #9CA3AF;
+    color: var(--theme-text-tertiary);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -240,17 +240,17 @@
     align-items: center;
     gap: 12px;
     padding: 16px;
-    background-color: #F3F4F6;
+    background-color: var(--tw-gray-100);
     border-radius: 8px;
     font-size: 14px;
-    color: #4B5563;
+    color: var(--tw-gray-600);
 }
 
 .spinner {
     width: 20px;
     height: 20px;
-    border: 2px solid #E5E7EB;
-    border-top-color: #4F46E5;
+    border: 2px solid var(--tw-gray-200);
+    border-top-color: var(--theme-color-accent);
     border-radius: 50%;
     animation: spin 1s linear infinite;
     flex-shrink: 0;
@@ -268,14 +268,14 @@
     align-items: flex-start;
     gap: 12px;
     padding: 16px;
-    background-color: #FEF2F2;
-    border: 1px solid #FECACA;
+    background-color: var(--tw-red-50);
+    border: 1px solid var(--tw-red-200);
     border-radius: 8px;
 }
 
 .errorMessage svg {
     flex-shrink: 0;
-    color: #DC2626;
+    color: var(--tw-red-600);
     margin-top: 2px;
 }
 
@@ -289,19 +289,19 @@
 .errorTitle {
     font-size: 14px;
     font-weight: 600;
-    color: #991B1B;
+    color: var(--tw-red-800);
 }
 
 .errorText {
     font-size: 14px;
-    color: #DC2626;
+    color: var(--tw-red-600);
     line-height: 1.5;
 }
 
 .errorDismiss {
     padding: 8px 16px;
-    background-color: #FECACA;
-    color: #991B1B;
+    background-color: var(--tw-red-200);
+    color: var(--tw-red-800);
     border: none;
     border-radius: 6px;
     font-size: 13px;
@@ -312,7 +312,7 @@
 }
 
 .errorDismiss:hover {
-    background-color: #FCA5A5;
+    background-color: var(--tw-red-300);
 }
 
 /* Warning Card - for DID resolution failures or no endpoints */
@@ -322,8 +322,8 @@
     align-items: center;
     gap: 16px;
     padding: 24px;
-    background-color: #FFFBEB;
-    border: 2px solid #FCD34D;
+    background-color: var(--tw-amber-50);
+    border: 2px solid var(--tw-amber-300);
     border-radius: 12px;
     text-align: center;
 }
@@ -334,9 +334,9 @@
     justify-content: center;
     width: 48px;
     height: 48px;
-    background-color: #FEF3C7;
+    background-color: var(--tw-amber-100);
     border-radius: 50%;
-    color: #D97706;
+    color: var(--tw-amber-600);
 }
 
 .warningContent {
@@ -348,18 +348,18 @@
 .warningTitle {
     font-size: 16px;
     font-weight: 600;
-    color: #92400E;
+    color: var(--tw-amber-800);
 }
 
 .warningText {
     font-size: 14px;
-    color: #B45309;
+    color: var(--tw-amber-700);
     line-height: 1.5;
 }
 
 .warningAction {
     padding: 10px 20px;
-    background-color: #F59E0B;
+    background-color: var(--tw-amber-500);
     color: white;
     border: none;
     border-radius: 6px;
@@ -370,7 +370,7 @@
 }
 
 .warningAction:hover {
-    background-color: #D97706;
+    background-color: var(--tw-amber-600);
 }
 
 /* Recipient Card */
@@ -379,8 +379,8 @@
     flex-direction: column;
     gap: 16px;
     padding: 20px;
-    background-color: #F0FDF4;
-    border: 1px solid #86EFAC;
+    background-color: var(--tw-emerald-50);
+    border: 1px solid var(--tw-emerald-300);
     border-radius: 12px;
 }
 
@@ -395,15 +395,15 @@
     align-items: center;
     gap: 6px;
     padding: 6px 12px;
-    background-color: #DCFCE7;
-    color: #166534;
+    background-color: var(--tw-emerald-100);
+    color: var(--tw-green-800);
     border-radius: 100px;
     font-size: 13px;
     font-weight: 500;
 }
 
 .recipientBadge svg {
-    color: #16A34A;
+    color: var(--tw-emerald-600);
 }
 
 .clearButton {
@@ -412,8 +412,8 @@
     gap: 6px;
     padding: 8px 12px;
     background-color: white;
-    color: #6B7280;
-    border: 1px solid #E5E7EB;
+    color: var(--theme-text-secondary);
+    border: 1px solid var(--tw-gray-200);
     border-radius: 6px;
     cursor: pointer;
     font-size: 13px;
@@ -422,9 +422,9 @@
 }
 
 .clearButton:hover {
-    background-color: #FEE2E2;
-    border-color: #FECACA;
-    color: #DC2626;
+    background-color: var(--tw-red-100);
+    border-color: var(--tw-red-200);
+    color: var(--tw-red-600);
 }
 
 .recipientBody {
@@ -439,8 +439,8 @@
     justify-content: center;
     width: 56px;
     height: 56px;
-    background-color: #DCFCE7;
-    color: #166534;
+    background-color: var(--tw-emerald-100);
+    color: var(--tw-green-800);
     border-radius: 50%;
     font-size: 24px;
     font-weight: 600;
@@ -458,17 +458,17 @@
 .recipientName {
     font-size: 18px;
     font-weight: 600;
-    color: #166534;
+    color: var(--tw-green-800);
 }
 
 .recipientOrg {
     font-size: 14px;
-    color: #15803D;
+    color: var(--tw-green-700);
 }
 
 .recipientDid {
     font-size: 13px;
-    color: #4ADE80;
+    color: var(--tw-green-400);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -479,14 +479,14 @@
     align-items: center;
     gap: 8px;
     padding: 10px 14px;
-    background-color: #DCFCE7;
+    background-color: var(--tw-emerald-100);
     border-radius: 8px;
     font-size: 13px;
-    color: #166534;
+    color: var(--tw-green-800);
 }
 
 .recipientEndpointSummary svg {
-    color: #16A34A;
+    color: var(--tw-emerald-600);
 }
 
 /* Endpoint Section */
@@ -495,8 +495,8 @@
     flex-direction: column;
     gap: 16px;
     padding: 20px;
-    background-color: #F9FAFB;
-    border: 1px solid #E5E7EB;
+    background-color: var(--tw-gray-50);
+    border: 1px solid var(--tw-gray-200);
     border-radius: 12px;
 }
 
@@ -507,17 +507,17 @@
     margin: 0;
     font-size: 16px;
     font-weight: 600;
-    color: #1F2937;
+    color: var(--tw-gray-800);
 }
 
 .endpointTitle svg {
-    color: #4F46E5;
+    color: var(--theme-color-accent);
 }
 
 .endpointDescription {
     margin: 0;
     font-size: 14px;
-    color: #6B7280;
+    color: var(--theme-text-secondary);
     line-height: 1.5;
 }
 
@@ -533,7 +533,7 @@
     gap: 12px;
     padding: 16px;
     background-color: white;
-    border: 2px solid #E5E7EB;
+    border: 2px solid var(--tw-gray-200);
     border-radius: 10px;
     cursor: pointer;
     text-align: left;
@@ -541,18 +541,18 @@
 }
 
 .endpointCard:hover {
-    border-color: #A5B4FC;
-    background-color: #FAFAFA;
+    border-color: var(--theme-color-accent-light);
+    background-color: var(--tw-gray-50);
 }
 
 .endpointCardSelected {
-    border-color: #4F46E5;
-    background-color: #EEF2FF;
+    border-color: var(--theme-color-accent);
+    background-color: var(--theme-color-accent-bg);
 }
 
 .endpointCardSelected:hover {
-    border-color: #4F46E5;
-    background-color: #EEF2FF;
+    border-color: var(--theme-color-accent);
+    background-color: var(--theme-color-accent-bg);
 }
 
 .endpointHeader {
@@ -564,8 +564,8 @@
 .endpointTypeBadge {
     display: inline-flex;
     padding: 4px 10px;
-    background-color: #F3F4F6;
-    color: #4B5563;
+    background-color: var(--tw-gray-100);
+    color: var(--tw-gray-600);
     border-radius: 100px;
     font-size: 12px;
     font-weight: 600;
@@ -574,8 +574,8 @@
 }
 
 .endpointCardSelected .endpointTypeBadge {
-    background-color: #C7D2FE;
-    color: #3730A3;
+    background-color: var(--tw-indigo-200);
+    color: var(--tw-indigo-800);
 }
 
 .selectedBadge {
@@ -583,7 +583,7 @@
     align-items: center;
     gap: 4px;
     padding: 4px 10px;
-    background-color: #4F46E5;
+    background-color: var(--theme-color-accent);
     color: white;
     border-radius: 100px;
     font-size: 12px;
@@ -599,22 +599,22 @@
 .endpointEntity {
     font-size: 15px;
     font-weight: 500;
-    color: #1F2937;
+    color: var(--tw-gray-800);
 }
 
 .endpointDesc {
     font-size: 13px;
-    color: #6B7280;
+    color: var(--theme-text-secondary);
 }
 
 .endpointCountry {
     font-size: 12px;
-    color: #9CA3AF;
+    color: var(--theme-text-tertiary);
 }
 
 .endpointUrl {
     font-size: 12px;
-    color: #9CA3AF;
+    color: var(--theme-text-tertiary);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

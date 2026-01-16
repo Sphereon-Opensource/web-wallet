@@ -1,8 +1,19 @@
-import React, {FC, ReactElement} from 'react'
+import React, {FC, ReactElement, useMemo} from 'react'
 import {useTranslate} from '@refinedev/core'
 import {UBLInvoiceCard} from '@components/views/UBLInvoiceView'
+import {
+  BaseDetailPanel,
+  PanelHeader,
+  PanelBody,
+  PanelFooter,
+  PanelSection,
+  MetadataList,
+  MetadataItem,
+  ContactCard,
+  ActionButton,
+} from '@components/panels'
 import {InboxEInvoice, InboxEvidence, InboxContact, formatDateTime, formatFileSize} from '../types'
-import {CloseIcon, ExternalLinkIcon, DocumentIcon, FileIcon, CheckIcon, ClockIcon, PeppolIcon} from '../icons'
+import {ExternalLinkIcon, DocumentIcon, FileIcon, CheckIcon, ClockIcon, PeppolIcon} from '../icons'
 import styles from './index.module.css'
 
 /**
@@ -18,6 +29,10 @@ import styles from './index.module.css'
  * Responsive behavior:
  * - Side panel on desktop
  * - Full-screen modal on mobile
+ *
+ * Uses reusable components from @components/panels:
+ * - BaseDetailPanel, PanelHeader, PanelBody, PanelFooter
+ * - PanelSection, MetadataList, ContactCard, ActionButton
  */
 
 interface Props {
@@ -48,6 +63,32 @@ const InboxDetailPanel: FC<Props> = (props: Props): ReactElement => {
   const canSend = isOutbox && (invoice.statusLabel === 'Draft' || invoice.statusLabel === 'Failed')
 
   const isProcessing = processingId === invoice.invoiceId
+
+  // Build metadata items for MetadataList
+  const metadataItems = useMemo((): MetadataItem[] => {
+    const items: MetadataItem[] = [
+      {
+        label: isOutbox
+          ? (translate('einvoice_detail_created_at', 'Created') as string)
+          : (translate('einvoice_detail_received_at', 'Received') as string),
+        value: formatDateTime(invoice.receivedAt),
+      },
+    ]
+    if (!isOutbox) {
+      items.push({
+        label: translate('einvoice_detail_folder', 'Folder') as string,
+        value: invoice.folderName,
+      })
+    }
+    if (invoice.correlationId) {
+      items.push({
+        label: translate('einvoice_detail_correlation', 'Correlation ID') as string,
+        value: invoice.correlationId,
+        mono: true,
+      })
+    }
+    return items
+  }, [invoice, isOutbox, translate])
 
   const renderEvidenceStatus = (evidence: InboxEvidence): ReactElement => {
     switch (evidence.storageStatus) {
@@ -82,55 +123,39 @@ const InboxDetailPanel: FC<Props> = (props: Props): ReactElement => {
     return <FileIcon size={18} />
   }
 
-  return (
-    <aside className={`${styles.panel} ${className || ''}`}>
-      {/* Header */}
-      <div className={styles.header}>
-        <h3 className={styles.title}>{translate('einvoice_detail_title', 'Invoice Details')}</h3>
-        <button
-          type="button"
-          className={styles.closeButton}
-          onClick={onClose}
-          aria-label={translate('action_close', 'Close')}
-        >
-          <CloseIcon size={20} />
-        </button>
-      </div>
+  // Contact label based on inbox/outbox
+  const contactLabel = isOutbox
+    ? (translate('einvoice_detail_recipient', 'Recipient') as string)
+    : (translate('einvoice_detail_sender', 'Sender') as string)
 
-      {/* Scrollable Body */}
-      <div className={styles.body}>
+  return (
+    <BaseDetailPanel className={className}>
+      <PanelHeader
+        title={translate('einvoice_detail_title', 'Invoice Details') as string}
+        onClose={onClose}
+        closeLabel={translate('action_close', 'Close') as string}
+      />
+
+      <PanelBody>
         {/* Invoice Card */}
         <UBLInvoiceCard invoice={invoice} selected={false} showActions={false} onViewDetails={onViewFullInvoice} />
 
         {/* Contact Card - Sender for inbox, Recipient for outbox */}
         {contact && (
-          <button
-            type="button"
-            className={styles.contactCard}
-            onClick={() => onViewContact?.(contact.id)}
-            aria-label={isOutbox ? translate('einvoice_detail_view_recipient', 'View recipient details') : translate('einvoice_detail_view_sender', 'View sender details')}
-          >
-            <div className={styles.contactCardBorder} />
-            <div className={styles.contactCardContent}>
-              <div className={styles.contactCardHeader}>
-                <span className={styles.contactCardLabel}>
-                  {isOutbox ? translate('einvoice_detail_recipient', 'Recipient') : translate('einvoice_detail_sender', 'Sender')}
-                </span>
-                <ExternalLinkIcon size={16} />
-              </div>
-              <div className={styles.contactCardName}>{contact.displayName}</div>
-              {contact.email && <div className={styles.contactCardEmail}>{contact.email}</div>}
-            </div>
-          </button>
+          <ContactCard
+            label={contactLabel}
+            name={contact.displayName}
+            email={contact.email}
+            onClick={onViewContact ? () => onViewContact(contact.id) : undefined}
+          />
         )}
 
         {/* Evidence Files Section */}
         {invoice.evidence && invoice.evidence.length > 0 && (
-          <section className={styles.evidenceSection}>
-            <div className={styles.evidenceHeader}>
-              {translate('einvoice_detail_evidence', 'Evidence Files')}
-              <span className={styles.evidenceCount}>{invoice.evidence.length}</span>
-            </div>
+          <PanelSection
+            title={translate('einvoice_detail_evidence', 'Evidence Files') as string}
+            count={invoice.evidence.length}
+          >
             <div className={styles.evidenceList}>
               {(invoice.evidence as InboxEvidence[]).map((evidence, index) => (
                 <div key={index} className={styles.evidenceItem}>
@@ -144,7 +169,7 @@ const InboxDetailPanel: FC<Props> = (props: Props): ReactElement => {
                 </div>
               ))}
             </div>
-          </section>
+          </PanelSection>
         )}
 
         {/* View Full Invoice Button */}
@@ -154,92 +179,76 @@ const InboxDetailPanel: FC<Props> = (props: Props): ReactElement => {
         </button>
 
         {/* Metadata Section */}
-        <section className={styles.metadata}>
-          <div className={styles.metadataTitle}>
-            {isOutbox ? translate('einvoice_detail_sent_info', 'Sent Information') : translate('einvoice_detail_received_info', 'Received Information')}
-          </div>
-          <div className={styles.metadataRow}>
-            <span className={styles.metadataLabel}>
-              {isOutbox ? translate('einvoice_detail_created_at', 'Created') : translate('einvoice_detail_received_at', 'Received')}
-            </span>
-            <span className={styles.metadataValue}>{formatDateTime(invoice.receivedAt)}</span>
-          </div>
-          {!isOutbox && (
-            <div className={styles.metadataRow}>
-              <span className={styles.metadataLabel}>{translate('einvoice_detail_folder', 'Folder')}</span>
-              <span className={styles.metadataValue}>{invoice.folderName}</span>
-            </div>
-          )}
-          {invoice.correlationId && (
-            <div className={styles.metadataRow}>
-              <span className={styles.metadataLabel}>{translate('einvoice_detail_correlation', 'Correlation ID')}</span>
-              <span className={styles.metadataValueMono}>{invoice.correlationId}</span>
-            </div>
-          )}
-        </section>
-
-      </div>
+        <PanelSection
+          title={isOutbox
+            ? (translate('einvoice_detail_sent_info', 'Sent Information') as string)
+            : (translate('einvoice_detail_received_info', 'Received Information') as string)
+          }
+          separator
+        >
+          <MetadataList items={metadataItems} />
+        </PanelSection>
+      </PanelBody>
 
       {/* Footer Actions */}
       {/* Outbox: Show Send (full width), then Edit/Delete side by side */}
       {canSend && (onSend || onEdit || onDelete) && (
-        <div className={styles.footer}>
+        <PanelFooter layout="column">
           {onSend && (
-            <button
-              type="button"
-              className={styles.sendButtonFull}
+            <ActionButton
+              variant="success"
+              fullWidth
               onClick={() => onSend(invoice)}
               disabled={isProcessing}
+              loading={isProcessing}
             >
               {invoice.statusLabel === 'Failed' ? translate('action_resend_label', 'Resend') : translate('action_send_label', 'Send')}
-            </button>
+            </ActionButton>
           )}
           <div className={styles.footerSecondaryRow}>
             {onEdit && (
-              <button
-                type="button"
-                className={styles.secondaryButton}
+              <ActionButton
+                variant="secondary"
                 onClick={() => onEdit(invoice)}
                 disabled={isProcessing}
               >
                 {translate('action_edit_label', 'Edit')}
-              </button>
+              </ActionButton>
             )}
             {onDelete && (
-              <button
-                type="button"
-                className={styles.deleteButtonSmall}
+              <ActionButton
+                variant="danger"
                 onClick={() => onDelete(invoice)}
                 disabled={isProcessing}
               >
                 {translate('action_delete_label', 'Delete')}
-              </button>
+              </ActionButton>
             )}
           </div>
-        </div>
+        </PanelFooter>
       )}
       {/* Inbox: Show Accept/Reject for pending items */}
       {!isOutbox && invoice.status === 'pending' && onApprove && onReject && (
-        <div className={styles.footer}>
-          <button
-            type="button"
-            className={styles.rejectButton}
+        <PanelFooter>
+          <ActionButton
+            variant="danger"
             onClick={() => onReject(invoice)}
             disabled={isProcessing}
+            loading={isProcessing}
           >
             {translate('action_reject_label', 'Reject')}
-          </button>
-          <button
-            type="button"
-            className={styles.approveButton}
+          </ActionButton>
+          <ActionButton
+            variant="success"
             onClick={() => onApprove(invoice)}
             disabled={isProcessing}
+            loading={isProcessing}
           >
             {translate('action_accept_label', 'Accept')}
-          </button>
-        </div>
+          </ActionButton>
+        </PanelFooter>
       )}
-    </aside>
+    </BaseDetailPanel>
   )
 }
 

@@ -1,0 +1,147 @@
+/**
+ * ContextMenu Component Styles
+ *
+ * Dropdown menu for row/item actions with backdrop and positioning.
+ */
+
+/* ===========================
+ * BACKDROP
+ * =========================== */
+
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--theme-z-dropdown, 100);
+}
+
+/* ===========================
+ * MENU
+ * =========================== */
+
+.menu {
+  position: fixed;
+  min-width: 160px;
+  background-color: var(--theme-bg-card);
+  border: 1px solid var(--theme-border-primary);
+  border-radius: var(--theme-radius-lg, 8px);
+  box-shadow: var(--theme-menu-shadow, 0 10px 25px rgba(0, 0, 0, 0.15));
+  z-index: calc(var(--theme-z-dropdown, 100) + 1);
+  padding: var(--theme-menu-padding, 6px) 0;
+  overflow: hidden;
+}
+
+/* ===========================
+ * MENU ITEM
+ * =========================== */
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--theme-space-3, 12px);
+  width: 100%;
+  padding: var(--theme-menu-item-padding, 10px 12px);
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  font-size: var(--theme-font-size-sm, 14px);
+  font-weight: var(--theme-font-weight-medium, 500);
+  color: var(--theme-text-primary);
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--theme-transition-fast, 0.1s ease);
+}
+
+.item:hover {
+  background-color: var(--theme-bg-secondary);
+}
+
+.item:focus {
+  outline: none;
+  background-color: var(--theme-bg-secondary);
+}
+
+/* Danger variant */
+.itemDanger {
+  color: var(--theme-color-error);
+}
+
+.itemDanger:hover {
+  background-color: var(--theme-color-error-bg);
+}
+
+/* Disabled state */
+.itemDisabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.itemDisabled:hover {
+  background-color: transparent;
+}
+
+/* Icon */
+.itemIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: inherit;
+}
+
+.itemIcon svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ===========================
+ * DIVIDER
+ * =========================== */
+
+.divider {
+  height: 1px;
+  background-color: var(--theme-border-primary);
+  margin: var(--theme-space-1, 4px) 0;
+}
+
+/* ===========================
+ * TRIGGER BUTTON
+ * =========================== */
+
+.triggerButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: var(--theme-radius-sm, 4px);
+  cursor: pointer;
+  color: var(--theme-text-secondary);
+  transition: all var(--theme-transition-fast, 0.1s ease);
+}
+
+.triggerButton:hover {
+  background-color: var(--theme-bg-tertiary);
+  color: var(--theme-text-primary);
+}
+
+.triggerButton:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(114, 118, 247, 0.2);
+}
+
+.triggerButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.triggerButton:disabled:hover {
+  background-color: transparent;
+}

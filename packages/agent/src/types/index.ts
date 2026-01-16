@@ -29,8 +29,8 @@ import { IOIDFMetadataStore } from '@sphereon/ssi-sdk.oidf-metatdata-server'
 import { IVcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
 import { ILinkedVPManager } from '@sphereon/ssi-sdk.linked-vp'
 import { IServiceMetadata } from '../plugins/serviceMetadataPlugin'
-import { IInboxPlugin } from '../plugins/inboxPlugin'
-import { IAssetPlugin } from '../plugins/assetPlugin'
+import { IInboxPlugin } from '../plugins/inbox'
+import { IAssetPlugin } from '../plugins/asset'
 
 export const DID_PREFIX = 'did'
 

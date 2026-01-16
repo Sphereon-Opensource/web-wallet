@@ -1,0 +1,372 @@
+/**
+ * Feedback Components
+ *
+ * Reusable styles for feedback messages, alerts, and status indicators.
+ * Use these classes alongside component-specific module styles.
+ */
+
+/* ===========================
+ * BASE FEEDBACK CONTAINER
+ * =========================== */
+
+.feedback {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--theme-space-3, 12px);
+  padding: var(--theme-space-4, 16px);
+  border-radius: var(--theme-radius-lg, 8px);
+  font-size: var(--theme-font-size-md, 14px);
+  line-height: var(--theme-line-height-normal, 1.5);
+}
+
+.feedbackIcon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.feedbackContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--theme-space-1, 4px);
+  flex: 1;
+  min-width: 0;
+}
+
+.feedbackTitle {
+  font-size: var(--theme-font-size-md, 14px);
+  font-weight: var(--theme-font-weight-semibold, 600);
+}
+
+.feedbackText {
+  font-size: var(--theme-font-size-md, 14px);
+  line-height: var(--theme-line-height-normal, 1.5);
+}
+
+.feedbackActions {
+  display: flex;
+  gap: var(--theme-space-2, 8px);
+  margin-top: var(--theme-space-2, 8px);
+}
+
+/* ===========================
+ * ERROR FEEDBACK
+ * =========================== */
+
+.feedbackError {
+  background-color: var(--tw-red-50);
+  border: 1px solid var(--tw-red-200);
+}
+
+.feedbackError .feedbackIcon {
+  color: var(--tw-red-600);
+}
+
+.feedbackError .feedbackTitle {
+  color: var(--tw-red-800);
+}
+
+.feedbackError .feedbackText {
+  color: var(--tw-red-600);
+}
+
+.feedbackErrorBtn {
+  padding: var(--theme-space-2, 8px) var(--theme-space-4, 16px);
+  background-color: var(--tw-red-200);
+  color: var(--tw-red-800);
+  border: none;
+  border-radius: var(--theme-radius-md, 6px);
+  font-size: var(--theme-font-size-sm, 13px);
+  font-weight: var(--theme-font-weight-medium, 500);
+  cursor: pointer;
+  transition: background-color var(--theme-transition-normal, 0.15s ease);
+}
+
+.feedbackErrorBtn:hover {
+  background-color: var(--tw-red-300);
+}
+
+/* ===========================
+ * WARNING FEEDBACK
+ * =========================== */
+
+.feedbackWarning {
+  background-color: var(--tw-amber-50);
+  border: 2px solid var(--tw-amber-300);
+}
+
+.feedbackWarning .feedbackIcon {
+  color: var(--tw-amber-600);
+}
+
+.feedbackWarning .feedbackTitle {
+  color: var(--tw-amber-800);
+}
+
+.feedbackWarning .feedbackText {
+  color: var(--tw-amber-700);
+}
+
+.feedbackWarningBtn {
+  padding: var(--theme-space-2, 10px) var(--theme-space-5, 20px);
+  background-color: var(--tw-amber-500);
+  color: var(--theme-text-inverse);
+  border: none;
+  border-radius: var(--theme-radius-md, 6px);
+  font-size: var(--theme-font-size-md, 14px);
+  font-weight: var(--theme-font-weight-medium, 500);
+  cursor: pointer;
+  transition: background-color var(--theme-transition-normal, 0.15s ease);
+}
+
+.feedbackWarningBtn:hover {
+  background-color: var(--tw-amber-600);
+}
+
+/* ===========================
+ * SUCCESS FEEDBACK
+ * =========================== */
+
+.feedbackSuccess {
+  background-color: var(--tw-emerald-50);
+  border: 1px solid var(--tw-emerald-300);
+}
+
+.feedbackSuccess .feedbackIcon {
+  color: var(--tw-emerald-600);
+}
+
+.feedbackSuccess .feedbackTitle {
+  color: var(--tw-green-800);
+}
+
+.feedbackSuccess .feedbackText {
+  color: var(--tw-green-700);
+}
+
+.feedbackSuccessBtn {
+  padding: var(--theme-space-2, 8px) var(--theme-space-4, 16px);
+  background-color: var(--tw-emerald-200);
+  color: var(--tw-green-800);
+  border: none;
+  border-radius: var(--theme-radius-md, 6px);
+  font-size: var(--theme-font-size-sm, 13px);
+  font-weight: var(--theme-font-weight-medium, 500);
+  cursor: pointer;
+  transition: background-color var(--theme-transition-normal, 0.15s ease);
+}
+
+.feedbackSuccessBtn:hover {
+  background-color: var(--tw-emerald-300);
+}
+
+/* ===========================
+ * INFO FEEDBACK
+ * =========================== */
+
+.feedbackInfo {
+  background-color: var(--tw-blue-50);
+  border: 1px solid var(--tw-blue-100);
+}
+
+.feedbackInfo .feedbackIcon {
+  color: var(--tw-blue-600);
+}
+
+.feedbackInfo .feedbackTitle {
+  color: var(--tw-blue-800);
+}
+
+.feedbackInfo .feedbackText {
+  color: var(--tw-blue-800);
+}
+
+.feedbackInfoBtn {
+  padding: var(--theme-space-2, 8px) var(--theme-space-4, 16px);
+  background-color: var(--tw-blue-100);
+  color: var(--tw-blue-800);
+  border: none;
+  border-radius: var(--theme-radius-md, 6px);
+  font-size: var(--theme-font-size-sm, 13px);
+  font-weight: var(--theme-font-weight-medium, 500);
+  cursor: pointer;
+  transition: background-color var(--theme-transition-normal, 0.15s ease);
+}
+
+.feedbackInfoBtn:hover {
+  background-color: var(--tw-blue-600);
+  color: var(--theme-text-inverse);
+}
+
+/* ===========================
+ * NOTICE BANNER (PRIMARY)
+ * =========================== */
+
+.feedbackNotice {
+  background-color: var(--theme-color-accent-bg);
+  border: 1px solid var(--tw-indigo-200);
+}
+
+.feedbackNotice .feedbackIcon {
+  color: var(--theme-color-accent);
+}
+
+.feedbackNotice .feedbackTitle {
+  color: var(--tw-indigo-800);
+}
+
+.feedbackNotice .feedbackText {
+  color: var(--theme-color-accent-dark);
+}
+
+.feedbackNoticeBtn {
+  padding: var(--theme-space-2, 8px) var(--theme-space-4, 16px);
+  background-color: var(--theme-color-accent);
+  color: var(--theme-text-inverse);
+  border: none;
+  border-radius: var(--theme-radius-md, 6px);
+  font-size: var(--theme-font-size-sm, 13px);
+  font-weight: var(--theme-font-weight-medium, 500);
+  cursor: pointer;
+  transition: opacity var(--theme-transition-normal, 0.15s ease);
+}
+
+.feedbackNoticeBtn:hover {
+  opacity: 0.9;
+}
+
+/* ===========================
+ * CENTERED CARD VARIANT
+ * Used for prominent warnings/errors
+ * =========================== */
+
+.feedbackCard {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--theme-space-4, 16px);
+  padding: var(--theme-space-6, 24px);
+  border-radius: var(--theme-radius-xl, 12px);
+}
+
+.feedbackCard .feedbackIconCircle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.feedbackCard.feedbackWarning .feedbackIconCircle {
+  background-color: var(--tw-amber-100);
+  color: var(--tw-amber-600);
+}
+
+.feedbackCard.feedbackError .feedbackIconCircle {
+  background-color: var(--tw-red-100);
+  color: var(--tw-red-600);
+}
+
+.feedbackCard.feedbackSuccess .feedbackIconCircle {
+  background-color: var(--tw-emerald-100);
+  color: var(--tw-emerald-600);
+}
+
+.feedbackCard.feedbackInfo .feedbackIconCircle {
+  background-color: var(--tw-blue-100);
+  color: var(--tw-blue-600);
+}
+
+.feedbackCard .feedbackContent {
+  align-items: center;
+  gap: var(--theme-space-2, 8px);
+}
+
+.feedbackCard .feedbackTitle {
+  font-size: var(--theme-font-size-lg, 16px);
+}
+
+/* ===========================
+ * INLINE BADGE VARIANT
+ * Compact feedback for inline use
+ * =========================== */
+
+.feedbackBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--theme-space-2, 6px);
+  padding: var(--theme-space-1, 4px) var(--theme-space-3, 10px);
+  border-radius: var(--theme-radius-full, 100px);
+  font-size: var(--theme-font-size-xs, 11px);
+  font-weight: var(--theme-font-weight-medium, 500);
+}
+
+.feedbackBadge.feedbackError {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: var(--tw-red-600);
+  border: none;
+}
+
+.feedbackBadge.feedbackWarning {
+  background-color: rgba(245, 158, 11, 0.1);
+  color: var(--tw-amber-600);
+  border: none;
+}
+
+.feedbackBadge.feedbackSuccess {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: var(--tw-emerald-600);
+  border: none;
+}
+
+.feedbackBadge.feedbackInfo {
+  background-color: rgba(37, 99, 235, 0.1);
+  color: var(--tw-blue-600);
+  border: none;
+}
+
+/* ===========================
+ * LOADING SPINNER
+ * =========================== */
+
+.feedbackSpinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--tw-gray-200);
+  border-top-color: var(--theme-color-accent);
+  border-radius: 50%;
+  animation: feedbackSpin 1s linear infinite;
+  flex-shrink: 0;
+}
+
+.feedbackSpinnerSmall {
+  width: 14px;
+  height: 14px;
+  border-width: 2px;
+}
+
+@keyframes feedbackSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===========================
+ * RESPONSIVE
+ * =========================== */
+
+@media (max-width: 640px) {
+  .feedback {
+    flex-direction: column;
+    gap: var(--theme-space-3, 12px);
+  }
+
+  .feedbackActions {
+    align-self: stretch;
+  }
+
+  .feedbackActions button {
+    flex: 1;
+    text-align: center;
+  }
+}

@@ -27,7 +27,7 @@
     padding-left: 46px;
     padding-right: 46px;
     gap: 45px;
-    background-color: #C4C5CA;
+    background-color: var(--theme-border-primary, #C4C5CA);
 }
 
 
@@ -43,7 +43,7 @@
     flex-direction: column;
     align-items: center;
     border: 1px solid black;
-    background-color: #525659;
+    background-color: var(--tw-gray-600, #525659);
     overflow-y: scroll;
 }
 
@@ -55,7 +55,7 @@
     padding-left: 46px;
     padding-right: 46px;
     gap: 45px;
-    background-color: #C4C5CA;
+    background-color: var(--theme-border-primary, #C4C5CA);
 }
 
 .pdfViewerButton {
@@ -74,7 +74,7 @@
 }
 
 .pdfViewerTexts {
-    color: #303030;
+    color: var(--theme-text-primary, #303030);
     font-size: 12px;
     font-weight: 400;
     word-wrap: break-word;

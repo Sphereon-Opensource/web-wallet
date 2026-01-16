@@ -145,6 +145,7 @@
   overflow-y: auto;
   flex: 1;
   min-height: 0;
+  background: var(--theme-bg-secondary, #F5F5F5);
 }
 
 /* ===========================
@@ -367,10 +368,11 @@
  * =========================== */
 
 .amountsSummary {
-  background: linear-gradient(135deg, rgba(114, 118, 247, 0.05) 0%, rgba(124, 64, 232, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(114, 118, 247, 0.12) 0%, rgba(124, 64, 232, 0.12) 100%);
   border-radius: var(--theme-radius-md, 6px);
   padding: var(--theme-space-4, 16px);
-  border: 1px solid rgba(114, 118, 247, 0.2);
+  border: 1px solid rgba(114, 118, 247, 0.3);
+  box-shadow: 0 2px 4px rgba(114, 118, 247, 0.08);
 }
 
 .amountsRow {
@@ -416,9 +418,10 @@
   flex-direction: column;
   gap: var(--theme-space-2, 8px);
   padding: var(--theme-space-4, 16px);
-  background: var(--theme-bg-secondary, #FBFBFB);
+  background: var(--theme-bg-tertiary, #ECECEC);
   border-radius: var(--theme-radius-md, 6px);
-  border: 1px solid var(--theme-border-secondary, #E3E3E3);
+  border: 1px solid var(--theme-border-primary, #C4C5CA);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
 }
 
 .partyCardTitle {

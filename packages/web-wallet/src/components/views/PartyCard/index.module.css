@@ -1,0 +1,132 @@
+/**
+ * PartyCard Component Styles
+ *
+ * Card for displaying party/organization information in invoice views.
+ */
+
+/* ===========================
+ * CARD
+ * =========================== */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--theme-space-2, 8px);
+  padding: var(--theme-space-4, 16px);
+  background: var(--theme-bg-secondary, #FBFBFB);
+  border-radius: var(--theme-radius-md, 6px);
+  border: 1px solid var(--theme-border-secondary, #E3E3E3);
+}
+
+/* Accent color variants - adds left border */
+.accentPrimary {
+  border-left: 3px solid var(--theme-color-primary, #7276F7);
+}
+
+.accentSuccess {
+  border-left: 3px solid var(--theme-color-success, #00C249);
+}
+
+.accentWarning {
+  border-left: 3px solid var(--theme-color-warning, #F5A623);
+}
+
+.accentError {
+  border-left: 3px solid var(--theme-color-error, #D74500);
+}
+
+/* ===========================
+ * CONTENT
+ * =========================== */
+
+.title {
+  font-size: var(--theme-font-size-xs, 11px);
+  font-weight: var(--theme-font-weight-semibold, 600);
+  color: var(--theme-text-secondary, #8D9099);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.name {
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  font-size: var(--theme-font-size-lg, 16px);
+  font-weight: var(--theme-font-weight-semibold, 600);
+  color: var(--theme-text-primary, #303030);
+}
+
+.details {
+  font-size: var(--theme-font-size-sm, 13px);
+  color: var(--theme-text-secondary, #8D9099);
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+/* ===========================
+ * VIEW CONTACT LINK
+ * =========================== */
+
+.viewContactLink {
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  margin-top: var(--theme-space-1, 4px);
+  background: none;
+  border: none;
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  font-size: var(--theme-font-size-sm, 13px);
+  font-weight: var(--theme-font-weight-medium, 500);
+  color: var(--theme-color-primary, #7276F7);
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.viewContactLink:hover {
+  color: var(--theme-color-primary-dark, #5a5ed4);
+  text-decoration: underline;
+}
+
+.viewContactLink:focus {
+  outline: none;
+  text-decoration: underline;
+}
+
+/* ===========================
+ * GRID CONTAINER
+ * =========================== */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--theme-space-4, 16px);
+  align-items: stretch;
+}
+
+.gridCols1 {
+  grid-template-columns: 1fr;
+}
+
+.gridCols3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* ===========================
+ * RESPONSIVE
+ * =========================== */
+
+@media (max-width: 768px) {
+  .card {
+    padding: var(--theme-space-3, 12px);
+  }
+
+  .name {
+    font-size: var(--theme-font-size-md, 14px);
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .gridCols3 {
+    grid-template-columns: 1fr;
+  }
+}

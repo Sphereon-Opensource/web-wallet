@@ -2,7 +2,7 @@ import { IIdentifier, TAgent } from '@veramo/core'
 import { TAgentTypes } from '../types'
 import { ASSET_BASE_URI } from '../environment-vars'
 import { ParsedEInvoice } from './ublParser'
-import { Asset } from '../plugins/assetPlugin'
+import { Asset } from '../plugins/asset'
 
 /**
  * Evidence reference for inclusion in the credential.

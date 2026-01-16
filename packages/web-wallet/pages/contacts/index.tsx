@@ -179,9 +179,9 @@ const ContactsListPage: React.FC = () => {
   }, [deleteContact, refetch])
 
   // Navigate to create
-  const handleCreateContact = useCallback((): void => {
+  const handleCreateContact = useCallback(async (): Promise<void> => {
     const resource = filterType === 'organizations' ? DataResource.ORGANIZATION_CONTACTS : DataResource.PERSON_CONTACTS
-    create(resource)
+    await create(resource)
   }, [create, filterType])
 
   // Render meatballs icon

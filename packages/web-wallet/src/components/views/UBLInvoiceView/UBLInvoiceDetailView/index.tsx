@@ -5,6 +5,7 @@ import styles from './index.module.css'
 import StatusBadge, {getStatusVariant} from '@components/badges/StatusBadge'
 import AccentCard from '@components/views/AccentCard'
 import FieldList, {FieldItem} from '@components/views/AccentCard/FieldList'
+import {formatFileSize} from '@helpers/formatUtils'
 import {
   UBLInvoiceDetailViewProps,
   InvoiceDetailTab,
@@ -112,13 +113,6 @@ const UBLInvoiceDetailView: React.FC<UBLInvoiceDetailViewProps> = ({
     if (evidence.name.endsWith('.xml')) return 'UBL'
     if (evidence.name.endsWith('.pdf')) return 'PDF'
     return 'DOC'
-  }
-
-  const formatFileSize = (bytes?: number): string => {
-    if (!bytes) return ''
-    if (bytes < 1024) return `${bytes} B`
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
-    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
   }
 
   const renderSummaryTab = () => (

@@ -20,16 +20,16 @@
     gap: 12px;
     font-size: 18px;
     font-weight: 600;
-    color: #1F2937;
+    color: var(--tw-gray-800);
     margin: 0;
 }
 
 .sectionTitle svg {
-    color: #4F46E5;
+    color: var(--theme-color-accent);
 }
 
 .description {
-    color: #6B7280;
+    color: var(--theme-text-secondary);
     font-size: 14px;
     margin: 0;
     line-height: 1.5;
@@ -41,8 +41,8 @@
     flex-direction: column;
     gap: 12px;
     padding: 16px;
-    background-color: #EEF2FF;
-    border: 1px solid #C7D2FE;
+    background-color: var(--theme-color-accent-bg);
+    border: 1px solid var(--tw-indigo-200);
     border-radius: 10px;
 }
 
@@ -56,7 +56,7 @@
     align-items: center;
     gap: 6px;
     padding: 4px 10px;
-    background-color: #4F46E5;
+    background-color: var(--theme-color-accent);
     color: white;
     border-radius: 100px;
     font-size: 12px;
@@ -77,7 +77,7 @@
     height: 48px;
     background-color: white;
     border-radius: 8px;
-    color: #4F46E5;
+    color: var(--theme-color-accent);
 }
 
 .ublInfo {
@@ -89,18 +89,18 @@
 .ublName {
     font-size: 14px;
     font-weight: 500;
-    color: #1F2937;
+    color: var(--tw-gray-800);
 }
 
 .ublMeta {
     font-size: 13px;
-    color: #6366F1;
+    color: var(--theme-color-accent-light);
 }
 
 .ublNote {
     margin: 0;
     font-size: 13px;
-    color: #4338CA;
+    color: var(--theme-color-accent-dark);
     line-height: 1.5;
 }
 
@@ -118,13 +118,13 @@
     margin: 0;
     font-size: 15px;
     font-weight: 600;
-    color: #374151;
+    color: var(--tw-gray-700);
 }
 
 .optionalBadge {
     padding: 2px 8px;
-    background-color: #F3F4F6;
-    color: #6B7280;
+    background-color: var(--tw-gray-100);
+    color: var(--theme-text-secondary);
     border-radius: 4px;
     font-size: 11px;
     font-weight: 500;
@@ -137,21 +137,21 @@
     align-items: center;
     gap: 12px;
     padding: 32px;
-    background-color: #F9FAFB;
-    border: 2px dashed #D1D5DB;
+    background-color: var(--tw-gray-50);
+    border: 2px dashed var(--tw-gray-300);
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s;
 }
 
 .uploadArea:hover {
-    border-color: #4F46E5;
-    background-color: #F5F5FF;
+    border-color: var(--theme-color-accent);
+    background-color: var(--theme-color-accent-hover);
 }
 
 .uploadAreaDragging {
-    border-color: #4F46E5;
-    background-color: #EEF2FF;
+    border-color: var(--theme-color-accent);
+    background-color: var(--theme-color-accent-bg);
     border-style: solid;
 }
 
@@ -161,20 +161,20 @@
     justify-content: center;
     width: 56px;
     height: 56px;
-    background-color: #E5E7EB;
+    background-color: var(--tw-gray-200);
     border-radius: 50%;
-    color: #6B7280;
+    color: var(--theme-text-secondary);
     transition: all 0.2s;
 }
 
 .uploadArea:hover .uploadIconWrapper {
-    background-color: #EEF2FF;
-    color: #4F46E5;
+    background-color: var(--theme-color-accent-bg);
+    color: var(--theme-color-accent);
 }
 
 .uploadAreaDragging .uploadIconWrapper {
-    background-color: #C7D2FE;
-    color: #4F46E5;
+    background-color: var(--tw-indigo-200);
+    color: var(--theme-color-accent);
 }
 
 .uploadTextWrapper {
@@ -187,12 +187,12 @@
 .uploadText {
     font-size: 14px;
     font-weight: 500;
-    color: #374151;
+    color: var(--tw-gray-700);
 }
 
 .uploadHint {
     font-size: 13px;
-    color: #9CA3AF;
+    color: var(--theme-text-tertiary);
 }
 
 /* File List Section */
@@ -209,7 +209,7 @@
     margin: 0;
     font-size: 15px;
     font-weight: 600;
-    color: #374151;
+    color: var(--tw-gray-700);
 }
 
 .fileCount {
@@ -219,7 +219,7 @@
     min-width: 22px;
     height: 22px;
     padding: 0 6px;
-    background-color: #4F46E5;
+    background-color: var(--theme-color-accent);
     color: white;
     border-radius: 100px;
     font-size: 12px;
@@ -237,14 +237,14 @@
     align-items: center;
     gap: 12px;
     padding: 12px 16px;
-    background-color: #F9FAFB;
+    background-color: var(--tw-gray-50);
     border-radius: 10px;
-    border: 1px solid #E5E7EB;
+    border: 1px solid var(--tw-gray-200);
     transition: background-color 0.15s;
 }
 
 .fileItem:hover {
-    background-color: #F3F4F6;
+    background-color: var(--tw-gray-100);
 }
 
 .fileIcon {
@@ -255,7 +255,7 @@
     height: 40px;
     background-color: white;
     border-radius: 8px;
-    color: #6B7280;
+    color: var(--theme-text-secondary);
     flex-shrink: 0;
 }
 
@@ -270,7 +270,7 @@
 .fileName {
     font-size: 14px;
     font-weight: 500;
-    color: #1F2937;
+    color: var(--tw-gray-800);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -278,13 +278,13 @@
 
 .fileType {
     font-size: 12px;
-    color: #6B7280;
+    color: var(--theme-text-secondary);
 }
 
 .typeBadgeSupporting {
     padding: 4px 10px;
-    background-color: #E5E7EB;
-    color: #374151;
+    background-color: var(--tw-gray-200);
+    color: var(--tw-gray-700);
     border-radius: 100px;
     font-size: 12px;
     font-weight: 500;
@@ -299,7 +299,7 @@
     height: 32px;
     padding: 0;
     background-color: transparent;
-    color: #9CA3AF;
+    color: var(--theme-text-tertiary);
     border: none;
     border-radius: 6px;
     cursor: pointer;
@@ -308,8 +308,8 @@
 }
 
 .removeButton:hover {
-    background-color: #FEE2E2;
-    color: #DC2626;
+    background-color: var(--tw-red-100);
+    color: var(--tw-red-600);
 }
 
 /* Summary */
@@ -318,16 +318,16 @@
     align-items: flex-start;
     gap: 10px;
     padding: 14px 16px;
-    background-color: #F9FAFB;
+    background-color: var(--tw-gray-50);
     border-radius: 8px;
     font-size: 14px;
-    color: #6B7280;
+    color: var(--theme-text-secondary);
     line-height: 1.5;
 }
 
 .summary svg {
     flex-shrink: 0;
-    color: #9CA3AF;
+    color: var(--theme-text-tertiary);
     margin-top: 2px;
 }
 

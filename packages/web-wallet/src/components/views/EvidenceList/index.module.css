@@ -1,0 +1,203 @@
+/* Evidence List Component Styles */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--theme-space-2, 8px);
+  width: 100%;
+}
+
+.container.compact {
+  gap: var(--theme-space-1, 4px);
+}
+
+/* Header with title and count */
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--theme-space-2, 8px);
+}
+
+.title {
+  font-size: var(--theme-font-size-sm, 12px);
+  font-weight: var(--theme-font-weight-semibold, 600);
+  color: var(--theme-text-secondary, #6b7280);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.count {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 var(--theme-space-1, 4px);
+  background-color: var(--theme-color-accent, #4f46e5);
+  color: white;
+  font-size: 10px;
+  font-weight: var(--theme-font-weight-semibold, 600);
+  border-radius: var(--theme-radius-full, 9999px);
+}
+
+/* List container */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--theme-space-2, 8px);
+}
+
+.compact .list {
+  gap: var(--theme-space-1, 4px);
+}
+
+/* Individual item */
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--theme-space-2, 8px);
+  padding: var(--theme-space-2, 8px) var(--theme-space-3, 12px);
+  background-color: var(--tw-gray-50, #f9fafb);
+  border-radius: var(--theme-radius-md, 6px);
+  border: 1px solid var(--tw-gray-200, #e5e7eb);
+  transition: background-color 0.15s;
+}
+
+.item:hover {
+  background-color: var(--tw-gray-100, #f3f4f6);
+}
+
+.itemClickable {
+  cursor: pointer;
+}
+
+.itemClickable:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+.compact .item {
+  padding: var(--theme-space-1, 4px) var(--theme-space-2, 8px);
+}
+
+/* File icon */
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background-color: white;
+  border-radius: var(--theme-radius-sm, 4px);
+  color: var(--theme-text-secondary, #6b7280);
+  flex-shrink: 0;
+}
+
+.compact .icon {
+  width: 24px;
+  height: 24px;
+}
+
+/* File info */
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  overflow: hidden;
+}
+
+.name {
+  font-size: var(--theme-font-size-sm, 13px);
+  font-weight: var(--theme-font-weight-medium, 500);
+  color: var(--tw-gray-800, #1f2937);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.compact .name {
+  font-size: var(--theme-font-size-xs, 12px);
+}
+
+.meta {
+  font-size: var(--theme-font-size-xs, 11px);
+  color: var(--theme-text-tertiary, #9ca3af);
+}
+
+/* Status badges */
+.status {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px var(--theme-space-2, 8px);
+  font-size: var(--theme-font-size-xs, 10px);
+  font-weight: var(--theme-font-weight-medium, 500);
+  border-radius: var(--theme-radius-sm, 4px);
+  flex-shrink: 0;
+}
+
+.statusStored {
+  background-color: var(--tw-emerald-100, rgba(16, 185, 129, 0.1));
+  color: var(--tw-emerald-700, #047857);
+}
+
+.statusFetching {
+  background-color: var(--tw-amber-100, rgba(245, 158, 11, 0.1));
+  color: var(--tw-amber-700, #b45309);
+}
+
+.statusExternal {
+  background-color: var(--tw-blue-100, rgba(59, 130, 246, 0.1));
+  color: var(--tw-blue-700, #1d4ed8);
+}
+
+.statusPending {
+  background-color: var(--tw-gray-100, rgba(107, 114, 128, 0.1));
+  color: var(--tw-gray-600, #4b5563);
+}
+
+/* Remove button */
+.removeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background-color: transparent;
+  color: var(--theme-text-tertiary, #9ca3af);
+  border: none;
+  border-radius: var(--theme-radius-sm, 4px);
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.removeButton:hover {
+  background-color: var(--tw-red-100, #fee2e2);
+  color: var(--tw-red-600, #dc2626);
+}
+
+.removeButton:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .item {
+    flex-wrap: wrap;
+  }
+
+  .status {
+    order: 3;
+    margin-left: 36px;
+    margin-top: var(--theme-space-1, 4px);
+  }
+
+  .removeButton {
+    order: 4;
+    margin-left: auto;
+  }
+}

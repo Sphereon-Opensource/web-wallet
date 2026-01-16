@@ -1,6 +1,7 @@
 import React, {FC, ReactElement, useRef, ChangeEvent, useState} from 'react'
 import {useTranslate} from '@refinedev/core'
 import {useEInvoiceOutletContext} from '@machines/einvoice/eInvoiceCreateStateNavigation'
+import {formatFileSize} from '@helpers/formatUtils'
 import style from './index.module.css'
 
 const EInvoiceEvidenceContent: FC = (): ReactElement => {
@@ -75,13 +76,6 @@ const EInvoiceEvidenceContent: FC = (): ReactElement => {
         <polyline points="13 2 13 9 20 9" />
       </svg>
     )
-  }
-
-  const formatFileSize = (bytes?: number): string => {
-    if (!bytes) return ''
-    if (bytes < 1024) return `${bytes} B`
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
-    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
   }
 
   return (

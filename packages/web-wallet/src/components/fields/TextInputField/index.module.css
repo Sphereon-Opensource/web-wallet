@@ -5,35 +5,35 @@
     align-items: center;
     flex-shrink: 0;
     border-radius: 4px;
-    border: 1px solid #C4C5CA;
+    border: 1px solid var(--theme-border-primary, #C4C5CA);
     outline: none;
-    color: rgba(48, 48, 48);
+    color: var(--theme-text-primary, #303030);
     font-size: 16px;
     font-style: normal;
     font-weight: 400;
-    background-color: #FBFBFB;
+    background-color: var(--theme-bg-secondary, #FBFBFB);
     font-family: Poppins, serif;
 }
 
 .textInputField:focus {
-    border-color: #7276F7;
+    border-color: var(--theme-color-primary, #7276F7);
 }
 
 .textInputField:hover {
-    border-color: #7276F7;
+    border-color: var(--theme-color-primary, #7276F7);
 }
 
 .labelCaption {
     font-size: 16px;
     font-style: normal;
     font-weight: 600;
-    color: #303030;
+    color: var(--theme-text-primary, #303030);
 }
 
 .optionalCaption {
     font-weight: normal;
     font-size: 16px;
-    color: #8D9099;
+    color: var(--theme-text-secondary, #8D9099);
     margin-left: 4px;
     font-style: italic;
 }

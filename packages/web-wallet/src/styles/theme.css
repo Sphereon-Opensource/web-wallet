@@ -24,6 +24,13 @@
   --theme-color-primary-dark: #5558C9;
   --theme-color-primary-bg: rgba(114, 118, 247, 0.1);
 
+  /* Accent/Indigo Colors (commonly used in UI components) */
+  --theme-color-accent: #4F46E5;      /* Tailwind indigo-600 */
+  --theme-color-accent-light: #6366F1; /* Tailwind indigo-500 */
+  --theme-color-accent-dark: #4338CA;  /* Tailwind indigo-700 */
+  --theme-color-accent-bg: #EEF2FF;   /* Tailwind indigo-50 */
+  --theme-color-accent-hover: #F5F5FF; /* Light indigo hover */
+
   /* Secondary Colors */
   --theme-color-secondary: #7C40E8;
   --theme-color-secondary-light: #A77FF0;
@@ -43,6 +50,7 @@
 
   /* Status Colors */
   --theme-color-success: #00C249;
+  --theme-color-success-dark: #00A83E;
   --theme-color-success-light: rgba(0, 194, 73, 0.1);
   --theme-color-warning: #F5A623;
   --theme-color-warning-light: rgba(245, 166, 35, 0.1);
@@ -50,6 +58,63 @@
   --theme-color-error-light: rgba(215, 69, 0, 0.1);
   --theme-color-info: #0B81FF;
   --theme-color-info-light: rgba(11, 129, 255, 0.1);
+
+  /* Tailwind-compatible Colors (for components built with Tailwind palette) */
+  /* Gray scale */
+  --tw-gray-50: #F9FAFB;
+  --tw-gray-100: #F3F4F6;
+  --tw-gray-200: #E5E7EB;
+  --tw-gray-300: #D1D5DB;
+  --tw-gray-400: #9CA3AF;
+  --tw-gray-500: #6B7280;
+  --tw-gray-600: #4B5563;
+  --tw-gray-700: #374151;
+  --tw-gray-800: #1F2937;
+
+  /* Emerald/Green (success states) */
+  --tw-emerald-50: #ECFDF5;
+  --tw-green-50: #F0FDF4;
+  --tw-emerald-100: #D1FAE5;
+  --tw-emerald-200: #A7F3D0;
+  --tw-emerald-300: #6EE7B7;
+  --tw-emerald-400: #34D399;
+  --tw-emerald-500: #10B981;
+  --tw-green-500: #22C55E;
+  --tw-emerald-600: #059669;
+  --tw-green-600: #16A34A;
+  --tw-green-700: #15803D;
+  --tw-emerald-700: #047857;
+  --tw-emerald-800: #065F46;
+  --tw-green-800: #166534;
+  --tw-green-400: #4ADE80;
+
+  /* Red (error states) */
+  --tw-red-50: #FEF2F2;
+  --tw-red-100: #FEE2E2;
+  --tw-red-200: #FECACA;
+  --tw-red-300: #FCA5A5;
+  --tw-red-500: #EF4444;
+  --tw-red-600: #DC2626;
+  --tw-red-800: #991B1B;
+
+  /* Amber/Yellow (warning states) */
+  --tw-amber-50: #FFFBEB;
+  --tw-amber-100: #FEF3C7;
+  --tw-amber-300: #FCD34D;
+  --tw-amber-500: #F59E0B;
+  --tw-amber-600: #D97706;
+  --tw-amber-700: #B45309;
+  --tw-amber-800: #92400E;
+
+  /* Blue (info states) */
+  --tw-blue-50: #EFF6FF;
+  --tw-blue-100: #DBEAFE;
+  --tw-blue-600: #2563EB;
+  --tw-blue-800: #1E40AF;
+
+  /* Indigo (accent variants) */
+  --tw-indigo-200: #C7D2FE;
+  --tw-indigo-800: #3730A3;
 
   /* ===========================
    * SEMANTIC COLORS
@@ -66,8 +131,9 @@
 
   /* Text Colors */
   --theme-text-primary: var(--theme-color-grey-800);
-  --theme-text-secondary: var(--theme-color-grey-600);
-  --theme-text-tertiary: var(--theme-color-grey-500);
+  --theme-text-secondary: #6B7280;  /* Commonly used secondary text */
+  --theme-text-tertiary: #9CA3AF;   /* Commonly used muted text */
+  --theme-text-muted: #6B7280;      /* Alias for secondary */
   --theme-text-inverse: #FFFFFF;
   --theme-text-link: var(--theme-color-primary);
   --theme-text-link-hover: var(--theme-color-primary-dark);
@@ -226,6 +292,38 @@
   --theme-panel-bg: var(--theme-bg-card);
   --theme-panel-border: var(--theme-border-primary);
   --theme-panel-header-bg: var(--theme-bg-secondary);
+  --theme-panel-width: 500px;
+  --theme-panel-header-height: 54px;
+
+  /* ===========================
+   * LIST PAGE TOKENS
+   * =========================== */
+
+  /* Tab Navigation */
+  --theme-tab-height: 54px;
+  --theme-tab-gap: 48px;
+  --theme-tab-padding: 0 var(--theme-space-6);
+
+  /* Table */
+  --theme-table-header-padding: var(--theme-space-3) var(--theme-space-6);
+  --theme-table-row-padding: 14px var(--theme-space-6);
+  --theme-table-row-border: var(--theme-color-grey-200);
+
+  /* Menu/Dropdown */
+  --theme-menu-min-width: 180px;
+  --theme-menu-padding: 6px;
+  --theme-menu-border-radius: var(--theme-radius-lg);
+  --theme-menu-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  --theme-menu-item-padding: 10px 12px;
+  --theme-menu-item-radius: var(--theme-radius-md);
+
+  /* Status Tabs */
+  --theme-status-tab-padding: 8px 14px;
+  --theme-status-tab-radius: var(--theme-radius-md);
+
+  /* Empty State */
+  --theme-empty-icon-size: 64px;
+  --theme-empty-max-width: 400px;
 }
 
 /* ===========================

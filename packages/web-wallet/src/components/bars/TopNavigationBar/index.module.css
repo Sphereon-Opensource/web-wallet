@@ -1,5 +1,5 @@
 .container {
-    background-color: #202537;
+    background-color: var(--theme-bg-nav, #202537);
     min-height: 70px;
     display: flex;
     flex-direction: row;
@@ -8,7 +8,7 @@
 }
 
 .titleCaption {
-    color: #FBFBFB;
+    color: var(--theme-text-inverse, #FBFBFB);
     font-weight: 600;
     font-size: 18px;
 }

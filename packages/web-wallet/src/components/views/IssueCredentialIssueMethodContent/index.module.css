@@ -1,8 +1,8 @@
 .container {
     width: 750px;
-    background-color: #FBFBFB;
+    background-color: var(--theme-bg-secondary, #FBFBFB);
     border-radius: 8px;
-    border: 1px solid #C4C4C4;
+    border: 1px solid var(--theme-border-primary, #C4C4C4);
     overflow: hidden;
 }
 
@@ -14,13 +14,13 @@
     font-size: 24px;
     font-style: normal;
     font-weight: 600;
-    color: #303030;
+    color: var(--theme-text-primary, #303030);
 }
 
 .descriptionCaption {
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
-    color: #303030;
+    color: var(--theme-text-primary, #303030);
 }
 

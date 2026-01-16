@@ -5,7 +5,7 @@ import {
   EvidenceReference,
 } from '../../utils/einvoiceCredentialIssuer'
 import { ParsedEInvoice } from '../../utils/ublParser'
-import { EvidenceFile } from '../../plugins/inboxPlugin'
+import { Asset } from '../../plugins/asset'
 
 // Mock console methods to avoid noise in tests
 const originalConsoleLog = console.log
@@ -26,71 +26,73 @@ afterAll(() => {
 
 describe('einvoiceCredentialIssuer', () => {
   describe('buildEvidenceReferences', () => {
-    it('should build evidence references from evidence files', () => {
-      const evidenceFiles: EvidenceFile[] = [
+    it('should build evidence references from asset files', () => {
+      const assets: Asset[] = [
         {
           id: 'uuid-1',
-          credentialId: 'cred-123',
+          digestMultibase: 'zQmWvQxTqbG2Z9HPJgG57jmPGdNEDPWaNPCFJyYeLhQQbQ1',
+          hashAlgorithm: 'sha256',
           filename: 'invoice.xml',
           contentType: 'application/xml',
-          hash: 'zQmWvQxTqbG2Z9HPJgG57jmPGdNEDPWaNPCFJyYeLhQQbQ1',
-          hashAlgorithm: 'sha256',
-          storagePath: '/storage/uuid-1/invoice.xml',
           fileSize: 1024,
-          evidenceType: 'UBLInvoice',
+          storagePath: '/storage/uuid-1/invoice.xml',
+          assetType: 'UBLInvoice',
+          isPublic: true,
           createdAt: new Date('2024-01-15'),
+          updatedAt: new Date('2024-01-15'),
         },
         {
           id: 'uuid-2',
-          credentialId: 'cred-123',
+          digestMultibase: 'zQmWvQxTqbG2Z9HPJgG57jmPGdNEDPWaNPCFJyYeLhQQbQ2',
+          hashAlgorithm: 'sha256',
           filename: 'supporting-doc.pdf',
           contentType: 'application/pdf',
-          hash: 'zQmWvQxTqbG2Z9HPJgG57jmPGdNEDPWaNPCFJyYeLhQQbQ2',
-          hashAlgorithm: 'sha256',
-          storagePath: '/storage/uuid-2/supporting-doc.pdf',
           fileSize: 2048,
-          evidenceType: 'SupportingDocument',
+          storagePath: '/storage/uuid-2/supporting-doc.pdf',
+          assetType: 'SupportingDocument',
+          isPublic: true,
           createdAt: new Date('2024-01-15'),
+          updatedAt: new Date('2024-01-15'),
         },
       ]
 
       const baseUrl = 'https://wallet.example.com'
-      const result = buildEvidenceReferences(evidenceFiles, baseUrl)
+      const result = buildEvidenceReferences(assets, baseUrl)
 
       expect(result).toHaveLength(2)
 
-      expect(result[0].id).toBe('https://wallet.example.com/evidence/uuid-1/invoice.xml')
+      expect(result[0].id).toBe('https://wallet.example.com/api/assets/zQmWvQxTqbG2Z9HPJgG57jmPGdNEDPWaNPCFJyYeLhQQbQ1')
       expect(result[0].type).toEqual(['UBLInvoice'])
       expect(result[0].name).toBe('invoice.xml')
       expect(result[0].digestMultibase).toBe('zQmWvQxTqbG2Z9HPJgG57jmPGdNEDPWaNPCFJyYeLhQQbQ1')
 
-      expect(result[1].id).toBe('https://wallet.example.com/evidence/uuid-2/supporting-doc.pdf')
+      expect(result[1].id).toBe('https://wallet.example.com/api/assets/zQmWvQxTqbG2Z9HPJgG57jmPGdNEDPWaNPCFJyYeLhQQbQ2')
       expect(result[1].type).toEqual(['SupportingDocument'])
       expect(result[1].name).toBe('supporting-doc.pdf')
       expect(result[1].digestMultibase).toBe('zQmWvQxTqbG2Z9HPJgG57jmPGdNEDPWaNPCFJyYeLhQQbQ2')
     })
 
-    it('should URL-encode filenames with special characters', () => {
-      const evidenceFiles: EvidenceFile[] = [
+    it('should handle assets with special character filenames', () => {
+      const assets: Asset[] = [
         {
           id: 'uuid-1',
-          credentialId: undefined,
+          digestMultibase: 'zQmWvQxTqbG2Z9HPJgG57jmPGdNEDPWaNPCFJyYeLhQQbQ',
+          hashAlgorithm: 'sha256',
           filename: 'invoice with spaces & symbols.xml',
           contentType: 'application/xml',
-          hash: 'zQmWvQxTqbG2Z9HPJgG57jmPGdNEDPWaNPCFJyYeLhQQbQ',
-          hashAlgorithm: 'sha256',
-          storagePath: '/storage/uuid-1/file.xml',
           fileSize: 1024,
-          evidenceType: 'UBLInvoice',
+          storagePath: '/storage/uuid-1/file.xml',
+          assetType: 'UBLInvoice',
+          isPublic: true,
           createdAt: new Date(),
+          updatedAt: new Date(),
         },
       ]
 
-      const result = buildEvidenceReferences(evidenceFiles, 'https://example.com')
+      const result = buildEvidenceReferences(assets, 'https://example.com')
 
-      expect(result[0].id).toBe(
-        'https://example.com/evidence/uuid-1/invoice%20with%20spaces%20%26%20symbols.xml'
-      )
+      // URL is based on digestMultibase, not filename
+      expect(result[0].id).toBe('https://example.com/api/assets/zQmWvQxTqbG2Z9HPJgG57jmPGdNEDPWaNPCFJyYeLhQQbQ')
       expect(result[0].name).toBe('invoice with spaces & symbols.xml')
     })
 
@@ -247,26 +249,27 @@ describe('einvoiceCredentialIssuer', () => {
 
   describe('Integration: Evidence in Credential', () => {
     it('should produce valid evidence references for credential payload', () => {
-      const evidenceFiles: EvidenceFile[] = [
+      const assets: Asset[] = [
         {
           id: 'evidence-uuid-1',
-          credentialId: 'cred-1',
+          digestMultibase: 'zQmWvQxTqbG2Z9HPJgG57jmPGdNEDPWaNPCFJyYeLhQQbQ',
+          hashAlgorithm: 'sha256',
           filename: 'invoice.xml',
           contentType: 'application/xml',
-          hash: 'zQmWvQxTqbG2Z9HPJgG57jmPGdNEDPWaNPCFJyYeLhQQbQ',
-          hashAlgorithm: 'sha256',
-          storagePath: '/evidence/evidence-uuid-1/invoice.xml',
           fileSize: 5000,
-          evidenceType: 'UBLInvoice',
+          storagePath: '/evidence/evidence-uuid-1/invoice.xml',
+          assetType: 'UBLInvoice',
+          isPublic: true,
           createdAt: new Date(),
+          updatedAt: new Date(),
         },
       ]
 
-      const refs = buildEvidenceReferences(evidenceFiles, 'https://sender-wallet.example.com')
+      const refs = buildEvidenceReferences(assets, 'https://sender-wallet.example.com')
 
       // Verify the structure matches W3C VC evidence format
       expect(refs[0]).toEqual({
-        id: 'https://sender-wallet.example.com/evidence/evidence-uuid-1/invoice.xml',
+        id: 'https://sender-wallet.example.com/api/assets/zQmWvQxTqbG2Z9HPJgG57jmPGdNEDPWaNPCFJyYeLhQQbQ',
         type: ['UBLInvoice'],
         name: 'invoice.xml',
         digestMultibase: 'zQmWvQxTqbG2Z9HPJgG57jmPGdNEDPWaNPCFJyYeLhQQbQ',

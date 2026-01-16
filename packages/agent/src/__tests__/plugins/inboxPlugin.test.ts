@@ -6,7 +6,7 @@ import {
   InboxFolder,
   InboxCredential,
   InboxAllowedSender,
-} from '../../plugins/inboxPlugin'
+} from '../../plugins/inbox'
 
 // Mock DataSource
 const createMockDataSource = () => {
@@ -325,6 +325,43 @@ describe('InboxPlugin', () => {
         expect(result).toHaveLength(0)
       })
     })
+
+    describe('inboxFolderDelete', () => {
+      it('should return true when folder is deleted', async () => {
+        mockDb.setQueryResult('select_test-inbox', [mockInbox])
+        mockDb.setDeleteRowCount(1)
+
+        const result = await plugin.methods.inboxFolderDelete({
+          inboxName: 'test-inbox',
+          folderName: 'invoices',
+        })
+
+        expect(result).toBe(true)
+      })
+
+      it('should return false when folder does not exist', async () => {
+        mockDb.setQueryResult('select_test-inbox', [mockInbox])
+        mockDb.setDeleteRowCount(0)
+
+        const result = await plugin.methods.inboxFolderDelete({
+          inboxName: 'test-inbox',
+          folderName: 'nonexistent',
+        })
+
+        expect(result).toBe(false)
+      })
+
+      it('should return false when inbox does not exist', async () => {
+        mockDb.setQueryResult('select_nonexistent', [])
+
+        const result = await plugin.methods.inboxFolderDelete({
+          inboxName: 'nonexistent',
+          folderName: 'invoices',
+        })
+
+        expect(result).toBe(false)
+      })
+    })
   })
 
   describe('Allowed Sender Management', () => {
@@ -415,6 +452,114 @@ describe('InboxPlugin', () => {
         })
 
         expect(result).toBe(false)
+      })
+    })
+
+    describe('inboxAllowedSenderRemove', () => {
+      it('should return true when sender is removed', async () => {
+        mockDb.setQueryResult('select_test-inbox', [mockInbox])
+        mockDb.setDeleteRowCount(1)
+
+        const result = await plugin.methods.inboxAllowedSenderRemove({
+          inboxName: 'test-inbox',
+          clientId: 'did:web:sender.com',
+          clientIdPrefix: 'decentralized_identifier',
+        })
+
+        expect(result).toBe(true)
+      })
+
+      it('should return false when sender not found', async () => {
+        mockDb.setQueryResult('select_test-inbox', [mockInbox])
+        mockDb.setDeleteRowCount(0)
+
+        const result = await plugin.methods.inboxAllowedSenderRemove({
+          inboxName: 'test-inbox',
+          clientId: 'did:web:unknown.com',
+        })
+
+        expect(result).toBe(false)
+      })
+
+      it('should return false when inbox does not exist', async () => {
+        mockDb.setQueryResult('select_nonexistent', [])
+
+        const result = await plugin.methods.inboxAllowedSenderRemove({
+          inboxName: 'nonexistent',
+          clientId: 'did:web:sender.com',
+        })
+
+        expect(result).toBe(false)
+      })
+
+      it('should handle removal without clientIdPrefix', async () => {
+        mockDb.setQueryResult('select_test-inbox', [mockInbox])
+        mockDb.setDeleteRowCount(1)
+
+        const result = await plugin.methods.inboxAllowedSenderRemove({
+          inboxName: 'test-inbox',
+          clientId: 'did:web:sender.com',
+        })
+
+        expect(result).toBe(true)
+        const calls = mockDb.getQueryCalls()
+        const deleteCall = calls.find(c => c[0].includes('DELETE'))
+        expect(deleteCall?.[0]).toContain('client_id_prefix" IS NULL')
+      })
+    })
+
+    describe('inboxAllowedSenderList', () => {
+      it('should list all allowed senders', async () => {
+        mockDb.setQueryResult('select_test-inbox', [mockInbox])
+        mockDb.setQueryResult('select_inbox-123', [
+          {
+            id: 'sender-1',
+            inbox_id: 'inbox-123',
+            client_id: 'did:web:sender1.com',
+            client_id_prefix: 'decentralized_identifier',
+            description: 'Sender 1',
+            created_at: new Date().toISOString(),
+          },
+          {
+            id: 'sender-2',
+            inbox_id: 'inbox-123',
+            client_id: 'did:web:sender2.com',
+            client_id_prefix: null,
+            description: null,
+            created_at: new Date().toISOString(),
+          },
+        ])
+
+        const result = await plugin.methods.inboxAllowedSenderList({
+          inboxName: 'test-inbox',
+        })
+
+        expect(result).toHaveLength(2)
+        expect(result[0].clientId).toBe('did:web:sender1.com')
+        expect(result[0].clientIdPrefix).toBe('decentralized_identifier')
+        expect(result[1].clientId).toBe('did:web:sender2.com')
+        expect(result[1].clientIdPrefix).toBeNull()
+      })
+
+      it('should return empty array when inbox does not exist', async () => {
+        mockDb.setQueryResult('select_nonexistent', [])
+
+        const result = await plugin.methods.inboxAllowedSenderList({
+          inboxName: 'nonexistent',
+        })
+
+        expect(result).toHaveLength(0)
+      })
+
+      it('should return empty array when no senders configured', async () => {
+        mockDb.setQueryResult('select_test-inbox', [mockInbox])
+        mockDb.setQueryResult('select_inbox-123', [])
+
+        const result = await plugin.methods.inboxAllowedSenderList({
+          inboxName: 'test-inbox',
+        })
+
+        expect(result).toHaveLength(0)
       })
     })
   })
@@ -533,6 +678,112 @@ describe('InboxPlugin', () => {
         })
 
         expect(result).toHaveLength(0)
+      })
+    })
+
+    describe('inboxCredentialDelete', () => {
+      it('should return true when credential link is deleted', async () => {
+        mockDb.setDeleteRowCount(1)
+
+        const result = await plugin.methods.inboxCredentialDelete({
+          id: 'link-123',
+        })
+
+        expect(result).toBe(true)
+      })
+
+      it('should return false when credential link does not exist', async () => {
+        mockDb.setDeleteRowCount(0)
+
+        const result = await plugin.methods.inboxCredentialDelete({
+          id: 'nonexistent',
+        })
+
+        expect(result).toBe(false)
+      })
+    })
+
+    describe('inboxCredentialGetByCorrelationId', () => {
+      it('should return credential when found', async () => {
+        mockDb.setQueryResult('select_corr-123', [
+          {
+            id: 'link-123',
+            inbox_id: 'inbox-123',
+            folder_id: 'folder-123',
+            credential_id: 'cred-123',
+            client_id: 'did:web:sender.com',
+            client_id_prefix: 'decentralized_identifier',
+            correlation_id: 'corr-123',
+            received_at: new Date().toISOString(),
+            parsed_data: null,
+            evidence_fetched_at: null,
+          },
+        ])
+
+        const result = await plugin.methods.inboxCredentialGetByCorrelationId({
+          correlationId: 'corr-123',
+        })
+
+        expect(result).toBeDefined()
+        expect(result?.correlationId).toBe('corr-123')
+        expect(result?.credentialId).toBe('cred-123')
+      })
+
+      it('should return null when credential not found', async () => {
+        mockDb.setQueryResult('select_nonexistent', [])
+
+        const result = await plugin.methods.inboxCredentialGetByCorrelationId({
+          correlationId: 'nonexistent',
+        })
+
+        expect(result).toBeNull()
+      })
+    })
+
+    describe('inboxCredentialUpdateParsedData', () => {
+      it('should update parsed data and return updated credential', async () => {
+        const now = new Date()
+        const parsedData = {
+          invoiceId: 'INV-001',
+          amount: 1000,
+          currency: 'EUR',
+        }
+
+        // Mock the RETURNING query to return updated record
+        mockDb.setQueryResult('select_link-123', [
+          {
+            id: 'link-123',
+            inbox_id: 'inbox-123',
+            folder_id: 'folder-123',
+            credential_id: 'cred-123',
+            client_id: 'did:web:sender.com',
+            client_id_prefix: 'decentralized_identifier',
+            correlation_id: 'corr-123',
+            received_at: now.toISOString(),
+            parsed_data: JSON.stringify(parsedData),
+            evidence_fetched_at: now.toISOString(),
+          },
+        ])
+
+        const result = await plugin.methods.inboxCredentialUpdateParsedData({
+          correlationId: 'link-123', // Note: This is actually the inbox_credential.id
+          parsedData,
+        })
+
+        expect(result).toBeDefined()
+        expect(result.parsedData).toEqual(parsedData)
+        expect(result.evidenceFetchedAt).toBeDefined()
+      })
+
+      it('should throw error when credential not found', async () => {
+        mockDb.setQueryResult('select_nonexistent', [])
+
+        await expect(
+          plugin.methods.inboxCredentialUpdateParsedData({
+            correlationId: 'nonexistent',
+            parsedData: { test: 'data' },
+          })
+        ).rejects.toThrow('InboxCredential not found: nonexistent')
       })
     })
   })

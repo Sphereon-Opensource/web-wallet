@@ -292,16 +292,16 @@ const ShowContactDetails: FC = (): ReactElement => {
                 <span className={style.fieldValue}>{contact.lastName}</span>
               </div>
             )}
-            {'email' in contact && contact.email && (
+            {'email' in contact && Boolean(contact.email) && (
               <div className={style.field}>
                 <span className={style.fieldLabel}>{translate('contact_details_email')}</span>
-                <span className={style.fieldValue}>{contact.email}</span>
+                <span className={style.fieldValue}>{String(contact.email)}</span>
               </div>
             )}
-            {'phoneNumber' in contact && contact.phoneNumber && (
+            {'phoneNumber' in contact && Boolean(contact.phoneNumber) && (
               <div className={style.field}>
                 <span className={style.fieldLabel}>{translate('contact_details_phone')}</span>
-                <span className={style.fieldValue}>{contact.phoneNumber}</span>
+                <span className={style.fieldValue}>{String(contact.phoneNumber)}</span>
               </div>
             )}
           </div>

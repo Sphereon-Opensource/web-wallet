@@ -130,7 +130,7 @@
   align-items: center;
   padding: var(--theme-space-5, 20px) var(--theme-space-4, 16px);
   background-color: var(--theme-table-row-bg, #FBFBFB);
-  border-bottom: 1px solid var(--theme-table-border, #ACACAC);
+  border-bottom: 1px solid var(--theme-color-grey-200, #ECECEC);
   gap: var(--theme-space-3, 12px);
   cursor: pointer;
   transition: background-color var(--theme-transition-normal, 0.15s ease);
@@ -145,10 +145,16 @@
 }
 
 .tableRow.selected {
-  background-color: #EEF2FF;
+  background-color: var(--theme-color-primary-bg, rgba(114, 118, 247, 0.1));
+  border-left: 3px solid var(--theme-color-primary, #7276F7);
+  padding-left: calc(var(--theme-space-4, 16px) - 3px);
 }
 
 .tableRow:focus {
+  outline: none;
+}
+
+.tableRow:focus:not(.selected) {
   outline: 2px solid var(--theme-color-primary, #7276F7);
   outline-offset: -2px;
 }
@@ -397,7 +403,8 @@
 }
 
 .mobileCard.selected {
-  background-color: #EEF2FF;
+  background-color: var(--theme-color-primary-bg, rgba(114, 118, 247, 0.1));
+  border-left: 3px solid var(--theme-color-primary, #7276F7);
 }
 
 .mobileCardHeader {

@@ -1,4 +1,5 @@
 import {UBLInvoiceData} from '@components/views/UBLInvoiceView'
+import {formatFileSize as formatFileSizeUtil} from '@helpers/formatUtils'
 
 /**
  * Inbox View Types
@@ -140,9 +141,5 @@ export const formatDateTime = (dateStr: string | undefined | null): string => {
   })
 }
 
-// Format file size
-export const formatFileSize = (bytes: number): string => {
-  if (bytes < 1024) return `${bytes} B`
-  if (bytes < 1048576) return `${(bytes / 1024).toFixed(1)} KB`
-  return `${(bytes / 1048576).toFixed(1)} MB`
-}
+// Format file size - re-export from shared helper
+export const formatFileSize = formatFileSizeUtil

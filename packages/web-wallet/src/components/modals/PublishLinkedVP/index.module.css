@@ -15,7 +15,7 @@
     width: 652px;
     max-height: 90vh;
     border-radius: 24px;
-    background-color: #FBFBFB;
+    background-color: var(--theme-bg-secondary, #FBFBFB);
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -55,7 +55,7 @@
     font-style: normal;
     font-weight: 600;
     line-height: 36px;
-    color: #303030;
+    color: var(--theme-text-primary, #303030);
 }
 
 .subTitleCaption {
@@ -64,7 +64,7 @@
     font-weight: 400;
     line-height: normal;
     letter-spacing: 0.14px;
-    color: #303030;
+    color: var(--theme-text-primary, #303030);
 }
 
 .contentContainer {
@@ -91,7 +91,7 @@
     font-style: normal;
     font-weight: 400;
     line-height: normal;
-    color: #D74500;
+    color: var(--theme-color-error, #D74500);
     margin-top: 4px;
 }
 
@@ -101,7 +101,7 @@
     font-weight: 400;
     line-height: normal;
     letter-spacing: 0.12px;
-    color: #49454F;
+    color: var(--theme-text-secondary, #49454F);
     margin-top: 8px;
 }
 

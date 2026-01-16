@@ -1,6 +1,6 @@
 .container {
-    border: 1px solid #ACACAC;
-    background-color: #FBFBFB;
+    border: 1px solid var(--theme-border-primary, #ACACAC);
+    background-color: var(--theme-bg-secondary, #FBFBFB);
     border-radius: 8px;
     padding: 24px;
     display: flex;
@@ -11,13 +11,13 @@
 }
 
 .titleCaption {
-    color: #303030;
+    color: var(--theme-text-primary, #303030);
     font-size: 24px;
     font-weight: 600;
 }
 
 .descriptionCaption {
-    color: #303030;
+    color: var(--theme-text-primary, #303030);
     font-size: 16px;
     font-weight: 400;
 }

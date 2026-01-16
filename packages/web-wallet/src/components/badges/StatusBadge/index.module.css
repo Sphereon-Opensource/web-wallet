@@ -18,21 +18,35 @@
 
 /* Variant: valid (approved, verified, paid, active) */
 .statusBadge.valid {
-  background: rgba(0, 194, 73, 0.1);
-  color: #00C249;
-  border: 1px solid #00C249;
+  background: var(--theme-color-success-light, rgba(0, 194, 73, 0.1));
+  color: var(--theme-color-success, #00C249);
+  border: 1px solid var(--theme-color-success, #00C249);
 }
 
 /* Variant: pending */
 .statusBadge.pending {
-  background: rgba(245, 166, 35, 0.1);
-  color: #F5A623;
-  border: 1px solid #F5A623;
+  background: var(--theme-color-warning-light, rgba(245, 166, 35, 0.1));
+  color: var(--theme-color-warning, #F5A623);
+  border: 1px solid var(--theme-color-warning, #F5A623);
 }
 
-/* Variant: error (invalid, rejected, overdue, expired) */
+/* Variant: error (invalid, rejected, overdue) */
 .statusBadge.error {
-  background: rgba(215, 69, 0, 0.1);
-  color: #D74500;
-  border: 1px solid #D74500;
+  background: var(--theme-color-error-light, rgba(215, 69, 0, 0.1));
+  color: var(--theme-color-error, #D74500);
+  border: 1px solid var(--theme-color-error, #D74500);
+}
+
+/* Variant: expired */
+.statusBadge.expired {
+  background: var(--tw-gray-100, rgba(107, 114, 128, 0.1));
+  color: var(--tw-gray-500, #6B7280);
+  border: 1px solid var(--tw-gray-500, #6B7280);
+}
+
+/* Variant: revoked */
+.statusBadge.revoked {
+  background: var(--tw-red-100, rgba(220, 38, 38, 0.1));
+  color: var(--tw-red-600, #DC2626);
+  border: 1px solid var(--tw-red-600, #DC2626);
 }

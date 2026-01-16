@@ -246,11 +246,22 @@
 }
 
 .tableRow:hover {
-  background-color: #FAFAFA;
+  background-color: #ECECEC;
 }
 
 .tableRow.selected {
-  background-color: #EEF2FF;
+  background-color: rgba(114, 118, 247, 0.1);
+  border-left: 3px solid #7276F7;
+  padding-left: 21px;
+}
+
+.tableRow:focus {
+  outline: none;
+}
+
+.tableRow:focus:not(.selected) {
+  outline: 2px solid #7276F7;
+  outline-offset: -2px;
 }
 
 .cell {

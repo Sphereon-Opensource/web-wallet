@@ -6,7 +6,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { TAgentTypes } from '../types'
 import { ASSET_API_BASE_PATH, ASSET_BASE_URI } from '../environment-vars'
-import { AssetType } from '../plugins/assetPlugin'
+import { AssetType } from '../plugins/asset'
 
 export interface AssetApiServerOptions {
   agent: TAgent<TAgentTypes>

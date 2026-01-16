@@ -94,12 +94,14 @@ const CredentialsList: FC<Props> = (props: Props): ReactElement => {
       try {
         // Use BrandingSync service for efficient credential branding retrieval
         const syncResult = await syncBrandings()
-        console.debug('[CredentialsList] Branding sync result:', {
-          total: syncResult.allBrandings.length,
-          changed: syncResult.changedBrandings.length,
-          deleted: syncResult.deletedIds.length,
-          fullSync: syncResult.fullSync,
-        })
+        if (syncResult) {
+          console.debug('[CredentialsList] Branding sync result:', {
+            total: syncResult.allBrandings.length,
+            changed: syncResult.changedBrandings.length,
+            deleted: syncResult.deletedIds.length,
+            fullSync: syncResult.fullSync,
+          })
+        }
 
         const newCredentialTableItems = await Promise.all(
           digitalCredentials.map(async (credential: DigitalCredential) => {

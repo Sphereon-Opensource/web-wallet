@@ -1,0 +1,286 @@
+/**
+ * Detail Panel Styles
+ *
+ * Shared CSS for detail side panels in list pages.
+ * Used in assets, contacts, credentials, einvoice detail views.
+ */
+
+/* ===========================
+ * PANEL CONTAINER
+ * =========================== */
+
+.detailPanel {
+  width: 500px;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--theme-panel-bg, white);
+  border-left: 1px solid var(--theme-border-primary);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* ===========================
+ * PANEL HEADER
+ * =========================== */
+
+.detailHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--theme-space-5, 20px);
+  height: 54px;
+  background-color: var(--theme-panel-header-bg);
+  border-bottom: 1px solid var(--theme-border-primary);
+  flex-shrink: 0;
+}
+
+.detailTitle {
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  font-size: var(--theme-font-size-lg, 16px);
+  font-weight: var(--theme-font-weight-semibold, 600);
+  color: var(--theme-text-primary);
+  margin: 0;
+}
+
+.detailSubtitle {
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  font-size: var(--theme-font-size-sm, 12px);
+  color: var(--theme-text-secondary);
+  margin: 0;
+}
+
+.closeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  border-radius: var(--theme-radius-md, 6px);
+  color: var(--theme-text-secondary);
+  cursor: pointer;
+  transition: all var(--theme-transition-normal, 0.15s);
+}
+
+.closeButton:hover {
+  background-color: var(--theme-bg-tertiary);
+  color: var(--theme-text-primary);
+}
+
+/* ===========================
+ * PANEL BODY
+ * =========================== */
+
+.detailBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--theme-space-4, 16px);
+  padding: var(--theme-space-4, 16px);
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* ===========================
+ * PANEL FOOTER
+ * =========================== */
+
+.detailFooter {
+  display: flex;
+  gap: var(--theme-space-3, 12px);
+  padding: var(--theme-space-4, 16px);
+  background-color: var(--theme-panel-header-bg);
+  border-top: 1px solid var(--theme-border-primary);
+  flex-shrink: 0;
+}
+
+/* ===========================
+ * METADATA SECTION
+ * Card with colored left border
+ * =========================== */
+
+.metadataSection {
+  display: flex;
+  position: relative;
+  background-color: var(--theme-bg-card);
+  border: 1px solid var(--theme-border-primary);
+  border-radius: var(--theme-radius-lg, 8px);
+  overflow: hidden;
+}
+
+.metadataBorder {
+  width: 4px;
+  background-color: var(--theme-color-primary);
+  flex-shrink: 0;
+}
+
+.metadataContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--theme-space-1, 4px);
+  padding: var(--theme-space-3, 12px) var(--theme-space-4, 16px);
+  flex: 1;
+  overflow: hidden;
+}
+
+.metadataTitle {
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  font-size: var(--theme-font-size-xs, 10px);
+  font-weight: var(--theme-font-weight-semibold, 600);
+  color: var(--theme-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-bottom: var(--theme-space-2, 8px);
+}
+
+.metadataRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--theme-space-4, 16px);
+  padding: 6px 0;
+  border-bottom: 1px solid var(--theme-border-primary);
+}
+
+.metadataRow:last-child {
+  border-bottom: none;
+}
+
+.metadataLabel {
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  font-size: var(--theme-font-size-sm, 12px);
+  color: var(--theme-text-tertiary);
+  flex-shrink: 0;
+}
+
+.metadataValue {
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  font-size: var(--theme-font-size-sm, 12px);
+  color: var(--theme-text-secondary);
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.metadataValueMono {
+  font-family: var(--theme-font-family-mono, monospace);
+  font-size: var(--theme-font-size-xs, 10px);
+  color: var(--theme-text-tertiary);
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 200px;
+}
+
+/* ===========================
+ * URL SECTION
+ * Highlighted info box
+ * =========================== */
+
+.urlSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--theme-space-2, 8px);
+  padding: var(--theme-space-4, 16px);
+  background-color: var(--theme-color-primary-bg);
+  border: 1px solid #C7D2FE;
+  border-radius: var(--theme-radius-lg, 10px);
+}
+
+.urlTitle {
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  font-size: var(--theme-font-size-xs, 10px);
+  font-weight: var(--theme-font-weight-semibold, 600);
+  color: #4338CA;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.urlValue {
+  font-family: var(--theme-font-family-mono, monospace);
+  font-size: 11px;
+  color: #5B5FC7;
+  word-break: break-all;
+  line-height: 1.4;
+}
+
+/* ===========================
+ * DETAIL ITEM DISPLAY
+ * =========================== */
+
+.detailItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--theme-space-2, 8px);
+}
+
+.detailItemHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--theme-space-3, 12px);
+}
+
+.detailItemIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background-color: var(--theme-color-primary-bg);
+  border-radius: var(--theme-radius-lg, 8px);
+  color: var(--theme-color-primary);
+  flex-shrink: 0;
+}
+
+.detailItemInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.detailItemName {
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  font-size: var(--theme-font-size-md, 14px);
+  font-weight: var(--theme-font-weight-medium, 500);
+  color: var(--theme-text-primary);
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.detailItemType {
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  font-size: var(--theme-font-size-sm, 12px);
+  color: var(--theme-text-secondary);
+  margin: var(--theme-space-1, 2px) 0 0 0;
+}
+
+/* ===========================
+ * SECTION DIVIDER
+ * =========================== */
+
+.sectionDivider {
+  height: 1px;
+  background-color: var(--theme-border-primary);
+  margin: var(--theme-space-2, 8px) 0;
+}
+
+/* ===========================
+ * INFO BADGE ROW
+ * =========================== */
+
+.infoBadgeRow {
+  display: flex;
+  align-items: center;
+  gap: var(--theme-space-2, 8px);
+  padding: var(--theme-space-2, 8px) 0;
+}
+
+.infoLabel {
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  font-size: var(--theme-font-size-sm, 12px);
+  color: var(--theme-text-secondary);
+}

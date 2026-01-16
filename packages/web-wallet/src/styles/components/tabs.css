@@ -1,0 +1,338 @@
+/**
+ * Tab Components
+ *
+ * Reusable tab patterns for navigation and content switching.
+ * Includes: navigation tabs, status/filter tabs, and content tabs.
+ *
+ * Note: Some tab styles also exist in list-page.css for specific page layouts.
+ * This file provides standalone tab components for general use.
+ */
+
+/* ===========================
+ * BASE TAB CONTAINER
+ * =========================== */
+
+.tabs {
+  display: flex;
+  align-items: stretch;
+  gap: var(--theme-tab-gap, 48px);
+  border-bottom: 1px solid var(--theme-border-primary);
+  background-color: var(--theme-bg-secondary);
+}
+
+.tabsPadded {
+  padding: 0 var(--theme-space-6, 24px);
+  height: var(--theme-tab-height, 54px);
+}
+
+.tabsScrollable {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tabsScrollable::-webkit-scrollbar {
+  display: none;
+}
+
+/* ===========================
+ * NAVIGATION TABS
+ * Primary tabs for main navigation
+ * =========================== */
+
+.navTab {
+  display: flex;
+  align-items: center;
+  gap: var(--theme-space-2, 8px);
+  padding: 0;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-family: var(--theme-font-family);
+  font-size: var(--theme-font-size-md, 14px);
+  font-weight: var(--theme-font-weight-normal, 400);
+  color: var(--theme-text-primary);
+  cursor: pointer;
+  transition: all var(--theme-transition-normal, 0.15s ease);
+  white-space: nowrap;
+}
+
+.navTab:hover {
+  color: var(--theme-color-primary);
+}
+
+.navTabActive {
+  font-weight: var(--theme-font-weight-semibold, 600);
+  color: var(--theme-text-primary);
+  border-bottom-color: var(--theme-color-primary);
+}
+
+.navTabActive svg {
+  color: var(--theme-color-primary);
+}
+
+/* Tab badge for counts */
+.navTabBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  padding: 2px 8px;
+  background-color: var(--theme-color-grey-300);
+  color: var(--theme-text-secondary);
+  border-radius: var(--theme-radius-full, 9999px);
+  font-size: var(--theme-font-size-sm, 12px);
+  font-weight: var(--theme-font-weight-medium, 500);
+  text-align: center;
+}
+
+.navTabActive .navTabBadge {
+  background-color: var(--theme-color-primary);
+  color: var(--theme-text-inverse);
+}
+
+/* Spacer for tab actions */
+.tabSpacer {
+  flex: 1;
+}
+
+.tabActions {
+  display: flex;
+  align-items: center;
+  gap: var(--theme-space-2, 8px);
+}
+
+/* ===========================
+ * CONTENT TABS
+ * Tabs for switching between content panels
+ * =========================== */
+
+.contentTabs {
+  display: flex;
+  border-bottom: 1px solid var(--theme-border-secondary);
+  background-color: var(--theme-bg-secondary);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  flex-shrink: 0;
+}
+
+.contentTab {
+  padding: var(--theme-space-3, 12px) var(--theme-space-6, 24px);
+  font-family: var(--theme-font-family);
+  font-size: var(--theme-font-size-md, 14px);
+  font-weight: var(--theme-font-weight-medium, 500);
+  color: var(--theme-text-secondary);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all var(--theme-transition-fast, 0.2s ease);
+  white-space: nowrap;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
+
+.contentTab:hover {
+  color: var(--theme-color-primary);
+}
+
+.contentTabActive {
+  color: var(--theme-color-primary);
+  border-bottom-color: var(--theme-color-primary);
+}
+
+/* ===========================
+ * STATUS/FILTER TABS
+ * Pill-style tabs for filtering
+ * =========================== */
+
+.filterTabs {
+  display: flex;
+  align-items: center;
+  gap: var(--theme-space-1, 4px);
+  padding: var(--theme-space-3, 12px) var(--theme-space-6, 24px);
+  border-bottom: 1px solid var(--theme-border-primary);
+  background-color: var(--theme-bg-secondary);
+  overflow-x: auto;
+}
+
+.filterTab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: var(--theme-status-tab-padding, 8px 14px);
+  background-color: transparent;
+  border: none;
+  border-radius: var(--theme-status-tab-radius, 6px);
+  font-family: var(--theme-font-family);
+  font-size: 13px;
+  font-weight: var(--theme-font-weight-medium, 500);
+  color: var(--theme-text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--theme-transition-normal, 0.15s);
+}
+
+.filterTab:hover {
+  background-color: var(--theme-bg-tertiary);
+  color: var(--theme-text-primary);
+}
+
+.filterTabActive {
+  background-color: var(--theme-bg-card);
+  color: var(--theme-text-primary);
+  box-shadow: var(--theme-shadow-sm);
+}
+
+.filterTabCount {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  background-color: var(--theme-bg-tertiary);
+  color: var(--theme-text-primary);
+  border-radius: 9px;
+  font-size: 11px;
+  font-weight: var(--theme-font-weight-semibold, 600);
+}
+
+.filterTabActive .filterTabCount {
+  background-color: var(--theme-color-primary);
+  color: var(--theme-text-inverse);
+}
+
+/* ===========================
+ * SEGMENTED TABS
+ * Compact toggle-style tabs
+ * =========================== */
+
+.segmentedTabs {
+  display: inline-flex;
+  padding: 4px;
+  background-color: var(--theme-bg-tertiary);
+  border-radius: var(--theme-radius-lg, 8px);
+}
+
+.segmentedTab {
+  padding: var(--theme-space-2, 8px) var(--theme-space-4, 16px);
+  background: none;
+  border: none;
+  border-radius: var(--theme-radius-md, 6px);
+  font-family: var(--theme-font-family);
+  font-size: var(--theme-font-size-sm, 13px);
+  font-weight: var(--theme-font-weight-medium, 500);
+  color: var(--theme-text-secondary);
+  cursor: pointer;
+  transition: all var(--theme-transition-fast, 0.15s);
+}
+
+.segmentedTab:hover {
+  color: var(--theme-text-primary);
+}
+
+.segmentedTabActive {
+  background-color: var(--theme-bg-card);
+  color: var(--theme-text-primary);
+  box-shadow: var(--theme-shadow-sm);
+}
+
+/* ===========================
+ * UNDERLINE TABS
+ * Minimal style with underline indicator
+ * =========================== */
+
+.underlineTabs {
+  display: flex;
+  gap: var(--theme-space-8, 32px);
+}
+
+.underlineTab {
+  padding: var(--theme-space-3, 12px) 0;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-family: var(--theme-font-family);
+  font-size: var(--theme-font-size-md, 14px);
+  font-weight: var(--theme-font-weight-medium, 500);
+  color: var(--theme-text-secondary);
+  cursor: pointer;
+  transition: all var(--theme-transition-fast, 0.15s);
+}
+
+.underlineTab:hover {
+  color: var(--theme-text-primary);
+}
+
+.underlineTabActive {
+  color: var(--theme-color-primary);
+  border-bottom-color: var(--theme-color-primary);
+}
+
+/* ===========================
+ * TAB PANEL
+ * Container for tab content
+ * =========================== */
+
+.tabPanel {
+  display: none;
+}
+
+.tabPanelActive {
+  display: block;
+}
+
+/* Animated tab panel transitions */
+.tabPanelFade {
+  opacity: 0;
+  transition: opacity var(--theme-transition-normal, 0.15s);
+}
+
+.tabPanelFade.tabPanelActive {
+  opacity: 1;
+}
+
+/* ===========================
+ * RESPONSIVE STYLES
+ * =========================== */
+
+@media (max-width: 767px) {
+  .tabs {
+    gap: 0;
+  }
+
+  .tabsPadded {
+    padding: 0 var(--theme-space-4, 16px);
+  }
+
+  .navTab {
+    padding: var(--theme-space-3, 12px) var(--theme-space-4, 16px);
+    font-size: var(--theme-font-size-sm, 13px);
+  }
+
+  .contentTab {
+    padding: var(--theme-space-3, 12px) var(--theme-space-4, 16px);
+    font-size: var(--theme-font-size-sm, 13px);
+  }
+
+  .filterTabs {
+    padding: var(--theme-space-2, 8px) var(--theme-space-4, 16px);
+  }
+
+  .filterTab {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 479px) {
+  .navTab {
+    padding: var(--theme-space-2, 8px) var(--theme-space-3, 12px);
+    font-size: var(--theme-font-size-xs, 12px);
+  }
+
+  .contentTab {
+    padding: var(--theme-space-2, 8px) var(--theme-space-3, 12px);
+    font-size: var(--theme-font-size-xs, 12px);
+  }
+}

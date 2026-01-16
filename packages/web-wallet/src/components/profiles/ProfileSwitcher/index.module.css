@@ -13,10 +13,10 @@
   height: content-box;
   top: 60px;
   right: 45px;
-  background-color: #FBFBFB;
+  background-color: var(--theme-bg-secondary, #FBFBFB);
   z-index: 1;
   padding: 10px;
-  color: #303030;
+  color: var(--theme-text-primary, #303030);
 }
 
 .dropdown-item {
@@ -43,7 +43,7 @@
     font-style: normal;
     font-weight: 400;
     line-height: normal;
-    color: #8D9099;
+    color: var(--theme-text-secondary, #8D9099);
 }
 
 .userName {
@@ -51,5 +51,5 @@
     font-style: normal;
     font-weight: 400;
     line-height: normal;
-    color: #FBFBFB
+    color: var(--theme-bg-secondary, #FBFBFB);
 }

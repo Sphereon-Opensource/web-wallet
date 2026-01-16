@@ -2,10 +2,10 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
-    background-color: white;
+    background-color: var(--theme-bg-card, #FFFFFF);
     padding: 24px;
     border-radius: 12px;
-    border: 1px solid #E5E7EB;
+    border: 1px solid var(--theme-border-secondary, #E5E7EB);
     max-width: 700px;
 }
 
@@ -21,7 +21,7 @@
 }
 
 .titleCaption {
-    color: #1F2937;
+    color: var(--theme-text-primary, #1F2937);
     font-size: 18px;
     font-weight: 600;
     line-height: normal;
@@ -29,7 +29,7 @@
 }
 
 .subTitleCaption {
-    color: #6B7280;
+    color: var(--tw-gray-500, #6B7280);
     font-size: 14px;
     font-weight: 400;
     line-height: 1.5;
@@ -39,13 +39,13 @@
 .sectionLabel {
     font-weight: 600;
     font-size: 14px;
-    color: #374151;
+    color: var(--theme-text-secondary, #374151);
 }
 
 .contactAddSelectOrganizationOptionalLabel {
     font-weight: normal;
     font-size: 14px;
-    color: #9CA3AF;
+    color: var(--tw-gray-400, #9CA3AF);
     margin-left: 4px;
     font-style: italic;
 }
@@ -55,11 +55,11 @@
     align-items: baseline;
     margin-top: 16px;
     padding-top: 16px;
-    border-top: 1px solid #E5E7EB;
+    border-top: 1px solid var(--theme-border-secondary, #E5E7EB);
 }
 
 .organizationSection {
     margin-top: 16px;
     padding-top: 16px;
-    border-top: 1px solid #E5E7EB;
+    border-top: 1px solid var(--theme-border-secondary, #E5E7EB);
 }

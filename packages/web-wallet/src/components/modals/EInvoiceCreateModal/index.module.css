@@ -13,7 +13,7 @@
 
 .container {
     border-radius: 24px;
-    background-color: #FBFBFB;
+    background-color: var(--theme-bg-secondary, #FBFBFB);
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -27,7 +27,7 @@
     flex-direction: row;
     padding-left: 32px;
     padding-right: 15px;
-    border-bottom: 1px solid #E3E3E3;
+    border-bottom: 1px solid var(--theme-border-secondary, #E3E3E3);
 }
 
 .headerCaptionContainer {
@@ -64,7 +64,7 @@
     font-style: normal;
     font-weight: 600;
     line-height: normal;
-    color: #303030;
+    color: var(--theme-text-primary, #303030);
 }
 
 .subTitleCaption {
@@ -73,7 +73,7 @@
     font-weight: 400;
     line-height: normal;
     letter-spacing: 0.14px;
-    color: #8D9099;
+    color: var(--theme-text-secondary, #8D9099);
 }
 
 .contentContainer {
@@ -93,7 +93,7 @@
 .sectionTitle {
     font-size: 14px;
     font-weight: 600;
-    color: #303030;
+    color: var(--theme-text-primary, #303030);
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -104,9 +104,9 @@
     font-weight: 400;
     line-height: normal;
     letter-spacing: 0.14px;
-    color: #D74500;
+    color: var(--theme-color-error, #D74500);
     padding: 8px 12px;
-    background-color: rgba(215, 69, 0, 0.1);
+    background-color: var(--theme-color-error-light, rgba(215, 69, 0, 0.1));
     border-radius: 8px;
 }
 
@@ -115,9 +115,9 @@
     font-style: normal;
     font-weight: 400;
     line-height: normal;
-    color: #00C249;
+    color: var(--theme-color-success, #00C249);
     padding: 8px 12px;
-    background-color: rgba(0, 194, 73, 0.1);
+    background-color: var(--theme-color-success-light, rgba(0, 194, 73, 0.1));
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -135,5 +135,5 @@
     justify-content: flex-end;
     gap: 12px;
     padding-top: 16px;
-    border-top: 1px solid #E3E3E3;
+    border-top: 1px solid var(--theme-border-secondary, #E3E3E3);
 }

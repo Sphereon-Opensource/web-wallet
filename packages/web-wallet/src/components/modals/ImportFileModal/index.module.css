@@ -13,7 +13,7 @@
 
 .container {
     border-radius: 24px;
-    background-color: #FBFBFB;
+    background-color: var(--theme-bg-secondary, #FBFBFB);
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -76,5 +76,5 @@
     font-weight: 400;
     line-height: normal;
     letter-spacing: 0.14px;
-    color: #D74500;
+    color: var(--theme-color-error, #D74500);
 }

@@ -7,7 +7,7 @@
 .contentContainer {
     display: flex;
     flex-grow: 1;
-    background-color: #F4F4F4;
+    background-color: var(--theme-bg-tertiary, #F4F4F4);
     flex-direction: column;
 }
 
@@ -16,7 +16,7 @@
     gap: 24px;
     flex-direction: column;
     padding: 24px 54px 24px 46px;
-    background-color: #F4F4F4;
+    background-color: var(--theme-bg-tertiary, #F4F4F4);
 }
 
 .descriptionCaption {
@@ -38,7 +38,7 @@
     display: flex;
     margin-top: auto;
     padding-right: 54px;
-    background-color: #FBFBFB;
+    background-color: var(--theme-bg-secondary, #FBFBFB);
     gap: 18px;
     padding-bottom: 48px;
     justify-content: flex-end;
@@ -50,7 +50,7 @@
     flex-direction: column;
     flex-grow: 1;
     padding: 12px 54px 12px 46px;
-    background-color: #FBFBFB;
+    background-color: var(--theme-bg-secondary, #FBFBFB);
 }
 
 .tabsInformationRouteContentContainer {
@@ -90,7 +90,7 @@
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    background-color: #FBFBFB;
+    background-color: var(--theme-bg-secondary, #FBFBFB);
 }
 
 .tabsInformationRouteCardContainer {

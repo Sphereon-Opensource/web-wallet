@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './index.module.css'
 
-export type StatusBadgeVariant = 'valid' | 'pending' | 'error'
+export type StatusBadgeVariant = 'valid' | 'pending' | 'error' | 'expired' | 'revoked'
 
 export interface StatusBadgeProps {
   /** The text to display in the badge */
@@ -57,11 +57,14 @@ export const getStatusVariant = (status: string): StatusBadgeVariant => {
     case 'pending':
     case 'draft':
       return 'pending'
+    case 'expired':
+      return 'expired'
+    case 'revoked':
+    case 'suspended':
+      return 'revoked'
     case 'invalid':
     case 'rejected':
     case 'overdue':
-    case 'expired':
-    case 'revoked':
     case 'error':
       return 'error'
     default:

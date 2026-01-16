@@ -1,0 +1,129 @@
+/**
+ * Shared animation styles for the web-wallet.
+ * Import this file in components that need loading spinners or other animations.
+ *
+ * Usage:
+ *   @import '../styles/components/animations.css';
+ *
+ *   Or reference the animation directly:
+ *   animation: spin 1s linear infinite;
+ */
+
+/* ===========================
+ * SPIN ANIMATION
+ * Used for loading spinners
+ * =========================== */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Loading spinner utility class */
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--theme-color-grey-200);
+  border-top-color: var(--theme-color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.spinnerSmall {
+  width: 16px;
+  height: 16px;
+  border-width: 2px;
+}
+
+.spinnerLarge {
+  width: 32px;
+  height: 32px;
+  border-width: 3px;
+}
+
+/* Loading container with centered spinner */
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  gap: 16px;
+}
+
+.loadingText {
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  font-size: var(--theme-font-size-md, 14px);
+  color: var(--theme-text-secondary);
+}
+
+/* ===========================
+ * FADE ANIMATIONS
+ * =========================== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* ===========================
+ * SLIDE ANIMATIONS
+ * =========================== */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+/* ===========================
+ * PULSE ANIMATION
+ * Used for skeleton loading states
+ * =========================== */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--theme-color-grey-100) 25%,
+    var(--theme-color-grey-200) 50%,
+    var(--theme-color-grey-100) 75%
+  );
+  background-size: 200% 100%;
+  animation: pulse 1.5s ease-in-out infinite;
+  border-radius: var(--theme-radius-md, 6px);
+}

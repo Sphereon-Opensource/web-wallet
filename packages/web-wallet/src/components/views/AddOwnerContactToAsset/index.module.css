@@ -6,7 +6,7 @@
 }
 
 .titleCaption {
-    color: #000;
+    color: var(--theme-text-primary, #000);
     font-size: 24px;
     font-style: normal;
     font-weight: 500;
@@ -16,7 +16,7 @@
 .subTitleCaption {
     max-width: 910px;
     margin-bottom: 22px;
-    color: rgba(48, 48, 48);
+    color: var(--theme-text-primary, #303030);
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
@@ -24,7 +24,7 @@
 }
 
 .identifierAddSelectContactLabel {
-    color: #303030;
+    color: var(--theme-text-primary, #303030);
     font-size: 16px;
     font-weight: 600;
     font-style: normal;

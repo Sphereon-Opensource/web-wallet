@@ -27,20 +27,20 @@
 
 .accent.verified,
 .accent.paid {
-  background: #00C249;
+  background: var(--theme-color-success, #00C249);
 }
 
 .accent.overdue,
 .accent.invalid {
-  background: #D74500;
+  background: var(--theme-color-error, #D74500);
 }
 
 .accent.pending {
-  background: #F5A623;
+  background: var(--theme-color-warning, #F5A623);
 }
 
 .accent.draft {
-  background: #F5A623;
+  background: var(--theme-color-warning, #F5A623);
 }
 
 .content {
@@ -154,8 +154,8 @@
 }
 
 .actionBtnPrimary {
-  background: linear-gradient(135deg, #7276F7 0%, #7C40E8 100%);
-  color: #FFFFFF;
+  background: linear-gradient(135deg, var(--theme-color-primary, #7276F7) 0%, var(--theme-color-primary-dark, #7C40E8) 100%);
+  color: var(--theme-text-inverse, #FFFFFF);
 }
 
 .actionBtnPrimary:hover {
@@ -164,21 +164,21 @@
 }
 
 .actionBtnSecondary {
-  background: #FFFFFF;
-  color: var(--primary-color, #7276F7);
-  border: 1px solid var(--primary-color, #7276F7);
+  background: var(--theme-bg-card, #FFFFFF);
+  color: var(--theme-color-primary, #7276F7);
+  border: 1px solid var(--theme-color-primary, #7276F7);
 }
 
 .actionBtnSecondary:hover {
-  background: rgba(114, 118, 247, 0.05);
+  background: var(--theme-color-primary-bg, rgba(114, 118, 247, 0.05));
 }
 
 .actionBtnDanger {
-  background: #FFFFFF;
-  color: #DC2626;
-  border: 1px solid #DC2626;
+  background: var(--theme-bg-card, #FFFFFF);
+  color: var(--theme-color-error, #DC2626);
+  border: 1px solid var(--theme-color-error, #DC2626);
 }
 
 .actionBtnDanger:hover {
-  background: #FEE2E2;
+  background: var(--theme-color-error-bg, #FEE2E2);
 }

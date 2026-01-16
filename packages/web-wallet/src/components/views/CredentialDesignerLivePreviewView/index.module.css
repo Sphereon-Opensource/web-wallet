@@ -2,10 +2,10 @@
     display: flex;
     flex-direction: column;
     width: 486px;
-    background-color: #FBFBFB;
+    background-color: var(--theme-bg-secondary, #FBFBFB);
     border-radius: 8px;
     padding-top: 12px;
-    border: 1px solid #C4C4C4;
+    border: 1px solid var(--theme-border-primary, #C4C4C4);
 }
 
 .headerContainer {
@@ -20,5 +20,5 @@
 .headerTitle {
     font-size: 16px;
     font-weight: 600;
-    color: #303030;
+    color: var(--theme-text-primary, #303030);
 }

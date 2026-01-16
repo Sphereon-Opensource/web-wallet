@@ -25,7 +25,7 @@
 }
 
 .activeRouteContainer {
-    background-color: #A9ABF9;
+    background-color: var(--theme-color-primary-light, #A9ABF9);
     width: 145px;
     border-radius: 4px;
     display: flex;
@@ -44,7 +44,7 @@
     margin-top: 6px;
     margin-bottom: 6px;
     width: 4px;
-    background-color: #7C40E8;
+    background-color: var(--theme-color-primary-dark, #7C40E8);
     border-radius: 0 2px 2px 0;
 }
 
@@ -56,7 +56,7 @@
     letter-spacing: 0.12px;
     margin-top: 5px;
     margin-bottom: 5px;
-    color: #7C40E8;
+    color: var(--theme-color-primary-dark, #7C40E8);
 }
 
 .dropdownIconContainer {
@@ -65,7 +65,7 @@
 }
 
 .dropdownRoutesContainer {
-    background-color: #ECEDF8;
+    background-color: var(--theme-bg-tertiary-accent, #ECEDF8);
     border-radius: 6px;
     overflow: hidden;
     display: flex;
@@ -81,7 +81,7 @@
 }
 
 .dropdownRouteContainer:hover {
-    background-color: #B7B8D9;
+    background-color: var(--theme-color-primary-lighter, #B7B8D9);
 }
 
 .dropdownRouteCaption {

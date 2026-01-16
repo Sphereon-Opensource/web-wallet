@@ -14,14 +14,14 @@
     align-items: flex-start;
     gap: 12px;
     padding: 16px;
-    background-color: #FEF2F2;
-    border: 1px solid #FECACA;
+    background-color: var(--tw-red-50);
+    border: 1px solid var(--tw-red-200);
     border-radius: 8px;
 }
 
 .errorMessage svg {
     flex-shrink: 0;
-    color: #DC2626;
+    color: var(--tw-red-600);
     margin-top: 2px;
 }
 
@@ -34,12 +34,12 @@
 .errorTitle {
     font-size: 14px;
     font-weight: 600;
-    color: #991B1B;
+    color: var(--tw-red-800);
 }
 
 .errorText {
     font-size: 14px;
-    color: #DC2626;
+    color: var(--tw-red-600);
     line-height: 1.5;
 }
 
@@ -49,8 +49,8 @@
     flex-direction: column;
     gap: 16px;
     padding: 16px 20px;
-    background-color: #F0FDF4;
-    border: 1px solid #86EFAC;
+    background-color: var(--tw-emerald-50);
+    border: 1px solid var(--tw-emerald-300);
     border-radius: 8px;
 }
 
@@ -58,7 +58,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    color: #166534;
+    color: var(--tw-green-800);
 }
 
 .deliveryHeader svg {
@@ -85,7 +85,7 @@
 .deliveryLabel {
     font-size: 11px;
     font-weight: 600;
-    color: #15803D;
+    color: var(--tw-green-700);
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
@@ -99,12 +99,12 @@
 .recipientName {
     font-size: 15px;
     font-weight: 600;
-    color: #166534;
+    color: var(--tw-green-800);
 }
 
 .recipientDid {
     font-size: 13px;
-    color: #15803D;
+    color: var(--tw-green-700);
     word-break: break-all;
     font-family: monospace;
 }
@@ -113,8 +113,8 @@
     display: inline-flex;
     align-self: flex-start;
     padding: 4px 10px;
-    background-color: #DCFCE7;
-    color: #166534;
+    background-color: var(--tw-emerald-100);
+    color: var(--tw-green-800);
     border-radius: 100px;
     font-size: 11px;
     font-weight: 600;
@@ -125,12 +125,12 @@
 .endpointEntity {
     font-size: 14px;
     font-weight: 500;
-    color: #166534;
+    color: var(--tw-green-800);
 }
 
 .endpointUrl {
     font-size: 13px;
-    color: #15803D;
+    color: var(--tw-green-700);
     word-break: break-all;
     font-family: monospace;
 }
@@ -147,19 +147,19 @@
     justify-content: center;
     gap: 12px;
     padding: 20px;
-    background-color: #EEF2FF;
-    border: 1px solid #C7D2FE;
+    background-color: var(--tw-indigo-50);
+    border: 1px solid var(--tw-indigo-200);
     border-radius: 8px;
     font-size: 15px;
     font-weight: 500;
-    color: #4338CA;
+    color: var(--tw-indigo-700);
 }
 
 .spinner {
     width: 24px;
     height: 24px;
-    border: 3px solid #C7D2FE;
-    border-top-color: #4F46E5;
+    border: 3px solid var(--tw-indigo-200);
+    border-top-color: var(--theme-color-accent);
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -176,17 +176,17 @@
     align-items: flex-start;
     gap: 12px;
     padding: 16px;
-    background-color: #FEF3C7;
-    border: 1px solid #FCD34D;
+    background-color: var(--tw-amber-100);
+    border: 1px solid var(--tw-amber-400);
     border-radius: 8px;
     font-size: 14px;
-    color: #92400E;
+    color: var(--tw-amber-800);
     line-height: 1.5;
 }
 
 .warningBox svg {
     flex-shrink: 0;
-    color: #D97706;
+    color: var(--tw-amber-600);
     margin-top: 2px;
 }
 
@@ -196,14 +196,14 @@
     align-items: flex-start;
     gap: 12px;
     padding: 16px;
-    background-color: #EFF6FF;
-    border: 1px solid #BFDBFE;
+    background-color: var(--tw-blue-50);
+    border: 1px solid var(--tw-blue-200);
     border-radius: 8px;
 }
 
 .infoBox svg {
     flex-shrink: 0;
-    color: #3B82F6;
+    color: var(--tw-blue-500);
     margin-top: 2px;
 }
 
@@ -216,12 +216,12 @@
 .infoTitle {
     font-size: 14px;
     font-weight: 600;
-    color: #1E40AF;
+    color: var(--tw-blue-800);
 }
 
 .infoText {
     font-size: 14px;
-    color: #1E40AF;
+    color: var(--tw-blue-800);
     line-height: 1.5;
 }
 

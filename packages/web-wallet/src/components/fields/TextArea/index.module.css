@@ -9,13 +9,13 @@
     font-style: normal;
     font-weight: 400;
     font-family: Poppins, serif;
-    background-color: #FBFBFB;
+    background-color: var(--theme-bg-secondary, #FBFBFB);
 }
 
 .textArea:hover {
-    border-color: #7276F7;
+    border-color: var(--theme-color-primary, #7276F7);
 }
 
 .textArea:focus {
-    border-color: #7276F7;
+    border-color: var(--theme-color-primary, #7276F7);
 }

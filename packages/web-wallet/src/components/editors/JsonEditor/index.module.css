@@ -2,7 +2,7 @@
     width: 100%;
     max-width: 85vw; /* TODO: find a better way to stop the editor to grow beyond the screen width */
     height: 100%;
-    border: 1px solid #C4C4C4;
+    border: 1px solid var(--theme-border-primary, #C4C4C4);
     overflow-y: auto;
     overflow-x: auto;
     white-space: nowrap;
@@ -15,9 +15,9 @@
 }
 
 .validationMessageBoxSuccess {
-    color: #03c303;
+    color: var(--theme-color-success, #03c303);
 }
 
 .validationMessageBoxFailed {
-    color: #d90000;
+    color: var(--theme-color-error, #d90000);
 }

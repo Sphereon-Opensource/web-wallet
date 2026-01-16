@@ -11,8 +11,8 @@
 }
 
 .formContainer {
-    border: 1px solid #ACACAC;
-    background-color: #FBFBFB;
+    border: 1px solid var(--theme-border-primary, #ACACAC);
+    background-color: var(--theme-bg-secondary, #FBFBFB);
     border-radius: 8px;
     padding: 24px;
     display: flex;
@@ -23,9 +23,9 @@
 }
 
 .addContainer {
-    border: 1px solid #7276F7;
-    color: #7276F7;
-    background-color: #FBFBFB;
+    border: 1px solid var(--theme-color-primary, #7276F7);
+    color: var(--theme-color-primary, #7276F7);
+    background-color: var(--theme-bg-secondary, #FBFBFB);
     border-radius: 8px;
     padding: 12px 24px;
     display: flex;
@@ -35,25 +35,25 @@
 }
 
 .titleCaption {
-    color: #303030;
+    color: var(--theme-text-primary, #303030);
     font-size: 24px;
     font-weight: 600;
 }
 
 .descriptionCaption {
-    color: #303030;
+    color: var(--theme-text-primary, #303030);
     font-size: 16px;
     font-weight: 400;
 }
 
 .addTitleCaption {
-    color: #303030;
+    color: var(--theme-text-primary, #303030);
     font-size: 16px;
     font-weight: 600;
 }
 
 .addAnotherTitleCaption {
-    color: #303030;
+    color: var(--theme-text-primary, #303030);
     font-size: 16px;
     font-weight: 400;
 }

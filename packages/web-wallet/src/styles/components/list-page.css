@@ -1,0 +1,374 @@
+/**
+ * List Page Layout Styles
+ *
+ * Shared CSS for list pages (assets, contacts, credentials, einvoice)
+ * Import this file and compose with page-specific styles.
+ *
+ * Usage in CSS modules:
+ *   @import '../../src/styles/components/list-page.css';
+ *
+ *   Or use CSS composition:
+ *   .container { composes: listPageContainer from '../../src/styles/components/list-page.css'; }
+ */
+
+/* ===========================
+ * LAYOUT CONTAINERS
+ * =========================== */
+
+.listPageContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background-color: var(--theme-bg-primary);
+  overflow: hidden;
+}
+
+.listPageMainLayout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.listPageContentArea {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+  min-width: 0;
+}
+
+.listPageContentAreaWithDetail {
+  flex: 1;
+  max-width: calc(100% - 500px);
+}
+
+/* ===========================
+ * TAB NAVIGATION
+ * =========================== */
+
+.tabNavigation {
+  display: flex;
+  align-items: stretch;
+  gap: 48px;
+  padding: 0 var(--theme-space-6, 24px);
+  height: 54px;
+  border-bottom: 1px solid var(--theme-border-primary);
+  background-color: var(--theme-bg-primary);
+}
+
+.tabButton {
+  display: flex;
+  align-items: center;
+  gap: var(--theme-space-2, 8px);
+  padding: 0;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  font-size: var(--theme-font-size-md, 14px);
+  font-weight: var(--theme-font-weight-normal, 400);
+  color: var(--theme-text-primary);
+  cursor: pointer;
+  transition: all var(--theme-transition-normal, 0.15s ease);
+  white-space: nowrap;
+}
+
+.tabButton:hover {
+  color: var(--theme-color-primary);
+}
+
+.tabButtonActive {
+  font-weight: var(--theme-font-weight-semibold, 600);
+  color: var(--theme-text-primary);
+  border-bottom-color: var(--theme-color-primary);
+}
+
+.tabButtonActive svg {
+  color: var(--theme-color-primary);
+}
+
+.tabBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  padding: 2px 8px;
+  background-color: var(--theme-color-grey-300);
+  color: var(--theme-text-secondary);
+  border-radius: var(--theme-radius-full, 9999px);
+  font-size: var(--theme-font-size-sm, 12px);
+  font-weight: var(--theme-font-weight-medium, 500);
+  text-align: center;
+}
+
+.tabButtonActive .tabBadge {
+  background-color: var(--theme-color-primary);
+  color: var(--theme-text-inverse, white);
+}
+
+.tabSpacer {
+  flex: 1;
+}
+
+.tabActionButtonContainer {
+  display: flex;
+  align-items: center;
+}
+
+/* ===========================
+ * STATUS FILTER TABS
+ * =========================== */
+
+.statusTabs {
+  display: flex;
+  align-items: center;
+  gap: var(--theme-space-1, 4px);
+  padding: var(--theme-space-3, 12px) var(--theme-space-6, 24px);
+  border-bottom: 1px solid var(--theme-border-primary);
+  background-color: var(--theme-bg-secondary);
+  overflow-x: auto;
+}
+
+.statusTab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: var(--theme-space-2, 8px) var(--theme-space-3, 14px);
+  background-color: transparent;
+  border: none;
+  border-radius: var(--theme-radius-md, 6px);
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  font-size: 13px;
+  font-weight: var(--theme-font-weight-medium, 500);
+  color: var(--theme-text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--theme-transition-normal, 0.15s);
+}
+
+.statusTab:hover {
+  background-color: var(--theme-bg-tertiary);
+  color: var(--theme-text-primary);
+}
+
+.statusTabActive {
+  background-color: var(--theme-bg-card, white);
+  color: var(--theme-text-primary);
+  box-shadow: var(--theme-shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.1));
+}
+
+.statusTabCount {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  background-color: var(--theme-bg-tertiary);
+  color: var(--theme-text-primary);
+  border-radius: 9px;
+  font-size: 11px;
+  font-weight: var(--theme-font-weight-semibold, 600);
+}
+
+.statusTabActive .statusTabCount {
+  background-color: var(--theme-color-primary);
+  color: var(--theme-text-inverse, white);
+}
+
+/* ===========================
+ * TABLE STRUCTURE
+ * =========================== */
+
+.tableContainer {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.table {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.tableHeader {
+  display: flex;
+  align-items: center;
+  padding: var(--theme-space-3, 12px) var(--theme-space-6, 24px);
+  background-color: var(--theme-bg-secondary);
+  border-bottom: 1px solid var(--theme-border-primary);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.headerCell {
+  display: flex;
+  align-items: center;
+  gap: var(--theme-space-1, 4px);
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  font-size: 11px;
+  font-weight: var(--theme-font-weight-semibold, 600);
+  color: var(--theme-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.sortable:hover {
+  color: var(--theme-text-primary);
+}
+
+.sortIcon {
+  color: var(--theme-text-primary);
+}
+
+.sortIconInactive {
+  opacity: 0.3;
+}
+
+.tableRow {
+  display: flex;
+  align-items: center;
+  padding: 14px var(--theme-space-6, 24px);
+  border-bottom: 1px solid var(--theme-color-grey-200);
+  cursor: pointer;
+  transition: background-color var(--theme-transition-normal, 0.15s);
+}
+
+.tableRow:hover {
+  background-color: var(--theme-bg-tertiary, #ECECEC);
+}
+
+.tableRowSelected {
+  background-color: var(--theme-color-primary-bg, rgba(114, 118, 247, 0.1));
+  border-left: 3px solid var(--theme-color-primary, #7276F7);
+  padding-left: calc(var(--theme-space-6, 24px) - 3px);
+}
+
+.tableRow:focus {
+  outline: none;
+}
+
+.tableRow:focus:not(.tableRowSelected) {
+  outline: 2px solid var(--theme-color-primary, #7276F7);
+  outline-offset: -2px;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  font-size: var(--theme-font-size-md, 14px);
+  color: var(--theme-text-primary);
+}
+
+.cellActions {
+  width: 48px;
+  justify-content: flex-end;
+}
+
+/* ===========================
+ * EMPTY STATE
+ * =========================== */
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: var(--theme-space-16, 64px) var(--theme-space-6, 24px);
+  text-align: center;
+}
+
+.emptyStateIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: var(--theme-space-4, 16px);
+  background-color: var(--theme-bg-secondary);
+  border-radius: var(--theme-radius-full, 9999px);
+  color: var(--theme-text-tertiary);
+}
+
+.emptyStateTitle {
+  margin: 0 0 var(--theme-space-2, 8px) 0;
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  font-size: var(--theme-font-size-lg, 16px);
+  font-weight: var(--theme-font-weight-semibold, 600);
+  color: var(--theme-text-primary);
+}
+
+.emptyStateDescription {
+  margin: 0 0 var(--theme-space-6, 24px) 0;
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  font-size: var(--theme-font-size-md, 14px);
+  color: var(--theme-text-secondary);
+  max-width: 400px;
+}
+
+.emptyStateButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--theme-space-2, 8px);
+  padding: var(--theme-space-3, 12px) var(--theme-space-5, 20px);
+  background: linear-gradient(135deg, var(--theme-color-primary) 0%, var(--theme-color-secondary) 100%);
+  border: none;
+  border-radius: var(--theme-radius-md, 6px);
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  font-size: var(--theme-font-size-md, 14px);
+  font-weight: var(--theme-font-weight-semibold, 600);
+  color: var(--theme-text-inverse, white);
+  cursor: pointer;
+  transition: opacity var(--theme-transition-normal, 0.15s);
+}
+
+.emptyStateButton:hover {
+  opacity: 0.9;
+}
+
+/* ===========================
+ * LOADING STATE
+ * =========================== */
+
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: var(--theme-space-4, 16px);
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--theme-color-grey-200);
+  border-top-color: var(--theme-color-primary);
+  border-radius: var(--theme-radius-full, 9999px);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingText {
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  font-size: var(--theme-font-size-md, 14px);
+  color: var(--theme-text-secondary);
+}

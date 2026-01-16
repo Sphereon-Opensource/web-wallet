@@ -1,0 +1,266 @@
+/**
+ * Button Styles
+ *
+ * Shared CSS for common button patterns.
+ * Primary, secondary, danger, and icon buttons.
+ */
+
+/* ===========================
+ * PRIMARY BUTTON
+ * Gradient background, white text
+ * =========================== */
+
+.primaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--theme-space-2, 8px);
+  padding: var(--theme-space-3, 12px) var(--theme-space-4, 16px);
+  background: linear-gradient(135deg, var(--theme-color-primary) 0%, var(--theme-color-secondary) 100%);
+  border: none;
+  border-radius: var(--theme-radius-md, 6px);
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  font-size: var(--theme-font-size-md, 14px);
+  font-weight: var(--theme-font-weight-semibold, 600);
+  color: var(--theme-text-inverse, white);
+  cursor: pointer;
+  transition: opacity var(--theme-transition-normal, 0.15s);
+}
+
+.primaryButton:hover {
+  opacity: 0.9;
+}
+
+.primaryButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.primaryButtonFlex {
+  flex: 1;
+}
+
+/* ===========================
+ * SECONDARY BUTTON
+ * White background, border
+ * =========================== */
+
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--theme-space-2, 8px);
+  padding: var(--theme-space-3, 12px) var(--theme-space-4, 16px);
+  background-color: var(--theme-bg-card, white);
+  border: 1px solid var(--theme-border-primary);
+  border-radius: var(--theme-radius-md, 6px);
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  font-size: var(--theme-font-size-md, 14px);
+  font-weight: var(--theme-font-weight-medium, 500);
+  color: var(--theme-text-primary);
+  cursor: pointer;
+  transition: all var(--theme-transition-normal, 0.15s);
+}
+
+.secondaryButton:hover {
+  background-color: var(--theme-bg-secondary);
+  border-color: var(--theme-border-secondary);
+}
+
+.secondaryButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.secondaryButtonFlex {
+  flex: 1;
+}
+
+/* ===========================
+ * DANGER BUTTON
+ * White background, red text
+ * =========================== */
+
+.dangerButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--theme-space-2, 8px);
+  padding: var(--theme-space-3, 12px) var(--theme-space-4, 16px);
+  background-color: var(--theme-bg-card, white);
+  border: 1px solid #FECACA;
+  border-radius: var(--theme-radius-md, 6px);
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  font-size: var(--theme-font-size-md, 14px);
+  font-weight: var(--theme-font-weight-medium, 500);
+  color: var(--theme-color-error);
+  cursor: pointer;
+  transition: all var(--theme-transition-normal, 0.15s);
+}
+
+.dangerButton:hover {
+  background-color: var(--theme-color-error-light);
+  border-color: var(--theme-color-error);
+}
+
+.dangerButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.dangerButtonFlex {
+  flex: 1;
+}
+
+/* ===========================
+ * DANGER FILLED BUTTON
+ * Red background, white text
+ * =========================== */
+
+.dangerFilledButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--theme-space-2, 8px);
+  padding: var(--theme-space-3, 12px) var(--theme-space-4, 16px);
+  background-color: var(--theme-color-error);
+  border: none;
+  border-radius: var(--theme-radius-md, 6px);
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  font-size: var(--theme-font-size-md, 14px);
+  font-weight: var(--theme-font-weight-semibold, 600);
+  color: var(--theme-text-inverse, white);
+  cursor: pointer;
+  transition: opacity var(--theme-transition-normal, 0.15s);
+}
+
+.dangerFilledButton:hover {
+  opacity: 0.9;
+}
+
+.dangerFilledButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ===========================
+ * GHOST BUTTON
+ * Transparent, text only
+ * =========================== */
+
+.ghostButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--theme-space-2, 8px);
+  padding: var(--theme-space-2, 8px) var(--theme-space-3, 12px);
+  background-color: transparent;
+  border: none;
+  border-radius: var(--theme-radius-md, 6px);
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  font-size: var(--theme-font-size-md, 14px);
+  font-weight: var(--theme-font-weight-medium, 500);
+  color: var(--theme-color-primary);
+  cursor: pointer;
+  transition: all var(--theme-transition-normal, 0.15s);
+}
+
+.ghostButton:hover {
+  background-color: var(--theme-color-primary-bg);
+}
+
+.ghostButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ===========================
+ * ICON BUTTON
+ * Square button with just an icon
+ * =========================== */
+
+.iconButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  background-color: transparent;
+  border: 1px solid var(--theme-border-primary);
+  border-radius: var(--theme-radius-md, 6px);
+  color: var(--theme-text-secondary);
+  cursor: pointer;
+  transition: all var(--theme-transition-normal, 0.15s);
+}
+
+.iconButton:hover {
+  background-color: var(--theme-bg-secondary);
+  color: var(--theme-text-primary);
+  border-color: var(--theme-border-secondary);
+}
+
+.iconButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ===========================
+ * COPY BUTTON
+ * Used for copying URLs/hashes
+ * =========================== */
+
+.copyButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--theme-space-2, 8px);
+  padding: var(--theme-space-3, 12px) var(--theme-space-4, 16px);
+  background-color: var(--theme-bg-card, white);
+  border: 1px solid var(--theme-border-primary);
+  border-radius: var(--theme-radius-md, 6px);
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  font-size: var(--theme-font-size-md, 14px);
+  font-weight: var(--theme-font-weight-medium, 500);
+  color: var(--theme-text-primary);
+  cursor: pointer;
+  transition: all var(--theme-transition-normal, 0.15s);
+}
+
+.copyButton:hover {
+  background-color: var(--theme-bg-secondary);
+  border-color: var(--theme-border-secondary);
+}
+
+.copyButtonSuccess {
+  background-color: var(--theme-color-success-light);
+  border-color: var(--theme-color-success);
+  color: var(--theme-color-success);
+}
+
+/* ===========================
+ * BUTTON SIZES
+ * =========================== */
+
+.buttonSmall {
+  padding: var(--theme-space-2, 8px) var(--theme-space-3, 12px);
+  font-size: var(--theme-font-size-sm, 12px);
+}
+
+.buttonLarge {
+  padding: var(--theme-space-4, 16px) var(--theme-space-6, 24px);
+  font-size: var(--theme-font-size-lg, 16px);
+}
+
+/* ===========================
+ * BUTTON GROUP
+ * =========================== */
+
+.buttonGroup {
+  display: flex;
+  gap: var(--theme-space-3, 12px);
+}
+
+.buttonGroupStacked {
+  flex-direction: column;
+}

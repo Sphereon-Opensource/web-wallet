@@ -1,6 +1,6 @@
 import { jest, describe, it, expect, beforeEach, beforeAll, afterAll } from '@jest/globals'
 import { DataSource } from 'typeorm'
-import { InboxPlugin, InboxSendToRecipientArgs, InboxSendToRecipientResult } from '../../plugins/inboxPlugin'
+import { InboxPlugin, InboxSendToRecipientArgs, InboxSendToRecipientResult } from '../../plugins/inbox'
 
 // Mock console methods to avoid noise in tests
 const originalConsoleLog = console.log
