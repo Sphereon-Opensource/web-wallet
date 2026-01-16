@@ -43,14 +43,16 @@ export interface ParsedEInvoice {
   payment_terms?: string
   payment_means_code?: string
 
-  // Line items (simplified)
+  // Line items
   line_items?: Array<{
-    id: string
-    description?: string
+    line_number: number
+    description: string
+    note?: string
     quantity: number
-    unit_code?: string
+    quantity_unit: string
     unit_price: number
-    line_extension_amount: number
+    vat_percent: number
+    line_total: number
   }>
 }
 
@@ -153,20 +155,51 @@ function parseParty(partyNode: any): { name?: string; tax_id?: string; address?:
 function parseLineItems(invoiceLines: any[]): ParsedEInvoice['line_items'] {
   if (!invoiceLines || !Array.isArray(invoiceLines)) return undefined
 
-  return invoiceLines.map((line) => {
+  return invoiceLines.map((line, index) => {
     const itemNode = line['cac:Item']?.[0] || line['Item']?.[0]
     const priceNode = line['cac:Price']?.[0] || line['Price']?.[0]
 
+    // Get line ID/number
+    const lineId = getText(line['cbc:ID']) || getText(line['ID'])
+    const lineNumber = lineId ? parseInt(lineId, 10) : index + 1
+
+    // Get item name and description (Name is primary, Description is note if different)
+    const itemName = getText(itemNode?.['cbc:Name']) || getText(itemNode?.['Name'])
+    const itemDescription = getText(itemNode?.['cbc:Description']) || getText(itemNode?.['Description'])
+    const description = itemName || itemDescription || 'Unknown Item'
+    const note = itemDescription && itemDescription !== description ? itemDescription : undefined
+
+    // Get quantity and unit code
+    const quantity = getNumber(line['cbc:InvoicedQuantity']) || getNumber(line['InvoicedQuantity']) || 0
+    const quantityUnit =
+      getAttribute(line['cbc:InvoicedQuantity'], 'unitCode') ||
+      getAttribute(line['InvoicedQuantity'], 'unitCode') ||
+      'EA'
+
+    // Get price
+    const unitPrice = getNumber(priceNode?.['cbc:PriceAmount']) || getNumber(priceNode?.['PriceAmount']) || 0
+
+    // Get line total
+    const lineTotal = getNumber(line['cbc:LineExtensionAmount']) || getNumber(line['LineExtensionAmount']) || 0
+
+    // Get VAT percent from ClassifiedTaxCategory
+    let vatPercent = 0
+    if (itemNode) {
+      const taxCategoryNode = itemNode['cac:ClassifiedTaxCategory']?.[0] || itemNode['ClassifiedTaxCategory']?.[0]
+      if (taxCategoryNode) {
+        vatPercent = getNumber(taxCategoryNode['cbc:Percent']) || getNumber(taxCategoryNode['Percent']) || 0
+      }
+    }
+
     return {
-      id: getText(line['cbc:ID']) || getText(line['ID']) || '',
-      description: getText(itemNode?.['cbc:Description']) || getText(itemNode?.['Description']) || getText(itemNode?.['cbc:Name']) || getText(itemNode?.['Name']),
-      quantity: getNumber(line['cbc:InvoicedQuantity']) || getNumber(line['InvoicedQuantity']) || 0,
-      unit_code:
-        getAttribute(line['cbc:InvoicedQuantity'], 'unitCode') ||
-        getAttribute(line['InvoicedQuantity'], 'unitCode'),
-      unit_price: getNumber(priceNode?.['cbc:PriceAmount']) || getNumber(priceNode?.['PriceAmount']) || 0,
-      line_extension_amount:
-        getNumber(line['cbc:LineExtensionAmount']) || getNumber(line['LineExtensionAmount']) || 0,
+      line_number: isNaN(lineNumber) ? index + 1 : lineNumber,
+      description,
+      note,
+      quantity,
+      quantity_unit: quantityUnit,
+      unit_price: unitPrice,
+      vat_percent: vatPercent,
+      line_total: lineTotal,
     }
   })
 }

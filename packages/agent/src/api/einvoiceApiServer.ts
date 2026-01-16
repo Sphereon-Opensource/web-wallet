@@ -87,7 +87,33 @@ export class EInvoiceApiServer {
   }
 
   private setupRoutes(): void {
+    this.router.post('/einvoice/parse-ubl', this.parseUbl.bind(this))
     this.router.post('/einvoice/send', this.sendEInvoice.bind(this))
+  }
+
+  /**
+   * POST /api/einvoice/parse-ubl
+   *
+   * Parse a UBL Invoice XML and return the extracted data.
+   *
+   * Request body: { xml: string }
+   * Response: ParsedEInvoice
+   */
+  private async parseUbl(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { xml } = req.body
+
+      if (!xml || typeof xml !== 'string') {
+        res.status(400).json({ error: 'xml field is required and must be a string' })
+        return
+      }
+
+      const parsedData = await parseUblInvoice(xml)
+      res.status(200).json(parsedData)
+    } catch (error: any) {
+      console.error('[eInvoice] Error parsing UBL:', error)
+      res.status(400).json({ error: error.message || 'Failed to parse UBL XML' })
+    }
   }
 
   /**

@@ -4,7 +4,6 @@ import {EInvoiceCreateRoute, UIContextType} from '@typings'
 import {useTranslate} from '@refinedev/core'
 import {saveSentInvoice, updateSentInvoiceStatus, fetchSentInvoiceById, SentInvoice, deleteSentInvoice} from '@/src/services/inboxService'
 import {resolveEInvoicingEndpoints} from '@/src/services/recipientService'
-import {parseUblInvoice} from '@/src/utils/ublParser'
 import {getAgentBaseUrl} from '@/src/agent/environment'
 
 /**
@@ -406,8 +405,20 @@ export const EInvoiceCreateContextProvider = (props: any): JSX.Element => {
       // Read file content
       const content = await file.text()
 
-      // Parse UBL client-side using native DOMParser
-      const parsedData = parseUblInvoice(content)
+      // Parse UBL via server-side API
+      const agentBaseUrl = getAgentBaseUrl()
+      const response = await fetch(`${agentBaseUrl}/api/einvoice/parse-ubl`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({xml: content}),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to parse UBL file')
+      }
+
+      const parsedData = await response.json()
 
       // Map parsed data to form data
       setFormData({
@@ -443,7 +454,7 @@ export const EInvoiceCreateContextProvider = (props: any): JSX.Element => {
         note: parsedData.note,
         paymentTerms: parsedData.payment_terms,
         paymentMeansCode: parsedData.payment_means_code,
-        lineItems: parsedData.line_items?.map((item) => ({
+        lineItems: parsedData.line_items?.map((item: any) => ({
           lineNumber: item.line_number,
           description: item.description,
           note: item.note,

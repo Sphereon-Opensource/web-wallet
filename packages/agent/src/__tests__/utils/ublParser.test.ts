@@ -205,17 +205,20 @@ describe('ublParser', () => {
       expect(result.line_items).toHaveLength(2)
 
       const line1 = result.line_items![0]
-      expect(line1.id).toBe('1')
+      expect(line1.line_number).toBe(1)
       expect(line1.quantity).toBe(10)
-      expect(line1.unit_code).toBe('EA')
+      expect(line1.quantity_unit).toBe('EA')
       expect(line1.unit_price).toBe(50.0)
-      expect(line1.line_extension_amount).toBe(500.0)
-      expect(line1.description).toBe('High quality widget')
+      expect(line1.line_total).toBe(500.0)
+      expect(line1.description).toBe('Widget A')
+      expect(line1.note).toBe('High quality widget')
+      expect(line1.vat_percent).toBe(0)
 
       const line2 = result.line_items![1]
-      expect(line2.id).toBe('2')
+      expect(line2.line_number).toBe(2)
       expect(line2.quantity).toBe(5)
       expect(line2.description).toBe('Widget B')
+      expect(line2.note).toBeUndefined()
     })
 
     it('should parse a minimal UBL invoice', async () => {
