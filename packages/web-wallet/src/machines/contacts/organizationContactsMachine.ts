@@ -20,11 +20,12 @@ import {
 } from '@typings'
 
 export const organizationalDataGuard = (ctx: OrganizationContactMachineContext, _event: OrganizationContactMachineEventTypes) => {
-  return !!ctx.legalName && !!ctx.displayName && !!ctx.emailAddress && !!ctx.phoneNumber
+  return !!ctx.legalName
 }
 
-export const physicalAddressGuard = (ctx: OrganizationContactMachineContext, _event: OrganizationContactMachineEventTypes) => {
-  return !!ctx.streetName && !!ctx.streetNumber && !!ctx.postalCode && !!ctx.cityName && !!ctx.provinceName && !!ctx.countryCode
+export const physicalAddressGuard = (_ctx: OrganizationContactMachineContext, _event: OrganizationContactMachineEventTypes) => {
+  // All physical address fields are optional
+  return true
 }
 
 const CONTACT_MACHINE_ID = 'organizationContactMachine'

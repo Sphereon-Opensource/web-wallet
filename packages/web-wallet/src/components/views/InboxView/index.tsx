@@ -2,7 +2,7 @@ import React, {FC, ReactElement, useState, useCallback, useMemo} from 'react'
 import {useNavigation, useTranslate} from '@refinedev/core'
 import AppHeaderBar from '@components/bars/AppHeaderBar'
 import InboxSidebar from './InboxSidebar'
-import InboxTable from './InboxTable'
+import InboxTable, {InboxSortField, SortDirection} from './InboxTable'
 import InboxDetailPanel from './InboxDetailPanel'
 import {Inbox, InboxEInvoice, InboxContact, StatusFilter, InboxItemStatus} from './types'
 import type {InvoiceStatus} from '@components/views/UBLInvoiceView'
@@ -58,16 +58,54 @@ const InboxView: FC<Props> = (props: Props): ReactElement => {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null)
   const [menuPosition, setMenuPosition] = useState<{top: number; left: number} | null>(null)
   const [mobileShowSidebar, setMobileShowSidebar] = useState(false)
+  const [sortField, setSortField] = useState<InboxSortField>('date')
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc')
 
-  // Filtered invoices based on active inbox, folder, and status
+  // Filtered and sorted invoices based on active inbox, folder, status, and sort
   const filteredInvoices = useMemo(() => {
-    return invoices.filter(inv => {
+    const filtered = invoices.filter(inv => {
       const matchesInbox = inv.inboxName === activeInbox
       const matchesFolder = inv.folderName === activeFolder
       const matchesStatus = statusFilter === 'all' || inv.status === statusFilter
       return matchesInbox && matchesFolder && matchesStatus
     })
-  }, [invoices, activeInbox, activeFolder, statusFilter])
+
+    // Sort the filtered invoices
+    return [...filtered].sort((a, b) => {
+      let comparison = 0
+      switch (sortField) {
+        case 'sender':
+          comparison = (a.supplier?.name || '').localeCompare(b.supplier?.name || '')
+          break
+        case 'type':
+          comparison = (a.invoiceType || '').localeCompare(b.invoiceType || '')
+          break
+        case 'invoiceId':
+          comparison = (a.invoiceId || '').localeCompare(b.invoiceId || '')
+          break
+        case 'amount':
+          comparison = (a.taxInclusiveAmount || 0) - (b.taxInclusiveAmount || 0)
+          break
+        case 'date':
+          comparison = new Date(a.invoiceDate || 0).getTime() - new Date(b.invoiceDate || 0).getTime()
+          break
+        case 'dueDate':
+          comparison = new Date(a.dueDate || 0).getTime() - new Date(b.dueDate || 0).getTime()
+          break
+      }
+      return sortDirection === 'asc' ? comparison : -comparison
+    })
+  }, [invoices, activeInbox, activeFolder, statusFilter, sortField, sortDirection])
+
+  // Sort handler
+  const handleSort = useCallback((field: InboxSortField) => {
+    if (sortField === field) {
+      setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc')
+    } else {
+      setSortField(field)
+      setSortDirection('asc')
+    }
+  }, [sortField])
 
   // Get pending count for a status
   const getStatusCount = useCallback(
@@ -374,6 +412,8 @@ const InboxView: FC<Props> = (props: Props): ReactElement => {
               selectedCorrelationId={selectedInvoice?.correlationId}
               openMenuId={openMenuId}
               menuPosition={menuPosition}
+              sortField={sortField}
+              sortDirection={sortDirection}
               onStatusFilterChange={handleStatusFilterChange}
               onRowClick={handleRowClick}
               onToggleSelection={handleToggleSelection}
@@ -382,6 +422,7 @@ const InboxView: FC<Props> = (props: Props): ReactElement => {
               onToggleMenu={handleToggleMenu}
               onCloseMenu={handleCloseMenu}
               onMenuAction={handleMenuAction}
+              onSort={handleSort}
               getStatusCount={getStatusCount}
             />
           </div>

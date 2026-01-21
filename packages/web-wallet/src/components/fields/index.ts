@@ -18,6 +18,12 @@ export {
   FormTextarea,
   FormDivider,
   FormSection,
+  InfoPanel,
+  StepHeader,
+  FileItem,
+  getFileTypeIcon,
+  LoadingIndicator,
+  WarningCard,
 } from './FormInput'
 
 export type {
@@ -31,4 +37,16 @@ export type {
   FormTextareaProps,
   FormDividerProps,
   FormSectionProps,
+  InfoPanelProps,
+  StepHeaderProps,
+  FileItemProps,
+  LoadingIndicatorProps,
+  WarningCardProps,
 } from './FormInput'
+
+// Contact and Address Cards
+export {default as ContactCard} from './ContactCard'
+export type {ContactCardProps, ContactCardType, ContactCardField} from './ContactCard'
+
+export {default as AddressCard} from './AddressCard'
+export type {AddressCardProps} from './AddressCard'

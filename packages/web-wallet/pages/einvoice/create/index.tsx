@@ -115,7 +115,7 @@ const EInvoiceCreatePage: FC = () => {
               description: translate('einvoice_step_recipient_description', 'Select recipient and delivery method'),
             },
             {
-              title: translate('einvoice_step_evidence_title', 'Evidence Files'),
+              title: translate('einvoice_step_evidence_title', 'Supporting Documents'),
               description: translate('einvoice_step_evidence_description', 'Attach supporting documents'),
             },
             {

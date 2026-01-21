@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useCallback, useEffect, useState} from 'react'
+import React, {useCallback, useEffect, useMemo, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import {useTranslate} from '@refinedev/core'
 import {useInterpret} from '@xstate/react'
@@ -43,7 +43,13 @@ const naturalPersonStateNavigationListener = async (
 
 export const NaturalPersonContextProvider = (props: NaturalPersonProviderProps): JSX.Element => {
   const {children} = props
-  const instance = useInterpret(naturalPersonMachine(), {
+  const navigate = useNavigate()
+  const translate = useTranslate()
+
+  // Memoize the machine to prevent recreation on every render
+  const machine = useMemo(() => naturalPersonMachine(), [])
+
+  const instance = useInterpret(machine, {
     services: {
       storeContact: async () => {
         return storeNaturalPerson()
@@ -54,10 +60,9 @@ export const NaturalPersonContextProvider = (props: NaturalPersonProviderProps):
       naturalPersonPhysicalAddressGuard,
     },
   })
-  const navigate = useNavigate()
-  const translate = useTranslate()
   const [disabled, setDisabled] = useState<boolean>(true)
   const [step, setStep] = useState<number>(1)
+  const [machineContext, setMachineContext] = useState(instance.getSnapshot().context)
   const maxInteractiveSteps: number = 5
   const maxAutoSteps: number = 1
 
@@ -130,6 +135,7 @@ export const NaturalPersonContextProvider = (props: NaturalPersonProviderProps):
     })
     instance.subscribe((state: NaturalPersonState) => {
       setDisabled(!state.can(NaturalPersonMachineEvents.NEXT))
+      setMachineContext(state.context)
     })
     const handlePopstate = () => {
       const nextStep: number = step - 1
@@ -163,35 +169,35 @@ export const NaturalPersonContextProvider = (props: NaturalPersonProviderProps):
   }, [step, instance])
 
   const onFirstNameChanged = useCallback(
-    async (event: ChangeEvent<HTMLInputElement>): Promise<void> => {
-      instance.send(NaturalPersonMachineEvents.SET_FIRST_NAME, {data: event.target.value})
+    async (value: string): Promise<void> => {
+      instance.send(NaturalPersonMachineEvents.SET_FIRST_NAME, {data: value})
     },
     [instance],
   )
-  const onMiddleNameChanged = useCallback(async (event: ChangeEvent<HTMLInputElement>): Promise<void> => {
-    instance.send(NaturalPersonMachineEvents.SET_MIDDLE_NAME, {data: event.target.value})
+  const onMiddleNameChanged = useCallback(async (value: string): Promise<void> => {
+    instance.send(NaturalPersonMachineEvents.SET_MIDDLE_NAME, {data: value})
   }, [])
   const onLastNameChanged = useCallback(
-    async (event: ChangeEvent<HTMLInputElement>): Promise<void> => {
-      instance.send(NaturalPersonMachineEvents.SET_LAST_NAME, {data: event.target.value})
+    async (value: string): Promise<void> => {
+      instance.send(NaturalPersonMachineEvents.SET_LAST_NAME, {data: value})
     },
     [instance],
   )
   const onEmailAddressChanged = useCallback(
-    async (event: ChangeEvent<HTMLInputElement>): Promise<void> => {
-      instance.send(NaturalPersonMachineEvents.SET_EMAIL_ADDRESS, {data: event.target.value})
+    async (value: string): Promise<void> => {
+      instance.send(NaturalPersonMachineEvents.SET_EMAIL_ADDRESS, {data: value})
     },
     [instance],
   )
   const onPhoneNumberChanged = useCallback(
-    async (event: ChangeEvent<HTMLInputElement>): Promise<void> => {
-      instance.send(NaturalPersonMachineEvents.SET_PHONE_NUMBER, {data: event.target.value})
+    async (value: string): Promise<void> => {
+      instance.send(NaturalPersonMachineEvents.SET_PHONE_NUMBER, {data: value})
     },
     [instance],
   )
   const onRoleAssigned = useCallback(
-    async (event: ChangeEvent<HTMLInputElement>): Promise<void> => {
-      instance.send(NaturalPersonMachineEvents.SET_ROLE, {data: event.target.value})
+    async (value: string): Promise<void> => {
+      instance.send(NaturalPersonMachineEvents.SET_ROLE, {data: value})
     },
     [instance],
   )
@@ -201,26 +207,26 @@ export const NaturalPersonContextProvider = (props: NaturalPersonProviderProps):
     },
     [instance],
   )
-  const onStreetNameNameChanged = useCallback(async (event: ChangeEvent<HTMLInputElement>): Promise<void> => {
-    instance.send(NaturalPersonMachineEvents.SET_STREET_NAME, {data: event.target.value})
+  const onStreetNameNameChanged = useCallback(async (value: string): Promise<void> => {
+    instance.send(NaturalPersonMachineEvents.SET_STREET_NAME, {data: value})
   }, [])
-  const onStreetNumberChanged = useCallback(async (event: ChangeEvent<HTMLInputElement>): Promise<void> => {
-    instance.send(NaturalPersonMachineEvents.SET_STREET_NUMBER, {data: event.target.value})
+  const onStreetNumberChanged = useCallback(async (value: string): Promise<void> => {
+    instance.send(NaturalPersonMachineEvents.SET_STREET_NUMBER, {data: value})
   }, [])
-  const onPostalCodeChanged = useCallback(async (event: ChangeEvent<HTMLInputElement>): Promise<void> => {
-    instance.send(NaturalPersonMachineEvents.SET_POSTAL_CODE, {data: event.target.value})
+  const onPostalCodeChanged = useCallback(async (value: string): Promise<void> => {
+    instance.send(NaturalPersonMachineEvents.SET_POSTAL_CODE, {data: value})
   }, [])
-  const onCityNameChanged = useCallback(async (event: ChangeEvent<HTMLInputElement>): Promise<void> => {
-    instance.send(NaturalPersonMachineEvents.SET_CITY_NAME, {data: event.target.value})
+  const onCityNameChanged = useCallback(async (value: string): Promise<void> => {
+    instance.send(NaturalPersonMachineEvents.SET_CITY_NAME, {data: value})
   }, [])
-  const onProvinceNameChanged = useCallback(async (event: ChangeEvent<HTMLInputElement>): Promise<void> => {
-    instance.send(NaturalPersonMachineEvents.SET_PROVINCE_NAME, {data: event.target.value})
+  const onProvinceNameChanged = useCallback(async (value: string): Promise<void> => {
+    instance.send(NaturalPersonMachineEvents.SET_PROVINCE_NAME, {data: value})
   }, [])
-  const onCountryCodeChanged = useCallback(async (event: ChangeEvent<HTMLInputElement>): Promise<void> => {
-    instance.send(NaturalPersonMachineEvents.SET_COUNTRY_CODE, {data: event.target.value})
+  const onCountryCodeChanged = useCallback(async (value: string): Promise<void> => {
+    instance.send(NaturalPersonMachineEvents.SET_COUNTRY_CODE, {data: value})
   }, [])
-  const onBuildingNameChanged = useCallback(async (event: ChangeEvent<HTMLInputElement>): Promise<void> => {
-    instance.send(NaturalPersonMachineEvents.SET_BUILDING_NAME, {data: event.target.value})
+  const onBuildingNameChanged = useCallback(async (value: string): Promise<void> => {
+    instance.send(NaturalPersonMachineEvents.SET_BUILDING_NAME, {data: value})
   }, [])
 
   return (
@@ -245,7 +251,7 @@ export const NaturalPersonContextProvider = (props: NaturalPersonProviderProps):
         disabled,
         step,
         maxInteractiveSteps,
-        context: instance.getSnapshot().context,
+        context: machineContext,
       }}>
       {children}
     </NaturalPersonContext.Provider>

@@ -5,12 +5,12 @@ import {UBLInvoiceDetailView} from '@components/views/UBLInvoiceView'
 import {UBLInvoiceData, InvoiceParty} from '@components/views/UBLInvoiceView/types'
 import {
   FormRow,
-  FormGroup,
   FormInput,
   FormNumberInput,
   FormSelect,
-  FormDivider,
+  FormSection,
   FormSelectOption,
+  StepHeader,
 } from '@components/fields'
 import style from './index.module.css'
 
@@ -132,127 +132,127 @@ const EInvoiceDetailsContent: FC = (): ReactElement => {
   // Render manual input form (fields become read-only when UBL is uploaded)
   const renderManualForm = () => (
     <div className={style.manualForm}>
-      <FormRow>
-        <FormGroup label={translate('einvoice_invoice_id', 'Invoice ID') as string} required={!isFormReadOnly}>
+      <FormSection title={translate('einvoice_section_invoice_details', 'Invoice Details') as string}>
+        <FormRow>
           <FormInput
             type="text"
+            label={translate('einvoice_invoice_id', 'Invoice ID') as string}
             value={formData.invoiceId || ''}
             onChange={(value) => onFormDataChange({invoiceId: value})}
             placeholder="INV-001"
             readOnly={isFormReadOnly}
+            required={!isFormReadOnly}
           />
-        </FormGroup>
-        <FormGroup label={translate('einvoice_invoice_date', 'Invoice Date') as string} required={!isFormReadOnly}>
-          <FormInput
-            type="date"
-            value={formData.invoiceDate || ''}
-            onChange={(value) => onFormDataChange({invoiceDate: value})}
-            readOnly={isFormReadOnly}
-          />
-        </FormGroup>
-      </FormRow>
-
-      <FormRow>
-        <FormGroup label={translate('einvoice_due_date', 'Due Date') as string}>
-          <FormInput
-            type="date"
-            value={formData.dueDate || ''}
-            onChange={(value) => onFormDataChange({dueDate: value})}
-            readOnly={isFormReadOnly}
-          />
-        </FormGroup>
-        <FormGroup label={translate('einvoice_currency', 'Currency') as string} required={!isFormReadOnly}>
           <FormSelect
+            label={translate('einvoice_currency', 'Currency') as string}
             value={formData.currencyCode || 'EUR'}
             options={currencyOptions}
             onChange={(value) => onFormDataChange({currencyCode: value})}
             readOnly={isFormReadOnly}
+            required={!isFormReadOnly}
           />
-        </FormGroup>
-      </FormRow>
+        </FormRow>
 
-      <FormDivider />
+        <FormRow>
+          <FormInput
+            type="date"
+            label={translate('einvoice_invoice_date', 'Invoice Date') as string}
+            value={formData.invoiceDate || ''}
+            onChange={(value) => onFormDataChange({invoiceDate: value})}
+            readOnly={isFormReadOnly}
+            required={!isFormReadOnly}
+          />
+          <FormInput
+            type="date"
+            label={translate('einvoice_due_date', 'Due Date') as string}
+            value={formData.dueDate || ''}
+            onChange={(value) => onFormDataChange({dueDate: value})}
+            readOnly={isFormReadOnly}
+          />
+        </FormRow>
+      </FormSection>
 
-      <FormRow>
-        <FormGroup label={translate('einvoice_subtotal', 'Subtotal (excl. tax)') as string} required={!isFormReadOnly}>
+      <FormSection title={translate('einvoice_section_amounts', 'Amounts') as string}>
+        <FormRow>
           <FormNumberInput
+            label={translate('einvoice_subtotal', 'Subtotal (excl. tax)') as string}
             value={formData.taxExclusiveAmount || null}
             onChange={(value) => onFormDataChange({taxExclusiveAmount: value})}
             step={0.01}
             min={0}
             placeholder="0.00"
             readOnly={isFormReadOnly}
+            required={!isFormReadOnly}
           />
-        </FormGroup>
-        <FormGroup label={translate('einvoice_tax_amount', 'Tax Amount') as string} required={!isFormReadOnly}>
           <FormNumberInput
+            label={translate('einvoice_tax_amount', 'Tax Amount') as string}
             value={formData.taxAmount || null}
             onChange={(value) => onFormDataChange({taxAmount: value})}
             step={0.01}
             min={0}
             placeholder="0.00"
             readOnly={isFormReadOnly}
+            required={!isFormReadOnly}
           />
-        </FormGroup>
-      </FormRow>
+        </FormRow>
 
-      <FormRow>
-        <FormGroup label={translate('einvoice_total', 'Total (incl. tax)') as string} required={!isFormReadOnly}>
+        <FormRow>
           <FormNumberInput
-            value={formData.taxInclusiveAmount || null}
-            onChange={(value) => onFormDataChange({taxInclusiveAmount: value})}
+            label={translate('einvoice_total', 'Total (incl. tax)') as string}
+            value={(formData.taxExclusiveAmount || 0) + (formData.taxAmount || 0) || null}
+            onChange={() => {}}
             step={0.01}
             min={0}
             placeholder="0.00"
-            readOnly={isFormReadOnly}
+            readOnly={true}
           />
-        </FormGroup>
-        <FormGroup><span /></FormGroup>
-      </FormRow>
+          <div />
+        </FormRow>
+      </FormSection>
 
-      <FormDivider />
-
-      <FormRow>
-        <FormGroup label={translate('einvoice_seller_name', 'Seller Name') as string} required={!isFormReadOnly}>
+      <FormSection title={translate('einvoice_section_seller', 'Seller') as string}>
+        <FormRow>
           <FormInput
             type="text"
+            label={translate('einvoice_seller_name', 'Name') as string}
             value={formData.sellerName || ''}
             onChange={(value) => onFormDataChange({sellerName: value})}
             placeholder="Your Company Name"
             readOnly={isFormReadOnly}
+            required={!isFormReadOnly}
           />
-        </FormGroup>
-        <FormGroup label={translate('einvoice_seller_tax_id', 'Seller Tax ID') as string}>
           <FormInput
             type="text"
+            label={translate('einvoice_seller_tax_id', 'Tax ID') as string}
             value={formData.sellerTaxId || ''}
             onChange={(value) => onFormDataChange({sellerTaxId: value})}
             placeholder="NL123456789B01"
             readOnly={isFormReadOnly}
           />
-        </FormGroup>
-      </FormRow>
+        </FormRow>
+      </FormSection>
 
-      <FormRow>
-        <FormGroup label={translate('einvoice_buyer_name', 'Buyer Name') as string} required={!isFormReadOnly}>
+      <FormSection title={translate('einvoice_section_buyer', 'Buyer') as string}>
+        <FormRow>
           <FormInput
             type="text"
+            label={translate('einvoice_buyer_name', 'Name') as string}
             value={formData.buyerName || ''}
             onChange={(value) => onFormDataChange({buyerName: value})}
             placeholder="Customer Company Name"
             readOnly={isFormReadOnly}
+            required={!isFormReadOnly}
           />
-        </FormGroup>
-        <FormGroup label={translate('einvoice_buyer_tax_id', 'Buyer Tax ID') as string}>
           <FormInput
             type="text"
+            label={translate('einvoice_buyer_tax_id', 'Tax ID') as string}
             value={formData.buyerTaxId || ''}
             onChange={(value) => onFormDataChange({buyerTaxId: value})}
             placeholder="DE987654321"
             readOnly={isFormReadOnly}
           />
-        </FormGroup>
-      </FormRow>
+        </FormRow>
+      </FormSection>
     </div>
   )
 
@@ -271,23 +271,23 @@ const EInvoiceDetailsContent: FC = (): ReactElement => {
       )}
 
       {/* Header */}
-      <div className={style.header}>
-        <h3 className={style.sectionTitle}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <StepHeader
+        title={translate('einvoice_ubl_upload_title', 'Invoice Data') as string}
+        description={
+          hasUblSource
+            ? (translate('einvoice_ubl_loaded', 'UBL document loaded') as string)
+            : (translate('einvoice_ubl_upload_subtitle', 'Upload UBL or enter manually') as string)
+        }
+        icon={
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
             <polyline points="14 2 14 8 20 8"/>
             <line x1="16" y1="13" x2="8" y2="13"/>
             <line x1="16" y1="17" x2="8" y2="17"/>
             <polyline points="10 9 9 9 8 9"/>
           </svg>
-          {translate('einvoice_ubl_upload_title', 'Invoice Data')}
-        </h3>
-        <p className={style.description}>
-          {hasUblSource
-            ? translate('einvoice_ubl_loaded', 'UBL document loaded')
-            : translate('einvoice_ubl_upload_subtitle', 'Upload UBL or enter manually')}
-        </p>
-      </div>
+        }
+      />
 
       {/* UBL Upload Area */}
       <div

@@ -1,5 +1,5 @@
 import {Interpreter, State, StateMachine} from 'xstate'
-import {ChangeEvent, createContext, ReactNode, useContext} from 'react'
+import {createContext, ReactNode, useContext} from 'react'
 import {NavigateFunction, useOutletContext} from 'react-router-dom'
 import type {Party} from '@sphereon/ssi-sdk.data-store-types'
 import {UIContextType} from '../general'
@@ -127,21 +127,21 @@ export type NaturalPersonState = State<
 >
 
 export type NaturalPersonContextType = {
-  onFirstNameChanged: (event: ChangeEvent<HTMLInputElement>) => Promise<void>
-  onMiddleNameChanged: (event: ChangeEvent<HTMLInputElement>) => Promise<void>
-  onLastNameChanged: (event: ChangeEvent<HTMLInputElement>) => Promise<void>
-  onEmailAddressChanged: (event: ChangeEvent<HTMLInputElement>) => Promise<void>
-  onPhoneNumberChanged: (event: ChangeEvent<HTMLInputElement>) => Promise<void>
+  onFirstNameChanged: (value: string) => Promise<void>
+  onMiddleNameChanged: (value: string) => Promise<void>
+  onLastNameChanged: (value: string) => Promise<void>
+  onEmailAddressChanged: (value: string) => Promise<void>
+  onPhoneNumberChanged: (value: string) => Promise<void>
   onSetOrganization: (organization: Party | undefined) => Promise<void>
-  onStreetNameNameChanged: (event: ChangeEvent<HTMLInputElement>) => Promise<void>
-  onStreetNumberChanged: (event: ChangeEvent<HTMLInputElement>) => Promise<void>
-  onPostalCodeChanged: (event: ChangeEvent<HTMLInputElement>) => Promise<void>
-  onCityNameChanged: (event: ChangeEvent<HTMLInputElement>) => Promise<void>
-  onProvinceNameChanged: (event: ChangeEvent<HTMLInputElement>) => Promise<void>
-  onCountryCodeChanged: (event: ChangeEvent<HTMLInputElement>) => Promise<void>
-  onBuildingNameChanged: (event: ChangeEvent<HTMLInputElement>) => Promise<void>
+  onStreetNameNameChanged: (value: string) => Promise<void>
+  onStreetNumberChanged: (value: string) => Promise<void>
+  onPostalCodeChanged: (value: string) => Promise<void>
+  onCityNameChanged: (value: string) => Promise<void>
+  onProvinceNameChanged: (value: string) => Promise<void>
+  onCountryCodeChanged: (value: string) => Promise<void>
+  onBuildingNameChanged: (value: string) => Promise<void>
   // TODO step 3 https://sphereon.atlassian.net/browse/DPP-124
-  onSetRole: (role: any) => Promise<void>
+  onSetRole: (value: string) => Promise<void>
 }
 
 export type ContactContextType = UIContextType &
@@ -304,17 +304,17 @@ export type OrganizationContactContextType = UIContextType &
   }
 
 export type OrganizationContactContext = {
-  onLegalNameChanged: (event: ChangeEvent<HTMLInputElement>) => Promise<void>
-  onDisplayNameChanged: (event: ChangeEvent<HTMLInputElement>) => Promise<void>
-  onEmailAddressChanged: (event: ChangeEvent<HTMLInputElement>) => Promise<void>
-  onPhoneNumberChanged: (event: ChangeEvent<HTMLInputElement>) => Promise<void>
-  onStreetNameNameChanged: (event: ChangeEvent<HTMLInputElement>) => Promise<void>
-  onStreetNumberChanged: (event: ChangeEvent<HTMLInputElement>) => Promise<void>
-  onPostalCodeChanged: (event: ChangeEvent<HTMLInputElement>) => Promise<void>
-  onCityNameChanged: (event: ChangeEvent<HTMLInputElement>) => Promise<void>
-  onProvinceNameChanged: (event: ChangeEvent<HTMLInputElement>) => Promise<void>
-  onCountryCodeChanged: (event: ChangeEvent<HTMLInputElement>) => Promise<void>
-  onBuildingNameChanged: (event: ChangeEvent<HTMLInputElement>) => Promise<void>
+  onLegalNameChanged: (value: string) => Promise<void>
+  onDisplayNameChanged: (value: string) => Promise<void>
+  onEmailAddressChanged: (value: string) => Promise<void>
+  onPhoneNumberChanged: (value: string) => Promise<void>
+  onStreetNameNameChanged: (value: string) => Promise<void>
+  onStreetNumberChanged: (value: string) => Promise<void>
+  onPostalCodeChanged: (value: string) => Promise<void>
+  onCityNameChanged: (value: string) => Promise<void>
+  onProvinceNameChanged: (value: string) => Promise<void>
+  onCountryCodeChanged: (value: string) => Promise<void>
+  onBuildingNameChanged: (value: string) => Promise<void>
 }
 
 export const useOrganizationContactMachine = () => useContext(OrganizationContactContext)

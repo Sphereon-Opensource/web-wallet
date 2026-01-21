@@ -13,6 +13,8 @@ const config: Config.InitialOptions = {
     '^@objectstorage(/?.*)$': '<rootDir>/src/helpers/ObjectStorage$1',
     '^@public(/?.*)$': '<rootDir>/public$1',
     '^@typings(/?.*)$': '<rootDir>/src/types$1',
+    '^@hooks(/?.*)$': '<rootDir>/src/hooks$1',
+    '^@services(/?.*)$': '<rootDir>/src/services$1',
   },
   extensionsToTreatAsEsm: ['.ts'],
   testEnvironment: 'jsdom',

@@ -2,8 +2,9 @@ import React, {FC, ReactElement, useMemo, useState} from 'react'
 import {useTranslate} from '@refinedev/core'
 import {useEInvoiceOutletContext} from '@machines/einvoice/eInvoiceCreateStateNavigation'
 import {UBLInvoiceCard, UBLInvoiceDetailView} from '@components/views/UBLInvoiceView'
-import {UBLInvoiceData, InvoiceParty, InvoiceEvidence, InvoiceLineItem} from '@components/views/UBLInvoiceView/types'
+import {UBLInvoiceData, InvoiceParty, InvoiceEvidence, InvoiceLineItem, InvoiceDetailTab} from '@components/views/UBLInvoiceView/types'
 import {getServiceTypeLabel} from '@/src/services/recipientService'
+import {InfoPanel, LoadingIndicator, WarningCard} from '@components/fields'
 import style from './index.module.css'
 
 const EInvoiceReviewContent: FC = (): ReactElement => {
@@ -12,6 +13,7 @@ const EInvoiceReviewContent: FC = (): ReactElement => {
 
   // State for showing full detail view modal
   const [showFullView, setShowFullView] = useState(false)
+  const [detailViewTab, setDetailViewTab] = useState<InvoiceDetailTab>('summary')
 
   // Get the selected endpoint
   const selectedEndpoint = recipient?.endpoints?.find((e) => e.id === recipient.selectedEndpointId)
@@ -100,6 +102,7 @@ const EInvoiceReviewContent: FC = (): ReactElement => {
           <div className={style.modalContent} onClick={(e) => e.stopPropagation()}>
             <UBLInvoiceDetailView
               invoice={invoiceData}
+              initialTab={detailViewTab}
               onClose={() => setShowFullView(false)}
             />
           </div>
@@ -108,17 +111,11 @@ const EInvoiceReviewContent: FC = (): ReactElement => {
 
       {/* Error Message */}
       {sendError && (
-        <div className={style.errorMessage}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <circle cx="12" cy="12" r="10" />
-            <line x1="12" y1="8" x2="12" y2="12" />
-            <line x1="12" y1="16" x2="12.01" y2="16" />
-          </svg>
-          <div className={style.errorContent}>
-            <span className={style.errorTitle}>{translate('einvoice_send_error', 'Failed to Send eInvoice')}</span>
-            <span className={style.errorText}>{sendError}</span>
-          </div>
-        </div>
+        <WarningCard
+          variant="error"
+          title={translate('einvoice_send_error', 'Failed to Send eInvoice') as string}
+          message={sendError}
+        />
       )}
 
       {/* Invoice Card - Reusing the same component as list views */}
@@ -126,7 +123,14 @@ const EInvoiceReviewContent: FC = (): ReactElement => {
         <UBLInvoiceCard
           invoice={invoiceData}
           showActions={true}
-          onViewDetails={() => setShowFullView(true)}
+          onViewDetails={() => {
+            setDetailViewTab('summary')
+            setShowFullView(true)
+          }}
+          onViewEvidence={() => {
+            setDetailViewTab('evidence')
+            setShowFullView(true)
+          }}
         />
       </div>
 
@@ -173,29 +177,16 @@ const EInvoiceReviewContent: FC = (): ReactElement => {
 
       {/* Sending Indicator */}
       {isSending && (
-        <div className={style.sendingIndicator}>
-          <div className={style.spinner} />
-          <span>{translate('einvoice_sending', 'Sending eInvoice credential...')}</span>
-        </div>
+        <LoadingIndicator text={translate('einvoice_sending', 'Sending eInvoice credential...') as string} />
       )}
 
       {/* Info Box */}
-      <div className={style.infoBox}>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <circle cx="12" cy="12" r="10" />
-          <line x1="12" y1="16" x2="12" y2="12" />
-          <line x1="12" y1="8" x2="12.01" y2="8" />
-        </svg>
-        <div className={style.infoContent}>
-          <span className={style.infoTitle}>{translate('einvoice_what_happens_title', 'What happens next?')}</span>
-          <span className={style.infoText}>
-            {translate(
-              'einvoice_review_info',
-              'Clicking "Send eInvoice" will create a verifiable eInvoice credential and deliver it to the recipient via the selected delivery method. The invoice will be stored in your sent items for tracking.'
-            )}
-          </span>
-        </div>
-      </div>
+      <InfoPanel header={translate('einvoice_what_happens_title', 'What happens next?') as string}>
+        {translate(
+          'einvoice_review_info',
+          'Clicking "Send eInvoice" will create a verifiable eInvoice credential and deliver it to the recipient via the selected delivery method. The invoice will be stored in your sent items for tracking.'
+        )}
+      </InfoPanel>
     </div>
   )
 }

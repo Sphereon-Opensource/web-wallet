@@ -1,0 +1,225 @@
+/**
+ * ListPageHeader Styles
+ * Reusable header component for list views with tabs, filters, and selection overlay
+ */
+
+.headerWrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* Main Header */
+.header {
+  display: flex;
+  align-items: stretch;
+  gap: 24px;
+  padding: 0 24px;
+  height: 54px;
+  min-height: 54px;
+  border-bottom: 1px solid #E5E7EB;
+  background-color: #FBFBFB;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  align-items: stretch;
+  gap: 24px;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #303030;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.tab:hover {
+  color: #7276F7;
+}
+
+.tabActive {
+  font-weight: 600;
+  color: #303030;
+  border-bottom-color: #7276F7;
+}
+
+.tabIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+}
+
+.tabActive .tabIcon {
+  color: #7276F7;
+}
+
+.tabLabel {
+  color: inherit;
+}
+
+.tabBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  padding: 2px 8px;
+  background-color: #E3E3E3;
+  color: #8D9099;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.tabActive .tabBadge {
+  background-color: #7276F7;
+  color: white;
+}
+
+/* Filters */
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.filterItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filterLabel {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  color: #6B7280;
+}
+
+.filterSelect {
+  padding: 6px 28px 6px 12px;
+  border: 1px solid #E5E7EB;
+  border-radius: 6px;
+  background-color: white;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  color: #374151;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%236B7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  transition: border-color 0.15s ease;
+}
+
+.filterSelect:hover {
+  border-color: #9CA3AF;
+}
+
+.filterSelect:focus {
+  outline: none;
+  border-color: #7276F7;
+}
+
+/* Spacer */
+.spacer {
+  flex: 1;
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Selection Overlay */
+.selectionOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  background-color: #F0F0FD;
+  border-bottom: 1px solid #E5E7EB;
+  z-index: 10;
+}
+
+.selectionInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.deselectButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background-color: transparent;
+  border: 1px solid #7276F7;
+  border-radius: 4px;
+  color: #7276F7;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.deselectButton:hover {
+  background-color: #7276F7;
+  color: white;
+}
+
+.selectionCount {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #7276F7;
+}
+
+.selectionActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.deleteButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background-color: #DC2626;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.deleteButton:hover {
+  background-color: #B91C1C;
+}
+
+.deleteButton svg {
+  width: 16px;
+  height: 16px;
+}

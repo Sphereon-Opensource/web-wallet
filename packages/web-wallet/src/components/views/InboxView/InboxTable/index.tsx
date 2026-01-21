@@ -5,6 +5,10 @@ import {InboxEInvoice, StatusFilter, STATUS_TABS, InboxItemStatus, formatCurrenc
 import {MeatballsIcon, InfoIcon, DocumentIcon, CheckIcon, RejectIcon, EmptyInboxIcon, TrashIcon} from '../icons'
 import styles from './index.module.css'
 
+// Sort types
+export type InboxSortField = 'sender' | 'type' | 'invoiceId' | 'amount' | 'date' | 'dueDate'
+export type SortDirection = 'asc' | 'desc'
+
 /**
  * InboxTable Component
  *
@@ -27,6 +31,8 @@ interface Props {
   selectedCorrelationId?: string  // The currently selected row
   openMenuId: string | null  // correlationId of open menu
   menuPosition: {top: number; left: number} | null
+  sortField: InboxSortField
+  sortDirection: SortDirection
   onStatusFilterChange: (status: StatusFilter) => void
   onRowClick: (invoice: InboxEInvoice) => void
   onToggleSelection: (correlationId: string, e: React.MouseEvent) => void
@@ -35,6 +41,7 @@ interface Props {
   onToggleMenu: (correlationId: string, e: React.MouseEvent<HTMLButtonElement>) => void
   onCloseMenu: () => void
   onMenuAction: (action: string, invoice: InboxEInvoice, e: React.MouseEvent) => void
+  onSort: (field: InboxSortField) => void
   getStatusCount: (status: InboxItemStatus) => number
   className?: string
 }
@@ -47,6 +54,8 @@ const InboxTable: FC<Props> = (props: Props): ReactElement => {
     selectedCorrelationId,
     openMenuId,
     menuPosition,
+    sortField,
+    sortDirection,
     onStatusFilterChange,
     onRowClick,
     onToggleSelection,
@@ -55,6 +64,7 @@ const InboxTable: FC<Props> = (props: Props): ReactElement => {
     onToggleMenu,
     onCloseMenu,
     onMenuAction,
+    onSort,
     getStatusCount,
     className,
   } = props
@@ -192,7 +202,7 @@ const InboxTable: FC<Props> = (props: Props): ReactElement => {
           )}
 
           {/* Desktop Table View */}
-          <div className={styles.table}>
+          <div className={`${styles.table} ${selectedIds.size > 0 ? styles.tableWithSelections : ''}`}>
             <div className={styles.tableHeader}>
               <div className={styles.checkboxCell}>
                 <input
@@ -208,18 +218,48 @@ const InboxTable: FC<Props> = (props: Props): ReactElement => {
                   aria-label="Select all"
                 />
               </div>
-              <div className={`${styles.headerCell} ${styles.cellSender}`}>
+              <div
+                className={`${styles.headerCell} ${styles.cellSender} ${styles.headerCellSortable} ${sortField === 'sender' ? styles.headerCellSorted : ''}`}
+                onClick={() => onSort('sender')}
+              >
                 {translate('einvoice_column_from', 'From')}
+                <SortIcon field="sender" sortField={sortField} sortDirection={sortDirection} />
               </div>
-              <div className={`${styles.headerCell} ${styles.cellType}`}>{translate('einvoice_column_type', 'Type')}</div>
-              <div className={`${styles.headerCell} ${styles.cellInvoice}`}>
+              <div
+                className={`${styles.headerCell} ${styles.cellType} ${styles.headerCellSortable} ${sortField === 'type' ? styles.headerCellSorted : ''}`}
+                onClick={() => onSort('type')}
+              >
+                {translate('einvoice_column_type', 'Type')}
+                <SortIcon field="type" sortField={sortField} sortDirection={sortDirection} />
+              </div>
+              <div
+                className={`${styles.headerCell} ${styles.cellInvoice} ${styles.headerCellSortable} ${sortField === 'invoiceId' ? styles.headerCellSorted : ''}`}
+                onClick={() => onSort('invoiceId')}
+              >
                 {translate('einvoice_column_invoice_id', 'Invoice')}
+                <SortIcon field="invoiceId" sortField={sortField} sortDirection={sortDirection} />
               </div>
-              <div className={`${styles.headerCell} ${styles.cellAmount}`}>
+              <div
+                className={`${styles.headerCell} ${styles.cellAmount} ${styles.headerCellSortable} ${sortField === 'amount' ? styles.headerCellSorted : ''}`}
+                onClick={() => onSort('amount')}
+              >
                 {translate('einvoice_column_amount', 'Amount')}
+                <SortIcon field="amount" sortField={sortField} sortDirection={sortDirection} />
               </div>
-              <div className={`${styles.headerCell} ${styles.cellDate}`}>{translate('einvoice_column_date', 'Date')}</div>
-              <div className={`${styles.headerCell} ${styles.cellDue}`}>{translate('einvoice_column_due', 'Due')}</div>
+              <div
+                className={`${styles.headerCell} ${styles.cellDate} ${styles.headerCellSortable} ${sortField === 'date' ? styles.headerCellSorted : ''}`}
+                onClick={() => onSort('date')}
+              >
+                {translate('einvoice_column_date', 'Date')}
+                <SortIcon field="date" sortField={sortField} sortDirection={sortDirection} />
+              </div>
+              <div
+                className={`${styles.headerCell} ${styles.cellDue} ${styles.headerCellSortable} ${sortField === 'dueDate' ? styles.headerCellSorted : ''}`}
+                onClick={() => onSort('dueDate')}
+              >
+                {translate('einvoice_column_due', 'Due')}
+                <SortIcon field="dueDate" sortField={sortField} sortDirection={sortDirection} />
+              </div>
               <div className={`${styles.headerCell} ${styles.cellStatus}`}>
                 {translate('einvoice_column_status', 'Status')}
               </div>
@@ -366,6 +406,31 @@ const InboxTable: FC<Props> = (props: Props): ReactElement => {
         </div>
       )}
     </div>
+  )
+}
+
+// Sort Icon Component
+const SortIcon: React.FC<{field: InboxSortField; sortField: InboxSortField; sortDirection: SortDirection}> = ({
+  field,
+  sortField,
+  sortDirection,
+}) => {
+  if (sortField !== field) {
+    return (
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className={styles.sortIconInactive}>
+        <path d="M6 2L9 5H3L6 2Z" fill="currentColor" />
+        <path d="M6 10L3 7H9L6 10Z" fill="currentColor" />
+      </svg>
+    )
+  }
+  return (
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className={styles.sortIcon}>
+      {sortDirection === 'asc' ? (
+        <path d="M6 2L9 5H3L6 2Z" fill="currentColor" />
+      ) : (
+        <path d="M6 10L3 7H9L6 10Z" fill="currentColor" />
+      )}
+    </svg>
   )
 }
 

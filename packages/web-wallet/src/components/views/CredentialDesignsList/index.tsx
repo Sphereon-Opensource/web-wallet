@@ -154,16 +154,14 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
     return actions
   }
 
-  if (credentialDesignsError) {
-    return <div>{translate('data_provider_error_message')}</div>
-  }
-
   if (credentialDesignsLoading) {
     return <div>{translate('data_provider_loading_message')}</div>
   }
 
-  const designsData = credentialDesigns?.data ?? []
-  const totalDesigns = credentialDesigns?.total ?? 0
+  // Handle error state - show empty state with option to create designs
+  // This allows the page to function even when the Supabase service is not running
+  const designsData = credentialDesignsError ? [] : (credentialDesigns?.data ?? [])
+  const totalDesigns = credentialDesignsError ? 0 : (credentialDesigns?.total ?? 0)
 
   const onPageChange = (_event: ChangeEvent<unknown>, page: number) => {
     setCurrent(page)
@@ -183,6 +181,20 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
 
   return (
     <div>
+      {credentialDesignsError && (
+        <div style={{
+          padding: '12px 16px',
+          marginBottom: '16px',
+          backgroundColor: '#FEF3C7',
+          border: '1px solid #F59E0B',
+          borderRadius: '6px',
+          color: '#92400E',
+          fontSize: '14px',
+          fontFamily: 'Poppins, sans-serif',
+        }}>
+          {translate('credential_designs_connection_error', 'Unable to connect to the credential design service. You can still try to create new designs.')}
+        </div>
+      )}
       <SSITableView
         data={designsData}
         columns={columns}

@@ -4,6 +4,8 @@
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+    overflow: hidden;
+    min-height: 0;
 }
 
 .contentContainer {
@@ -12,6 +14,9 @@
     gap: 32px;
     padding: 31px 24px;
     align-items: flex-start;
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
 }
 
 .outletContainer {
@@ -19,6 +24,7 @@
     flex-direction: column;
     gap: 16px;
     min-height: 0;
+    width: 100%;
     max-width: 700px;
 }
 
@@ -28,70 +34,4 @@
     justify-content: flex-end;
     padding-top: 16px;
     margin-top: 8px;
-}
-
-/* Legacy styles kept for content components */
-.titleCaption {
-    color: #000;
-    font-size: 24px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-}
-
-.subTitleCaption {
-    max-width: 910px;
-    margin-bottom: 22px;
-    color: rgba(48, 48, 48);
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    width: 765px;
-}
-
-.summaryCategoryLabel {
-    color: #303030;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-}
-
-.summaryCategoryDescription {
-    color: #303030;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    letter-spacing: 0.14px;
-}
-
-.summaryContainer {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-}
-
-.summaryCategoryContainer {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.publishingContainer {
-    display: flex;
-    flex-direction: column;
-    gap: 35px;
-    place-items: center;
-    flex-grow: 1;
-    justify-content: center
-}
-
-.publishingAssetLabel {
-    color: #303030;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
 }

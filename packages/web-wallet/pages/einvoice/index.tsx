@@ -1,8 +1,9 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react'
+import React, {useCallback, useEffect, useMemo, useState, ReactNode} from 'react'
 import {useLocation, useNavigate} from 'react-router-dom'
 import {useNavigation, useTranslate} from '@refinedev/core'
 import {PrimaryButton} from '@sphereon/ui-components.ssi-react'
 import AppHeaderBar from '@components/bars/AppHeaderBar'
+import {ListPageHeader, TabItem} from '@components/tables'
 import {
   fetchSentInvoices,
   fetchSentInvoiceById,
@@ -21,6 +22,11 @@ import {staticPropsWithSST} from '@/src/i18n/server'
 
 // Tab type
 type TabType = 'received' | 'sent'
+
+// Sort types
+type SentSortField = 'recipient' | 'invoiceId' | 'amount' | 'date' | 'status'
+type ReceivedSortField = 'supplier' | 'invoiceId' | 'amount' | 'date' | 'dueDate'
+type SortDirection = 'asc' | 'desc'
 
 // Map SentInvoice to InboxEInvoice format for consistent detail panel display
 const mapSentToInboxEInvoice = (sent: SentInvoice): InboxEInvoice => {
@@ -125,6 +131,14 @@ const EInvoiceListPage: React.FC = () => {
 
   // Loading state
   const [isLoading, setIsLoading] = useState(true)
+
+  // Sort state for sent invoices
+  const [sentSortField, setSentSortField] = useState<SentSortField>('date')
+  const [sentSortDirection, setSentSortDirection] = useState<SortDirection>('desc')
+
+  // Sort state for received invoices
+  const [receivedSortField, setReceivedSortField] = useState<ReceivedSortField>('date')
+  const [receivedSortDirection, setReceivedSortDirection] = useState<SortDirection>('desc')
 
   // Fetch sent invoices on mount and when tab changes to sent
   useEffect(() => {
@@ -276,6 +290,53 @@ const EInvoiceListPage: React.FC = () => {
     setSelectedReceivedIds(new Set())
   }, [selectedReceivedIds, receivedInvoices, selectedReceivedInvoice])
 
+  // Current selection count based on active tab for ListPageHeader
+  const currentSelectionCount = activeTab === 'sent' ? selectedSentIds.size : selectedReceivedIds.size
+  const handleClearSelection = useCallback(() => {
+    if (activeTab === 'sent') {
+      setSelectedSentIds(new Set())
+    } else {
+      setSelectedReceivedIds(new Set())
+    }
+  }, [activeTab])
+
+  const handleDeleteCurrentSelection = useCallback(async () => {
+    if (activeTab === 'sent') {
+      await handleDeleteSelectedSent()
+    } else {
+      await handleDeleteSelectedReceived()
+    }
+  }, [activeTab, handleDeleteSelectedSent, handleDeleteSelectedReceived])
+
+  // Build tabs for ListPageHeader
+  const headerTabs: TabItem[] = useMemo(() => {
+    return [
+      {
+        id: 'received',
+        label: translate('einvoice_tab_received', 'Received') as string,
+        count: receivedInvoices.length,
+        icon: (
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" />
+            <path d="M3 9h18" />
+            <path d="M9 21V9" />
+          </svg>
+        ),
+      },
+      {
+        id: 'sent',
+        label: translate('einvoice_tab_sent', 'Sent') as string,
+        count: sentInvoices.length,
+        icon: (
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M22 2L11 13" />
+            <path d="M22 2L15 22L11 13L2 9L22 2Z" />
+          </svg>
+        ),
+      },
+    ]
+  }, [translate, receivedInvoices.length, sentInvoices.length])
+
   // Format currency
   const formatCurrency = (amount: number, currency: string): string => {
     return new Intl.NumberFormat('en-EU', {
@@ -293,6 +354,82 @@ const EInvoiceListPage: React.FC = () => {
       year: 'numeric',
     })
   }
+
+  // Handle sort for sent invoices
+  const handleSentSort = useCallback(
+    (field: SentSortField) => {
+      if (sentSortField === field) {
+        setSentSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'))
+      } else {
+        setSentSortField(field)
+        setSentSortDirection('asc')
+      }
+    },
+    [sentSortField]
+  )
+
+  // Handle sort for received invoices
+  const handleReceivedSort = useCallback(
+    (field: ReceivedSortField) => {
+      if (receivedSortField === field) {
+        setReceivedSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'))
+      } else {
+        setReceivedSortField(field)
+        setReceivedSortDirection('asc')
+      }
+    },
+    [receivedSortField]
+  )
+
+  // Sorted sent invoices
+  const sortedSentInvoices = useMemo(() => {
+    return [...sentInvoices].sort((a, b) => {
+      let comparison = 0
+      switch (sentSortField) {
+        case 'recipient':
+          comparison = (a.recipientName || a.buyerName || '').localeCompare(b.recipientName || b.buyerName || '')
+          break
+        case 'invoiceId':
+          comparison = a.invoiceId.localeCompare(b.invoiceId)
+          break
+        case 'amount':
+          comparison = a.payableAmount - b.payableAmount
+          break
+        case 'date':
+          comparison = new Date(a.invoiceDate).getTime() - new Date(b.invoiceDate).getTime()
+          break
+        case 'status':
+          comparison = a.status.localeCompare(b.status)
+          break
+      }
+      return sentSortDirection === 'asc' ? comparison : -comparison
+    })
+  }, [sentInvoices, sentSortField, sentSortDirection])
+
+  // Sorted received invoices
+  const sortedReceivedInvoices = useMemo(() => {
+    return [...receivedInvoices].sort((a, b) => {
+      let comparison = 0
+      switch (receivedSortField) {
+        case 'supplier':
+          comparison = (a.supplier?.name || '').localeCompare(b.supplier?.name || '')
+          break
+        case 'invoiceId':
+          comparison = a.invoiceId.localeCompare(b.invoiceId)
+          break
+        case 'amount':
+          comparison = a.taxInclusiveAmount - b.taxInclusiveAmount
+          break
+        case 'date':
+          comparison = new Date(a.invoiceDate).getTime() - new Date(b.invoiceDate).getTime()
+          break
+        case 'dueDate':
+          comparison = new Date(a.dueDate || 0).getTime() - new Date(b.dueDate || 0).getTime()
+          break
+      }
+      return receivedSortDirection === 'asc' ? comparison : -comparison
+    })
+  }, [receivedInvoices, receivedSortField, receivedSortDirection])
 
   // Handle menu toggle
   const handleToggleMenu = useCallback((id: string, e: React.MouseEvent<HTMLButtonElement>): void => {
@@ -515,27 +652,7 @@ const EInvoiceListPage: React.FC = () => {
           </div>
         </div>
       ) : (
-        <div className={style.table}>
-          {/* Bulk Actions Bar */}
-          {selectedSentIds.size > 0 && (
-            <div className={style.bulkActionsBar}>
-              <span className={style.bulkActionsCount}>
-                {selectedSentIds.size} {selectedSentIds.size === 1 ? 'item' : 'items'} selected
-              </span>
-              <button
-                type="button"
-                className={style.bulkDeleteButton}
-                onClick={handleDeleteSelectedSent}
-                aria-label={translate('action_delete_selected', 'Delete selected')}
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <polyline points="3 6 5 6 21 6" />
-                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                </svg>
-                {translate('action_delete_selected', 'Delete Selected')}
-              </button>
-            </div>
-          )}
+        <div className={`${style.table} ${selectedSentIds.size > 0 ? style.tableWithSelections : ''}`}>
           <div className={style.tableHeader}>
             <div className={style.checkboxCell}>
               <input
@@ -551,21 +668,45 @@ const EInvoiceListPage: React.FC = () => {
                 aria-label="Select all"
               />
             </div>
-            <div className={`${style.headerCell} ${style.cellTo}`}>{translate('einvoice_column_to', 'To')}</div>
-            <div className={`${style.headerCell} ${style.cellInvoice}`}>
+            <div
+              className={`${style.headerCell} ${style.headerCellSortable} ${style.cellTo} ${sentSortField === 'recipient' ? style.headerCellSorted : ''}`}
+              onClick={() => handleSentSort('recipient')}
+            >
+              {translate('einvoice_column_to', 'To')}
+              <SentSortIconComponent field="recipient" sortField={sentSortField} sortDirection={sentSortDirection} />
+            </div>
+            <div
+              className={`${style.headerCell} ${style.headerCellSortable} ${style.cellInvoice} ${sentSortField === 'invoiceId' ? style.headerCellSorted : ''}`}
+              onClick={() => handleSentSort('invoiceId')}
+            >
               {translate('einvoice_column_invoice_id', 'Invoice')}
+              <SentSortIconComponent field="invoiceId" sortField={sentSortField} sortDirection={sentSortDirection} />
             </div>
-            <div className={`${style.headerCell} ${style.cellAmount}`}>
+            <div
+              className={`${style.headerCell} ${style.headerCellSortable} ${style.cellAmount} ${sentSortField === 'amount' ? style.headerCellSorted : ''}`}
+              onClick={() => handleSentSort('amount')}
+            >
               {translate('einvoice_column_amount', 'Amount')}
+              <SentSortIconComponent field="amount" sortField={sentSortField} sortDirection={sentSortDirection} />
             </div>
-            <div className={`${style.headerCell} ${style.cellDate}`}>{translate('einvoice_column_date', 'Date')}</div>
-            <div className={`${style.headerCell} ${style.cellStatus}`}>
+            <div
+              className={`${style.headerCell} ${style.headerCellSortable} ${style.cellDate} ${sentSortField === 'date' ? style.headerCellSorted : ''}`}
+              onClick={() => handleSentSort('date')}
+            >
+              {translate('einvoice_column_date', 'Date')}
+              <SentSortIconComponent field="date" sortField={sentSortField} sortDirection={sentSortDirection} />
+            </div>
+            <div
+              className={`${style.headerCell} ${style.headerCellSortable} ${style.cellStatus} ${sentSortField === 'status' ? style.headerCellSorted : ''}`}
+              onClick={() => handleSentSort('status')}
+            >
               {translate('einvoice_column_status', 'Status')}
+              <SentSortIconComponent field="status" sortField={sentSortField} sortDirection={sentSortDirection} />
             </div>
             <div className={`${style.headerCell} ${style.cellActions}`} />
           </div>
 
-          {sentInvoices.map((invoice) => {
+          {sortedSentInvoices.map((invoice) => {
             const statusBadge = getSentStatusBadge(invoice.status)
             return (
               <div
@@ -647,27 +788,7 @@ const EInvoiceListPage: React.FC = () => {
           )}
         </div>
       ) : (
-        <div className={style.table}>
-          {/* Bulk Actions Bar */}
-          {selectedReceivedIds.size > 0 && (
-            <div className={style.bulkActionsBar}>
-              <span className={style.bulkActionsCount}>
-                {selectedReceivedIds.size} {selectedReceivedIds.size === 1 ? 'item' : 'items'} selected
-              </span>
-              <button
-                type="button"
-                className={style.bulkDeleteButton}
-                onClick={handleDeleteSelectedReceived}
-                aria-label={translate('action_delete_selected', 'Delete selected')}
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <polyline points="3 6 5 6 21 6" />
-                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                </svg>
-                {translate('action_delete_selected', 'Delete Selected')}
-              </button>
-            </div>
-          )}
+        <div className={`${style.table} ${selectedReceivedIds.size > 0 ? style.tableWithSelections : ''}`}>
           <div className={style.tableHeader}>
             <div className={style.checkboxCell}>
               <input
@@ -683,19 +804,45 @@ const EInvoiceListPage: React.FC = () => {
                 aria-label="Select all"
               />
             </div>
-            <div className={`${style.headerCell} ${style.cellFrom}`}>{translate('einvoice_column_from', 'From')}</div>
-            <div className={`${style.headerCell} ${style.cellInvoice}`}>
+            <div
+              className={`${style.headerCell} ${style.headerCellSortable} ${style.cellFrom} ${receivedSortField === 'supplier' ? style.headerCellSorted : ''}`}
+              onClick={() => handleReceivedSort('supplier')}
+            >
+              {translate('einvoice_column_from', 'From')}
+              <ReceivedSortIconComponent field="supplier" sortField={receivedSortField} sortDirection={receivedSortDirection} />
+            </div>
+            <div
+              className={`${style.headerCell} ${style.headerCellSortable} ${style.cellInvoice} ${receivedSortField === 'invoiceId' ? style.headerCellSorted : ''}`}
+              onClick={() => handleReceivedSort('invoiceId')}
+            >
               {translate('einvoice_column_invoice_id', 'Invoice')}
+              <ReceivedSortIconComponent field="invoiceId" sortField={receivedSortField} sortDirection={receivedSortDirection} />
             </div>
-            <div className={`${style.headerCell} ${style.cellAmount}`}>
+            <div
+              className={`${style.headerCell} ${style.headerCellSortable} ${style.cellAmount} ${receivedSortField === 'amount' ? style.headerCellSorted : ''}`}
+              onClick={() => handleReceivedSort('amount')}
+            >
               {translate('einvoice_column_amount', 'Amount')}
+              <ReceivedSortIconComponent field="amount" sortField={receivedSortField} sortDirection={receivedSortDirection} />
             </div>
-            <div className={`${style.headerCell} ${style.cellDate}`}>{translate('einvoice_column_date', 'Date')}</div>
-            <div className={`${style.headerCell} ${style.cellDue}`}>{translate('einvoice_column_due', 'Due')}</div>
+            <div
+              className={`${style.headerCell} ${style.headerCellSortable} ${style.cellDate} ${receivedSortField === 'date' ? style.headerCellSorted : ''}`}
+              onClick={() => handleReceivedSort('date')}
+            >
+              {translate('einvoice_column_date', 'Date')}
+              <ReceivedSortIconComponent field="date" sortField={receivedSortField} sortDirection={receivedSortDirection} />
+            </div>
+            <div
+              className={`${style.headerCell} ${style.headerCellSortable} ${style.cellDue} ${receivedSortField === 'dueDate' ? style.headerCellSorted : ''}`}
+              onClick={() => handleReceivedSort('dueDate')}
+            >
+              {translate('einvoice_column_due', 'Due')}
+              <ReceivedSortIconComponent field="dueDate" sortField={receivedSortField} sortDirection={receivedSortDirection} />
+            </div>
             <div className={`${style.headerCell} ${style.cellActions}`} />
           </div>
 
-          {receivedInvoices.map((invoice) => (
+          {sortedReceivedInvoices.map((invoice) => (
             <div
               key={invoice.correlationId}
               className={`${style.tableRow} ${selectedReceivedInvoice?.correlationId === invoice.correlationId ? style.selected : ''}`}
@@ -893,39 +1040,22 @@ const EInvoiceListPage: React.FC = () => {
         <div
           className={`${style.contentArea} ${selectedSentInvoice || selectedReceivedInvoice ? style.contentAreaWithDetail : ''}`}
         >
-          {/* Tab Navigation */}
-          <div className={style.tabNavigation}>
-            <button
-              className={`${style.tabButton} ${activeTab === 'received' ? style.tabButtonActive : ''}`}
-              onClick={() => handleTabChange('received')}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="3" y="3" width="18" height="18" rx="2" />
-                <path d="M3 9h18" />
-                <path d="M9 21V9" />
-              </svg>
-              {translate('einvoice_tab_received', 'Received')}
-              {receivedInvoices.length > 0 && <span className={style.tabBadge}>{receivedInvoices.length}</span>}
-            </button>
-            <button
-              className={`${style.tabButton} ${activeTab === 'sent' ? style.tabButtonActive : ''}`}
-              onClick={() => handleTabChange('sent')}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M22 2L11 13" />
-                <path d="M22 2L15 22L11 13L2 9L22 2Z" />
-              </svg>
-              {translate('einvoice_tab_sent', 'Sent')}
-              {sentInvoices.length > 0 && <span className={style.tabBadge}>{sentInvoices.length}</span>}
-            </button>
-            <div className={style.tabSpacer} />
-            <div className={style.actionButtonContainer}>
+          {/* Header with tabs, selection overlay */}
+          <ListPageHeader
+            tabs={headerTabs}
+            activeTab={activeTab}
+            onTabChange={(tabId) => handleTabChange(tabId as TabType)}
+            selectionCount={currentSelectionCount}
+            onClearSelection={handleClearSelection}
+            onDeleteSelected={handleDeleteCurrentSelection}
+            selectionLabel={{singular: 'invoice', plural: 'invoices'}}
+            actions={
               <PrimaryButton
                 caption={translate('einvoice_action_send', 'Send eInvoice')}
                 onClick={handleCreateInvoice}
               />
-            </div>
-          </div>
+            }
+          />
 
           {/* Tab Content */}
           {isLoading ? (
@@ -973,6 +1103,56 @@ const EInvoiceListPage: React.FC = () => {
         )}
       </div>
     </div>
+  )
+}
+
+// Sort Icon Component for Sent Invoices
+const SentSortIconComponent: React.FC<{
+  field: SentSortField
+  sortField: SentSortField
+  sortDirection: SortDirection
+}> = ({field, sortField, sortDirection}) => {
+  if (sortField !== field) {
+    return (
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className={style.sortIconInactive}>
+        <path d="M6 2L9 5H3L6 2Z" fill="currentColor" />
+        <path d="M6 10L3 7H9L6 10Z" fill="currentColor" />
+      </svg>
+    )
+  }
+  return (
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className={style.sortIcon}>
+      {sortDirection === 'asc' ? (
+        <path d="M6 2L9 5H3L6 2Z" fill="currentColor" />
+      ) : (
+        <path d="M6 10L3 7H9L6 10Z" fill="currentColor" />
+      )}
+    </svg>
+  )
+}
+
+// Sort Icon Component for Received Invoices
+const ReceivedSortIconComponent: React.FC<{
+  field: ReceivedSortField
+  sortField: ReceivedSortField
+  sortDirection: SortDirection
+}> = ({field, sortField, sortDirection}) => {
+  if (sortField !== field) {
+    return (
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className={style.sortIconInactive}>
+        <path d="M6 2L9 5H3L6 2Z" fill="currentColor" />
+        <path d="M6 10L3 7H9L6 10Z" fill="currentColor" />
+      </svg>
+    )
+  }
+  return (
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className={style.sortIcon}>
+      {sortDirection === 'asc' ? (
+        <path d="M6 2L9 5H3L6 2Z" fill="currentColor" />
+      ) : (
+        <path d="M6 10L3 7H9L6 10Z" fill="currentColor" />
+      )}
+    </svg>
   )
 }
 

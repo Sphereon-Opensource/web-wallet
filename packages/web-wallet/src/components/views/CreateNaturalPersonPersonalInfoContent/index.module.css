@@ -1,31 +1,16 @@
-.createNaturalPersonFormContainer {
+.container {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    background-color: var(--theme-bg-card, #FFFFFF);
-    padding: 24px;
-    border-radius: 12px;
-    border: 1px solid var(--theme-border-secondary, #E5E7EB);
+    gap: 24px;
+    background-color: var(--theme-form-bg, #FBFBFB);
+    padding: var(--theme-form-padding, 48px 24px);
+    border-radius: var(--theme-form-radius, 24px);
+    border: 1px solid var(--theme-form-border, #E3E3E3);
+    width: 100%;
     max-width: 700px;
 }
 
-.createNaturalPersonFormContainer > div > input[class^="TextInputField" i] {
+.container > div > input[class^="TextInputField" i] {
     width: 100%;
     max-width: 582px;
-}
-
-.titleCaption {
-    color: var(--theme-text-primary, #1F2937);
-    font-size: 18px;
-    font-weight: 600;
-    line-height: normal;
-    margin: 0;
-}
-
-.subTitleCaption {
-    color: var(--tw-gray-500, #6B7280);
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 1.5;
-    margin: 0 0 8px 0;
 }

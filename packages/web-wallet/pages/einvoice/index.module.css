@@ -222,6 +222,33 @@
     letter-spacing: 0.05em;
 }
 
+.headerCellSortable {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    user-select: none;
+    transition: color 0.15s ease;
+}
+
+.headerCellSortable:hover {
+    color: #374151;
+}
+
+.headerCellSorted {
+    color: #7C3AED;
+}
+
+.sortIcon {
+    color: #374151;
+    margin-left: 4px;
+}
+
+.sortIconInactive {
+    opacity: 0.3;
+    margin-left: 4px;
+}
+
 .tableRow {
     display: flex;
     align-items: center;
@@ -271,6 +298,20 @@
     height: 16px;
     cursor: pointer;
     accent-color: #7276F7;
+}
+
+/* Hide row checkboxes by default, show on hover or when selections exist */
+.tableRow .checkbox {
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.tableRow:hover .checkbox {
+    opacity: 1;
+}
+
+.tableWithSelections .tableRow .checkbox {
+    opacity: 1;
 }
 
 /* Bulk Actions Bar */

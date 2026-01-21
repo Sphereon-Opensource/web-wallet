@@ -2,9 +2,10 @@
     display: flex;
     flex-direction: column;
     gap: 24px;
-    background-color: white;
-    padding: 24px;
-    border-radius: 8px;
+    background-color: var(--theme-form-bg, #FBFBFB);
+    padding: var(--theme-form-padding, 48px 24px);
+    border-radius: var(--theme-form-radius, 24px);
+    border: 1px solid var(--theme-form-border, #E3E3E3);
     max-width: 700px;
 }
 
@@ -35,36 +36,7 @@
     line-height: 1.5;
 }
 
-/* Info Box */
-.infoBox {
-    display: flex;
-    gap: 12px;
-    padding: 16px;
-    background-color: var(--tw-blue-50);
-    border-radius: 8px;
-    font-size: 14px;
-    color: var(--tw-blue-800);
-    line-height: 1.5;
-}
-
-.infoBox svg {
-    flex-shrink: 0;
-    margin-top: 2px;
-}
-
-/* Search Section */
-.searchSection {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.searchLabel {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--tw-gray-700);
-}
-
+/* Search Container */
 .searchContainer {
     position: relative;
 }
@@ -80,30 +52,39 @@
     left: 14px;
     color: var(--theme-text-tertiary);
     pointer-events: none;
+    z-index: 1;
 }
 
 .searchInput {
     width: 100%;
-    padding: 14px 44px;
-    border: 1px solid var(--tw-gray-300);
-    border-radius: 8px;
-    font-size: 14px;
+    padding: var(--theme-form-input-padding, 12px 14px);
+    padding-left: 44px;
+    border: 1px solid var(--theme-form-input-border, #d1d5db);
+    border-radius: var(--theme-form-input-radius, 6px);
+    font-family: var(--theme-font-family, 'Poppins', sans-serif);
+    font-size: var(--theme-font-size-sm, 14px);
+    background-color: var(--theme-form-input-bg, #FFFFFF);
     transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+}
+
+.searchInput:hover {
+    border-color: var(--theme-form-input-border-hover, #9ca3af);
 }
 
 .searchInput:focus {
     outline: none;
-    border-color: var(--theme-color-accent);
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    border-color: var(--theme-form-input-border-focus, #4f46e5);
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
 }
 
 .searchInput:disabled {
-    background-color: var(--tw-gray-100);
+    background-color: var(--tw-gray-100, #E8E9EC);
     cursor: not-allowed;
 }
 
 .searchInput::placeholder {
-    color: var(--theme-text-tertiary);
+    color: var(--theme-text-tertiary, #9ca3af);
 }
 
 .clearSearchButton {
@@ -239,20 +220,22 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 16px;
-    background-color: var(--tw-gray-100);
-    border-radius: 8px;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, rgba(114, 118, 247, 0.08) 0%, rgba(124, 64, 232, 0.08) 100%);
+    border: 1px solid rgba(114, 118, 247, 0.2);
+    border-radius: 12px;
     font-size: 14px;
-    color: var(--tw-gray-600);
+    font-weight: 500;
+    color: var(--theme-color-primary, #7276F7);
 }
 
 .spinner {
     width: 20px;
     height: 20px;
-    border: 2px solid var(--tw-gray-200);
-    border-top-color: var(--theme-color-accent);
+    border: 2px solid rgba(114, 118, 247, 0.2);
+    border-top-color: var(--theme-color-primary, #7276F7);
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation: spin 0.8s linear infinite;
     flex-shrink: 0;
 }
 
@@ -373,18 +356,8 @@
     background-color: var(--tw-amber-600);
 }
 
-/* Recipient Card */
-.recipientCard {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    padding: 20px;
-    background-color: var(--tw-emerald-50);
-    border: 1px solid var(--tw-emerald-300);
-    border-radius: 12px;
-}
-
-.recipientHeader {
+/* Recipient Card Header */
+.recipientCardHeader {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -393,12 +366,12 @@
 .recipientBadge {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
+    gap: 5px;
+    padding: 4px 10px;
     background-color: var(--tw-emerald-100);
-    color: var(--tw-green-800);
+    color: var(--tw-green-700);
     border-radius: 100px;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 500;
 }
 
@@ -406,24 +379,25 @@
     color: var(--tw-emerald-600);
 }
 
-.clearButton {
+/* Remove/Clear Button - X icon style */
+.removeButton {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 8px 12px;
-    background-color: white;
-    color: var(--theme-text-secondary);
-    border: 1px solid var(--tw-gray-200);
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    background-color: transparent;
+    color: var(--theme-text-tertiary);
+    border: none;
     border-radius: 6px;
     cursor: pointer;
-    font-size: 13px;
-    font-weight: 500;
     transition: all 0.2s;
+    flex-shrink: 0;
 }
 
-.clearButton:hover {
+.removeButton:hover {
     background-color: var(--tw-red-100);
-    border-color: var(--tw-red-200);
     color: var(--tw-red-600);
 }
 
@@ -467,8 +441,9 @@
 }
 
 .recipientDid {
-    font-size: 13px;
-    color: var(--tw-green-400);
+    font-size: 12px;
+    color: var(--theme-text-tertiary, #9ca3af);
+    font-family: var(--theme-font-family-mono, monospace);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -489,38 +464,7 @@
     color: var(--tw-emerald-600);
 }
 
-/* Endpoint Section */
-.endpointSection {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    padding: 20px;
-    background-color: var(--tw-gray-50);
-    border: 1px solid var(--tw-gray-200);
-    border-radius: 12px;
-}
-
-.endpointTitle {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 0;
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--tw-gray-800);
-}
-
-.endpointTitle svg {
-    color: var(--theme-color-accent);
-}
-
-.endpointDescription {
-    margin: 0;
-    font-size: 14px;
-    color: var(--theme-text-secondary);
-    line-height: 1.5;
-}
-
+/* Endpoint List */
 .endpointList {
     display: flex;
     flex-direction: column;

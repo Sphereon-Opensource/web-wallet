@@ -118,6 +118,8 @@ export interface UBLInvoiceData {
 export interface UBLInvoiceCardProps {
   invoice: UBLInvoiceData
   onViewDetails?: () => void
+  /** Callback when evidence link is clicked - opens detail view on evidence tab */
+  onViewEvidence?: () => void
   onSelect?: (invoice: UBLInvoiceData) => void
   onRemove?: () => void
   selected?: boolean

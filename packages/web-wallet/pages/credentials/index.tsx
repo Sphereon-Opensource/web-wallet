@@ -1,8 +1,9 @@
-import React, {useCallback, useEffect, useState} from 'react'
+import React, {useCallback, useEffect, useState, useMemo, ReactNode} from 'react'
 import {HttpError, useDelete, useList, useNavigation, useTranslate} from '@refinedev/core'
 import {CredentialMiniCardView} from '@sphereon/ui-components.ssi-react'
 import AppHeaderBar from '@components/bars/AppHeaderBar'
 import StatusBadge from '@components/badges/StatusBadge'
+import {ListPageHeader, TabItem, FilterDropdown} from '@components/tables'
 import {staticPropsWithSST} from '@/src/i18n/server'
 import {CredentialTableItem, DataProvider, DataResource} from '@typings'
 import {toCredentialSummary, CredentialSummary} from '@sphereon/ui-components.credential-branding'
@@ -236,6 +237,48 @@ const CredentialsListPage: React.FC = () => {
     },
     [credentialItems, filterType],
   )
+
+  // Build tabs for ListPageHeader
+  const headerTabs: TabItem[] = useMemo(() => {
+    return CREDENTIAL_TYPE_TABS.map((tab) => ({
+      id: tab.value,
+      label: translate(tab.labelKey, tab.defaultLabel) as string,
+      count: getTypeCount(tab.value),
+      icon: tab.value === 'credentials' ? (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+          <line x1="16" y1="2" x2="16" y2="6" />
+          <line x1="8" y1="2" x2="8" y2="6" />
+          <line x1="3" y1="10" x2="21" y2="10" />
+        </svg>
+      ) : tab.value === 'pid' ? (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
+        </svg>
+      ) : (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+          <line x1="8" y1="13" x2="16" y2="13" />
+          <line x1="8" y1="17" x2="16" y2="17" />
+        </svg>
+      ),
+    }))
+  }, [translate, getTypeCount])
+
+  // Build filters for ListPageHeader
+  const headerFilters: FilterDropdown[] = useMemo(() => {
+    return [{
+      id: 'status',
+      value: filterStatus,
+      onChange: (value: string) => setFilterStatus(value as StatusFilter),
+      options: STATUS_OPTIONS.map((option) => ({
+        value: option.value,
+        label: `${translate(option.labelKey, option.defaultLabel)} (${getStatusCount(option.value)})`,
+      })),
+    }]
+  }, [filterStatus, translate, getStatusCount])
 
   const handleSort = useCallback(
     (field: SortField) => {
@@ -492,27 +535,7 @@ const CredentialsListPage: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className={style.table}>
-            {/* Bulk Actions Bar */}
-            {selectedIds.size > 0 && (
-              <div className={style.bulkActionsBar}>
-                <span className={style.bulkActionsCount}>
-                  {selectedIds.size} {selectedIds.size === 1 ? 'item' : 'items'} selected
-                </span>
-                <button
-                  type="button"
-                  className={style.bulkDeleteButton}
-                  onClick={handleDeleteSelected}
-                  aria-label={translate('action_delete_selected', 'Delete selected')}
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <polyline points="3 6 5 6 21 6" />
-                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                  </svg>
-                  {translate('action_delete_selected', 'Delete Selected')}
-                </button>
-              </div>
-            )}
+          <div className={`${style.table} ${selectedIds.size > 0 ? style.tableWithSelections : ''}`}>
             <div className={style.tableHeader}>
               <div className={style.checkboxCell}>
                 <input
@@ -530,35 +553,35 @@ const CredentialsListPage: React.FC = () => {
               </div>
               <div className={`${style.headerCell} ${style.cellCard}`} />
               <div
-                className={`${style.headerCell} ${style.cellType} ${style.sortable}`}
+                className={`${style.headerCell} ${style.cellType} ${style.sortable} ${sortField === 'type' ? style.headerCellSorted : ''}`}
                 onClick={() => handleSort('type')}
               >
                 {translate('credentials_fields_credential', 'Credential')}
                 <SortIcon field="type" sortField={sortField} sortDirection={sortDirection} />
               </div>
               <div
-                className={`${style.headerCell} ${style.cellIssuer} ${style.sortable}`}
+                className={`${style.headerCell} ${style.cellIssuer} ${style.sortable} ${sortField === 'issuer' ? style.headerCellSorted : ''}`}
                 onClick={() => handleSort('issuer')}
               >
                 {translate('credentials_fields_issuer_did', 'Issuer')}
                 <SortIcon field="issuer" sortField={sortField} sortDirection={sortDirection} />
               </div>
               <div
-                className={`${style.headerCell} ${style.cellDate} ${style.sortable}`}
+                className={`${style.headerCell} ${style.cellDate} ${style.sortable} ${sortField === 'validFrom' ? style.headerCellSorted : ''}`}
                 onClick={() => handleSort('validFrom')}
               >
                 {translate('credentials_fields_valid_from', 'Valid From')}
                 <SortIcon field="validFrom" sortField={sortField} sortDirection={sortDirection} />
               </div>
               <div
-                className={`${style.headerCell} ${style.cellDate} ${style.sortable}`}
+                className={`${style.headerCell} ${style.cellDate} ${style.sortable} ${sortField === 'expirationDate' ? style.headerCellSorted : ''}`}
                 onClick={() => handleSort('expirationDate')}
               >
                 {translate('credentials_fields_expiration_date', 'Expires')}
                 <SortIcon field="expirationDate" sortField={sortField} sortDirection={sortDirection} />
               </div>
               <div
-                className={`${style.headerCell} ${style.cellStatus} ${style.sortable}`}
+                className={`${style.headerCell} ${style.cellStatus} ${style.sortable} ${sortField === 'status' ? style.headerCellSorted : ''}`}
                 onClick={() => handleSort('status')}
               >
                 {translate('credential_fields_status', 'Status')}
@@ -786,60 +809,17 @@ const CredentialsListPage: React.FC = () => {
       <div className={style.mainLayout}>
         {/* Content Area */}
         <div className={`${style.contentArea} ${selectedCredential ? style.contentAreaWithDetail : ''}`}>
-          {/* Tab Navigation */}
-          <div className={style.tabNavigation}>
-            {CREDENTIAL_TYPE_TABS.map((tab) => {
-              const count = getTypeCount(tab.value)
-              const isActive = filterType === tab.value
-
-              return (
-                <button
-                  key={tab.value}
-                  className={`${style.tabButton} ${isActive ? style.tabButtonActive : ''}`}
-                  onClick={() => setFilterType(tab.value)}
-                >
-                  {tab.value === 'credentials' && (
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                      <line x1="16" y1="2" x2="16" y2="6" />
-                      <line x1="8" y1="2" x2="8" y2="6" />
-                      <line x1="3" y1="10" x2="21" y2="10" />
-                    </svg>
-                  )}
-                  {tab.value === 'pid' && (
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                      <circle cx="12" cy="7" r="4" />
-                    </svg>
-                  )}
-                  {tab.value === 'einvoice' && (
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                      <polyline points="14 2 14 8 20 8" />
-                      <line x1="8" y1="13" x2="16" y2="13" />
-                      <line x1="8" y1="17" x2="16" y2="17" />
-                    </svg>
-                  )}
-                  {translate(tab.labelKey, tab.defaultLabel)}
-                  {count > 0 && <span className={style.tabBadge}>{count}</span>}
-                </button>
-              )
-            })}
-            <div className={style.tabSpacer} />
-            <div className={style.filterContainer}>
-              <select
-                className={style.statusDropdown}
-                value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value as StatusFilter)}
-              >
-                {STATUS_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {translate(option.labelKey, option.defaultLabel)} ({getStatusCount(option.value)})
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
+          {/* Header with tabs, filters, and selection overlay */}
+          <ListPageHeader
+            tabs={headerTabs}
+            activeTab={filterType}
+            onTabChange={(tabId) => setFilterType(tabId as CredentialTypeFilter)}
+            filters={headerFilters}
+            selectionCount={selectedIds.size}
+            onClearSelection={() => setSelectedIds(new Set())}
+            onDeleteSelected={handleDeleteSelected}
+            selectionLabel={{singular: 'credential', plural: 'credentials'}}
+          />
 
           {/* Table */}
           {renderTable()}

@@ -5,6 +5,7 @@ import {ActionType, InitiatorType, LoggingEventType, LogLevel, SubSystem, System
 import {getAgentContext, getAgent} from '@agent'
 import {getAgentBaseUrl} from '../agent/environment'
 import type {Party as RealParty, Party, PartyType} from '@sphereon/ssi-sdk.data-store-types'
+import {PartyTypeType, PartyOrigin} from '@sphereon/ssi-sdk.data-store-types'
 import {AddContactArgs} from '@sphereon/ssi-sdk.contact-manager'
 
 let _eventLogger: EventLogger | undefined
@@ -96,11 +97,26 @@ export async function addContact(args: AddContactArgs): Promise<Party> {
 }
 
 export async function getContactType(typeName: string): Promise<PartyType> {
-  const result = await supabaseServiceClient().from('PartyType').select('*').eq('name', typeName).single<PartyType>()
-  if (!result.data) {
-    throw new Error('No contactType found for inserting a NaturalPerson.')
+  const agent = getAgent()
+  const contactTypes = await agent.cmGetContactTypes()
+
+  // Map typeName to PartyTypeType
+  const partyTypeType = typeName === 'organizations' ? PartyTypeType.ORGANIZATION : PartyTypeType.NATURAL_PERSON
+
+  let contactType = contactTypes.find((ct: PartyType) => ct.type === partyTypeType)
+
+  // If contact type doesn't exist, create it
+  if (!contactType) {
+    contactType = await agent.cmAddContactType({
+      name: typeName,
+      type: partyTypeType,
+      origin: PartyOrigin.INTERNAL,
+      tenantId: 'default',
+      description: `${typeName} contact type`,
+    })
   }
-  return result.data
+
+  return contactType
 }
 
 async function storeParty(data: AddNaturalPersonArgs): Promise<Party> {

@@ -9,6 +9,7 @@ import {
   ContactParty,
   ResolvedRecipient,
 } from '@/src/services/recipientService'
+import {FormSection, InfoPanel, StepHeader, LoadingIndicator, WarningCard} from '@components/fields'
 import style from './index.module.css'
 
 const EInvoiceRecipientContent: FC = (): ReactElement => {
@@ -136,18 +137,21 @@ const EInvoiceRecipientContent: FC = (): ReactElement => {
   })
 
   // Render contact dropdown item
-  const renderContactItem = (contact: ContactParty) => (
-    <button key={contact.id} className={style.contactItem} onClick={() => handleSelectContact(contact)} type="button">
-      <div className={style.contactAvatar}>{(contact.displayName || contact.organizationName || '?')[0].toUpperCase()}</div>
-      <div className={style.contactInfo}>
-        <span className={style.contactName}>{contact.displayName || contact.organizationName || 'Unknown'}</span>
-        {contact.organizationName && contact.displayName !== contact.organizationName && (
-          <span className={style.contactOrg}>{contact.organizationName}</span>
-        )}
-        {contact.did && <span className={style.contactDid}>{contact.did}</span>}
-      </div>
-    </button>
-  )
+  const renderContactItem = (contact: ContactParty) => {
+    const orgName = contact.organizationName ? translate(contact.organizationName, contact.organizationName) : undefined
+    return (
+      <button key={contact.id} className={style.contactItem} onClick={() => handleSelectContact(contact)} type="button">
+        <div className={style.contactAvatar}>{(contact.displayName || orgName || '?')[0].toUpperCase()}</div>
+        <div className={style.contactInfo}>
+          <span className={style.contactName}>{contact.displayName || orgName || 'Unknown'}</span>
+          {orgName && contact.displayName !== orgName && (
+            <span className={style.contactOrg}>{orgName}</span>
+          )}
+          {contact.did && <span className={style.contactDid}>{contact.did}</span>}
+        </div>
+      </button>
+    )
+  }
 
   // Helper to extract URL from serviceEndpoint (can be string or object)
   const getEndpointUrl = (serviceEndpoint: string | Record<string, unknown>): string => {
@@ -163,18 +167,13 @@ const EInvoiceRecipientContent: FC = (): ReactElement => {
     if (!recipient || recipient.endpoints.length === 0) return null
 
     return (
-      <div className={style.endpointSection}>
-        <h4 className={style.endpointTitle}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <FormSection
+        title={translate('einvoice_select_endpoint', 'Delivery Method')}
+        icon={
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
           </svg>
-          {translate('einvoice_select_endpoint', 'Select Delivery Method')}
-        </h4>
-        <p className={style.endpointDescription}>
-          {recipient.endpoints.length === 1
-            ? translate('einvoice_single_endpoint', 'This contact has one eInvoicing endpoint available.')
-            : translate('einvoice_multiple_endpoints', 'This contact has multiple eInvoicing endpoints. Select your preferred delivery method.')}
-        </p>
+        }>
         <div className={style.endpointList}>
           {recipient.endpoints.map((endpoint) => {
             const isSelected = recipient.selectedEndpointId === endpoint.id
@@ -205,49 +204,47 @@ const EInvoiceRecipientContent: FC = (): ReactElement => {
             )
           })}
         </div>
-      </div>
+      </FormSection>
     )
   }
 
   return (
     <div className={style.container}>
-      <div className={style.header}>
-        <h3 className={style.sectionTitle}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      {/* Header */}
+      <StepHeader
+        title={translate('einvoice_recipient_title', 'Select Recipient') as string}
+        description={translate(
+          'einvoice_recipient_description',
+          'Select a contact from your address book to send the eInvoice. The system will verify their eInvoicing capabilities.'
+        ) as string}
+        icon={
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
             <circle cx="8.5" cy="7" r="4" />
             <line x1="20" y1="8" x2="20" y2="14" />
             <line x1="23" y1="11" x2="17" y2="11" />
           </svg>
-          {translate('einvoice_recipient_title', 'Select Recipient')}
-        </h3>
-        <p className={style.description}>
-          {translate(
-            'einvoice_recipient_description',
-            'Select a contact from your address book to send the eInvoice. The system will verify their eInvoicing capabilities.'
-          )}
-        </p>
-      </div>
+        }
+      />
 
       {/* Info Box */}
-      <div className={style.infoBox}>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <circle cx="12" cy="12" r="10" />
-          <line x1="12" y1="16" x2="12" y2="12" />
-          <line x1="12" y1="8" x2="12.01" y2="8" />
-        </svg>
-        <span>
-          {translate(
-            'einvoice_recipient_info',
-            'The recipient must have eInvoicing services configured in their DID document. Contacts without eInvoicing capabilities cannot receive invoices through this system.'
-          )}
-        </span>
-      </div>
+      <InfoPanel>
+        {translate(
+          'einvoice_recipient_info',
+          'The recipient must have eInvoicing services configured in their DID document. Contacts without eInvoicing capabilities cannot receive invoices through this system.'
+        )}
+      </InfoPanel>
 
       {/* Contact Search/Selection */}
       {!recipient && (
-        <div className={style.searchSection}>
-          <label className={style.searchLabel}>{translate('einvoice_search_contacts', 'Search Contacts')}</label>
+        <FormSection
+          title={translate('einvoice_select_recipient_label', 'Select Recipient')}
+          icon={
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+              <polyline points="9 22 9 12 15 12 15 22" />
+            </svg>
+          }>
           <div className={style.searchContainer}>
             <div className={style.searchInputWrapper}>
               <svg className={style.searchIcon} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -273,6 +270,7 @@ const EInvoiceRecipientContent: FC = (): ReactElement => {
                   onClick={() => {
                     setSearchQuery('')
                     setShowDropdown(false)
+                    setRecipientError(undefined)
                   }}
                   type="button">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -314,66 +312,70 @@ const EInvoiceRecipientContent: FC = (): ReactElement => {
 
           {/* Click outside to close dropdown */}
           {showDropdown && <div className={style.dropdownBackdrop} onClick={() => setShowDropdown(false)} />}
-        </div>
+        </FormSection>
       )}
 
       {/* Loading State */}
       {isResolvingRecipient && (
-        <div className={style.loadingIndicator}>
-          <div className={style.spinner} />
-          <span>{translate('einvoice_resolving_did', 'Resolving DID and discovering eInvoicing endpoints...')}</span>
-        </div>
+        <LoadingIndicator text={translate('einvoice_resolving_did', 'Resolving DID and discovering eInvoicing endpoints...') as string} />
       )}
 
       {/* Warning/Error Message when DID resolution fails or no endpoints */}
       {recipientError && (
-        <div className={style.warningCard}>
-          <div className={style.warningIcon}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-              <line x1="12" y1="9" x2="12" y2="13" />
-              <line x1="12" y1="17" x2="12.01" y2="17" />
-            </svg>
-          </div>
-          <div className={style.warningContent}>
-            <span className={style.warningTitle}>{translate('einvoice_recipient_warning', 'Cannot Send to This Recipient')}</span>
-            <span className={style.warningText}>{recipientError}</span>
-          </div>
-          <button className={style.warningAction} onClick={handleClear} type="button">
-            {translate('action_try_another', 'Select Different Contact')}
-          </button>
-        </div>
+        <WarningCard
+          title={translate('einvoice_recipient_warning', 'Cannot Send to This Recipient') as string}
+          message={recipientError}
+          actionText={translate('action_try_another', 'Select Different Contact') as string}
+          onAction={handleClear}
+        />
       )}
 
       {/* Selected Recipient Card */}
       {recipient && !recipientError && (
-        <div className={style.recipientCard}>
-          <div className={style.recipientHeader}>
+        <FormSection
+          title={translate('einvoice_recipient_label', 'Recipient')}
+          icon={
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+              <polyline points="9 22 9 12 15 12 15 22" />
+            </svg>
+          }>
+          <div className={style.recipientCardHeader}>
             <div className={style.recipientBadge}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                 <polyline points="22 4 12 14.01 9 11.01" />
               </svg>
-              {translate('einvoice_recipient_verified', 'Recipient Verified')}
+              {translate('einvoice_recipient_verified', 'Verified')}
             </div>
-            <button className={style.clearButton} onClick={handleClear} type="button">
+            <button
+              className={style.removeButton}
+              onClick={handleClear}
+              type="button"
+              title={translate('action_change_label', 'Change')}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <line x1="18" y1="6" x2="6" y2="18" />
                 <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
-              {translate('action_change_label', 'Change')}
             </button>
           </div>
 
           <div className={style.recipientBody}>
-            <div className={style.recipientAvatar}>{(recipient.name || recipient.organizationName || '?')[0].toUpperCase()}</div>
-            <div className={style.recipientDetails}>
-              <span className={style.recipientName}>{recipient.name || recipient.organizationName}</span>
-              {recipient.organizationName && recipient.name !== recipient.organizationName && (
-                <span className={style.recipientOrg}>{recipient.organizationName}</span>
-              )}
-              <span className={style.recipientDid}>{recipient.did}</span>
-            </div>
+            {(() => {
+              const recipientOrgName = recipient.organizationName ? translate(recipient.organizationName, recipient.organizationName) : undefined
+              return (
+                <>
+                  <div className={style.recipientAvatar}>{(recipient.name || recipientOrgName || '?')[0].toUpperCase()}</div>
+                  <div className={style.recipientDetails}>
+                    <span className={style.recipientName}>{recipient.name || recipientOrgName}</span>
+                    {recipientOrgName && recipient.name !== recipientOrgName && (
+                      <span className={style.recipientOrg}>{recipientOrgName}</span>
+                    )}
+                    <span className={style.recipientDid}>{recipient.did}</span>
+                  </div>
+                </>
+              )
+            })()}
           </div>
 
           {/* Endpoint count summary */}
@@ -383,14 +385,14 @@ const EInvoiceRecipientContent: FC = (): ReactElement => {
             </svg>
             <span>
               {recipient.endpoints.length === 1
-                ? translate('einvoice_one_endpoint_available', '1 eInvoicing endpoint available')
-                : translate('einvoice_endpoints_available', '{count} eInvoicing endpoints available').replace(
+                ? translate('einvoice_one_endpoint_available', '1 delivery method available')
+                : translate('einvoice_endpoints_available', '{count} delivery methods available').replace(
                     '{count}',
                     String(recipient.endpoints.length)
                   )}
             </span>
           </div>
-        </div>
+        </FormSection>
       )}
 
       {/* Endpoint Selection */}

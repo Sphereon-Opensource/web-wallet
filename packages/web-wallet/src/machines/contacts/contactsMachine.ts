@@ -11,6 +11,7 @@ import {
   NaturalPersonGuards,
   PhoneNumberEvent,
   NaturalPersonOrganizationEvent,
+  NaturalPersonRoleEvent,
   MiddleNameEvent,
   StreetNameNaturalPersonContactEvent,
   StreetNumberNaturalPersonContactEvent,
@@ -44,6 +45,7 @@ export const naturalPersonMachine = (opts?: CreateNaturalPersonMachineOpts) => {
     provinceName: '',
     countryCode: '',
     buildingName: '',
+    role: '',
   }
   return createMachine<NaturalPersonMachineContext, NaturalPersonEventTypes>({
     id: opts?.machineId ?? CONTACT_MACHINE_ID,
@@ -141,6 +143,9 @@ export const naturalPersonMachine = (opts?: CreateNaturalPersonMachineOpts) => {
       },
       [NaturalPersonMachineStates.addRole]: {
         on: {
+          [NaturalPersonMachineEvents.SET_ROLE]: {
+            actions: assign({role: (_ctx, e: NaturalPersonRoleEvent) => e.data}),
+          },
           [NaturalPersonMachineEvents.NEXT]: {
             target: NaturalPersonMachineStates.reviewContact,
           },

@@ -35,6 +35,12 @@
   max-width: calc(100% - 500px);
 }
 
+/* Tab Navigation Wrapper - contains tabs and selection overlay */
+.tabNavigationWrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
 /* Tab Navigation */
 .tabNavigation {
   display: flex;
@@ -45,7 +51,55 @@
   min-height: 54px;
   border-bottom: 1px solid #E5E7EB;
   background-color: #FBFBFB;
-  flex-shrink: 0;
+}
+
+/* Selection Overlay - covers tabs when items are selected */
+.selectionOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  background-color: #F0F0FD;
+  border-bottom: 1px solid #E5E7EB;
+  z-index: 10;
+}
+
+.selectionInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.deselectButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background-color: transparent;
+  border: 1px solid #7276F7;
+  border-radius: 4px;
+  color: #7276F7;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.deselectButton:hover {
+  background-color: #7276F7;
+  color: white;
+}
+
+.selectionCount {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #7276F7;
 }
 
 .tabButton {
@@ -151,6 +205,30 @@
   letter-spacing: 0.05em;
 }
 
+.headerCellSortable {
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.15s ease;
+}
+
+.headerCellSortable:hover {
+  color: #4B5563;
+}
+
+.headerCellSorted {
+  color: #7276F7;
+}
+
+.sortIcon {
+  color: #374151;
+  margin-left: 4px;
+}
+
+.sortIconInactive {
+  opacity: 0.3;
+  margin-left: 4px;
+}
+
 .tableRow {
   display: flex;
   align-items: center;
@@ -203,24 +281,22 @@
   accent-color: #7276F7;
 }
 
-/* Bulk Actions Bar */
-.bulkActionsBar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 24px;
-  background-color: rgba(114, 118, 247, 0.1);
-  border-bottom: 1px solid #7276F7;
-  flex-shrink: 0;
+/* Hide row checkboxes by default, show on hover or when selections exist */
+.tableRow .checkbox {
+  opacity: 0;
+  transition: opacity 0.15s ease;
 }
 
-.bulkActionsCount {
-  font-family: 'Poppins', sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  color: #7276F7;
+.tableRow:hover .checkbox {
+  opacity: 1;
 }
 
+/* Show all row checkboxes when there are selections */
+.tableWithSelections .tableRow .checkbox {
+  opacity: 1;
+}
+
+/* Bulk Delete Button */
 .bulkDeleteButton {
   display: flex;
   align-items: center;

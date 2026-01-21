@@ -159,6 +159,18 @@ export const roleConfig: Array<RoleData> = [
       },
       {
         type: 'group',
+        label: 'Management',
+        items: [
+          {
+            type: 'item',
+            label: 'Query definitions',
+            icon: 'management',
+            path: '/query-management',
+          },
+        ],
+      },
+      {
+        type: 'group',
         label: 'Contacts',
         items: [
           {
@@ -192,18 +204,6 @@ export const roleConfig: Array<RoleData> = [
             label: 'Keys',
             icon: 'key',
             path: '/key-management/keys',
-          },
-        ],
-      },
-      {
-        type: 'group',
-        label: 'Verifiers',
-        items: [
-          {
-            type: 'item',
-            label: 'Management',
-            icon: 'management',
-            path: '/query-management',
           },
         ],
       },

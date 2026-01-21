@@ -1,9 +1,10 @@
-import React, {useCallback, useEffect, useState, useRef} from 'react'
+import React, {useCallback, useEffect, useState, useMemo, useRef} from 'react'
 import {useTranslate} from '@refinedev/core'
 import {PrimaryButton} from '@sphereon/ui-components.ssi-react'
 import {ButtonIcon} from '@sphereon/ui-components.core'
 import AppHeaderBar from '@components/bars/AppHeaderBar'
 import StatusBadge from '@components/badges/StatusBadge'
+import {ListPageHeader, TabItem, FilterDropdown} from '@components/tables'
 import {staticPropsWithSST} from '@/src/i18n/server'
 import {
   Asset,
@@ -285,6 +286,53 @@ const AssetsListPage: React.FC = () => {
     [assets]
   )
 
+  // Build tabs for ListPageHeader (visibility filter)
+  const headerTabs: TabItem[] = useMemo(() => {
+    return VISIBILITY_TABS.map((tab) => ({
+      id: tab.value,
+      label: translate(tab.labelKey, tab.defaultLabel) as string,
+      count: getVisibilityCount(tab.value),
+      icon: tab.value === 'all' ? (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+        </svg>
+      ) : tab.value === 'public' ? (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="2" y1="12" x2="22" y2="12" />
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+        </svg>
+      ) : (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+        </svg>
+      ),
+    }))
+  }, [translate, getVisibilityCount])
+
+  // Build filters for ListPageHeader (type filter)
+  const headerFilters: FilterDropdown[] = useMemo(() => {
+    return [{
+      id: 'type',
+      value: filterType,
+      onChange: (value: string) => setFilterType(value as AssetType | ''),
+      options: [
+        {value: '', label: translate('assets_filter_all_types', 'All Types') as string},
+        {value: 'UBLInvoice', label: translate('assets_type_ubl_invoice', 'UBL Invoice') as string},
+        {value: 'SupportingDocument', label: translate('assets_type_supporting', 'Supporting Document') as string},
+        {value: 'Document', label: translate('assets_type_document', 'Document') as string},
+        {value: 'XMLDocument', label: translate('assets_type_xml', 'XML Document') as string},
+        {value: 'JSONDocument', label: translate('assets_type_json', 'JSON Document') as string},
+        {value: 'PDF', label: translate('assets_type_pdf', 'PDF') as string},
+        {value: 'Image', label: translate('assets_type_image', 'Image') as string},
+        {value: 'Binary', label: translate('assets_type_binary', 'Binary') as string},
+        {value: 'Other', label: translate('assets_type_other', 'Other') as string},
+      ],
+    }]
+  }, [filterType, translate])
+
   const formatDate = (dateStr: string): string => {
     const date = new Date(dateStr)
     return date.toLocaleDateString('en-GB', {
@@ -417,45 +465,6 @@ const AssetsListPage: React.FC = () => {
   // Render table
   const renderTable = () => (
     <div className={style.tableContainer} onDrop={handleDrop} onDragOver={handleDragOver}>
-      {/* Status Tabs */}
-      <div className={style.statusTabs} role="tablist">
-        {VISIBILITY_TABS.map((tab) => {
-          const count = getVisibilityCount(tab.value)
-          const isActive = filterPublic === tab.value
-
-          return (
-            <button
-              key={tab.value}
-              role="tab"
-              aria-selected={isActive}
-              className={`${style.statusTab} ${isActive ? style.statusTabActive : ''}`}
-              onClick={() => setFilterPublic(tab.value)}
-            >
-              {translate(tab.labelKey, tab.defaultLabel)}
-              {count > 0 && <span className={style.statusTabCount}>{count}</span>}
-            </button>
-          )
-        })}
-
-        {/* Type filter dropdown */}
-        <select
-          className={style.typeFilter}
-          value={filterType}
-          onChange={(e) => setFilterType(e.target.value as AssetType | '')}
-        >
-          <option value="">{translate('assets_filter_all_types', 'All Types')}</option>
-          <option value="UBLInvoice">{translate('assets_type_ubl_invoice', 'UBL Invoice')}</option>
-          <option value="SupportingDocument">{translate('assets_type_supporting', 'Supporting Document')}</option>
-          <option value="Document">{translate('assets_type_document', 'Document')}</option>
-          <option value="XMLDocument">{translate('assets_type_xml', 'XML Document')}</option>
-          <option value="JSONDocument">{translate('assets_type_json', 'JSON Document')}</option>
-          <option value="PDF">{translate('assets_type_pdf', 'PDF')}</option>
-          <option value="Image">{translate('assets_type_image', 'Image')}</option>
-          <option value="Binary">{translate('assets_type_binary', 'Binary')}</option>
-          <option value="Other">{translate('assets_type_other', 'Other')}</option>
-        </select>
-      </div>
-
       {/* Table */}
       {sortedAssets.length === 0 ? (
         <div className={style.emptyState}>
@@ -476,27 +485,7 @@ const AssetsListPage: React.FC = () => {
           </button>
         </div>
       ) : (
-        <div className={style.table}>
-          {/* Bulk Actions Bar */}
-          {selectedIds.size > 0 && (
-            <div className={style.bulkActionsBar}>
-              <span className={style.bulkActionsCount}>
-                {selectedIds.size} {selectedIds.size === 1 ? 'item' : 'items'} selected
-              </span>
-              <button
-                type="button"
-                className={style.bulkDeleteButton}
-                onClick={handleDeleteSelected}
-                aria-label={translate('action_delete_selected', 'Delete selected')}
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <polyline points="3 6 5 6 21 6" />
-                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                </svg>
-                {translate('action_delete_selected', 'Delete Selected')}
-              </button>
-            </div>
-          )}
+        <div className={`${style.table} ${selectedIds.size > 0 ? style.tableWithSelections : ''}`}>
           <div className={style.tableHeader}>
             <div className={style.checkboxCell}>
               <input
@@ -513,35 +502,35 @@ const AssetsListPage: React.FC = () => {
               />
             </div>
             <div
-              className={`${style.headerCell} ${style.cellName} ${style.sortable}`}
+              className={`${style.headerCell} ${style.cellName} ${style.sortable} ${sortField === 'filename' ? style.headerCellSorted : ''}`}
               onClick={() => handleSort('filename')}
             >
               {translate('asset_fields_name', 'Name')}
               <SortIcon field="filename" sortField={sortField} sortDirection={sortDirection} />
             </div>
             <div
-              className={`${style.headerCell} ${style.cellType} ${style.sortable}`}
+              className={`${style.headerCell} ${style.cellType} ${style.sortable} ${sortField === 'assetType' ? style.headerCellSorted : ''}`}
               onClick={() => handleSort('assetType')}
             >
               {translate('asset_fields_type', 'Type')}
               <SortIcon field="assetType" sortField={sortField} sortDirection={sortDirection} />
             </div>
             <div
-              className={`${style.headerCell} ${style.cellSize} ${style.sortable}`}
+              className={`${style.headerCell} ${style.cellSize} ${style.sortable} ${sortField === 'fileSize' ? style.headerCellSorted : ''}`}
               onClick={() => handleSort('fileSize')}
             >
               {translate('asset_fields_size', 'Size')}
               <SortIcon field="fileSize" sortField={sortField} sortDirection={sortDirection} />
             </div>
             <div
-              className={`${style.headerCell} ${style.cellStatus} ${style.sortable}`}
+              className={`${style.headerCell} ${style.cellStatus} ${style.sortable} ${sortField === 'isPublic' ? style.headerCellSorted : ''}`}
               onClick={() => handleSort('isPublic')}
             >
               {translate('asset_fields_status', 'Status')}
               <SortIcon field="isPublic" sortField={sortField} sortDirection={sortDirection} />
             </div>
             <div
-              className={`${style.headerCell} ${style.cellDate} ${style.sortable}`}
+              className={`${style.headerCell} ${style.cellDate} ${style.sortable} ${sortField === 'createdAt' ? style.headerCellSorted : ''}`}
               onClick={() => handleSort('createdAt')}
             >
               {translate('asset_fields_created', 'Created')}
@@ -639,26 +628,25 @@ const AssetsListPage: React.FC = () => {
       <div className={style.mainLayout}>
         {/* Content Area */}
         <div className={`${style.contentArea} ${selectedAsset ? style.contentAreaWithDetail : ''}`}>
-          {/* Tab Navigation */}
-          <div className={style.tabNavigation}>
-            <button className={`${style.tabButton} ${style.tabButtonActive}`}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <polyline points="14 2 14 8 20 8" />
-              </svg>
-              {translate('assets_tab_documents', 'Documents')}
-              {assets.length > 0 && <span className={style.tabBadge}>{assets.length}</span>}
-            </button>
-            <div className={style.tabSpacer} />
-            <div className={style.actionButtonContainer}>
+          {/* Header with tabs, filters, and selection overlay */}
+          <ListPageHeader
+            tabs={headerTabs}
+            activeTab={filterPublic}
+            onTabChange={(tabId) => setFilterPublic(tabId as VisibilityFilter)}
+            filters={headerFilters}
+            selectionCount={selectedIds.size}
+            onClearSelection={() => setSelectedIds(new Set())}
+            onDeleteSelected={handleDeleteSelected}
+            selectionLabel={{singular: 'asset', plural: 'assets'}}
+            actions={
               <PrimaryButton
                 caption={uploading ? translate('assets_uploading', 'Uploading...') : translate('assets_overview_action_add_asset', 'Upload Asset')}
                 icon={ButtonIcon.ADD}
                 onClick={async () => { fileInputRef.current?.click() }}
                 disabled={uploading}
               />
-            </div>
-          </div>
+            }
+          />
 
           {/* Table */}
           {renderTable()}

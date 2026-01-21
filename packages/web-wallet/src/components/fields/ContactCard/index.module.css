@@ -1,0 +1,97 @@
+.card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border: 1px solid var(--theme-form-border, #E3E3E3);
+    border-radius: 12px;
+    padding: 20px 24px;
+    padding-left: 28px;
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 4px;
+}
+
+/* Organization - green accent */
+.organization::before {
+    background: linear-gradient(180deg, #10B981 0%, #34D399 100%);
+}
+
+.organization .icon {
+    color: #10B981;
+}
+
+/* Individual - blue accent */
+.individual::before {
+    background: linear-gradient(180deg, #3B82F6 0%, #60A5FA 100%);
+}
+
+.individual .icon {
+    color: #3B82F6;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+.icon {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+}
+
+.title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--theme-text-secondary, #374151);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.name {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--tw-gray-900, #111827);
+    margin-bottom: 4px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.fieldLabel {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--tw-gray-500, #6b7280);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.fieldValue {
+    font-size: 15px;
+    color: var(--tw-gray-800, #1f2937);
+}
+
+.fieldEmpty {
+    font-size: 14px;
+    color: var(--tw-gray-400, #9ca3af);
+    font-style: italic;
+}

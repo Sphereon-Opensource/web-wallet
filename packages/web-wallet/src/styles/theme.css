@@ -37,9 +37,9 @@
   --theme-color-secondary-dark: #5C2DB8;
 
   /* Neutral Colors */
-  --theme-color-grey-50: #FBFBFB;
-  --theme-color-grey-100: #F5F5F5;
-  --theme-color-grey-200: #ECECEC;
+  --theme-color-grey-50: #F5F5F5;   /* Was #FBFBFB - darkened for better visibility */
+  --theme-color-grey-100: #EFEFEF;  /* Was #F5F5F5 - darkened for better visibility */
+  --theme-color-grey-200: #E5E5E5;  /* Was #ECECEC - darkened for better visibility */
   --theme-color-grey-300: #E3E3E3;
   --theme-color-grey-400: #C4C5CA;
   --theme-color-grey-500: #ACACAC;
@@ -60,10 +60,10 @@
   --theme-color-info-light: rgba(11, 129, 255, 0.1);
 
   /* Tailwind-compatible Colors (for components built with Tailwind palette) */
-  /* Gray scale */
-  --tw-gray-50: #F9FAFB;
-  --tw-gray-100: #F3F4F6;
-  --tw-gray-200: #E5E7EB;
+  /* Gray scale - darkened for better visibility on lower quality monitors */
+  --tw-gray-50: #F0F1F3;   /* Was #F9FAFB */
+  --tw-gray-100: #E8E9EC;  /* Was #F3F4F6 */
+  --tw-gray-200: #DCDEE3;  /* Was #E5E7EB */
   --tw-gray-300: #D1D5DB;
   --tw-gray-400: #9CA3AF;
   --tw-gray-500: #6B7280;
@@ -126,7 +126,7 @@
   --theme-bg-tertiary: var(--theme-color-grey-200);
   --theme-bg-hover: var(--theme-color-grey-200);
   --theme-bg-selected: #B7B8D9;
-  --theme-bg-card: #FFFFFF;
+  --theme-bg-card: #F7F7F7;  /* Slightly off-white for better contrast with sections */
   --theme-bg-overlay: rgba(0, 0, 0, 0.5);
 
   /* Text Colors */
@@ -324,6 +324,32 @@
   /* Empty State */
   --theme-empty-icon-size: 64px;
   --theme-empty-max-width: 400px;
+
+  /* ===========================
+   * FORM TOKENS
+   * Matches Sphereon UI component styling
+   * =========================== */
+
+  /* Form Container (matches ProgressStepIndicator) */
+  --theme-form-bg: #FBFBFB;
+  --theme-form-border: #E3E3E3;
+  --theme-form-radius: 24px;
+  --theme-form-padding: 48px 24px;
+
+  /* Form Section (fieldset-style groups) */
+  --theme-form-section-border: var(--tw-gray-300, #D1D5DB);
+  --theme-form-section-radius: var(--theme-radius-lg, 8px);
+  --theme-form-section-padding: var(--theme-space-4, 16px);
+
+  /* Form Input */
+  --theme-form-input-bg: #FFFFFF;
+  --theme-form-input-bg-readonly: transparent;
+  --theme-form-input-border: var(--tw-gray-300, #d1d5db);
+  --theme-form-input-border-hover: var(--tw-gray-400, #9ca3af);
+  --theme-form-input-border-focus: var(--theme-color-accent, #4f46e5);
+  --theme-form-input-border-readonly: transparent;
+  --theme-form-input-radius: var(--theme-radius-md, 6px);
+  --theme-form-input-padding: 12px 14px;
 }
 
 /* ===========================

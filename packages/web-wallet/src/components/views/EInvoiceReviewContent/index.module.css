@@ -2,9 +2,10 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
-    background-color: white;
-    padding: 24px;
-    border-radius: 8px;
+    background-color: var(--theme-form-bg, #FBFBFB);
+    padding: var(--theme-form-padding, 48px 24px);
+    border-radius: var(--theme-form-radius, 24px);
+    border: 1px solid var(--theme-form-border, #E3E3E3);
     max-width: 700px;
 }
 
@@ -190,41 +191,6 @@
     margin-top: 2px;
 }
 
-/* Info Box */
-.infoBox {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 16px;
-    background-color: var(--tw-blue-50);
-    border: 1px solid var(--tw-blue-200);
-    border-radius: 8px;
-}
-
-.infoBox svg {
-    flex-shrink: 0;
-    color: var(--tw-blue-500);
-    margin-top: 2px;
-}
-
-.infoContent {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.infoTitle {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--tw-blue-800);
-}
-
-.infoText {
-    font-size: 14px;
-    color: var(--tw-blue-800);
-    line-height: 1.5;
-}
-
 /* Modal Overlay */
 .modalOverlay {
     position: fixed;
@@ -234,14 +200,19 @@
     align-items: center;
     justify-content: center;
     z-index: 1000;
+    padding: 12px;
 }
 
 .modalContent {
-    width: 900px;
-    max-width: 90vw;
-    max-height: 90vh;
-    overflow-y: auto;
+    background-color: white;
     border-radius: 12px;
+    width: 900px;
+    max-width: calc(100vw - 24px);
+    height: calc(100vh - 80px);
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
 }
 
 /* Responsive adjustments */

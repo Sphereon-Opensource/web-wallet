@@ -1,0 +1,135 @@
+/**
+ * DataTable Styles
+ * Reusable table component with sorting, selection, and row actions
+ */
+
+.table {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Header */
+.tableHeader {
+  display: flex;
+  align-items: center;
+  padding: 12px 24px;
+  background-color: #F9FAFB;
+  border-bottom: 1px solid #E5E7EB;
+  min-height: 44px;
+}
+
+.headerCell {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #6B7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  flex: 1;
+  min-width: 0;
+}
+
+.headerCellSortable {
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.15s ease;
+}
+
+.headerCellSortable:hover {
+  color: #4B5563;
+}
+
+.headerCellSorted {
+  color: #7276F7;
+}
+
+.sortIcon {
+  font-size: 10px;
+  margin-left: 2px;
+}
+
+/* Row */
+.tableRow {
+  display: flex;
+  align-items: center;
+  padding: 12px 24px;
+  border-bottom: 1px solid #F3F4F6;
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+  min-height: 56px;
+}
+
+.tableRow:hover {
+  background-color: #F9FAFB;
+}
+
+.tableRowActive {
+  background-color: #F0F0FD;
+}
+
+.tableRowActive:hover {
+  background-color: #E8E8FC;
+}
+
+.tableRowSelected {
+  background-color: rgba(114, 118, 247, 0.05);
+}
+
+/* Cell */
+.cell {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #1F2937;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Checkbox Cell */
+.checkboxCell {
+  width: 32px;
+  flex-shrink: 0;
+  flex-grow: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #7276F7;
+}
+
+/* Hide row checkboxes by default, show on hover or when selections exist */
+.hideCheckboxesUntilHover .tableRow .checkbox {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.hideCheckboxesUntilHover .tableRow:hover .checkbox {
+  opacity: 1;
+}
+
+.hideCheckboxesUntilHover.tableWithSelections .tableRow .checkbox {
+  opacity: 1;
+}
+
+/* Actions Cell */
+.actionsCell {
+  width: 40px;
+  flex-shrink: 0;
+  flex-grow: 0;
+  justify-content: flex-end;
+}
+
+/* When there are selections */
+.tableWithSelections .tableRow {
+  /* Checkboxes always visible */
+}

@@ -4,6 +4,7 @@ import {PrimaryButton} from '@sphereon/ui-components.ssi-react'
 import {ButtonIcon} from '@sphereon/ui-components.core'
 import {CredentialRole} from '@sphereon/ssi-types'
 import AppHeaderBar from '@components/bars/AppHeaderBar'
+import {ContactCard, AddressCard} from '@components/fields'
 import {staticPropsWithSST} from '@/src/i18n/server'
 import {DataResource} from '@typings'
 import type {Party, Identity} from '@sphereon/ssi-sdk.data-store-types'
@@ -11,6 +12,8 @@ import {PartyTypeType} from '@sphereon/ssi-sdk.data-store-types'
 import style from './index.module.css'
 
 type ContactTypeFilter = 'organizations' | 'individuals'
+type SortColumn = 'name' | 'did' | 'legalName' | 'email' | 'created'
+type SortDirection = 'asc' | 'desc'
 
 // Contact type tabs
 const CONTACT_TYPE_TABS: {value: ContactTypeFilter; labelKey: string; defaultLabel: string}[] = [
@@ -28,16 +31,58 @@ const ContactsListPage: React.FC = () => {
   const [filterType, setFilterType] = useState<ContactTypeFilter>('organizations')
   const [openMenuId, setOpenMenuId] = useState<string | null>(null)
   const [menuPosition, setMenuPosition] = useState<{top: number; left: number} | null>(null)
+  const [sortColumn, setSortColumn] = useState<SortColumn>('name')
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc')
 
   const {data: partiesData, isLoading, isError, refetch} = useList<Party, HttpError>({resource: 'parties'})
 
   const parties: Party[] = partiesData?.data ?? []
 
-  // Filter contacts by type
+  // Filter and sort contacts
   const filteredContacts = useMemo(() => {
     const partyType = filterType === 'organizations' ? PartyTypeType.ORGANIZATION : PartyTypeType.NATURAL_PERSON
-    return parties.filter(party => party.partyType.type === partyType)
-  }, [parties, filterType])
+    const filtered = parties.filter(party => party.partyType.type === partyType)
+
+    // Sort function
+    const getSortValue = (party: Party, column: SortColumn): string | number => {
+      switch (column) {
+        case 'name':
+          return party.contact.displayName?.toLowerCase() || ''
+        case 'did':
+          return party.identities?.[0]?.identifier?.correlationId?.toLowerCase() || ''
+        case 'legalName':
+          return (party.contact as any).legalName?.toLowerCase() || ''
+        case 'email':
+          return party.electronicAddresses?.find(e => e.type === 'email')?.electronicAddress?.toLowerCase() || ''
+        case 'created':
+          return new Date(party.createdAt).getTime()
+        default:
+          return ''
+      }
+    }
+
+    return [...filtered].sort((a, b) => {
+      const aVal = getSortValue(a, sortColumn)
+      const bVal = getSortValue(b, sortColumn)
+
+      if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1
+      if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1
+      return 0
+    })
+  }, [parties, filterType, sortColumn, sortDirection])
+
+  // Handle column sort
+  const handleSort = useCallback(
+    (column: SortColumn) => {
+      if (sortColumn === column) {
+        setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'))
+      } else {
+        setSortColumn(column)
+        setSortDirection('asc')
+      }
+    },
+    [sortColumn]
+  )
 
   // Get count by type
   const getTypeCount = useCallback((type: ContactTypeFilter): number => {
@@ -298,34 +343,16 @@ const ContactsListPage: React.FC = () => {
               : translate('contacts_empty_individuals_description', 'Add your first individual contact to get started.')}
           </div>
           <button className={style.emptyStateButton} onClick={handleCreateContact}>
-            {translate('contacts_action_add', 'Add Contact')}
+            {filterType === 'organizations'
+              ? translate('contacts_action_add_organization', 'Add organization')
+              : translate('contacts_action_add_individual', 'Add individual')}
           </button>
         </div>
       )
     }
 
     return (
-      <div className={style.table}>
-        {/* Bulk Actions Bar */}
-        {selectedIds.size > 0 && (
-          <div className={style.bulkActionsBar}>
-            <span className={style.bulkActionsCount}>
-              {selectedIds.size} {selectedIds.size === 1 ? 'item' : 'items'} selected
-            </span>
-            <button
-              type="button"
-              className={style.bulkDeleteButton}
-              onClick={handleDeleteSelected}
-              aria-label={translate('action_delete_selected', 'Delete selected')}
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polyline points="3 6 5 6 21 6" />
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-              </svg>
-              {translate('action_delete_selected', 'Delete Selected')}
-            </button>
-          </div>
-        )}
+      <div className={`${style.table} ${selectedIds.size > 0 ? style.tableWithSelections : ''}`}>
         <div className={style.tableHeader}>
           <div className={style.checkboxCell}>
             <input
@@ -341,15 +368,55 @@ const ContactsListPage: React.FC = () => {
               aria-label="Select all"
             />
           </div>
-          <div className={`${style.headerCell} ${style.cellName}`}>{translate('contacts_column_name', 'Name')}</div>
-          <div className={`${style.headerCell} ${style.cellDid}`}>{translate('contacts_column_did', 'DID')}</div>
+          <div
+            className={`${style.headerCell} ${style.headerCellSortable} ${style.cellName} ${sortColumn === 'name' ? style.headerCellSorted : ''}`}
+            onClick={() => handleSort('name')}
+            role="columnheader"
+            aria-sort={sortColumn === 'name' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : undefined}
+          >
+            {translate('contacts_column_name', 'Name')}
+            <SortIcon field="name" sortColumn={sortColumn} sortDirection={sortDirection} />
+          </div>
+          <div
+            className={`${style.headerCell} ${style.headerCellSortable} ${style.cellDid} ${sortColumn === 'did' ? style.headerCellSorted : ''}`}
+            onClick={() => handleSort('did')}
+            role="columnheader"
+            aria-sort={sortColumn === 'did' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : undefined}
+          >
+            {translate('contacts_column_did', 'DID')}
+            <SortIcon field="did" sortColumn={sortColumn} sortDirection={sortDirection} />
+          </div>
           {filterType === 'organizations' && (
-            <div className={`${style.headerCell} ${style.cellLegalName}`}>{translate('contacts_column_legal_name', 'Legal Name')}</div>
+            <div
+              className={`${style.headerCell} ${style.headerCellSortable} ${style.cellLegalName} ${sortColumn === 'legalName' ? style.headerCellSorted : ''}`}
+              onClick={() => handleSort('legalName')}
+              role="columnheader"
+              aria-sort={sortColumn === 'legalName' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : undefined}
+            >
+              {translate('contacts_column_legal_name', 'Legal Name')}
+              <SortIcon field="legalName" sortColumn={sortColumn} sortDirection={sortDirection} />
+            </div>
           )}
           {filterType === 'individuals' && (
-            <div className={`${style.headerCell} ${style.cellEmail}`}>{translate('contacts_column_email', 'Email')}</div>
+            <div
+              className={`${style.headerCell} ${style.headerCellSortable} ${style.cellEmail} ${sortColumn === 'email' ? style.headerCellSorted : ''}`}
+              onClick={() => handleSort('email')}
+              role="columnheader"
+              aria-sort={sortColumn === 'email' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : undefined}
+            >
+              {translate('contacts_column_email', 'Email')}
+              <SortIcon field="email" sortColumn={sortColumn} sortDirection={sortDirection} />
+            </div>
           )}
-          <div className={`${style.headerCell} ${style.cellCreated}`}>{translate('contacts_column_created', 'Created')}</div>
+          <div
+            className={`${style.headerCell} ${style.headerCellSortable} ${style.cellCreated} ${sortColumn === 'created' ? style.headerCellSorted : ''}`}
+            onClick={() => handleSort('created')}
+            role="columnheader"
+            aria-sort={sortColumn === 'created' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : undefined}
+          >
+            {translate('contacts_column_created', 'Created')}
+            <SortIcon field="created" sortColumn={sortColumn} sortDirection={sortDirection} />
+          </div>
           <div className={`${style.headerCell} ${style.cellActions}`} />
         </div>
 
@@ -436,6 +503,24 @@ const ContactsListPage: React.FC = () => {
     const identities = selectedContact.identities || []
     const primaryDid = getPrimaryDid(identities)
     const email = selectedContact.electronicAddresses?.find(e => e.type === 'email')?.electronicAddress
+    const phone = selectedContact.electronicAddresses?.find(e => e.type === 'phone')?.electronicAddress
+    const physicalAddress = selectedContact.physicalAddresses?.[0]
+
+    const isOrganization = filterType === 'organizations'
+    const contactType = isOrganization ? 'organization' : 'individual'
+
+    // Build contact fields for ContactCard
+    const contactFields: {label: string; value: string | undefined}[] = []
+    if (email) {
+      contactFields.push({label: translate('contacts_field_email', 'Email') as string, value: email})
+    }
+    if (phone) {
+      contactFields.push({label: translate('contacts_field_phone', 'Phone') as string, value: phone})
+    }
+    if (primaryDid && primaryDid !== '-') {
+      contactFields.push({label: translate('contacts_field_did', 'DID') as string, value: truncateDid(primaryDid, 35)})
+    }
+    contactFields.push({label: translate('contacts_field_created', 'Created') as string, value: formatDate(contact.createdAt)})
 
     return (
       <div className={style.detailPanel}>
@@ -451,80 +536,26 @@ const ContactsListPage: React.FC = () => {
 
         <div className={style.detailBody}>
           {/* Contact Card */}
-          <div className={style.contactCard}>
-            <div className={style.contactCardAvatar}>
-              {filterType === 'organizations' ? (
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                  <polyline points="9 22 9 12 15 12 15 22" />
-                </svg>
-              ) : (
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                  <circle cx="12" cy="7" r="4" />
-                </svg>
-              )}
-            </div>
-            <div className={style.contactCardInfo}>
-              <span className={style.contactCardName}>{contact.displayName || '-'}</span>
-              <div className={style.contactCardSubtitle}>
-                <span className={style.contactCardType}>
-                  {filterType === 'organizations' ? translate('contact_type_organization', 'Organization') : translate('contact_type_individual', 'Individual')}
-                </span>
-                {renderRoleBadges(selectedContact)}
-              </div>
-            </div>
-          </div>
+          <ContactCard
+            type={contactType}
+            name={contact.displayName || '-'}
+            fields={contactFields}
+          >
+            {renderRoleBadges(selectedContact)}
+          </ContactCard>
 
-          {/* Metadata Section */}
-          <section className={style.metadataSection}>
-            <div className={style.metadataBorder} />
-            <div className={style.metadataContent}>
-              <div className={style.metadataTitle}>{translate('contacts_detail_info', 'Information')}</div>
-
-              <div className={style.metadataRow}>
-                <span className={style.metadataLabel}>{translate('contacts_field_display_name', 'Display Name')}</span>
-                <span className={style.metadataValue}>{contact.displayName || '-'}</span>
-              </div>
-
-              {filterType === 'organizations' && (
-                <div className={style.metadataRow}>
-                  <span className={style.metadataLabel}>{translate('contacts_field_legal_name', 'Legal Name')}</span>
-                  <span className={style.metadataValue}>{(contact as any).legalName || '-'}</span>
-                </div>
-              )}
-
-              {filterType === 'individuals' && (
-                <>
-                  <div className={style.metadataRow}>
-                    <span className={style.metadataLabel}>{translate('contacts_field_first_name', 'First Name')}</span>
-                    <span className={style.metadataValue}>{(contact as any).firstName || '-'}</span>
-                  </div>
-                  <div className={style.metadataRow}>
-                    <span className={style.metadataLabel}>{translate('contacts_field_last_name', 'Last Name')}</span>
-                    <span className={style.metadataValue}>{(contact as any).lastName || '-'}</span>
-                  </div>
-                </>
-              )}
-
-              {email && (
-                <div className={style.metadataRow}>
-                  <span className={style.metadataLabel}>{translate('contacts_field_email', 'Email')}</span>
-                  <span className={style.metadataValue}>{email}</span>
-                </div>
-              )}
-
-              <div className={style.metadataRow}>
-                <span className={style.metadataLabel}>{translate('contacts_field_did', 'DID')}</span>
-                <span className={style.metadataValueMono}>{truncateDid(primaryDid, 35)}</span>
-              </div>
-
-              <div className={style.metadataRow}>
-                <span className={style.metadataLabel}>{translate('contacts_field_created', 'Created')}</span>
-                <span className={style.metadataValue}>{formatDate(contact.createdAt)}</span>
-              </div>
-            </div>
-          </section>
+          {/* Address Card */}
+          {physicalAddress && (
+            <AddressCard
+              streetName={physicalAddress.streetName}
+              streetNumber={physicalAddress.houseNumber}
+              buildingName={physicalAddress.buildingName}
+              postalCode={physicalAddress.postalCode}
+              cityName={physicalAddress.cityName}
+              provinceName={physicalAddress.provinceName}
+              countryCode={physicalAddress.countryCode}
+            />
+          )}
 
           {/* View Full Details Button */}
           <button className={style.viewFullButton} onClick={() => handleViewDetails(selectedContact)}>
@@ -553,45 +584,83 @@ const ContactsListPage: React.FC = () => {
       <div className={style.mainLayout}>
         {/* Content Area */}
         <div className={`${style.contentArea} ${selectedContact ? style.contentAreaWithDetail : ''}`}>
-          {/* Tab Navigation */}
-          <div className={style.tabNavigation}>
-            {CONTACT_TYPE_TABS.map(tab => {
-              const count = getTypeCount(tab.value)
-              const isActive = filterType === tab.value
+          {/* Tab Navigation with Selection Overlay */}
+          <div className={style.tabNavigationWrapper}>
+            <div className={style.tabNavigation}>
+              {CONTACT_TYPE_TABS.map(tab => {
+                const count = getTypeCount(tab.value)
+                const isActive = filterType === tab.value
 
-              return (
-                <button
-                  key={tab.value}
-                  className={`${style.tabButton} ${isActive ? style.tabButtonActive : ''}`}
-                  onClick={() => {
-                    setFilterType(tab.value)
-                    setSelectedContact(null)
-                  }}
-                >
-                  {tab.value === 'organizations' ? (
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                      <polyline points="9 22 9 12 15 12 15 22" />
-                    </svg>
-                  ) : (
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                      <circle cx="12" cy="7" r="4" />
-                    </svg>
-                  )}
-                  {translate(tab.labelKey, tab.defaultLabel)}
-                  {count > 0 && <span className={style.tabBadge}>{count}</span>}
-                </button>
-              )
-            })}
-            <div className={style.tabSpacer} />
-            <div className={style.actionButtonContainer}>
-              <PrimaryButton
-                caption={translate('contacts_action_add', 'Add Contact')}
-                icon={ButtonIcon.ADD}
-                onClick={handleCreateContact}
-              />
+                return (
+                  <button
+                    key={tab.value}
+                    className={`${style.tabButton} ${isActive ? style.tabButtonActive : ''}`}
+                    onClick={() => {
+                      setFilterType(tab.value)
+                      setSelectedContact(null)
+                    }}
+                  >
+                    {tab.value === 'organizations' ? (
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                        <polyline points="9 22 9 12 15 12 15 22" />
+                      </svg>
+                    ) : (
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                      </svg>
+                    )}
+                    {translate(tab.labelKey, tab.defaultLabel)}
+                    {count > 0 && <span className={style.tabBadge}>{count}</span>}
+                  </button>
+                )
+              })}
+              <div className={style.tabSpacer} />
+              <div className={style.actionButtonContainer}>
+                <PrimaryButton
+                  caption={filterType === 'organizations'
+                    ? translate('contacts_action_add_organization', 'Add organization')
+                    : translate('contacts_action_add_individual', 'Add individual')}
+                  icon={ButtonIcon.ADD}
+                  onClick={handleCreateContact}
+                />
+              </div>
             </div>
+
+            {/* Selection Actions Overlay */}
+            {selectedIds.size > 0 && (
+              <div className={style.selectionOverlay}>
+                <div className={style.selectionInfo}>
+                  <button
+                    type="button"
+                    className={style.deselectButton}
+                    onClick={() => setSelectedIds(new Set())}
+                    aria-label={translate('action_deselect_all', 'Deselect all')}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <line x1="18" y1="6" x2="6" y2="18" />
+                      <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                  </button>
+                  <span className={style.selectionCount}>
+                    {selectedIds.size} {selectedIds.size === 1 ? 'item' : 'items'} selected
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  className={style.bulkDeleteButton}
+                  onClick={handleDeleteSelected}
+                  aria-label={translate('action_delete_selected', 'Delete selected')}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polyline points="3 6 5 6 21 6" />
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                  </svg>
+                  {translate('action_delete_selected', 'Delete')}
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Table Content */}
@@ -615,6 +684,31 @@ const ContactsListPage: React.FC = () => {
         {renderDetailPanel()}
       </div>
     </div>
+  )
+}
+
+// Sort Icon Component
+const SortIcon: React.FC<{field: SortColumn; sortColumn: SortColumn; sortDirection: SortDirection}> = ({
+  field,
+  sortColumn,
+  sortDirection,
+}) => {
+  if (sortColumn !== field) {
+    return (
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className={style.sortIconInactive}>
+        <path d="M6 2L9 5H3L6 2Z" fill="currentColor" />
+        <path d="M6 10L3 7H9L6 10Z" fill="currentColor" />
+      </svg>
+    )
+  }
+  return (
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className={style.sortIcon}>
+      {sortDirection === 'asc' ? (
+        <path d="M6 2L9 5H3L6 2Z" fill="currentColor" />
+      ) : (
+        <path d="M6 10L3 7H9L6 10Z" fill="currentColor" />
+      )}
+    </svg>
   )
 }
 

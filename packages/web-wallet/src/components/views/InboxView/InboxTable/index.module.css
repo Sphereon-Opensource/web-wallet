@@ -12,6 +12,7 @@
   flex: 1;
   min-height: 0;
   overflow: hidden;
+  position: relative;
 }
 
 /* ===========================
@@ -97,13 +98,18 @@
  * =========================== */
 
 .bulkActionsBar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 54px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--theme-space-3, 12px) var(--theme-space-4, 16px);
-  background-color: var(--theme-color-primary-bg, rgba(114, 118, 247, 0.1));
-  border-bottom: 1px solid var(--theme-color-primary, #7276F7);
-  flex-shrink: 0;
+  padding: 0 var(--theme-space-6, 24px);
+  background-color: #F0F0FD;
+  border-bottom: 1px solid var(--theme-border-primary, #E3E3E3);
+  z-index: 20;
 }
 
 .bulkActionsCount {
@@ -164,10 +170,38 @@
 
 .headerCell {
   font-family: var(--theme-font-family, 'Poppins', sans-serif);
-  font-size: var(--theme-font-size-lg, 16px);
-  font-weight: var(--theme-font-weight-normal, 400);
-  line-height: 24px;
-  color: var(--theme-table-header-text, #8D9099);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6B7280;
+}
+
+.headerCellSortable {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  user-select: none;
+  transition: color 0.15s ease;
+}
+
+.headerCellSortable:hover {
+  color: #374151;
+}
+
+.headerCellSorted {
+  color: #7C3AED;
+}
+
+.sortIcon {
+  color: #374151;
+  margin-left: 4px;
+}
+
+.sortIconInactive {
+  opacity: 0.3;
+  margin-left: 4px;
 }
 
 .tableRow {
@@ -268,6 +302,20 @@
   height: 16px;
   cursor: pointer;
   accent-color: var(--theme-color-primary, #7276F7);
+}
+
+/* Hide row checkboxes by default, show on hover or when selections exist */
+.tableRow .checkbox {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.tableRow:hover .checkbox {
+  opacity: 1;
+}
+
+.tableWithSelections .tableRow .checkbox {
+  opacity: 1;
 }
 
 /* Sender info */

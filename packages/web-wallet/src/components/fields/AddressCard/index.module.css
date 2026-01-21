@@ -1,0 +1,67 @@
+.card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border: 1px solid var(--theme-form-border, #E3E3E3);
+    border-radius: 12px;
+    padding: 20px 24px;
+    padding-left: 28px;
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, #7C3AED 0%, #A78BFA 100%);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+.icon {
+    width: 32px;
+    height: 32px;
+    color: #7C3AED;
+    flex-shrink: 0;
+}
+
+.title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--theme-text-secondary, #374151);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.addressLine {
+    font-size: 15px;
+    color: var(--tw-gray-800, #1f2937);
+    line-height: 1.5;
+}
+
+.addressLineSecondary {
+    font-size: 14px;
+    color: var(--tw-gray-600, #4b5563);
+    line-height: 1.5;
+}
+
+.addressEmpty {
+    font-size: 14px;
+    color: var(--tw-gray-400, #9ca3af);
+    font-style: italic;
+}

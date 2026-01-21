@@ -410,7 +410,7 @@
 }
 
 /* ===========================
- * PARTY CARD (gray box for Summary tab)
+ * PARTY CARD (purple box for Summary tab - matching amountsSummary)
  * =========================== */
 
 .partyCard {
@@ -418,24 +418,22 @@
   flex-direction: column;
   gap: var(--theme-space-2, 8px);
   padding: var(--theme-space-4, 16px);
-  background: var(--theme-bg-tertiary, #ECECEC);
+  background: linear-gradient(135deg, rgba(114, 118, 247, 0.12) 0%, rgba(124, 64, 232, 0.12) 100%);
   border-radius: var(--theme-radius-md, 6px);
-  border: 1px solid var(--theme-border-primary, #C4C5CA);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(114, 118, 247, 0.3);
+  box-shadow: 0 2px 4px rgba(114, 118, 247, 0.08);
 }
 
 .partyCardTitle {
-  font-size: var(--theme-font-size-xs, 11px);
+  font-size: var(--theme-font-size-sm, 13px);
   font-weight: var(--theme-font-weight-semibold, 600);
-  color: var(--theme-text-secondary, #8D9099);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  color: var(--theme-text-primary, #303030);
 }
 
 .partyCardName {
   font-size: var(--theme-font-size-lg, 16px);
   font-weight: var(--theme-font-weight-semibold, 600);
-  color: var(--theme-text-primary, #303030);
+  color: var(--theme-color-primary, #7276F7);
 }
 
 .partyCardDetail {

@@ -14,6 +14,7 @@ import {
 const UBLInvoiceCard: React.FC<UBLInvoiceCardProps> = ({
   invoice,
   onViewDetails,
+  onViewEvidence,
   onSelect,
   onRemove,
   selected = false,
@@ -110,7 +111,16 @@ const UBLInvoiceCard: React.FC<UBLInvoiceCardProps> = ({
 
         {/* Footer with evidence count and actions */}
         <div className={styles.footer}>
-          <div className={styles.evidence}>
+          <button
+            className={styles.evidence}
+            onClick={(e) => {
+              e.stopPropagation()
+              if (onViewEvidence) {
+                onViewEvidence()
+              }
+            }}
+            type="button"
+          >
             <svg
               className={styles.evidenceIcon}
               viewBox="0 0 24 24"
@@ -122,7 +132,7 @@ const UBLInvoiceCard: React.FC<UBLInvoiceCardProps> = ({
               <polyline points="14,2 14,8 20,8" />
             </svg>
             {invoice.evidence.length} evidence file{invoice.evidence.length !== 1 ? 's' : ''}
-          </div>
+          </button>
           {(showActions || onRemove) && (
             <div className={styles.actions}>
               {onViewDetails && (
