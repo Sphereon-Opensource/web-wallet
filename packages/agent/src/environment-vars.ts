@@ -139,7 +139,7 @@ export const OID4VP_RP_METADATA_PATH = `${CONF_PATH}/oid4vp_metadata`
 
 export const IS_PDM_API_ENABLED = toBoolean(process.env.PDM_API_ENABLED, true)
 
-export const IS_INBOX_ENABLED = toBoolean(process.env.INBOX_ENABLED, false)
+export const IS_INBOX_ENABLED = toBoolean(process.env.INBOX_ENABLED, true)
 export const INBOX_API_BASE_PATH = env('INBOX_API_BASE_PATH', ENV_VAR_PREFIX) ?? ''
 
 // Asset (document store) configuration
