@@ -64,6 +64,8 @@ export interface InboxEInvoice extends UBLInvoiceData {
   senderDid: string
   correlationId: string
   receivedAt: string
+  /** Whether the sender is a known/approved contact */
+  isApprovedSender?: boolean
 }
 
 // Status filter options (including 'all')

@@ -126,9 +126,10 @@ export function findInboxServiceEndpoint(
   // According to FIDES schemas, einvoice properties are siblings of serviceEndpoint
   const einvoiceData = (service as Record<string, unknown>).einvoice as Record<string, unknown> | undefined
 
+  // Note: folder is NOT extracted from DID document - it's internal metadata
+  // The serviceEndpoint URL is the only externally-visible endpoint
   return {
     inboxUrl,
-    folder: (service as Record<string, unknown>).folder as string | undefined,
     vct: einvoiceData?.vct as string[] | undefined,
   }
 }

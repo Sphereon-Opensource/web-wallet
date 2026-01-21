@@ -49,6 +49,10 @@ export type EInvoiceServiceData = {
   documentIdentifiers: string[]
   processIdentifiers: string[]
   transportType: string
+  // Internal inbox configuration (not exposed in DID document)
+  // These are stored in ServiceMetadata and used to create inbox/folder structure
+  inboxName?: string // defaults to "einvoices"
+  folderName?: string // defaults to service ID (without # prefix)
   // Direct-specific
   endpoint?: string
   // PEPPOL-specific

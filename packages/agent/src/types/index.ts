@@ -31,6 +31,7 @@ import { ILinkedVPManager } from '@sphereon/ssi-sdk.linked-vp'
 import { IServiceMetadata } from '../plugins/serviceMetadataPlugin'
 import { IInboxPlugin } from '../plugins/inbox'
 import { IAssetPlugin } from '../plugins/asset'
+import { IOutboxPlugin } from '../plugins/outbox'
 
 export const DID_PREFIX = 'did'
 
@@ -64,7 +65,8 @@ export type TAgentTypes = IDIDManager &
   ILinkedVPManager &
   IServiceMetadata &
   IInboxPlugin &
-  IAssetPlugin
+  IAssetPlugin &
+  IOutboxPlugin
 
 /**
  * The Key Management System (name) to use. Currently, there is only one KMS

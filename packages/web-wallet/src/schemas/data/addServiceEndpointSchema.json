@@ -33,6 +33,17 @@
       "minLength": 2,
       "maxLength": 2
     },
+    "inboxName": {
+      "type": "string",
+      "title": "Inbox Name",
+      "description": "Name of the inbox to receive invoices (default: einvoices)",
+      "default": "einvoices"
+    },
+    "folderName": {
+      "type": "string",
+      "title": "Folder Name",
+      "description": "Name of the folder within the inbox (default: service ID)"
+    },
     "peppolParticipantId": {
       "type": "string",
       "title": "PEPPOL Participant ID",

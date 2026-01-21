@@ -185,12 +185,23 @@ export async function addContactsRWS() {
       uri: 'acme-corp.nl',
     } as AddContactArgs
 
-    identifier = await agent.didManagerCreate(
-      existingDidConfigWithEInvoice(DIDMethods.DID_WEB, 'acme-auth', PRIVATE_DID7_KEY_HEX, {
-        alias: 'did:web:localhost:acme',
-        type: 'Secp256r1',
-      }),
-    )
+    const acmeConfig = existingDidConfigWithEInvoice(DIDMethods.DID_WEB, 'acme-auth', PRIVATE_DID7_KEY_HEX, {
+      alias: 'did:web:localhost:acme',
+      type: 'Secp256r1',
+    })
+    identifier = await agent.didManagerCreate(acmeConfig)
+
+    // Store einvoice metadata for each service (standard didManagerCreate only stores basic service fields)
+    for (const service of acmeConfig.services || []) {
+      if ((service as any).einvoice) {
+        await agent.updateServiceMetadata({
+          serviceId: service.id,
+          did: identifier.did,
+          metadata: { einvoice: (service as any).einvoice },
+        })
+      }
+    }
+
     organization4.identities = [toContactIdentityDTO(organization4, identifier)]
     await agent.cmAddContact(organization4)
     console.log('[Demo] Added eInvoice-capable contact: Acme Corporation B.V.')
@@ -363,17 +374,24 @@ async function addEInvoiceServiceWithInbox(config: EInvoiceServiceConfig) {
   await ensureInboxFolderExists(inboxName, folderName, description)
 
   // Add service to DID
+  // Note: einvoice metadata goes at service level, not inside serviceEndpoint
+  // This follows the FIDES schema where einvoice is a sibling of serviceEndpoint
   await agent.didManagerAddService({
     did,
     service: {
       id: serviceId,
       type: serviceType,
-      serviceEndpoint: {
-        url: `https://${hostname}/inbox/${inboxName}/${folderName}`,
-        einvoice,
-      },
+      serviceEndpoint: `https://${hostname}/inbox/${inboxName}/${folderName}`,
       description,
     },
+  })
+
+  // Store einvoice metadata separately using ServiceMetadataPlugin
+  // This persists the FIDES-specific properties to the database
+  await agent.updateServiceMetadata({
+    serviceId,
+    did,
+    metadata: { einvoice },
   })
 }
 

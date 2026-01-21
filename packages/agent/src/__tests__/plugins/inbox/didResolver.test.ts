@@ -53,7 +53,6 @@ describe('findInboxServiceEndpoint', () => {
       const result = findInboxServiceEndpoint(didDocument, 'EInvoiceInbox')
       expect(result).toEqual({
         inboxUrl: 'https://example.com/inbox',
-        folder: undefined,
         vct: undefined,
       })
     })
@@ -74,7 +73,6 @@ describe('findInboxServiceEndpoint', () => {
       const result = findInboxServiceEndpoint(didDocument, 'einv-direct')
       expect(result).toEqual({
         inboxUrl: 'https://example.com/inbox',
-        folder: undefined,
         vct: undefined,
       })
     })
@@ -94,7 +92,6 @@ describe('findInboxServiceEndpoint', () => {
       const result = findInboxServiceEndpoint(didDocument, 'einv-peppol')
       expect(result).toEqual({
         inboxUrl: 'https://example.com/inbox',
-        folder: undefined,
         vct: undefined,
       })
     })
@@ -114,7 +111,6 @@ describe('findInboxServiceEndpoint', () => {
       const result = findInboxServiceEndpoint(didDocument, 'einv-ppf-fr')
       expect(result).toEqual({
         inboxUrl: 'https://example.com/inbox',
-        folder: undefined,
         vct: undefined,
       })
     })
@@ -135,7 +131,6 @@ describe('findInboxServiceEndpoint', () => {
       const result = findInboxServiceEndpoint(didDocument, 'SomeOtherType')
       expect(result).toEqual({
         inboxUrl: 'https://example.com/inbox',
-        folder: undefined,
         vct: undefined,
       })
     })
@@ -155,7 +150,6 @@ describe('findInboxServiceEndpoint', () => {
       const result = findInboxServiceEndpoint(didDocument, 'SomeOtherType')
       expect(result).toEqual({
         inboxUrl: 'https://example.com/inbox',
-        folder: undefined,
         vct: undefined,
       })
     })
@@ -175,7 +169,6 @@ describe('findInboxServiceEndpoint', () => {
       const result = findInboxServiceEndpoint(didDocument, 'SomeOtherType')
       expect(result).toEqual({
         inboxUrl: 'https://example.com/inbox',
-        folder: undefined,
         vct: undefined,
       })
     })
@@ -195,7 +188,6 @@ describe('findInboxServiceEndpoint', () => {
       const result = findInboxServiceEndpoint(didDocument, 'EInvoiceInbox')
       expect(result).toEqual({
         inboxUrl: 'https://example.com/inbox',
-        folder: undefined,
         vct: undefined,
       })
     })
@@ -344,7 +336,7 @@ describe('findInboxServiceEndpoint', () => {
   })
 
   describe('additional endpoint properties', () => {
-    it('should extract folder property from service level', () => {
+    it('should not extract folder from DID document (folder is internal metadata)', () => {
       const didDocument = {
         id: 'did:web:example.com',
         service: [
@@ -352,15 +344,15 @@ describe('findInboxServiceEndpoint', () => {
             id: '#inbox',
             type: 'EInvoiceInbox',
             serviceEndpoint: 'https://example.com/inbox',
-            folder: 'invoices',
+            folder: 'invoices', // This should be ignored - folder is internal
           },
         ],
       }
 
       const result = findInboxServiceEndpoint(didDocument, 'EInvoiceInbox')
+      // folder should not be in the result - it's internal metadata
       expect(result).toEqual({
         inboxUrl: 'https://example.com/inbox',
-        folder: 'invoices',
         vct: undefined,
       })
     })
@@ -383,12 +375,11 @@ describe('findInboxServiceEndpoint', () => {
       const result = findInboxServiceEndpoint(didDocument, 'EInvoiceInbox')
       expect(result).toEqual({
         inboxUrl: 'https://example.com/inbox',
-        folder: undefined,
         vct: ['urn:org:fides:einvoice:1', 'urn:org:fides:einvoice:2'],
       })
     })
 
-    it('should extract all additional properties from service level', () => {
+    it('should extract vct from einvoice but ignore folder (internal metadata)', () => {
       const didDocument = {
         id: 'did:web:example.com',
         service: [
@@ -396,7 +387,7 @@ describe('findInboxServiceEndpoint', () => {
             id: '#inbox',
             type: 'EInvoiceInbox',
             serviceEndpoint: 'https://example.com/inbox',
-            folder: 'einvoices',
+            folder: 'einvoices', // This should be ignored - internal metadata
             einvoice: {
               vct: ['urn:org:fides:einvoice:1'],
               entityName: 'Example Corp',
@@ -407,9 +398,9 @@ describe('findInboxServiceEndpoint', () => {
       }
 
       const result = findInboxServiceEndpoint(didDocument, 'EInvoiceInbox')
+      // Only inboxUrl and vct should be extracted, not folder
       expect(result).toEqual({
         inboxUrl: 'https://example.com/inbox',
-        folder: 'einvoices',
         vct: ['urn:org:fides:einvoice:1'],
       })
     })
@@ -429,7 +420,6 @@ describe('findInboxServiceEndpoint', () => {
       const result = findInboxServiceEndpoint(didDocument, 'EInvoiceInbox')
       expect(result).toEqual({
         inboxUrl: 'https://example.com/inbox',
-        folder: undefined,
         vct: undefined,
       })
     })

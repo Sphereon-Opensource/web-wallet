@@ -130,8 +130,10 @@ import { AbstractKeyManagementSystem } from '@veramo/key-manager'
 import { ServiceMetadataPlugin } from './plugins/serviceMetadataPlugin'
 import { InboxPlugin } from './plugins/inbox'
 import { AssetPlugin } from './plugins/asset'
+import { OutboxPlugin } from './plugins/outbox'
 import { InboxApiServer } from './api/inboxApiServer'
 import { AssetApiServer } from './api/assetApiServer'
+import { OutboxApiServer } from './api/outboxApiServer'
 import { EInvoiceApiServer } from './api/einvoiceApiServer'
 import { processVerifiedPresentation } from './utils/inboxVerificationHandler'
 import { hasInboxContext } from './utils/inboxCredentialHandler'
@@ -224,7 +226,7 @@ const plugins: IAgentPlugin[] = [
   new OID4VCIHolder({ hasher: defaultHasher }),
   new EbsiSupport(),
   new ServiceMetadataPlugin({ dbConnection }),
-  ...(IS_INBOX_ENABLED ? [new InboxPlugin({ dbConnection }), new AssetPlugin({ dbConnection })] : []),
+  ...(IS_INBOX_ENABLED ? [new InboxPlugin({ dbConnection }), new AssetPlugin({ dbConnection }), new OutboxPlugin({ dbConnection })] : []),
   // The Animo funke cert is self-signed and not issued by a CA. Since we perform strict checks on certs, we blindly trust if for the Funke
   new MDLMdoc({ trustAnchors: [sphereonCA, funkeTestCA], opts: { blindlyTrustedAnchors: [animoFunkeCert] } }),
   new IdentifierResolution(),
@@ -612,6 +614,7 @@ if (!cliMode) {
   if (IS_INBOX_ENABLED && expressSupport) {
     new InboxApiServer({ agent, expressSupport })
     new AssetApiServer({ agent, expressSupport })
+    new OutboxApiServer({ agent, expressSupport })
     new EInvoiceApiServer({ agent, expressSupport })
   }
 

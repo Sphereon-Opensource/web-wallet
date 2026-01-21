@@ -247,7 +247,18 @@ const InboxTable: FC<Props> = (props: Props): ReactElement => {
                 </div>
                 <div className={`${styles.cell} ${styles.cellSender}`}>
                   <div className={styles.senderInfo}>
-                    <span className={styles.senderName}>{invoice.supplier?.name || 'Unknown'}</span>
+                    <div className={styles.senderNameRow}>
+                      <span className={styles.senderName}>{invoice.supplier?.name || 'Unknown'}</span>
+                      {invoice.isApprovedSender === false && (
+                        <span className={styles.unknownSenderWarning} title="Unknown sender - not in your contacts">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                            <line x1="12" y1="9" x2="12" y2="13" />
+                            <line x1="12" y1="17" x2="12.01" y2="17" />
+                          </svg>
+                        </span>
+                      )}
+                    </div>
                     {invoice.supplier?.email && <span className={styles.senderEmail}>{invoice.supplier.email}</span>}
                   </div>
                 </div>

@@ -90,6 +90,12 @@ const CreateIdentifierAddServiceEndpointContent: FC<Props> = ({mode}): ReactElem
     const serviceId = data.id as string
     const endpoint = generateInboxEndpoint(baseUrl, serviceId, serviceType)
 
+    // Get inbox and folder names with defaults
+    // inboxName defaults to "einvoices"
+    // folderName defaults to serviceId (strip # prefix if present)
+    const inboxName = (data.inboxName as string) || 'einvoices'
+    const folderName = (data.folderName as string) || serviceId.replace(/^#/, '')
+
     const baseData: EInvoiceServiceData = {
       vct: defaults.vct,
       entityName: data.entityName as string,
@@ -97,6 +103,9 @@ const CreateIdentifierAddServiceEndpointContent: FC<Props> = ({mode}): ReactElem
       documentIdentifiers: [...defaults.documentIdentifiers],
       processIdentifiers: [...defaults.processIdentifiers],
       transportType: defaults.transportType,
+      // Internal inbox configuration (not exposed in DID document)
+      inboxName,
+      folderName,
     }
 
     switch (serviceType) {

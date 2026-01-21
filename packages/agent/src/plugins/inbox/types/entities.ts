@@ -83,12 +83,12 @@ export interface InboxSendToRecipientResult {
 
 /**
  * eInvoice service endpoint structure from DID document.
+ * Note: Only contains externally-visible information from the DID document.
+ * Internal metadata (inboxName, folderName) is stored separately in ServiceMetadata.
  */
 export interface EInvoiceServiceEndpoint {
-  /** The inbox endpoint URL */
+  /** The inbox endpoint URL (the serviceEndpoint from DID document) */
   inboxUrl: string
-  /** The folder/path for invoices */
-  folder?: string
-  /** Supported credential types (VCT) */
+  /** Supported credential types (VCT) from einvoice metadata */
   vct?: string[]
 }

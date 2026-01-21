@@ -7,6 +7,7 @@ import {
   approveInvoice,
   rejectInvoice,
 } from '@/src/services/inboxService'
+import {fetchContacts} from '@/src/services/recipientService'
 
 /**
  * Inbox Page
@@ -39,17 +40,46 @@ const InboxPage: React.FC = () => {
       setLoading(true)
       setError(null)
 
-      // Fetch inboxes and invoices in parallel
-      const [fetchedInboxes, fetchedInvoices] = await Promise.all([
+      // Fetch inboxes, invoices, and contacts in parallel
+      const [fetchedInboxes, fetchedInvoices, fetchedContacts] = await Promise.all([
         fetchInboxes(),
         fetchInboxInvoices(),
+        fetchContacts(),
       ])
 
       setInboxes(fetchedInboxes)
-      setInvoices(fetchedInvoices)
 
-      // Build contacts map from invoice senders
+      // Build a set of approved sender DIDs from contacts
+      const approvedSenderDids = new Set<string>(
+        fetchedContacts.filter((c) => c.did).map((c) => c.did!)
+      )
+
+      // Mark invoices with approved sender status
+      const invoicesWithApproval = fetchedInvoices.map((invoice) => ({
+        ...invoice,
+        isApprovedSender: invoice.senderDid ? approvedSenderDids.has(invoice.senderDid) : false,
+      }))
+      setInvoices(invoicesWithApproval)
+
+      // Build contacts map from both:
+      // 1. Approved contacts from database
+      // 2. Invoice senders (for display even if not approved)
       const contactsMap: Record<string, InboxContact> = {}
+
+      // First add approved contacts
+      fetchedContacts.forEach((contact) => {
+        if (contact.did) {
+          contactsMap[contact.did] = {
+            id: contact.id,
+            displayName: contact.displayName,
+            did: contact.did,
+            organizationName: contact.organizationName,
+            email: contact.email,
+          }
+        }
+      })
+
+      // Then add invoice senders (only if not already in contacts)
       fetchedInvoices.forEach((invoice) => {
         if (invoice.senderDid && invoice.supplier && !contactsMap[invoice.senderDid]) {
           contactsMap[invoice.senderDid] = {

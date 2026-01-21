@@ -2,7 +2,7 @@ import React, {createContext, useCallback, useContext, useEffect, useState} from
 import {useNavigate, useOutletContext, useSearchParams} from 'react-router-dom'
 import {EInvoiceCreateRoute, UIContextType} from '@typings'
 import {useTranslate} from '@refinedev/core'
-import {saveSentInvoice, updateSentInvoiceStatus, fetchSentInvoiceById, SentInvoice, deleteSentInvoice} from '@/src/services/inboxService'
+import {saveSentInvoice, updateSentInvoiceStatus, fetchSentInvoiceById, SentInvoice, deleteSentInvoice, sendOutboxItem} from '@/src/services/inboxService'
 import {resolveEInvoicingEndpoints} from '@/src/services/recipientService'
 import {getAgentBaseUrl} from '@/src/agent/environment'
 
@@ -659,37 +659,14 @@ export const EInvoiceCreateContextProvider = (props: any): JSX.Element => {
         hasUblSource: !!ublFile || evidenceFiles.some((f) => f.evidenceType === 'UBLInvoice'),
       })
 
-      // 3. Create and send eInvoice credential via OID4VP
-      const sendResponse = await fetch(`${agentBaseUrl}/api/einvoice/send`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          invoiceData: formData,
-          evidenceIds: uploadedEvidenceFiles.map((f) => f.id),
-          recipientDid: recipient.did,
-          recipientEndpoint: endpointUrl,
-          recipientEndpointType: selectedEndpoint?.serviceType,
-          sentInvoiceId: sentInvoice.id,
-        }),
-      })
+      // 3. Send the outbox item (creates credential and sends via OID4VP)
+      const sendResult = await sendOutboxItem(sentInvoice.id)
 
-      if (!sendResponse.ok) {
-        // Update status to failed if sending failed
-        const errorData = await sendResponse.json()
-        await updateSentInvoiceStatus(sentInvoice.id, 'failed', {
-          errorMessage: errorData.error || 'Failed to send eInvoice',
-        })
-        throw new Error(errorData.error || 'Failed to send eInvoice')
+      if (!sendResult.success) {
+        throw new Error(sendResult.error || 'Failed to send eInvoice')
       }
 
-      const sendResult = await sendResponse.json()
       setCredentialId(sendResult.credentialId)
-
-      // Update status to delivered on success (credential was sent and received by recipient)
-      await updateSentInvoiceStatus(sentInvoice.id, 'delivered', {
-        credentialId: sendResult.credentialId,
-        correlationId: sendResult.correlationId,
-      })
 
       // Navigate to sent tab on eInvoice list
       navigate('/einvoice?tab=sent')

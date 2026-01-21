@@ -19,20 +19,8 @@ import StatusBadge from '@components/badges/StatusBadge'
 import style from './index.module.css'
 import {staticPropsWithSST} from '@/src/i18n/server'
 
-// Status filter type for tabs
-type SentStatusFilter = SentInvoiceStatus | 'all'
-
 // Tab type
 type TabType = 'received' | 'sent'
-
-// Status tabs for sent invoices (simplified - removed "Sending" as too similar to "Sent")
-const SENT_STATUS_TABS: {status: SentStatusFilter; labelKey: string; defaultLabel: string}[] = [
-  {status: 'draft', labelKey: 'einvoice_status_draft', defaultLabel: 'Draft'},
-  {status: 'sent', labelKey: 'einvoice_status_sent', defaultLabel: 'Sent'},
-  {status: 'delivered', labelKey: 'einvoice_status_delivered', defaultLabel: 'Delivered'},
-  {status: 'failed', labelKey: 'einvoice_status_failed', defaultLabel: 'Failed'},
-  {status: 'all', labelKey: 'einvoice_status_all', defaultLabel: 'All'},
-]
 
 // Map SentInvoice to InboxEInvoice format for consistent detail panel display
 const mapSentToInboxEInvoice = (sent: SentInvoice): InboxEInvoice => {
@@ -118,9 +106,8 @@ const EInvoiceListPage: React.FC = () => {
     [navigate],
   )
 
-  // Sent invoices state
+  // Sent invoices state - simple list of all sent invoices
   const [sentInvoices, setSentInvoices] = useState<SentInvoice[]>([])
-  const [sentStatusFilter, setSentStatusFilter] = useState<SentStatusFilter>('all')
   const [selectedSentInvoice, setSelectedSentInvoice] = useState<SentInvoice | null>(null)
   const [selectedSentIds, setSelectedSentIds] = useState<Set<string>>(new Set())
 
@@ -139,13 +126,29 @@ const EInvoiceListPage: React.FC = () => {
   // Loading state
   const [isLoading, setIsLoading] = useState(true)
 
-  // Fetch invoices on mount
+  // Fetch sent invoices on mount and when tab changes to sent
   useEffect(() => {
-    const loadInvoices = async () => {
+    const loadSentInvoices = async () => {
+      if (activeTab !== 'sent') return
       setIsLoading(true)
       try {
-        const [sent, allReceived] = await Promise.all([fetchSentInvoices(), fetchInboxInvoices()])
-        setSentInvoices(sent)
+        const invoices = await fetchSentInvoices()
+        setSentInvoices(invoices)
+      } catch (error) {
+        console.error('Error loading sent invoices:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    loadSentInvoices()
+  }, [activeTab])
+
+  // Fetch received invoices on mount
+  useEffect(() => {
+    const loadReceivedInvoices = async () => {
+      setIsLoading(true)
+      try {
+        const allReceived = await fetchInboxInvoices()
 
         // Only show verified/approved invoices in the eInvoice list
         // Pending and rejected invoices are only visible in the inbox
@@ -161,25 +164,18 @@ const EInvoiceListPage: React.FC = () => {
         setIsLoading(false)
       }
     }
-    loadInvoices()
+    loadReceivedInvoices()
   }, [])
 
-  // Filtered sent invoices
-  const filteredSentInvoices = useMemo(() => {
-    if (sentStatusFilter === 'all') return sentInvoices
-    return sentInvoices.filter((inv) => inv.status === sentStatusFilter)
-  }, [sentInvoices, sentStatusFilter])
-
-  // Received invoices are pre-filtered to only verified ones
-  // No additional filtering needed
-
-  // Get count for sent status
-  const getSentStatusCount = useCallback(
-    (status: SentInvoiceStatus): number => {
-      return sentInvoices.filter((inv) => inv.status === status).length
-    },
-    [sentInvoices]
-  )
+  // Refresh sent invoices list
+  const refreshSentInvoices = useCallback(async () => {
+    try {
+      const invoices = await fetchSentInvoices()
+      setSentInvoices(invoices)
+    } catch (error) {
+      console.error('Error refreshing sent invoices:', error)
+    }
+  }, [])
 
   // Selection handlers for sent invoices
   const handleToggleSentSelection = useCallback((id: string, e: React.MouseEvent): void => {
@@ -198,13 +194,13 @@ const EInvoiceListPage: React.FC = () => {
   const handleSelectAllSent = useCallback(
     (selectAll: boolean): void => {
       if (selectAll) {
-        const allIds = new Set(filteredSentInvoices.map((inv) => inv.id))
+        const allIds = new Set(sentInvoices.map((inv) => inv.id))
         setSelectedSentIds(allIds)
       } else {
         setSelectedSentIds(new Set())
       }
     },
-    [filteredSentInvoices]
+    [sentInvoices]
   )
 
   const handleDeleteSelectedSent = useCallback(async (): Promise<void> => {
@@ -226,7 +222,9 @@ const EInvoiceListPage: React.FC = () => {
       }
     }
     setSelectedSentIds(new Set())
-  }, [selectedSentIds, selectedSentInvoice])
+    // Refresh folder counts after deletion
+    refreshSentInvoices()
+  }, [selectedSentIds, selectedSentInvoice, refreshSentInvoices])
 
   // Selection handlers for received invoices
   const handleToggleReceivedSelection = useCallback((correlationId: string, e: React.MouseEvent): void => {
@@ -343,11 +341,12 @@ const EInvoiceListPage: React.FC = () => {
             if (selectedSentInvoice?.id === invoice.id) {
               setSelectedSentInvoice(null)
             }
+            refreshSentInvoices()
           }
           break
       }
     },
-    [handleCloseMenu, selectedSentInvoice]
+    [handleCloseMenu, selectedSentInvoice, refreshSentInvoices]
   )
 
   // Handle received invoice actions
@@ -493,29 +492,8 @@ const EInvoiceListPage: React.FC = () => {
   // Render sent invoices table
   const renderSentTable = () => (
     <div className={style.tableContainer}>
-      {/* Status Tabs */}
-      <div className={style.statusTabs} role="tablist">
-        {SENT_STATUS_TABS.map((tab) => {
-          const count = tab.status !== 'all' ? getSentStatusCount(tab.status) : 0
-          const isActive = sentStatusFilter === tab.status
-
-          return (
-            <button
-              key={tab.status}
-              role="tab"
-              aria-selected={isActive}
-              className={`${style.statusTab} ${isActive ? style.statusTabActive : ''}`}
-              onClick={() => setSentStatusFilter(tab.status)}
-            >
-              {translate(tab.labelKey, tab.defaultLabel)}
-              {count > 0 && <span className={style.statusTabCount}>{count}</span>}
-            </button>
-          )
-        })}
-      </div>
-
       {/* Table */}
-      {filteredSentInvoices.length === 0 ? (
+      {sentInvoices.length === 0 ? (
         <div className={style.emptyState}>
           <div className={style.emptyStateIcon}>
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -523,9 +501,11 @@ const EInvoiceListPage: React.FC = () => {
               <path d="M22 2L15 22L11 13L2 9L22 2Z" />
             </svg>
           </div>
-          <div className={style.emptyStateTitle}>{translate('einvoice_empty_sent_title', 'No Sent Invoices')}</div>
+          <div className={style.emptyStateTitle}>
+            {translate('einvoice_empty_sent_title', 'No Sent Invoices')}
+          </div>
           <div className={style.emptyStateDescription}>
-            {translate('einvoice_empty_sent_description', 'Invoices you send will appear here.')}
+            {translate('einvoice_empty_sent_description', 'Invoices you send will appear here. Create a new invoice to get started.')}
           </div>
           <div className={style.emptyStateAction}>
             <PrimaryButton
@@ -561,10 +541,10 @@ const EInvoiceListPage: React.FC = () => {
               <input
                 type="checkbox"
                 className={style.checkbox}
-                checked={filteredSentInvoices.length > 0 && selectedSentIds.size === filteredSentInvoices.length}
+                checked={sentInvoices.length > 0 && selectedSentIds.size === sentInvoices.length}
                 ref={(input) => {
                   if (input) {
-                    input.indeterminate = selectedSentIds.size > 0 && selectedSentIds.size < filteredSentInvoices.length
+                    input.indeterminate = selectedSentIds.size > 0 && selectedSentIds.size < sentInvoices.length
                   }
                 }}
                 onChange={(e) => handleSelectAllSent(e.target.checked)}
@@ -585,7 +565,7 @@ const EInvoiceListPage: React.FC = () => {
             <div className={`${style.headerCell} ${style.cellActions}`} />
           </div>
 
-          {filteredSentInvoices.map((invoice) => {
+          {sentInvoices.map((invoice) => {
             const statusBadge = getSentStatusBadge(invoice.status)
             return (
               <div
@@ -821,9 +801,7 @@ const EInvoiceListPage: React.FC = () => {
       const currentInvoice = await fetchSentInvoiceById(selectedSentInvoice.id)
       if (!currentInvoice) {
         console.error('[EInvoice] Invoice no longer exists:', selectedSentInvoice.id)
-        // Refresh the list
-        const refreshed = await fetchSentInvoices()
-        setSentInvoices(refreshed)
+        await refreshSentInvoices()
         setSelectedSentInvoice(null)
         return
       }
@@ -831,13 +809,7 @@ const EInvoiceListPage: React.FC = () => {
       // Check if still in sendable state
       if (currentInvoice.status !== 'draft' && currentInvoice.status !== 'failed') {
         console.warn('[EInvoice] Invoice is no longer sendable, status:', currentInvoice.status)
-        // Refresh the list to update UI
-        const refreshed = await fetchSentInvoices()
-        setSentInvoices(refreshed)
-        const updatedSelected = refreshed.find((s) => s.id === selectedSentInvoice.id)
-        if (updatedSelected) {
-          setSelectedSentInvoice(updatedSelected)
-        }
+        await refreshSentInvoices()
         return
       }
 
@@ -849,17 +821,11 @@ const EInvoiceListPage: React.FC = () => {
         setSelectedSentInvoice(updated)
       } catch (error: any) {
         console.error('[EInvoice] Failed to send invoice:', error)
-        // Refresh the list to get the updated (failed) status
-        const refreshed = await fetchSentInvoices()
-        setSentInvoices(refreshed)
-        // Update selected if still selected
-        const updatedSelected = refreshed.find((s) => s.id === selectedSentInvoice.id)
-        if (updatedSelected) {
-          setSelectedSentInvoice(updatedSelected)
-        }
+        // Refresh to get the updated (failed) status
+        await refreshSentInvoices()
       }
     },
-    [selectedSentInvoice]
+    [selectedSentInvoice, refreshSentInvoices]
   )
 
   // Handle delete for draft sent invoices
@@ -875,9 +841,10 @@ const EInvoiceListPage: React.FC = () => {
       if (deleted) {
         setSentInvoices((prev) => prev.filter((inv) => inv.id !== selectedSentInvoice.id))
         setSelectedSentInvoice(null)
+        refreshSentInvoices()
       }
     },
-    [selectedSentInvoice]
+    [selectedSentInvoice, refreshSentInvoices]
   )
 
   // Handle edit for draft sent invoices - navigate to wizard with draft ID

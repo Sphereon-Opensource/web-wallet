@@ -64,5 +64,24 @@ export type {
   AssetGetFileArgs,
 } from './asset'
 
+// Outbox plugin
+export { OutboxPlugin } from './outbox'
+export type {
+  IOutboxPlugin,
+  OutboxItemSendResult,
+  OutboxItem,
+  OutboxItemStatus,
+  OutboxEvidenceFile,
+  OutboxPartyData,
+  OutboxLineItem,
+  OutboxItemCreateArgs,
+  OutboxItemGetArgs,
+  OutboxItemListArgs,
+  OutboxItemUpdateArgs,
+  OutboxItemUpdateStatusArgs,
+  OutboxItemDeleteArgs,
+  OutboxItemSendArgs,
+} from './outbox'
+
 // Shared utilities (for advanced use cases)
 export * from './shared'

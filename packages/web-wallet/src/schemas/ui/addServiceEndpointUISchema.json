@@ -62,6 +62,42 @@
     },
     {
       "type": "Control",
+      "label": "Inbox Name (optional)",
+      "scope": "#/properties/inboxName",
+      "options": {
+        "placeholder": "default: einvoices",
+        "showUnfocusedDescription": true
+      },
+      "rule": {
+        "effect": "SHOW",
+        "condition": {
+          "scope": "#/properties/type",
+          "schema": {
+            "enum": ["einv-direct", "einv-peppol", "einv-ppf-fr"]
+          }
+        }
+      }
+    },
+    {
+      "type": "Control",
+      "label": "Folder Name (optional)",
+      "scope": "#/properties/folderName",
+      "options": {
+        "placeholder": "default: service ID",
+        "showUnfocusedDescription": true
+      },
+      "rule": {
+        "effect": "SHOW",
+        "condition": {
+          "scope": "#/properties/type",
+          "schema": {
+            "enum": ["einv-direct", "einv-peppol", "einv-ppf-fr"]
+          }
+        }
+      }
+    },
+    {
+      "type": "Control",
       "label": "PEPPOL Participant ID *",
       "scope": "#/properties/peppolParticipantId",
       "options": {

@@ -278,11 +278,31 @@
   overflow: hidden;
 }
 
+.senderNameRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .senderName {
   font-weight: var(--theme-font-weight-medium, 500);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.unknownSenderWarning {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #E67E22;
+  cursor: help;
+}
+
+.unknownSenderWarning svg {
+  width: 14px;
+  height: 14px;
 }
 
 .senderEmail {

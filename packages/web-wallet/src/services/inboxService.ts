@@ -51,12 +51,34 @@ interface EInvoiceCredentialSubject {
   vct?: string
   invoice_id: string
   invoice_date: string
-  due_date: string
+  due_date?: string
   currency_code: string
   tax_exclusive_amount: number
   tax_amount: number
   tax_inclusive_amount: number
+  payable_amount?: number
   invoice_type?: string
+  invoice_type_code?: string
+
+  // Flat format (FIDES schema) - seller/buyer fields at root level
+  seller_name?: string
+  seller_tax_id?: string
+  seller_address?: {
+    street?: string
+    city?: string
+    postal_code?: string
+    country_code?: string
+  }
+  buyer_name?: string
+  buyer_tax_id?: string
+  buyer_address?: {
+    street?: string
+    city?: string
+    postal_code?: string
+    country_code?: string
+  }
+
+  // Nested format (alternative schema) - supplier/customer objects
   supplier?: {
     name: string
     vat_number?: string
@@ -534,46 +556,89 @@ function parseCredentialToInvoice(
     // Map credential verified_state to inbox status
     const status = mapVerifiedStateToStatus(credential.verifiedState)
 
-    // Parse supplier info - check both subject and sdJwtPayload
-    const supplierData = subject.supplier || sdJwtPayload?.supplier
-    const supplier: InvoiceParty | undefined = supplierData
-      ? {
-          name: supplierData.name,
-          vatNumber: supplierData.vat_number,
-          chamberOfCommerce: supplierData.chamber_of_commerce,
-          gln: supplierData.gln,
-          iban: supplierData.iban,
-          email: supplierData.email,
-          address: supplierData.address
-            ? {
-                street: supplierData.address.street,
-                city: supplierData.address.city,
-                postalCode: supplierData.address.postal_code,
-                country: supplierData.address.country,
-              }
-            : undefined,
-          did: inboxCredential.clientId,
-        }
-      : undefined
+    // Parse supplier info - support both flat format (seller_name) and nested format (supplier.name)
+    // Check multiple sources: subject, sdJwtPayload
+    const data = sdJwtPayload || subject
+    const supplierData = data.supplier || subject.supplier
+    let supplier: InvoiceParty | undefined
 
-    // Parse customer info - check both subject and sdJwtPayload
-    const customerData = subject.customer || sdJwtPayload?.customer
-    const customer: InvoiceParty | undefined = customerData
-      ? {
-          name: customerData.name,
-          vatNumber: customerData.vat_number,
-          chamberOfCommerce: customerData.chamber_of_commerce,
-          email: customerData.email,
-          address: customerData.address
-            ? {
-                street: customerData.address.street,
-                city: customerData.address.city,
-                postalCode: customerData.address.postal_code,
-                country: customerData.address.country,
-              }
-            : undefined,
-        }
-      : undefined
+    if (supplierData) {
+      // Nested format: supplier object with name, vat_number, etc.
+      supplier = {
+        name: supplierData.name,
+        vatNumber: supplierData.vat_number,
+        chamberOfCommerce: supplierData.chamber_of_commerce,
+        gln: supplierData.gln,
+        iban: supplierData.iban,
+        email: supplierData.email,
+        address: supplierData.address
+          ? {
+              street: supplierData.address.street,
+              city: supplierData.address.city,
+              postalCode: supplierData.address.postal_code,
+              country: supplierData.address.country,
+            }
+          : undefined,
+        did: inboxCredential.clientId,
+      }
+    } else if (data.seller_name || subject.seller_name) {
+      // Flat format: seller_name, seller_tax_id, seller_address at root level
+      const sellerName = data.seller_name || subject.seller_name
+      const sellerTaxId = data.seller_tax_id || subject.seller_tax_id
+      const sellerAddress = data.seller_address || subject.seller_address
+      supplier = {
+        name: sellerName,
+        vatNumber: sellerTaxId,
+        address: sellerAddress
+          ? {
+              street: sellerAddress.street,
+              city: sellerAddress.city,
+              postalCode: sellerAddress.postal_code,
+              country: sellerAddress.country_code || sellerAddress.country,
+            }
+          : undefined,
+        did: inboxCredential.clientId,
+      }
+    }
+
+    // Parse customer info - support both flat format (buyer_name) and nested format (customer.name)
+    const customerData = data.customer || subject.customer
+    let customer: InvoiceParty | undefined
+
+    if (customerData) {
+      // Nested format: customer object
+      customer = {
+        name: customerData.name,
+        vatNumber: customerData.vat_number,
+        chamberOfCommerce: customerData.chamber_of_commerce,
+        email: customerData.email,
+        address: customerData.address
+          ? {
+              street: customerData.address.street,
+              city: customerData.address.city,
+              postalCode: customerData.address.postal_code,
+              country: customerData.address.country,
+            }
+          : undefined,
+      }
+    } else if (data.buyer_name || subject.buyer_name) {
+      // Flat format: buyer_name, buyer_tax_id, buyer_address at root level
+      const buyerName = data.buyer_name || subject.buyer_name
+      const buyerTaxId = data.buyer_tax_id || subject.buyer_tax_id
+      const buyerAddress = data.buyer_address || subject.buyer_address
+      customer = {
+        name: buyerName,
+        vatNumber: buyerTaxId,
+        address: buyerAddress
+          ? {
+              street: buyerAddress.street,
+              city: buyerAddress.city,
+              postalCode: buyerAddress.postal_code,
+              country: buyerAddress.country_code || buyerAddress.country,
+            }
+          : undefined,
+      }
+    }
 
     // Parse evidence - check multiple locations:
     // 1. rawDoc.evidence (W3C VC format)
@@ -609,7 +674,7 @@ function parseCredentialToInvoice(
     const invoice: InboxEInvoice = {
       invoiceId: subject.invoice_id,
       invoiceDate: subject.invoice_date,
-      dueDate: subject.due_date,
+      dueDate: subject.due_date || '',
       currencyCode: subject.currency_code,
       taxExclusiveAmount: subject.tax_exclusive_amount,
       taxAmount: subject.tax_amount,
@@ -818,19 +883,164 @@ export interface CreateSentInvoiceParams {
   ublXmlHash?: string
 }
 
-// In-memory storage for sent invoices until backend is ready
-const sentInvoicesStore: Map<string, SentInvoice> = new Map()
+// ===== Outbox API Functions =====
 
 /**
- * Save a sent invoice to the persistence layer
+ * Backend outbox item structure
  */
-export async function saveSentInvoice(params: CreateSentInvoiceParams): Promise<SentInvoice> {
-  const now = new Date().toISOString()
-  const id = `sent-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-  const correlationId = `corr-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+interface BackendOutboxItem {
+  id: string
+  tenantId?: string
+  status: 'draft' | 'sending' | 'sent' | 'failed'
+  invoiceId: string
+  invoiceDate: string
+  dueDate?: string
+  currencyCode: string
+  taxExclusiveAmount?: number
+  taxAmount?: number
+  taxInclusiveAmount?: number
+  payableAmount?: number
+  sellerData?: {
+    name: string
+    vatNumber?: string
+    chamberOfCommerce?: string
+    gln?: string
+    iban?: string
+    email?: string
+    address?: {
+      street: string
+      city: string
+      postalCode: string
+      country: string
+    }
+  }
+  buyerData?: {
+    name: string
+    vatNumber?: string
+    chamberOfCommerce?: string
+    gln?: string
+    iban?: string
+    email?: string
+    address?: {
+      street: string
+      city: string
+      postalCode: string
+      country: string
+    }
+  }
+  lineItems?: Array<{
+    lineNumber: number
+    description: string
+    note?: string
+    quantity: number
+    quantityUnit?: string
+    unitPrice: number
+    vatPercent: number
+    lineTotal: number
+  }>
+  evidenceFiles: Array<{
+    id: string
+    digestMultibase: string
+    filename: string
+    contentType: string
+    evidenceType: 'UBLInvoice' | 'SupportingDocument'
+  }>
+  recipientDid: string
+  recipientName?: string
+  recipientEndpoint?: string
+  recipientEndpointId?: string
+  recipientEndpointType?: string
+  hasUblSource: boolean
+  ublXmlHash?: string
+  credentialId?: string
+  correlationId?: string
+  errorMessage?: string
+  createdAt: string
+  updatedAt: string
+  sentAt?: string
+  deliveredAt?: string
+}
 
-  const sentInvoice: SentInvoice = {
-    id,
+/**
+ * Map backend outbox item to frontend SentInvoice
+ */
+function mapOutboxItemToSentInvoice(item: BackendOutboxItem): SentInvoice {
+  return {
+    id: item.id,
+    invoiceId: item.invoiceId,
+    invoiceDate: item.invoiceDate,
+    dueDate: item.dueDate,
+    currencyCode: item.currencyCode,
+    taxExclusiveAmount: item.taxExclusiveAmount ?? 0,
+    taxAmount: item.taxAmount ?? 0,
+    taxInclusiveAmount: item.taxInclusiveAmount ?? 0,
+    payableAmount: item.payableAmount ?? 0,
+    sellerName: item.sellerData?.name ?? 'Unknown Seller',
+    sellerTaxId: item.sellerData?.vatNumber,
+    buyerName: item.buyerData?.name ?? 'Unknown Buyer',
+    buyerTaxId: item.buyerData?.vatNumber,
+    supplier: item.sellerData ? {
+      name: item.sellerData.name,
+      vatNumber: item.sellerData.vatNumber,
+      chamberOfCommerce: item.sellerData.chamberOfCommerce,
+      gln: item.sellerData.gln,
+      iban: item.sellerData.iban,
+      email: item.sellerData.email,
+      address: item.sellerData.address ? {
+        street: item.sellerData.address.street,
+        city: item.sellerData.address.city,
+        postalCode: item.sellerData.address.postalCode,
+        country: item.sellerData.address.country,
+      } : undefined,
+    } : undefined,
+    customer: item.buyerData ? {
+      name: item.buyerData.name,
+      vatNumber: item.buyerData.vatNumber,
+      chamberOfCommerce: item.buyerData.chamberOfCommerce,
+      gln: item.buyerData.gln,
+      iban: item.buyerData.iban,
+      email: item.buyerData.email,
+      address: item.buyerData.address ? {
+        street: item.buyerData.address.street,
+        city: item.buyerData.address.city,
+        postalCode: item.buyerData.address.postalCode,
+        country: item.buyerData.address.country,
+      } : undefined,
+    } : undefined,
+    lineItems: item.lineItems?.map(li => ({
+      lineNumber: li.lineNumber,
+      description: li.description,
+      note: li.note,
+      quantity: li.quantity,
+      quantityUnit: li.quantityUnit ?? 'EA',
+      unitPrice: li.unitPrice,
+      vatPercent: li.vatPercent,
+      lineTotal: li.lineTotal,
+    })),
+    recipientDid: item.recipientDid,
+    recipientName: item.recipientName,
+    recipientEndpointId: item.recipientEndpointId,
+    recipientEndpointType: item.recipientEndpointType,
+    recipientEndpoint: item.recipientEndpoint,
+    evidenceFiles: item.evidenceFiles,
+    hasUblSource: item.hasUblSource,
+    ublXmlHash: item.ublXmlHash,
+    status: item.status === 'sent' ? 'sent' : item.status,
+    sentAt: item.sentAt,
+    deliveredAt: item.deliveredAt,
+    errorMessage: item.errorMessage,
+    credentialId: item.credentialId,
+    correlationId: item.correlationId,
+    createdAt: item.createdAt,
+    updatedAt: item.updatedAt,
+  }
+}
+
+/**
+ * Map frontend CreateSentInvoiceParams to backend outbox create request
+ */
+function mapParamsToOutboxCreate(params: CreateSentInvoiceParams): Record<string, unknown> {
+  return {
     invoiceId: params.invoiceData.invoiceId,
     invoiceDate: params.invoiceData.invoiceDate,
     dueDate: params.invoiceData.dueDate,
@@ -839,193 +1049,253 @@ export async function saveSentInvoice(params: CreateSentInvoiceParams): Promise<
     taxAmount: params.invoiceData.taxAmount,
     taxInclusiveAmount: params.invoiceData.taxInclusiveAmount,
     payableAmount: params.invoiceData.payableAmount,
-    sellerName: params.invoiceData.sellerName,
-    sellerTaxId: params.invoiceData.sellerTaxId,
-    buyerName: params.invoiceData.buyerName,
-    buyerTaxId: params.invoiceData.buyerTaxId,
-    supplier: params.invoiceData.supplier,
-    customer: params.invoiceData.customer,
-    lineItems: params.invoiceData.lineItems,
-    invoiceTypeCode: params.invoiceData.invoiceTypeCode,
-    note: params.invoiceData.note,
-    paymentTerms: params.invoiceData.paymentTerms,
-    paymentMeansCode: params.invoiceData.paymentMeansCode,
+    sellerData: params.invoiceData.supplier ? {
+      name: params.invoiceData.supplier.name || params.invoiceData.sellerName,
+      vatNumber: params.invoiceData.supplier.vatNumber || params.invoiceData.sellerTaxId,
+      chamberOfCommerce: params.invoiceData.supplier.chamberOfCommerce,
+      gln: params.invoiceData.supplier.gln,
+      iban: params.invoiceData.supplier.iban,
+      email: params.invoiceData.supplier.email,
+      address: params.invoiceData.supplier.address ? {
+        street: params.invoiceData.supplier.address.street,
+        city: params.invoiceData.supplier.address.city,
+        postalCode: params.invoiceData.supplier.address.postalCode,
+        country: params.invoiceData.supplier.address.country,
+      } : undefined,
+    } : {
+      name: params.invoiceData.sellerName,
+      vatNumber: params.invoiceData.sellerTaxId,
+    },
+    buyerData: params.invoiceData.customer ? {
+      name: params.invoiceData.customer.name || params.invoiceData.buyerName,
+      vatNumber: params.invoiceData.customer.vatNumber || params.invoiceData.buyerTaxId,
+      chamberOfCommerce: params.invoiceData.customer.chamberOfCommerce,
+      gln: params.invoiceData.customer.gln,
+      iban: params.invoiceData.customer.iban,
+      email: params.invoiceData.customer.email,
+      address: params.invoiceData.customer.address ? {
+        street: params.invoiceData.customer.address.street,
+        city: params.invoiceData.customer.address.city,
+        postalCode: params.invoiceData.customer.address.postalCode,
+        country: params.invoiceData.customer.address.country,
+      } : undefined,
+    } : {
+      name: params.invoiceData.buyerName,
+      vatNumber: params.invoiceData.buyerTaxId,
+    },
+    lineItems: params.invoiceData.lineItems?.map((li, idx) => ({
+      lineNumber: li.lineNumber ?? idx + 1,
+      description: li.description,
+      note: li.note,
+      quantity: li.quantity,
+      quantityUnit: li.quantityUnit,
+      unitPrice: li.unitPrice,
+      vatPercent: li.vatPercent,
+      lineTotal: li.lineTotal,
+    })),
+    evidenceFiles: params.evidenceFiles,
     recipientDid: params.recipientDid,
     recipientName: params.recipientName,
+    recipientEndpoint: params.recipientEndpoint,
     recipientEndpointId: params.recipientEndpointId,
     recipientEndpointType: params.recipientEndpointType,
-    recipientEndpoint: params.recipientEndpoint,
-    evidenceFiles: params.evidenceFiles,
-    hasUblSource: params.hasUblSource,
+    hasUblSource: params.hasUblSource ?? false,
     ublXmlHash: params.ublXmlHash,
-    status: 'draft',
-    correlationId,
-    createdAt: now,
-    updatedAt: now,
   }
-
-  // Store in memory (will be replaced with actual backend persistence)
-  sentInvoicesStore.set(id, sentInvoice)
-
-  // Also try to persist to local storage for page reloads
-  try {
-    const stored = localStorage.getItem('sentInvoices') || '[]'
-    const invoices = JSON.parse(stored)
-    invoices.push(sentInvoice)
-    localStorage.setItem('sentInvoices', JSON.stringify(invoices))
-  } catch (e) {
-    console.warn('[InboxService] Could not persist to localStorage:', e)
-  }
-
-  console.log('[InboxService] Saved sent invoice:', sentInvoice.id)
-  return sentInvoice
 }
 
 /**
- * Update a sent invoice status
+ * Save a sent invoice to the outbox backend
+ */
+export async function saveSentInvoice(params: CreateSentInvoiceParams): Promise<SentInvoice> {
+  const baseUrl = getAgentBaseUrl()
+  const createData = mapParamsToOutboxCreate(params)
+
+  const response = await fetch(`${baseUrl}/outbox`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(createData),
+  })
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ error: response.statusText }))
+    throw new Error(`Failed to save sent invoice: ${error.error || response.statusText}`)
+  }
+
+  const item: BackendOutboxItem = await response.json()
+  console.log('[InboxService] Saved sent invoice:', item.id)
+  return mapOutboxItemToSentInvoice(item)
+}
+
+/**
+ * Update a sent invoice status via the outbox backend
  */
 export async function updateSentInvoiceStatus(
   id: string,
   status: SentInvoiceStatus,
   extra?: Partial<SentInvoice>
 ): Promise<SentInvoice | null> {
-  const invoice = sentInvoicesStore.get(id)
-  if (!invoice) {
-    // Try to load from localStorage
-    try {
-      const stored = localStorage.getItem('sentInvoices') || '[]'
-      const invoices: SentInvoice[] = JSON.parse(stored)
-      const found = invoices.find((i) => i.id === id)
-      if (found) {
-        sentInvoicesStore.set(id, found)
-      }
-    } catch (e) {
-      // ignore
-    }
-  }
+  const baseUrl = getAgentBaseUrl()
 
-  const existing = sentInvoicesStore.get(id)
-  if (!existing) {
-    console.error('[InboxService] Sent invoice not found:', id)
-    return null
-  }
-
-  const updated: SentInvoice = {
-    ...existing,
-    ...extra,
+  // Build update payload
+  const updateData: Record<string, unknown> = {
     status,
-    updatedAt: new Date().toISOString(),
   }
 
-  if (status === 'sent' && !updated.sentAt) {
-    updated.sentAt = new Date().toISOString()
+  if (extra?.errorMessage !== undefined) {
+    updateData.errorMessage = extra.errorMessage
   }
-  if (status === 'delivered' && !updated.deliveredAt) {
-    updated.deliveredAt = new Date().toISOString()
+  if (extra?.credentialId !== undefined) {
+    updateData.credentialId = extra.credentialId
+  }
+  if (extra?.correlationId !== undefined) {
+    updateData.correlationId = extra.correlationId
   }
 
-  sentInvoicesStore.set(id, updated)
+  const response = await fetch(`${baseUrl}/outbox/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(updateData),
+  })
 
-  // Update localStorage
-  try {
-    const stored = localStorage.getItem('sentInvoices') || '[]'
-    const invoices: SentInvoice[] = JSON.parse(stored)
-    const idx = invoices.findIndex((i) => i.id === id)
-    if (idx >= 0) {
-      invoices[idx] = updated
-    } else {
-      invoices.push(updated)
+  if (!response.ok) {
+    if (response.status === 404) {
+      console.error('[InboxService] Sent invoice not found:', id)
+      return null
     }
-    localStorage.setItem('sentInvoices', JSON.stringify(invoices))
-  } catch (e) {
-    console.warn('[InboxService] Could not update localStorage:', e)
+    const error = await response.json().catch(() => ({ error: response.statusText }))
+    throw new Error(`Failed to update sent invoice: ${error.error || response.statusText}`)
   }
 
+  const item: BackendOutboxItem = await response.json()
   console.log('[InboxService] Updated sent invoice:', id, 'status:', status)
-  return updated
+  return mapOutboxItemToSentInvoice(item)
 }
 
+/** Outbox folder type */
+export type OutboxFolder = 'drafts' | 'outbox' | 'sent'
+
 /**
- * Fetch all sent invoices
+ * Fetch sent invoices from the outbox backend with optional folder filter
+ * @param folder - Optional folder filter: 'drafts' (draft/failed), 'outbox' (sending), 'sent' (sent)
  */
-export async function fetchSentInvoices(): Promise<SentInvoice[]> {
-  // Load from localStorage if available
-  try {
-    const stored = localStorage.getItem('sentInvoices') || '[]'
-    const invoices: SentInvoice[] = JSON.parse(stored)
-    // Populate in-memory store
-    for (const inv of invoices) {
-      sentInvoicesStore.set(inv.id, inv)
-    }
-  } catch (e) {
-    console.warn('[InboxService] Could not load from localStorage:', e)
+export async function fetchSentInvoices(folder?: OutboxFolder): Promise<SentInvoice[]> {
+  const baseUrl = getAgentBaseUrl()
+
+  const url = new URL(`${baseUrl}/outbox`)
+  if (folder) {
+    url.searchParams.set('folder', folder)
   }
 
-  const invoices = Array.from(sentInvoicesStore.values())
+  const response = await fetch(url.toString())
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ error: response.statusText }))
+    throw new Error(`Failed to fetch sent invoices: ${error.error || response.statusText}`)
+  }
+
+  const items: BackendOutboxItem[] = await response.json()
   // Sort by created date (newest first)
-  return invoices.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+  return items
+    .map(mapOutboxItemToSentInvoice)
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 }
 
 /**
- * Fetch a single sent invoice by ID
+ * Fetch invoices from the drafts folder (draft and failed status)
+ */
+export async function fetchDraftInvoices(): Promise<SentInvoice[]> {
+  return fetchSentInvoices('drafts')
+}
+
+/**
+ * Fetch invoices from the outbox folder (sending status)
+ */
+export async function fetchOutboxInvoices(): Promise<SentInvoice[]> {
+  return fetchSentInvoices('outbox')
+}
+
+/**
+ * Fetch invoices from the sent folder (sent status)
+ */
+export async function fetchSentFolderInvoices(): Promise<SentInvoice[]> {
+  return fetchSentInvoices('sent')
+}
+
+/**
+ * Fetch a single sent invoice by ID from the outbox backend
  */
 export async function fetchSentInvoiceById(id: string): Promise<SentInvoice | null> {
-  // Try memory first
-  let invoice = sentInvoicesStore.get(id)
+  const baseUrl = getAgentBaseUrl()
 
-  if (!invoice) {
-    // Try localStorage
-    try {
-      const stored = localStorage.getItem('sentInvoices') || '[]'
-      const invoices: SentInvoice[] = JSON.parse(stored)
-      invoice = invoices.find((i) => i.id === id)
-      if (invoice) {
-        sentInvoicesStore.set(id, invoice)
-      }
-    } catch (e) {
-      // ignore
+  const response = await fetch(`${baseUrl}/outbox/${id}`)
+
+  if (!response.ok) {
+    if (response.status === 404) {
+      return null
     }
+    const error = await response.json().catch(() => ({ error: response.statusText }))
+    throw new Error(`Failed to fetch sent invoice: ${error.error || response.statusText}`)
   }
 
-  return invoice ?? null
+  const item: BackendOutboxItem = await response.json()
+  return mapOutboxItemToSentInvoice(item)
 }
 
 /**
- * Delete a sent invoice
+ * Delete a sent invoice from the outbox backend
  */
 export async function deleteSentInvoice(id: string): Promise<boolean> {
-  // Try to load from localStorage if not in memory
-  if (!sentInvoicesStore.has(id)) {
-    try {
-      const stored = localStorage.getItem('sentInvoices') || '[]'
-      const invoices: SentInvoice[] = JSON.parse(stored)
-      const found = invoices.find((i) => i.id === id)
-      if (found) {
-        sentInvoicesStore.set(id, found)
-      }
-    } catch (e) {
-      // ignore
+  const baseUrl = getAgentBaseUrl()
+
+  const response = await fetch(`${baseUrl}/outbox/${id}`, {
+    method: 'DELETE',
+  })
+
+  if (!response.ok) {
+    if (response.status === 404) {
+      return false
     }
-  }
-
-  if (!sentInvoicesStore.has(id)) {
-    return false
-  }
-
-  sentInvoicesStore.delete(id)
-
-  // Update localStorage
-  try {
-    const stored = localStorage.getItem('sentInvoices') || '[]'
-    const invoices: SentInvoice[] = JSON.parse(stored)
-    const filtered = invoices.filter((i) => i.id !== id)
-    localStorage.setItem('sentInvoices', JSON.stringify(filtered))
-  } catch (e) {
-    console.warn('[InboxService] Could not update localStorage:', e)
+    const error = await response.json().catch(() => ({ error: response.statusText }))
+    throw new Error(`Failed to delete sent invoice: ${error.error || response.statusText}`)
   }
 
   console.log('[InboxService] Deleted sent invoice:', id)
   return true
+}
+
+/**
+ * Send an outbox item to its recipient
+ * This triggers the actual credential creation and OID4VP flow
+ */
+export async function sendOutboxItem(id: string): Promise<{
+  success: boolean
+  credentialId?: string
+  correlationId?: string
+  error?: string
+}> {
+  const baseUrl = getAgentBaseUrl()
+
+  const response = await fetch(`${baseUrl}/outbox/${id}/send`, {
+    method: 'POST',
+  })
+
+  const result = await response.json()
+
+  if (!response.ok) {
+    console.error('[InboxService] Failed to send outbox item:', id, result.error)
+    return {
+      success: false,
+      error: result.error || response.statusText,
+    }
+  }
+
+  console.log('[InboxService] Sent outbox item:', id, 'credentialId:', result.credentialId)
+  return {
+    success: result.success,
+    credentialId: result.credentialId,
+    correlationId: result.correlationId,
+  }
 }
 
 // ===== Evidence Fetching =====
@@ -1379,70 +1649,21 @@ export async function sendDraftInvoice(invoice: SentInvoice): Promise<SentInvoic
     throw new Error('Invoice is missing recipient endpoint URL. Please edit and reselect the recipient.')
   }
 
-  console.log('[InboxService] Sending draft invoice:', invoice.id)
+  console.log('[InboxService] Sending draft invoice via outbox:', invoice.id)
 
-  // Update status to sending
-  await updateSentInvoiceStatus(invoice.id, 'sending')
+  // Use the outbox send endpoint which handles everything
+  const sendResult = await sendOutboxItem(invoice.id)
 
-  try {
-    const agentBaseUrl = getAgentBaseUrl()
-
-    // Call the send API with the stored data
-    const sendResponse = await fetch(`${agentBaseUrl}/api/einvoice/send`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        invoiceData: {
-          invoiceId: invoice.invoiceId,
-          invoiceDate: invoice.invoiceDate,
-          dueDate: invoice.dueDate,
-          currencyCode: invoice.currencyCode,
-          taxExclusiveAmount: invoice.taxExclusiveAmount,
-          taxAmount: invoice.taxAmount,
-          taxInclusiveAmount: invoice.taxInclusiveAmount,
-          payableAmount: invoice.payableAmount,
-          sellerName: invoice.sellerName,
-          sellerTaxId: invoice.sellerTaxId,
-          buyerName: invoice.buyerName,
-          buyerTaxId: invoice.buyerTaxId,
-        },
-        evidenceIds: invoice.evidenceFiles.map((f) => f.id),
-        recipientDid: invoice.recipientDid,
-        recipientEndpoint: invoice.recipientEndpoint,
-        recipientEndpointType: invoice.recipientEndpointType,
-        sentInvoiceId: invoice.id,
-      }),
-    })
-
-    if (!sendResponse.ok) {
-      const errorData = await sendResponse.json()
-      const errorMessage = errorData.error || 'Failed to send eInvoice'
-      await updateSentInvoiceStatus(invoice.id, 'failed', {errorMessage})
-      throw new Error(errorMessage)
-    }
-
-    const sendResult = await sendResponse.json()
-
-    // Update status to delivered on success
-    const updated = await updateSentInvoiceStatus(invoice.id, 'delivered', {
-      credentialId: sendResult.credentialId,
-      correlationId: sendResult.correlationId,
-    })
-
-    if (!updated) {
-      throw new Error('Failed to update invoice status after sending')
-    }
-
-    console.log('[InboxService] Successfully sent draft invoice:', invoice.id)
-    return updated
-  } catch (error: any) {
-    // If not already updated to failed, update now
-    const current = sentInvoicesStore.get(invoice.id)
-    if (current && current.status === 'sending') {
-      await updateSentInvoiceStatus(invoice.id, 'failed', {
-        errorMessage: error.message || 'Failed to send eInvoice',
-      })
-    }
-    throw error
+  if (!sendResult.success) {
+    throw new Error(sendResult.error || 'Failed to send eInvoice')
   }
+
+  // Fetch the updated invoice from backend
+  const updated = await fetchSentInvoiceById(invoice.id)
+  if (!updated) {
+    throw new Error('Failed to fetch updated invoice after sending')
+  }
+
+  console.log('[InboxService] Successfully sent draft invoice:', invoice.id)
+  return updated
 }
