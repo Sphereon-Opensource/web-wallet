@@ -11,7 +11,7 @@ overrides:
   '@sphereon/pex-models': 2.3.2
   '@sphereon/ssi-types': 0.36.1-feature.vdx24.einvoice.endpoints.122
   '@sphereon/ssi-sdk.core': 0.36.1-feature.vdx24.einvoice.endpoints.122
-  '@sphereon/ssi-sdk.data-store': link:../SSI-SDK/packages/data-store
+  '@sphereon/ssi-sdk.data-store': 0.36.1-feature.vdx24.einvoice.endpoints.122
   '@sphereon/ssi-sdk.data-store-types': 0.36.1-feature.vdx24.einvoice.endpoints.122
   '@sphereon/ssi-sdk.oid4vci-issuer': 0.36.1-feature.vdx24.einvoice.endpoints.122
   '@sphereon/ssi-sdk.oid4vci-issuer-rest-api': 0.36.1-feature.vdx24.einvoice.endpoints.122
@@ -223,8 +223,8 @@ importers:
         specifier: 0.36.1-feature.vdx24.einvoice.endpoints.122
         version: 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.data-store':
-        specifier: link:../../../SSI-SDK/packages/data-store
-        version: link:../../../SSI-SDK/packages/data-store
+        specifier: 0.36.1-feature.vdx24.einvoice.endpoints.122
+        version: 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.data-store-types':
         specifier: 0.36.1-feature.vdx24.einvoice.endpoints.122
         version: 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
@@ -233,7 +233,7 @@ importers:
         version: 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(expo@54.0.21(@babel/core@7.28.5)(graphql@15.10.1)(react-native@0.82.1(@babel/core@7.28.5)(react@18.3.1))(react@18.3.1))(pg@8.16.3)(react-native@0.82.1(@babel/core@7.28.5)(react@18.3.1))(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)(web-streams-polyfill@3.3.3)
       '@sphereon/ssi-sdk.event-logger':
         specifier: 0.36.1-feature.vdx24.einvoice.endpoints.122
-        version: 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
+        version: 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.issuance-branding':
         specifier: 0.36.1-feature.vdx24.einvoice.endpoints.122
         version: 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
@@ -669,7 +669,7 @@ importers:
         version: 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(react-native@0.82.1(@babel/core@7.28.5)(@types/react@18.3.26)(react@18.3.1))(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.event-logger':
         specifier: 0.36.1-feature.vdx24.einvoice.endpoints.122
-        version: 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
+        version: 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.issuance-branding':
         specifier: 0.36.1-feature.vdx24.einvoice.endpoints.122
         version: 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
@@ -714,10 +714,10 @@ importers:
         version: 0.4.1-unstable.158(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@sphereon/ui-components.credential-branding':
         specifier: 0.4.1-unstable.158
-        version: 0.4.1-unstable.158(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.6.3)
+        version: 0.4.1-unstable.158(encoding@0.1.13)(pg@8.16.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ui-components.ssi-react':
         specifier: 0.4.1-unstable.158
-        version: 0.4.1-unstable.158(@babel/core@7.28.5)(@types/react@18.3.26)(date-fns@2.30.0)(dayjs@1.11.18)(moment@2.30.1)(react@18.3.1)(typescript@5.6.3)
+        version: 0.4.1-unstable.158(@babel/core@7.28.5)(@types/react@18.3.26)(date-fns@2.30.0)(dayjs@1.11.18)(encoding@0.1.13)(moment@2.30.1)(pg@8.16.3)(react@18.3.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@supabase/postgrest-js':
         specifier: 1.16.2
         version: 1.16.2
@@ -3474,6 +3474,9 @@ packages:
   '@sphereon/ssi-sdk.data-store-types@0.36.1-feature.vdx24.einvoice.endpoints.122':
     resolution: {integrity: sha512-H1LxZnuh5PWnAn7HcptV87InDD+3qB8qy2cYob1i7AXMAK7WqWcR8c/Y8f9uKAUYXLlu1IwiEAujtC31WwHQ5w==}
 
+  '@sphereon/ssi-sdk.data-store@0.36.1-feature.vdx24.einvoice.endpoints.122':
+    resolution: {integrity: sha512-Po7mi22vsT7FIQwzVHp8FI/XaAed03Gtij/G+XpZb063ChKcsyWStv1kbAyh8+sH265BsjtawttRwooLpqbv7g==}
+
   '@sphereon/ssi-sdk.dev@0.36.1-feature.vdx24.einvoice.endpoints.122':
     resolution: {integrity: sha512-dSRLooUvNiN67WJk27xQ/mYqMrck3noZuQLW5M7rU2xJ6jptGiDiRiqmtrPX+B5Up87WUyIBxD0b83IxA34nHQ==}
 
@@ -4099,6 +4102,9 @@ packages:
 
   '@types/uuid@9.0.8':
     resolution: {integrity: sha512-jg+97EGIcY9AGHJJRaaPVgetKDsrTgbRjQ5Msgjh/DQKEFl0DtyRr/VCOyD1T2R1MNeWPK/u7JoGhlDZnKBAfA==}
+
+  '@types/validator@13.15.10':
+    resolution: {integrity: sha512-T8L6i7wCuyoK8A/ZeLYt1+q0ty3Zb9+qbSSvrIVitzT3YjZqkTZ40IbRsPanlB4h1QB3JVL1SYCdR6ngtFYcuA==}
 
   '@types/wrap-ansi@3.0.0':
     resolution: {integrity: sha512-ltIpx+kM7g/MLRZfkbL7EsCEjfzCcScLpkg37eXEtx5kmrAKBkTJwd1GIAjDSL8wTpM6Hzn5YO4pSb91BEwu1g==}
@@ -5063,6 +5069,9 @@ packages:
 
   cjs-module-lexer@1.4.3:
     resolution: {integrity: sha512-9z8TZaGM1pfswYeXrUpzPrkx8UnWYdhJclsiYMm6x/w5+nN+8Tf/LnAgfLGQCm59qAOxU8WwHEq2vNwF6i4j+Q==}
+
+  class-validator@0.14.1:
+    resolution: {integrity: sha512-2VEG9JICxIqTpoK1eMzZqaV+u/EiwEJkMGzTrZf6sU/fwsnOITVgYJ8yojSy6CaXtO9V0Cc6ZQZ8h8m4UBuLwQ==}
 
   classnames@2.5.1:
     resolution: {integrity: sha512-saHYOzhIQs6wy2sVxTM6bUDsQO4F50V9RQ22qBpEdCW+I+/Wmke2HOl6lS6dTpdxVhb88/I6+Hs+438c3lfUow==}
@@ -7428,6 +7437,9 @@ packages:
   levn@0.4.1:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
     engines: {node: '>= 0.8.0'}
+
+  libphonenumber-js@1.12.34:
+    resolution: {integrity: sha512-v/Ip8k8eYdp7bINpzqDh46V/PaQ8sK+qi97nMQgjZzFlb166YFqlR/HVI+MzsI9JqcyyVWCOipmmretiaSyQyw==}
 
   lighthouse-logger@1.4.2:
     resolution: {integrity: sha512-gPWxznF6TKmUHrOQjlVo2UbaL2EJ71mb2CCeRs/2qBpi4L/g4LUVc9+3lKQ6DTUZwJswfM7ainGrLO1+fOqa2g==}
@@ -9838,6 +9850,7 @@ packages:
   tar@7.5.1:
     resolution: {integrity: sha512-nlGpxf+hv0v7GkWBK2V9spgactGOp0qvfWRxUMjqHyzrt3SgwE48DIv/FhqPHJYLHpgW1opq3nERbz5Anq7n1g==}
     engines: {node: '>=18'}
+    deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exhorbitant rates) by contacting i@izs.me
 
   temp-dir@2.0.0:
     resolution: {integrity: sha512-aoBAniQmmwtcKp/7BzsH8Cxzv8OL736p7v1ihGb5e9DJ9kTwGWHrQrVB5+lfVDzfGrdRzXch+ig7LHaY1JTOrg==}
@@ -14817,7 +14830,7 @@ snapshots:
       '@sphereon/ssi-sdk-ext.key-utils': 0.36.1-feature.vdx24.einvoice.endpoints.122(typescript@5.6.3)
       '@sphereon/ssi-sdk.contact-manager': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.core': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
-      '@sphereon/ssi-sdk.data-store': link:../SSI-SDK/packages/data-store
+      '@sphereon/ssi-sdk.data-store': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.data-store-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-sdk.kv-store-temp': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))
       '@sphereon/ssi-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(typescript@5.6.3)
@@ -14837,6 +14850,7 @@ snapshots:
       - '@noble/hashes'
       - '@sap/hana-client'
       - better-sqlite3
+      - bufferutil
       - encoding
       - hdb-pool
       - ioredis
@@ -14856,10 +14870,11 @@ snapshots:
       - ts-node
       - typeorm-aurora-data-api-driver
       - typescript
+      - utf-8-validate
 
   '@sphereon/ssi-sdk.contact-manager@0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)':
     dependencies:
-      '@sphereon/ssi-sdk.data-store': link:../SSI-SDK/packages/data-store
+      '@sphereon/ssi-sdk.data-store': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.data-store-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(typescript@5.6.3)
       cross-fetch: 3.2.0(encoding@0.1.13)
@@ -14869,6 +14884,7 @@ snapshots:
       - '@google-cloud/spanner'
       - '@sap/hana-client'
       - better-sqlite3
+      - bufferutil
       - encoding
       - hdb-pool
       - ioredis
@@ -14886,6 +14902,7 @@ snapshots:
       - ts-node
       - typeorm-aurora-data-api-driver
       - typescript
+      - utf-8-validate
 
   '@sphereon/ssi-sdk.core@0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)':
     dependencies:
@@ -14906,7 +14923,7 @@ snapshots:
       '@sphereon/pex': 5.0.0-unstable.28(typescript@5.6.3)
       '@sphereon/pex-models': 2.3.2
       '@sphereon/ssi-sdk.core': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
-      '@sphereon/ssi-sdk.data-store': link:../SSI-SDK/packages/data-store
+      '@sphereon/ssi-sdk.data-store': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.data-store-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
       cross-fetch: 3.2.0(encoding@0.1.13)
       debug: 4.4.3(supports-color@5.5.0)
@@ -14916,6 +14933,7 @@ snapshots:
       - '@google-cloud/spanner'
       - '@sap/hana-client'
       - better-sqlite3
+      - bufferutil
       - encoding
       - hdb-pool
       - ioredis
@@ -14933,6 +14951,7 @@ snapshots:
       - ts-node
       - typeorm-aurora-data-api-driver
       - typescript
+      - utf-8-validate
 
   '@sphereon/ssi-sdk.credential-validation@0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)':
     dependencies:
@@ -14994,7 +15013,7 @@ snapshots:
       '@sphereon/ssi-sdk.agent-config': 0.36.1-feature.vdx24.einvoice.endpoints.122(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))
       '@sphereon/ssi-sdk.core': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-sdk.credential-vcdm': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
-      '@sphereon/ssi-sdk.data-store': link:../SSI-SDK/packages/data-store
+      '@sphereon/ssi-sdk.data-store': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.data-store-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-sdk.vc-status-list': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(expo@54.0.21(@babel/core@7.28.5)(graphql@15.10.1)(react-native@0.82.1(@babel/core@7.28.5)(react@18.3.1))(react@18.3.1))(pg@8.16.3)(react-native@0.82.1(@babel/core@7.28.5)(react@18.3.1))(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)(web-streams-polyfill@3.3.3)
       '@sphereon/ssi-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(typescript@5.6.3)
@@ -15163,6 +15182,48 @@ snapshots:
       - supports-color
       - typescript
 
+  '@sphereon/ssi-sdk.data-store@0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)':
+    dependencies:
+      '@sphereon/kmp-mdoc-core': 0.2.0-SNAPSHOT.26
+      '@sphereon/pex': 5.0.0-unstable.28(typescript@5.6.3)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
+      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
+      '@sphereon/ssi-sdk.agent-config': 0.36.1-feature.vdx24.einvoice.endpoints.122(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))
+      '@sphereon/ssi-sdk.core': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/ssi-sdk.data-store-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/ssi-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(typescript@5.6.3)
+      '@veramo/core': 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
+      '@veramo/data-store': 4.2.0(patch_hash=25b55da53633b67af137c78afaf727c15cd0dd9f55a659a71d1a693193961a5d)(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))
+      '@veramo/utils': 4.2.0(encoding@0.1.13)
+      blakejs: 1.2.1
+      class-validator: 0.14.1
+      dcql: 1.0.1(typescript@5.6.3)
+      debug: 4.4.3(supports-color@5.5.0)
+      typeorm: 0.3.20(patch_hash=5bc1b71e65eb81cd929c5aed4f33693bff62a37c3812083158c7cce4e805f27f)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
+      - bufferutil
+      - encoding
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
+      - typescript
+      - utf-8-validate
+
   '@sphereon/ssi-sdk.dev@0.36.1-feature.vdx24.einvoice.endpoints.122(@types/node@18.19.130)':
     dependencies:
       '@microsoft/api-extractor': 7.53.3(@types/node@18.19.130)
@@ -15298,16 +15359,35 @@ snapshots:
       - utf-8-validate
       - web-streams-polyfill
 
-  '@sphereon/ssi-sdk.event-logger@0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)':
+  '@sphereon/ssi-sdk.event-logger@0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)':
     dependencies:
-      '@sphereon/ssi-sdk.data-store': link:../SSI-SDK/packages/data-store
+      '@sphereon/ssi-sdk.data-store': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.data-store-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(typescript@5.6.3)
       uuid: 9.0.1
     transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
+      - bufferutil
       - encoding
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
       - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
       - typescript
+      - utf-8-validate
 
   '@sphereon/ssi-sdk.geolocation-store@0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))':
     dependencies:
@@ -15336,7 +15416,7 @@ snapshots:
   '@sphereon/ssi-sdk.issuance-branding@0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)':
     dependencies:
       '@sphereon/ssi-sdk.core': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
-      '@sphereon/ssi-sdk.data-store': link:../SSI-SDK/packages/data-store
+      '@sphereon/ssi-sdk.data-store': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.data-store-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
       debug: 4.4.3(supports-color@5.5.0)
       typeorm: 0.3.20(patch_hash=5bc1b71e65eb81cd929c5aed4f33693bff62a37c3812083158c7cce4e805f27f)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))
@@ -15344,6 +15424,7 @@ snapshots:
       - '@google-cloud/spanner'
       - '@sap/hana-client'
       - better-sqlite3
+      - bufferutil
       - encoding
       - hdb-pool
       - ioredis
@@ -15361,6 +15442,7 @@ snapshots:
       - ts-node
       - typeorm-aurora-data-api-driver
       - typescript
+      - utf-8-validate
 
   '@sphereon/ssi-sdk.kms-rest-client@0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)':
     dependencies:
@@ -15420,7 +15502,7 @@ snapshots:
     dependencies:
       '@sphereon/ssi-express-support': 0.36.1-feature.vdx24.einvoice.endpoints.122(@noble/hashes@1.6.1)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)(typescript@5.6.3)
       '@sphereon/ssi-sdk.core': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
-      '@sphereon/ssi-sdk.data-store': link:../SSI-SDK/packages/data-store
+      '@sphereon/ssi-sdk.data-store': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.data-store-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-sdk.linked-vp': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(typescript@5.6.3)
@@ -15466,7 +15548,7 @@ snapshots:
       '@sphereon/ssi-sdk-ext.identifier-resolution': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.credential-store': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.credential-vcdm': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
-      '@sphereon/ssi-sdk.data-store': link:../SSI-SDK/packages/data-store
+      '@sphereon/ssi-sdk.data-store': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.data-store-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-sdk.sd-jwt': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(typescript@5.6.3)
@@ -15564,7 +15646,7 @@ snapshots:
       '@sphereon/ssi-sdk.sd-jwt': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.siopv2-oid4vp-common': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(expo@54.0.21(@babel/core@7.28.5)(graphql@15.10.1)(react-native@0.82.1(@babel/core@7.28.5)(react@18.3.1))(react@18.3.1))(pg@8.16.3)(react-native@0.82.1(@babel/core@7.28.5)(react@18.3.1))(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)(web-streams-polyfill@3.3.3)
-      '@sphereon/ssi-sdk.xstate-machine-persistence': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/ssi-sdk.xstate-machine-persistence': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(typescript@5.6.3)
       '@veramo/core': 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
       '@veramo/data-store': 4.2.0(patch_hash=25b55da53633b67af137c78afaf727c15cd0dd9f55a659a71d1a693193961a5d)(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))
@@ -15625,7 +15707,7 @@ snapshots:
       '@sphereon/ssi-sdk.sd-jwt': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.siopv2-oid4vp-common': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(react-native@0.82.1(@babel/core@7.28.5)(@types/react@18.3.26)(react@18.3.1))(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
-      '@sphereon/ssi-sdk.xstate-machine-persistence': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/ssi-sdk.xstate-machine-persistence': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(typescript@5.6.3)
       '@veramo/core': 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
       '@veramo/data-store': 4.2.0(patch_hash=25b55da53633b67af137c78afaf727c15cd0dd9f55a659a71d1a693193961a5d)(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))
@@ -15818,7 +15900,7 @@ snapshots:
       '@sphereon/ssi-sdk-ext.jwt-service': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.agent-config': 0.36.1-feature.vdx24.einvoice.endpoints.122(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))
       '@sphereon/ssi-sdk.core': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
-      '@sphereon/ssi-sdk.data-store': link:../SSI-SDK/packages/data-store
+      '@sphereon/ssi-sdk.data-store': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.data-store-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-sdk.kv-store-temp': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))
       '@sphereon/ssi-sdk.mdl-mdoc': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
@@ -15933,7 +16015,7 @@ snapshots:
     dependencies:
       '@sphereon/ssi-express-support': 0.36.1-feature.vdx24.einvoice.endpoints.122(@noble/hashes@1.6.1)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)(typescript@5.6.3)
       '@sphereon/ssi-sdk.core': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
-      '@sphereon/ssi-sdk.data-store': link:../SSI-SDK/packages/data-store
+      '@sphereon/ssi-sdk.data-store': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.data-store-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-sdk.pd-manager': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(typescript@5.6.3)
@@ -15953,6 +16035,7 @@ snapshots:
       - '@noble/hashes'
       - '@sap/hana-client'
       - better-sqlite3
+      - bufferutil
       - encoding
       - hdb-pool
       - ioredis
@@ -15972,12 +16055,13 @@ snapshots:
       - ts-node
       - typeorm-aurora-data-api-driver
       - typescript
+      - utf-8-validate
 
   '@sphereon/ssi-sdk.pd-manager@0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)':
     dependencies:
       '@sphereon/pex': 5.0.0-unstable.28(typescript@5.6.3)
       '@sphereon/pex-models': 2.3.2
-      '@sphereon/ssi-sdk.data-store': link:../SSI-SDK/packages/data-store
+      '@sphereon/ssi-sdk.data-store': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.data-store-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(typescript@5.6.3)
       cross-fetch: 3.2.0(encoding@0.1.13)
@@ -15989,6 +16073,7 @@ snapshots:
       - '@google-cloud/spanner'
       - '@sap/hana-client'
       - better-sqlite3
+      - bufferutil
       - encoding
       - hdb-pool
       - ioredis
@@ -16006,6 +16091,7 @@ snapshots:
       - ts-node
       - typeorm-aurora-data-api-driver
       - typescript
+      - utf-8-validate
 
   '@sphereon/ssi-sdk.presentation-exchange@0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)':
     dependencies:
@@ -16014,7 +16100,7 @@ snapshots:
       '@sphereon/ssi-sdk-ext.did-utils': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk-ext.identifier-resolution': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.credential-store': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
-      '@sphereon/ssi-sdk.data-store': link:../SSI-SDK/packages/data-store
+      '@sphereon/ssi-sdk.data-store': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.data-store-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-sdk.sd-jwt': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(typescript@5.6.3)
@@ -16216,7 +16302,7 @@ snapshots:
       '@sphereon/ssi-sdk.presentation-exchange': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.sd-jwt': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.siopv2-oid4vp-common': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
-      '@sphereon/ssi-sdk.xstate-machine-persistence': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/ssi-sdk.xstate-machine-persistence': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(typescript@5.6.3)
       '@sphereon/wellknown-dids-client': 0.1.3(encoding@0.1.13)(typescript@5.6.3)
       '@veramo/core': 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
@@ -16275,7 +16361,7 @@ snapshots:
       '@sphereon/ssi-sdk.presentation-exchange': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.sd-jwt': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.siopv2-oid4vp-common': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
-      '@sphereon/ssi-sdk.xstate-machine-persistence': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/ssi-sdk.xstate-machine-persistence': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(typescript@5.6.3)
       '@sphereon/wellknown-dids-client': 0.1.3(encoding@0.1.13)(typescript@5.6.3)
       '@veramo/core': 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
@@ -16479,7 +16565,7 @@ snapshots:
       '@sphereon/ssi-sdk.agent-config': 0.36.1-feature.vdx24.einvoice.endpoints.122(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))
       '@sphereon/ssi-sdk.core': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-sdk.credential-vcdm': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
-      '@sphereon/ssi-sdk.data-store': link:../SSI-SDK/packages/data-store
+      '@sphereon/ssi-sdk.data-store': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.data-store-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-sdk.vc-status-list': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(expo@54.0.21(@babel/core@7.28.5)(graphql@15.10.1)(react-native@0.82.1(@babel/core@7.28.5)(react@18.3.1))(react@18.3.1))(pg@8.16.3)(react-native@0.82.1(@babel/core@7.28.5)(react@18.3.1))(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)(web-streams-polyfill@3.3.3)
       '@sphereon/ssi-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(typescript@5.6.3)
@@ -16526,7 +16612,7 @@ snapshots:
       '@sphereon/ssi-sdk-ext.identifier-resolution': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk-ext.jwt-service': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.core': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
-      '@sphereon/ssi-sdk.data-store': link:../SSI-SDK/packages/data-store
+      '@sphereon/ssi-sdk.data-store': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.data-store-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-sdk.vc-status-list': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(expo@54.0.21(@babel/core@7.28.5)(graphql@15.10.1)(react-native@0.82.1(@babel/core@7.28.5)(react@18.3.1))(react@18.3.1))(pg@8.16.3)(react-native@0.82.1(@babel/core@7.28.5)(react@18.3.1))(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)(web-streams-polyfill@3.3.3)
       '@sphereon/ssi-sdk.vc-status-list-issuer-drivers': 0.36.1-feature.vdx24.einvoice.endpoints.122(@noble/hashes@1.6.1)(encoding@0.1.13)(expo@54.0.21(@babel/core@7.28.5)(graphql@15.10.1)(react-native@0.82.1(@babel/core@7.28.5)(react@18.3.1))(react@18.3.1))(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)(pg@8.16.3)(react-native@0.82.1(@babel/core@7.28.5)(react@18.3.1))(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)(web-streams-polyfill@3.3.3)
@@ -16631,7 +16717,7 @@ snapshots:
       '@sphereon/ssi-sdk-ext.identifier-resolution': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk-ext.jwt-service': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.credential-vcdm': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
-      '@sphereon/ssi-sdk.data-store': link:../SSI-SDK/packages/data-store
+      '@sphereon/ssi-sdk.data-store': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.data-store-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(typescript@5.6.3)
       '@sphereon/vc-status-list': 7.0.0-next.0(expo@54.0.21(@babel/core@7.28.5)(graphql@15.10.1)(react-native@0.82.1(@babel/core@7.28.5)(react@18.3.1))(react@18.3.1))(react-native@0.82.1(@babel/core@7.28.5)(react@18.3.1))(web-streams-polyfill@3.3.3)
@@ -16746,18 +16832,37 @@ snapshots:
       - utf-8-validate
       - web-streams-polyfill
 
-  '@sphereon/ssi-sdk.xstate-machine-persistence@0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)':
+  '@sphereon/ssi-sdk.xstate-machine-persistence@0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)':
     dependencies:
-      '@sphereon/ssi-sdk.data-store': link:../SSI-SDK/packages/data-store
+      '@sphereon/ssi-sdk.data-store': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-sdk.data-store-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
       '@veramo/core': 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
       debug: 4.4.3(supports-color@5.5.0)
       uuid: 9.0.1
       xstate: 4.38.3
     transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
+      - bufferutil
       - encoding
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
       - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
       - typescript
+      - utf-8-validate
 
   '@sphereon/ssi-types@0.36.1-feature.vdx24.einvoice.endpoints.122(typescript@5.6.3)':
     dependencies:
@@ -16783,10 +16888,10 @@ snapshots:
     transitivePeerDependencies:
       - react-dom
 
-  '@sphereon/ui-components.credential-branding@0.4.1-unstable.158(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.6.3)':
+  '@sphereon/ui-components.credential-branding@0.4.1-unstable.158(encoding@0.1.13)(pg@8.16.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)':
     dependencies:
       '@sphereon/ssi-sdk.core': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(typescript@5.6.3)
-      '@sphereon/ssi-sdk.data-store': link:../SSI-SDK/packages/data-store
+      '@sphereon/ssi-sdk.data-store': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(typescript@5.6.3)
       '@sphereon/ui-components.core': 0.4.1-unstable.158(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@veramo/core': 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
@@ -16795,12 +16900,31 @@ snapshots:
       react: 18.3.1
       uuid: 9.0.1
     transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
+      - bufferutil
       - encoding
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
       - react-dom
+      - redis
+      - sql.js
+      - sqlite3
       - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
       - typescript
+      - utf-8-validate
 
-  '@sphereon/ui-components.ssi-react@0.4.1-unstable.158(@babel/core@7.28.5)(@types/react@18.3.26)(date-fns@2.30.0)(dayjs@1.11.18)(moment@2.30.1)(react@18.3.1)(typescript@5.6.3)':
+  '@sphereon/ui-components.ssi-react@0.4.1-unstable.158(@babel/core@7.28.5)(@types/react@18.3.26)(date-fns@2.30.0)(dayjs@1.11.18)(encoding@0.1.13)(moment@2.30.1)(pg@8.16.3)(react@18.3.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)':
     dependencies:
       '@emotion/react': 11.14.0(@types/react@18.3.26)(react@18.3.1)
       '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@18.3.26)(react@18.3.1))(@types/react@18.3.26)(react@18.3.1)
@@ -16814,7 +16938,7 @@ snapshots:
       '@mui/styled-engine-sc': 7.3.5(@types/react@18.3.26)(styled-components@6.1.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       '@mui/system': 7.3.5(@emotion/react@11.14.0(@types/react@18.3.26)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.26)(react@18.3.1))(@types/react@18.3.26)(react@18.3.1))(@types/react@18.3.26)(react@18.3.1)
       '@mui/x-date-pickers': 8.19.0(@emotion/react@11.14.0(@types/react@18.3.26)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.26)(react@18.3.1))(@types/react@18.3.26)(react@18.3.1))(@mui/material@7.3.5(@emotion/react@11.14.0(@types/react@18.3.26)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.26)(react@18.3.1))(@types/react@18.3.26)(react@18.3.1))(@types/react@18.3.26)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mui/system@7.3.5(@emotion/react@11.14.0(@types/react@18.3.26)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.26)(react@18.3.1))(@types/react@18.3.26)(react@18.3.1))(@types/react@18.3.26)(react@18.3.1))(@types/react@18.3.26)(date-fns@2.30.0)(dayjs@1.11.18)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@sphereon/ssi-sdk.data-store': link:../SSI-SDK/packages/data-store
+      '@sphereon/ssi-sdk.data-store': 0.36.1-feature.vdx24.einvoice.endpoints.122(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.130)(typescript@5.6.3))(typescript@5.6.3)
       '@sphereon/ssi-types': 0.36.1-feature.vdx24.einvoice.endpoints.122(typescript@5.6.3)
       '@sphereon/ui-components.core': 0.4.1-unstable.158(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@tanstack/react-table': 8.21.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -16831,17 +16955,37 @@ snapshots:
       uint8arrays: 3.1.1
     transitivePeerDependencies:
       - '@babel/core'
+      - '@google-cloud/spanner'
       - '@mui/material-pigment-css'
+      - '@sap/hana-client'
       - '@types/react'
+      - better-sqlite3
+      - bufferutil
       - date-fns
       - date-fns-jalali
       - dayjs
+      - encoding
+      - hdb-pool
+      - ioredis
       - luxon
       - moment
       - moment-hijri
       - moment-jalaali
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
       - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
       - typescript
+      - utf-8-validate
 
   '@sphereon/vc-status-list@7.0.0-next.0(expo@54.0.21(@babel/core@7.28.5)(graphql@15.10.1)(react-native@0.82.1(@babel/core@7.28.5)(react@18.3.1))(react@18.3.1))(react-native@0.82.1(@babel/core@7.28.5)(react@18.3.1))(web-streams-polyfill@3.3.3)':
     dependencies:
@@ -17620,6 +17764,8 @@ snapshots:
   '@types/tough-cookie@4.0.5': {}
 
   '@types/uuid@9.0.8': {}
+
+  '@types/validator@13.15.10': {}
 
   '@types/wrap-ansi@3.0.0': {}
 
@@ -19042,6 +19188,12 @@ snapshots:
       to-buffer: 1.2.2
 
   cjs-module-lexer@1.4.3: {}
+
+  class-validator@0.14.1:
+    dependencies:
+      '@types/validator': 13.15.10
+      libphonenumber-js: 1.12.34
+      validator: 13.15.20
 
   classnames@2.5.1: {}
 
@@ -22165,6 +22317,8 @@ snapshots:
     dependencies:
       prelude-ls: 1.2.1
       type-check: 0.4.0
+
+  libphonenumber-js@1.12.34: {}
 
   lighthouse-logger@1.4.2:
     dependencies:
