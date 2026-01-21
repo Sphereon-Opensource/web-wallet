@@ -73,3 +73,20 @@ test/*.js
 .next
 /packages/agent/asset-files/
 /packages/agent/evidence-files/
+
+# Local database files
+/packages/agent/database/
+/packages/agent/contacts.json
+
+# Environment-specific DID configs (may contain private keys)
+/packages/agent/conf/examples/dids/*-ngrok*.json
+/packages/agent/conf/dev/
+
+# Docker volumes with database data
+/docker/standalone-agent/volumes/db/
+
+# Windows artifacts
+nul
+
+# OID4VP options referencing local/dev DIDs
+/packages/agent/conf/examples/oid4vp_options/einvoice.json
