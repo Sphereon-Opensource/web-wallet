@@ -187,6 +187,65 @@
   color: #1F2937;
 }
 
+/* Checkbox */
+.checkboxCell {
+  width: 32px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #7276F7;
+}
+
+/* Bulk Actions Bar */
+.bulkActionsBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background-color: rgba(114, 118, 247, 0.1);
+  border-bottom: 1px solid #7276F7;
+  flex-shrink: 0;
+}
+
+.bulkActionsCount {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #7276F7;
+}
+
+.bulkDeleteButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background-color: #DC2626;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+}
+
+.bulkDeleteButton:hover {
+  background-color: #B91C1C;
+}
+
+.bulkDeleteButton svg {
+  width: 16px;
+  height: 16px;
+}
+
 /* Column widths */
 .cellName {
   flex: 1.5;

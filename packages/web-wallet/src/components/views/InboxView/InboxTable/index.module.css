@@ -93,6 +93,52 @@
 }
 
 /* ===========================
+ * BULK ACTIONS BAR
+ * =========================== */
+
+.bulkActionsBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--theme-space-3, 12px) var(--theme-space-4, 16px);
+  background-color: var(--theme-color-primary-bg, rgba(114, 118, 247, 0.1));
+  border-bottom: 1px solid var(--theme-color-primary, #7276F7);
+  flex-shrink: 0;
+}
+
+.bulkActionsCount {
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  font-size: var(--theme-font-size-sm, 13px);
+  font-weight: var(--theme-font-weight-medium, 500);
+  color: var(--theme-color-primary, #7276F7);
+}
+
+.bulkDeleteButton {
+  display: flex;
+  align-items: center;
+  gap: var(--theme-space-2, 8px);
+  padding: var(--theme-space-2, 8px) var(--theme-space-3, 12px);
+  background-color: var(--theme-color-error, #DC2626);
+  border: none;
+  border-radius: var(--theme-radius-md, 6px);
+  font-family: var(--theme-font-family, 'Poppins', sans-serif);
+  font-size: var(--theme-font-size-sm, 13px);
+  font-weight: var(--theme-font-weight-medium, 500);
+  color: white;
+  cursor: pointer;
+  transition: background-color var(--theme-transition-fast, 0.1s ease);
+}
+
+.bulkDeleteButton:hover {
+  background-color: #B91C1C;
+}
+
+.bulkDeleteButton svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ===========================
  * DESKTOP TABLE VIEW
  * =========================== */
 

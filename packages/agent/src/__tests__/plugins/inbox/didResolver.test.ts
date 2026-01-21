@@ -344,17 +344,15 @@ describe('findInboxServiceEndpoint', () => {
   })
 
   describe('additional endpoint properties', () => {
-    it('should extract folder property', () => {
+    it('should extract folder property from service level', () => {
       const didDocument = {
         id: 'did:web:example.com',
         service: [
           {
             id: '#inbox',
             type: 'EInvoiceInbox',
-            serviceEndpoint: {
-              uri: 'https://example.com/inbox',
-              folder: 'invoices',
-            },
+            serviceEndpoint: 'https://example.com/inbox',
+            folder: 'invoices',
           },
         ],
       }
@@ -367,15 +365,15 @@ describe('findInboxServiceEndpoint', () => {
       })
     })
 
-    it('should extract vct array property', () => {
+    it('should extract vct array from einvoice property at service level', () => {
       const didDocument = {
         id: 'did:web:example.com',
         service: [
           {
             id: '#inbox',
             type: 'EInvoiceInbox',
-            serviceEndpoint: {
-              uri: 'https://example.com/inbox',
+            serviceEndpoint: 'https://example.com/inbox',
+            einvoice: {
               vct: ['urn:org:fides:einvoice:1', 'urn:org:fides:einvoice:2'],
             },
           },
@@ -390,17 +388,19 @@ describe('findInboxServiceEndpoint', () => {
       })
     })
 
-    it('should extract all additional properties', () => {
+    it('should extract all additional properties from service level', () => {
       const didDocument = {
         id: 'did:web:example.com',
         service: [
           {
             id: '#inbox',
             type: 'EInvoiceInbox',
-            serviceEndpoint: {
-              uri: 'https://example.com/inbox',
-              folder: 'einvoices',
+            serviceEndpoint: 'https://example.com/inbox',
+            folder: 'einvoices',
+            einvoice: {
               vct: ['urn:org:fides:einvoice:1'],
+              entityName: 'Example Corp',
+              country: 'NL',
             },
           },
         ],

@@ -39,6 +39,7 @@ const AssetsListPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null)
   const [uploading, setUploading] = useState(false)
   const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null)
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [filterType, setFilterType] = useState<AssetType | ''>('')
   const [filterPublic, setFilterPublic] = useState<VisibilityFilter>('all')
   const [sortField, setSortField] = useState<SortField>('createdAt')
@@ -229,6 +230,51 @@ const AssetsListPage: React.FC = () => {
     }
     return sortDirection === 'asc' ? comparison : -comparison
   })
+
+  // Selection handlers (must be after sortedAssets is defined)
+  const handleToggleSelection = useCallback((id: string, e: React.MouseEvent): void => {
+    e.stopPropagation()
+    setSelectedIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) {
+        next.delete(id)
+      } else {
+        next.add(id)
+      }
+      return next
+    })
+  }, [])
+
+  const handleSelectAll = useCallback(
+    (selectAll: boolean): void => {
+      if (selectAll) {
+        const allIds = new Set(sortedAssets.map((a) => a.id))
+        setSelectedIds(allIds)
+      } else {
+        setSelectedIds(new Set())
+      }
+    },
+    [sortedAssets]
+  )
+
+  const handleDeleteSelected = useCallback(async (): Promise<void> => {
+    if (selectedIds.size === 0) return
+    if (!confirm(`Are you sure you want to delete ${selectedIds.size} asset(s)?`)) return
+
+    const idsToDelete = Array.from(selectedIds)
+    for (const id of idsToDelete) {
+      try {
+        await deleteAsset(id)
+        setAssets((prev) => prev.filter((a) => a.id !== id))
+        if (selectedAsset?.id === id) {
+          setSelectedAsset(null)
+        }
+      } catch (err) {
+        console.error('[AssetsListPage] Error deleting asset:', id, err)
+      }
+    }
+    setSelectedIds(new Set())
+  }, [selectedIds, selectedAsset])
 
   // Get visibility count
   const getVisibilityCount = useCallback(
@@ -431,7 +477,41 @@ const AssetsListPage: React.FC = () => {
         </div>
       ) : (
         <div className={style.table}>
+          {/* Bulk Actions Bar */}
+          {selectedIds.size > 0 && (
+            <div className={style.bulkActionsBar}>
+              <span className={style.bulkActionsCount}>
+                {selectedIds.size} {selectedIds.size === 1 ? 'item' : 'items'} selected
+              </span>
+              <button
+                type="button"
+                className={style.bulkDeleteButton}
+                onClick={handleDeleteSelected}
+                aria-label={translate('action_delete_selected', 'Delete selected')}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                </svg>
+                {translate('action_delete_selected', 'Delete Selected')}
+              </button>
+            </div>
+          )}
           <div className={style.tableHeader}>
+            <div className={style.checkboxCell}>
+              <input
+                type="checkbox"
+                className={style.checkbox}
+                checked={sortedAssets.length > 0 && selectedIds.size === sortedAssets.length}
+                ref={(input) => {
+                  if (input) {
+                    input.indeterminate = selectedIds.size > 0 && selectedIds.size < sortedAssets.length
+                  }
+                }}
+                onChange={(e) => handleSelectAll(e.target.checked)}
+                aria-label="Select all"
+              />
+            </div>
             <div
               className={`${style.headerCell} ${style.cellName} ${style.sortable}`}
               onClick={() => handleSort('filename')}
@@ -478,6 +558,16 @@ const AssetsListPage: React.FC = () => {
               role="row"
               tabIndex={0}
             >
+              <div className={style.checkboxCell}>
+                <input
+                  type="checkbox"
+                  checked={selectedIds.has(asset.id)}
+                  onChange={() => {}}
+                  onClick={(e) => handleToggleSelection(asset.id, e)}
+                  className={style.checkbox}
+                  aria-label={`Select ${asset.filename}`}
+                />
+              </div>
               <div className={`${style.cell} ${style.cellName}`}>
                 <span className={style.filename} title={asset.filename}>
                   {asset.originalFilename || asset.filename}

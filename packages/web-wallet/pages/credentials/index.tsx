@@ -61,6 +61,7 @@ const CredentialsListPage: React.FC = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [selectedCredential, setSelectedCredential] = useState<CredentialTableItem | null>(null)
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [filterStatus, setFilterStatus] = useState<StatusFilter>('all')
   const [filterType, setFilterType] = useState<CredentialTypeFilter>('credentials')
   const [sortField, setSortField] = useState<SortField>('validFrom')
@@ -247,6 +248,57 @@ const CredentialsListPage: React.FC = () => {
     },
     [sortField],
   )
+
+  // Selection handlers
+  const handleToggleSelection = useCallback((hash: string, e: React.MouseEvent): void => {
+    e.stopPropagation()
+    setSelectedIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(hash)) {
+        next.delete(hash)
+      } else {
+        next.add(hash)
+      }
+      return next
+    })
+  }, [])
+
+  const handleSelectAll = useCallback(
+    (selectAll: boolean): void => {
+      const sortedCredentials = getSortedCredentials()
+      if (selectAll) {
+        const allIds = new Set(sortedCredentials.map((c) => c.hash))
+        setSelectedIds(allIds)
+      } else {
+        setSelectedIds(new Set())
+      }
+    },
+    [getSortedCredentials]
+  )
+
+  const handleDeleteSelected = useCallback(async (): Promise<void> => {
+    if (selectedIds.size === 0) return
+    if (!confirm(`Are you sure you want to delete ${selectedIds.size} credential(s)?`)) return
+
+    const hashesToDelete = Array.from(selectedIds)
+    for (const hash of hashesToDelete) {
+      try {
+        await deleteCredential({
+          dataProviderName: DataProvider.CREDENTIALS,
+          meta: {idColumnName: 'hash'},
+          resource: 'CREDENTIALS',
+          id: hash,
+        })
+        if (selectedCredential?.hash === hash) {
+          setSelectedCredential(null)
+        }
+      } catch (err) {
+        console.error('[CredentialsListPage] Error deleting credential:', hash, err)
+      }
+    }
+    setSelectedIds(new Set())
+    void refetchCredentials()
+  }, [selectedIds, selectedCredential, deleteCredential, refetchCredentials])
 
   const handleDelete = useCallback(
     async (credential: CredentialTableItem) => {
@@ -441,7 +493,41 @@ const CredentialsListPage: React.FC = () => {
           </div>
         ) : (
           <div className={style.table}>
+            {/* Bulk Actions Bar */}
+            {selectedIds.size > 0 && (
+              <div className={style.bulkActionsBar}>
+                <span className={style.bulkActionsCount}>
+                  {selectedIds.size} {selectedIds.size === 1 ? 'item' : 'items'} selected
+                </span>
+                <button
+                  type="button"
+                  className={style.bulkDeleteButton}
+                  onClick={handleDeleteSelected}
+                  aria-label={translate('action_delete_selected', 'Delete selected')}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polyline points="3 6 5 6 21 6" />
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                  </svg>
+                  {translate('action_delete_selected', 'Delete Selected')}
+                </button>
+              </div>
+            )}
             <div className={style.tableHeader}>
+              <div className={style.checkboxCell}>
+                <input
+                  type="checkbox"
+                  className={style.checkbox}
+                  checked={sortedCredentials.length > 0 && selectedIds.size === sortedCredentials.length}
+                  ref={(input) => {
+                    if (input) {
+                      input.indeterminate = selectedIds.size > 0 && selectedIds.size < sortedCredentials.length
+                    }
+                  }}
+                  onChange={(e) => handleSelectAll(e.target.checked)}
+                  aria-label="Select all"
+                />
+              </div>
               <div className={`${style.headerCell} ${style.cellCard}`} />
               <div
                 className={`${style.headerCell} ${style.cellType} ${style.sortable}`}
@@ -489,6 +575,16 @@ const CredentialsListPage: React.FC = () => {
                 role="row"
                 tabIndex={0}
               >
+                <div className={style.checkboxCell}>
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.has(credential.hash)}
+                    onChange={() => {}}
+                    onClick={(e) => handleToggleSelection(credential.hash, e)}
+                    className={style.checkbox}
+                    aria-label={`Select ${credential.type}`}
+                  />
+                </div>
                 <div className={`${style.cell} ${style.cellCard}`}>
                   <CredentialMiniCardView {...credential.miniCardView} />
                 </div>

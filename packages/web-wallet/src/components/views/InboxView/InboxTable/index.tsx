@@ -30,6 +30,8 @@ interface Props {
   onStatusFilterChange: (status: StatusFilter) => void
   onRowClick: (invoice: InboxEInvoice) => void
   onToggleSelection: (correlationId: string, e: React.MouseEvent) => void
+  onSelectAll: (selectAll: boolean) => void
+  onDeleteSelected: () => void
   onToggleMenu: (correlationId: string, e: React.MouseEvent<HTMLButtonElement>) => void
   onCloseMenu: () => void
   onMenuAction: (action: string, invoice: InboxEInvoice, e: React.MouseEvent) => void
@@ -48,6 +50,8 @@ const InboxTable: FC<Props> = (props: Props): ReactElement => {
     onStatusFilterChange,
     onRowClick,
     onToggleSelection,
+    onSelectAll,
+    onDeleteSelected,
     onToggleMenu,
     onCloseMenu,
     onMenuAction,
@@ -169,11 +173,40 @@ const InboxTable: FC<Props> = (props: Props): ReactElement => {
         renderEmptyState()
       ) : (
         <div className={styles.tableWrapper}>
+          {/* Bulk Actions Bar */}
+          {selectedIds.size > 0 && (
+            <div className={styles.bulkActionsBar}>
+              <span className={styles.bulkActionsCount}>
+                {selectedIds.size} {selectedIds.size === 1 ? 'item' : 'items'} selected
+              </span>
+              <button
+                type="button"
+                className={styles.bulkDeleteButton}
+                onClick={onDeleteSelected}
+                aria-label={translate('action_delete_selected', 'Delete selected')}
+              >
+                <TrashIcon />
+                {translate('action_delete_selected', 'Delete Selected')}
+              </button>
+            </div>
+          )}
+
           {/* Desktop Table View */}
           <div className={styles.table}>
             <div className={styles.tableHeader}>
               <div className={styles.checkboxCell}>
-                <input type="checkbox" className={styles.checkbox} onChange={() => {}} aria-label="Select all" />
+                <input
+                  type="checkbox"
+                  className={styles.checkbox}
+                  checked={invoices.length > 0 && selectedIds.size === invoices.length}
+                  ref={(input) => {
+                    if (input) {
+                      input.indeterminate = selectedIds.size > 0 && selectedIds.size < invoices.length
+                    }
+                  }}
+                  onChange={(e) => onSelectAll(e.target.checked)}
+                  aria-label="Select all"
+                />
               </div>
               <div className={`${styles.headerCell} ${styles.cellSender}`}>
                 {translate('einvoice_column_from', 'From')}

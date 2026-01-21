@@ -122,11 +122,13 @@ export function findInboxServiceEndpoint(
     return null
   }
 
-  const endpointObj = typeof endpoint === 'object' ? (endpoint as Record<string, unknown>) : {}
+  // Extract einvoice metadata from service level (not from serviceEndpoint)
+  // According to FIDES schemas, einvoice properties are siblings of serviceEndpoint
+  const einvoiceData = (service as Record<string, unknown>).einvoice as Record<string, unknown> | undefined
 
   return {
     inboxUrl,
-    folder: endpointObj.folder as string | undefined,
-    vct: endpointObj.vct as string[] | undefined,
+    folder: (service as Record<string, unknown>).folder as string | undefined,
+    vct: einvoiceData?.vct as string[] | undefined,
   }
 }

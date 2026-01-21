@@ -122,10 +122,12 @@ const EInvoiceListPage: React.FC = () => {
   const [sentInvoices, setSentInvoices] = useState<SentInvoice[]>([])
   const [sentStatusFilter, setSentStatusFilter] = useState<SentStatusFilter>('all')
   const [selectedSentInvoice, setSelectedSentInvoice] = useState<SentInvoice | null>(null)
+  const [selectedSentIds, setSelectedSentIds] = useState<Set<string>>(new Set())
 
   // Received invoices state (only verified/approved invoices shown here)
   const [receivedInvoices, setReceivedInvoices] = useState<InboxEInvoice[]>([])
   const [selectedReceivedInvoice, setSelectedReceivedInvoice] = useState<InboxEInvoice | null>(null)
+  const [selectedReceivedIds, setSelectedReceivedIds] = useState<Set<string>>(new Set())
 
   // Pending inbox count for indicator
   const [pendingInboxCount, setPendingInboxCount] = useState<number>(0)
@@ -179,6 +181,102 @@ const EInvoiceListPage: React.FC = () => {
     [sentInvoices]
   )
 
+  // Selection handlers for sent invoices
+  const handleToggleSentSelection = useCallback((id: string, e: React.MouseEvent): void => {
+    e.stopPropagation()
+    setSelectedSentIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) {
+        next.delete(id)
+      } else {
+        next.add(id)
+      }
+      return next
+    })
+  }, [])
+
+  const handleSelectAllSent = useCallback(
+    (selectAll: boolean): void => {
+      if (selectAll) {
+        const allIds = new Set(filteredSentInvoices.map((inv) => inv.id))
+        setSelectedSentIds(allIds)
+      } else {
+        setSelectedSentIds(new Set())
+      }
+    },
+    [filteredSentInvoices]
+  )
+
+  const handleDeleteSelectedSent = useCallback(async (): Promise<void> => {
+    if (selectedSentIds.size === 0) return
+    if (!confirm(`Are you sure you want to delete ${selectedSentIds.size} invoice(s)?`)) return
+
+    const idsToDelete = Array.from(selectedSentIds)
+    for (const id of idsToDelete) {
+      try {
+        const deleted = await deleteSentInvoice(id)
+        if (deleted) {
+          setSentInvoices((prev) => prev.filter((inv) => inv.id !== id))
+          if (selectedSentInvoice?.id === id) {
+            setSelectedSentInvoice(null)
+          }
+        }
+      } catch (error) {
+        console.error('[EInvoice] Error deleting sent invoice:', id, error)
+      }
+    }
+    setSelectedSentIds(new Set())
+  }, [selectedSentIds, selectedSentInvoice])
+
+  // Selection handlers for received invoices
+  const handleToggleReceivedSelection = useCallback((correlationId: string, e: React.MouseEvent): void => {
+    e.stopPropagation()
+    setSelectedReceivedIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(correlationId)) {
+        next.delete(correlationId)
+      } else {
+        next.add(correlationId)
+      }
+      return next
+    })
+  }, [])
+
+  const handleSelectAllReceived = useCallback(
+    (selectAll: boolean): void => {
+      if (selectAll) {
+        const allIds = new Set(receivedInvoices.map((inv) => inv.correlationId))
+        setSelectedReceivedIds(allIds)
+      } else {
+        setSelectedReceivedIds(new Set())
+      }
+    },
+    [receivedInvoices]
+  )
+
+  const handleDeleteSelectedReceived = useCallback(async (): Promise<void> => {
+    if (selectedReceivedIds.size === 0) return
+    if (!confirm(`Are you sure you want to delete ${selectedReceivedIds.size} invoice(s)?`)) return
+
+    const idsToDelete = Array.from(selectedReceivedIds)
+    for (const correlationId of idsToDelete) {
+      const invoice = receivedInvoices.find((inv) => inv.correlationId === correlationId)
+      if (invoice) {
+        try {
+          const deleted = await deleteInboxInvoice(invoice)
+          if (deleted) {
+            setReceivedInvoices((prev) => prev.filter((inv) => inv.correlationId !== correlationId))
+            if (selectedReceivedInvoice?.correlationId === correlationId) {
+              setSelectedReceivedInvoice(null)
+            }
+          }
+        } catch (error) {
+          console.error('[EInvoice] Error deleting received invoice:', correlationId, error)
+        }
+      }
+    }
+    setSelectedReceivedIds(new Set())
+  }, [selectedReceivedIds, receivedInvoices, selectedReceivedInvoice])
 
   // Format currency
   const formatCurrency = (amount: number, currency: string): string => {
@@ -438,7 +536,41 @@ const EInvoiceListPage: React.FC = () => {
         </div>
       ) : (
         <div className={style.table}>
+          {/* Bulk Actions Bar */}
+          {selectedSentIds.size > 0 && (
+            <div className={style.bulkActionsBar}>
+              <span className={style.bulkActionsCount}>
+                {selectedSentIds.size} {selectedSentIds.size === 1 ? 'item' : 'items'} selected
+              </span>
+              <button
+                type="button"
+                className={style.bulkDeleteButton}
+                onClick={handleDeleteSelectedSent}
+                aria-label={translate('action_delete_selected', 'Delete selected')}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                </svg>
+                {translate('action_delete_selected', 'Delete Selected')}
+              </button>
+            </div>
+          )}
           <div className={style.tableHeader}>
+            <div className={style.checkboxCell}>
+              <input
+                type="checkbox"
+                className={style.checkbox}
+                checked={filteredSentInvoices.length > 0 && selectedSentIds.size === filteredSentInvoices.length}
+                ref={(input) => {
+                  if (input) {
+                    input.indeterminate = selectedSentIds.size > 0 && selectedSentIds.size < filteredSentInvoices.length
+                  }
+                }}
+                onChange={(e) => handleSelectAllSent(e.target.checked)}
+                aria-label="Select all"
+              />
+            </div>
             <div className={`${style.headerCell} ${style.cellTo}`}>{translate('einvoice_column_to', 'To')}</div>
             <div className={`${style.headerCell} ${style.cellInvoice}`}>
               {translate('einvoice_column_invoice_id', 'Invoice')}
@@ -463,6 +595,16 @@ const EInvoiceListPage: React.FC = () => {
                 role="row"
                 tabIndex={0}
               >
+                <div className={style.checkboxCell}>
+                  <input
+                    type="checkbox"
+                    checked={selectedSentIds.has(invoice.id)}
+                    onChange={() => {}}
+                    onClick={(e) => handleToggleSentSelection(invoice.id, e)}
+                    className={style.checkbox}
+                    aria-label={`Select ${invoice.invoiceId}`}
+                  />
+                </div>
                 <div className={`${style.cell} ${style.cellTo}`}>
                   <div className={style.partyInfo}>
                     <span className={style.partyName}>{invoice.recipientName || invoice.buyerName}</span>
@@ -526,7 +668,41 @@ const EInvoiceListPage: React.FC = () => {
         </div>
       ) : (
         <div className={style.table}>
+          {/* Bulk Actions Bar */}
+          {selectedReceivedIds.size > 0 && (
+            <div className={style.bulkActionsBar}>
+              <span className={style.bulkActionsCount}>
+                {selectedReceivedIds.size} {selectedReceivedIds.size === 1 ? 'item' : 'items'} selected
+              </span>
+              <button
+                type="button"
+                className={style.bulkDeleteButton}
+                onClick={handleDeleteSelectedReceived}
+                aria-label={translate('action_delete_selected', 'Delete selected')}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                </svg>
+                {translate('action_delete_selected', 'Delete Selected')}
+              </button>
+            </div>
+          )}
           <div className={style.tableHeader}>
+            <div className={style.checkboxCell}>
+              <input
+                type="checkbox"
+                className={style.checkbox}
+                checked={receivedInvoices.length > 0 && selectedReceivedIds.size === receivedInvoices.length}
+                ref={(input) => {
+                  if (input) {
+                    input.indeterminate = selectedReceivedIds.size > 0 && selectedReceivedIds.size < receivedInvoices.length
+                  }
+                }}
+                onChange={(e) => handleSelectAllReceived(e.target.checked)}
+                aria-label="Select all"
+              />
+            </div>
             <div className={`${style.headerCell} ${style.cellFrom}`}>{translate('einvoice_column_from', 'From')}</div>
             <div className={`${style.headerCell} ${style.cellInvoice}`}>
               {translate('einvoice_column_invoice_id', 'Invoice')}
@@ -547,6 +723,16 @@ const EInvoiceListPage: React.FC = () => {
               role="row"
               tabIndex={0}
             >
+              <div className={style.checkboxCell}>
+                <input
+                  type="checkbox"
+                  checked={selectedReceivedIds.has(invoice.correlationId)}
+                  onChange={() => {}}
+                  onClick={(e) => handleToggleReceivedSelection(invoice.correlationId, e)}
+                  className={style.checkbox}
+                  aria-label={`Select ${invoice.invoiceId}`}
+                />
+              </div>
               <div className={`${style.cell} ${style.cellFrom}`}>
                 <div className={style.partyInfo}>
                   <span className={style.partyName}>{invoice.supplier?.name || 'Unknown'}</span>

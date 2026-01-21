@@ -129,6 +129,42 @@ const InboxView: FC<Props> = (props: Props): ReactElement => {
     })
   }, [])
 
+  // Select all filtered invoices
+  const handleSelectAll = useCallback((selectAll: boolean): void => {
+    if (selectAll) {
+      const allIds = new Set(filteredInvoices.map(inv => inv.correlationId))
+      setSelectedIds(allIds)
+    } else {
+      setSelectedIds(new Set())
+    }
+  }, [filteredInvoices])
+
+  // Delete all selected invoices
+  const handleDeleteSelected = useCallback(async (): Promise<void> => {
+    if (selectedIds.size === 0) return
+
+    const idsToDelete = Array.from(selectedIds)
+    const invoicesToDelete = invoices.filter(inv => idsToDelete.includes(inv.correlationId))
+
+    // Delete each selected invoice
+    for (const invoice of invoicesToDelete) {
+      try {
+        const success = await deleteInboxInvoice(invoice)
+        if (success) {
+          setInvoices(prev => prev.filter(inv => inv.correlationId !== invoice.correlationId))
+          if (selectedInvoice?.correlationId === invoice.correlationId) {
+            setSelectedInvoice(null)
+          }
+        }
+      } catch (error) {
+        console.error('[InboxView] Failed to delete invoice:', invoice.invoiceId, error)
+      }
+    }
+
+    // Clear selections
+    setSelectedIds(new Set())
+  }, [selectedIds, invoices, selectedInvoice])
+
   // Toggle menu uses correlationId as the unique identifier
   const handleToggleMenu = useCallback((correlationId: string, e: React.MouseEvent<HTMLButtonElement>): void => {
     e.stopPropagation()
@@ -341,6 +377,8 @@ const InboxView: FC<Props> = (props: Props): ReactElement => {
               onStatusFilterChange={handleStatusFilterChange}
               onRowClick={handleRowClick}
               onToggleSelection={handleToggleSelection}
+              onSelectAll={handleSelectAll}
+              onDeleteSelected={handleDeleteSelected}
               onToggleMenu={handleToggleMenu}
               onCloseMenu={handleCloseMenu}
               onMenuAction={handleMenuAction}
