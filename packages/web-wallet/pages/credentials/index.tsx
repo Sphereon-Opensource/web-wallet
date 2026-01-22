@@ -1,6 +1,7 @@
 import React, {useCallback, useEffect, useState, useMemo, ReactNode} from 'react'
 import {HttpError, useDelete, useList, useNavigation, useTranslate} from '@refinedev/core'
 import {CredentialMiniCardView} from '@sphereon/ui-components.ssi-react'
+import {RoleType} from '@sphereon/ui-components.core'
 import AppHeaderBar from '@components/bars/AppHeaderBar'
 import StatusBadge from '@components/badges/StatusBadge'
 import {ListPageHeader, TabItem, FilterDropdown} from '@components/tables'
@@ -11,9 +12,10 @@ import {getAgent} from '@agent'
 import {useBrandingSync} from '@services/brandingSyncService'
 import {Party} from '@sphereon/ssi-sdk.data-store-types'
 import {CredentialRole, DigitalCredential} from '@sphereon/ssi-sdk.credential-store'
-import {getMatchingIdentity} from '@helpers/IdentityFilters'
+import {getMatchingIdentity, getPartyByDid, extractIssuerDid} from '@helpers/IdentityFilters'
 import {CredentialMapper, OriginalVerifiableCredential} from '@sphereon/ssi-types'
 import {VerifiableCredential} from '@veramo/core'
+import {useRole} from '@/src/contexts/RoleContext'
 import style from './index.module.css'
 
 type StatusFilter = 'all' | 'valid' | 'expired' | 'revoked' | 'suspended'
@@ -56,7 +58,16 @@ const CredentialsListPage: React.FC = () => {
   const translate = useTranslate()
   const {show} = useNavigation()
   const {mutateAsync: deleteCredential} = useDelete<DigitalCredential, HttpError>()
-  const credentialRole = CredentialRole.HOLDER
+  const {currentRole, credentialRole} = useRole()
+
+  // Determine page title and labels based on role
+  const isVerifier = currentRole.role === RoleType.RELYING_PARTY
+  const isIssuer = currentRole.role === RoleType.ISSUER
+  const pageTitle = isVerifier
+    ? translate('presentations_overview_title', 'Presentations')
+    : isIssuer
+      ? translate('issued_credentials_overview_title', 'Issued Credentials')
+      : translate('credentials_overview_title', 'Credentials')
 
   const [credentialItems, setCredentialItems] = useState<CredentialTableItem[]>([])
   const [loading, setLoading] = useState(true)
@@ -104,13 +115,23 @@ const CredentialsListPage: React.FC = () => {
         const items = await Promise.all(
           digitalCredentials.map(async (credential: DigitalCredential) => {
             const filteredCredentialBrandings = brandingSync.getBrandingsByVcHash(credential.hash)
-            const issuerPartyIdentity = credential.issuerCorrelationId
+            const originalVC = JSON.parse(credential.uniformDocument ?? credential.rawDocument) as OriginalVerifiableCredential
+
+            // Try to find issuer party by correlationId first, then fallback to DID from credential
+            let issuerPartyIdentity = credential.issuerCorrelationId && credential.issuerCorrelationId !== 'unknown'
               ? getMatchingIdentity(partyData.data, credential.issuerCorrelationId)
               : undefined
+            if (!issuerPartyIdentity) {
+              // Fallback: extract issuer DID from credential and try to find party by DID
+              const issuerDid = extractIssuerDid(originalVC)
+              if (issuerDid) {
+                issuerPartyIdentity = getPartyByDid(partyData.data, issuerDid)
+              }
+            }
+
             const subjectPartyIdentity = credential.subjectCorrelationId
               ? getMatchingIdentity(partyData.data, credential.subjectCorrelationId)
               : undefined
-            const originalVC = JSON.parse(credential.uniformDocument ?? credential.rawDocument) as OriginalVerifiableCredential
 
             const credentialSummary = await toCredentialSummary({
               verifiableCredential: originalVC as VerifiableCredential,
@@ -528,10 +549,18 @@ const CredentialsListPage: React.FC = () => {
               </svg>
             </div>
             <div className={style.emptyStateTitle}>
-              {translate('credentials_empty_title', 'No Credentials Yet')}
+              {isVerifier
+                ? translate('presentations_empty_title', 'No Presentations Yet')
+                : isIssuer
+                  ? translate('issued_credentials_empty_title', 'No Issued Credentials Yet')
+                  : translate('credentials_empty_title', 'No Credentials Yet')}
             </div>
             <div className={style.emptyStateDescription}>
-              {translate('credentials_empty_description', 'Issue or import your first credential to get started.')}
+              {isVerifier
+                ? translate('presentations_empty_description', 'Presentations from verified credentials will appear here.')
+                : isIssuer
+                  ? translate('issued_credentials_empty_description', 'Credentials you issue will appear here.')
+                  : translate('credentials_empty_description', 'Receive or import your first credential to get started.')}
             </div>
           </div>
         ) : (
@@ -656,7 +685,11 @@ const CredentialsListPage: React.FC = () => {
     return (
       <div className={style.detailPanel}>
         <div className={style.detailHeader}>
-          <h3 className={style.detailTitle}>{translate('credentials_detail_title', 'Credential Details')}</h3>
+          <h3 className={style.detailTitle}>
+            {isVerifier
+              ? translate('presentations_detail_title', 'Presentation Details')
+              : translate('credentials_detail_title', 'Credential Details')}
+          </h3>
           <button className={style.closeButton} onClick={() => setSelectedCredential(null)}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <line x1="18" y1="6" x2="6" y2="18" />
@@ -759,7 +792,7 @@ const CredentialsListPage: React.FC = () => {
   if (credentialsLoading || partiesLoading || loading) {
     return (
       <div className={style.container}>
-        <AppHeaderBar title={translate('credentials_overview_title', 'Credentials')} />
+        <AppHeaderBar title={pageTitle} />
         <div className={style.loadingState}>
           <div className={style.spinner} />
           <span>{translate('data_provider_loading_message', 'Loading...')}</span>
@@ -771,7 +804,7 @@ const CredentialsListPage: React.FC = () => {
   if (credentialsError) {
     return (
       <div className={style.container}>
-        <AppHeaderBar title={translate('credentials_overview_title', 'Credentials')} />
+        <AppHeaderBar title={pageTitle} />
         <div className={style.emptyState}>
           <div className={style.emptyStateIcon}>
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -791,7 +824,7 @@ const CredentialsListPage: React.FC = () => {
 
   return (
     <div className={style.container}>
-      <AppHeaderBar title={translate('credentials_overview_title', 'Credentials')} />
+      <AppHeaderBar title={pageTitle} />
 
       {error && (
         <div className={style.errorBanner}>
@@ -819,7 +852,10 @@ const CredentialsListPage: React.FC = () => {
             selectionCount={selectedIds.size}
             onClearSelection={() => setSelectedIds(new Set())}
             onDeleteSelected={handleDeleteSelected}
-            selectionLabel={{singular: 'credential', plural: 'credentials'}}
+            selectionLabel={{
+              singular: isVerifier ? 'presentation' : 'credential',
+              plural: isVerifier ? 'presentations' : 'credentials'
+            }}
           />
 
           {/* Table */}

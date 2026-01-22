@@ -10,6 +10,13 @@
     max-width: 700px;
 }
 
+/* Hide the built-in Evidence section from CredentialIssuanceWizardView.
+   The wizard renders: [CredentialTypeContainer, FormContainer, EvidenceContainer]
+   We hide the 3rd child (EvidenceContainer) and use our own Supporting Documents section. */
+.container > div:first-child > div:nth-child(3) {
+    display: none;
+}
+
 /* Evidence Section */
 .evidenceSection {
     display: flex;

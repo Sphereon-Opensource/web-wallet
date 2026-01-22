@@ -61,7 +61,6 @@ import OID4VPStateMachineComponent from '../../pages/siopv2'
 import InformationRequestPage from '../../pages/siopv2/informationRequest'
 import Siopv2ErrorPage from '@/pages/siopv2/error'
 import {NavigationProvider} from './NavigationContext'
-import {CredentialRole} from '@sphereon/ssi-types'
 import ShowContactDetails from '@/pages/contacts/show'
 import EditIdentifierContent from '@components/views/EditIdentifierContent'
 import EditIdentifierKeysContent from '@components/views/EditIdentifierKeysContent'
@@ -74,6 +73,7 @@ import CredentialDesignerClaimsCreateContent from '@components/views/CredentialD
 import CredentialDesignerDetailsCreateContent from '@components/views/CredentialDesignerDetailsCreateContent'
 import CredentialDesignsListPage from '@/pages/credentials/design'
 import CredentialDesignerEditPage from '@/pages/credentials/design/edit'
+import ShowCredentialDesignDetails from '@/pages/credentials/design/show'
 import CredentialDesignerEditContextProvider from '@machines/credentials/credentialDesignerEditStateNavigation'
 import CredentialDesignerDetailsEditContent from '@components/views/CredentialDesignerDetailsEditContent'
 import CredentialDesignerVisualDesignEditContent from '@components/views/CredentialDesignerVisualDesignEditContent'
@@ -184,8 +184,9 @@ const AppRouter: React.FC = () => {
                 <Route path={CredentialDesignerRoute.VISUAL_DESIGN} element={<CredentialDesignerVisualDesignEditContent />} />
                 <Route path={CredentialDesignerRoute.CLAIMS} element={<CredentialDesignerClaimsEditContent />} />
               </Route>
+              <Route path={`${MainRoute.SUB_SHOW}/${MainRoute.SUB_ID}`} element={<ShowCredentialDesignDetails />} />
             </Route>
-            <Route path={MainRoute.SUB_ID} element={<ShowCredentialDetails credentialRole={CredentialRole.HOLDER} />} />
+            <Route path={MainRoute.SUB_ID} element={<ShowCredentialDetails />} />
           </Route>
           <Route path={MainRoute.EINVOICE}>
             <Route index element={<EInvoiceListPage />} />

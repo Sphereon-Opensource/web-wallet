@@ -1,5 +1,6 @@
 import React, {useCallback, useMemo, useState} from 'react'
 import {HttpError, useDelete, useList, useNavigation, useTranslate} from '@refinedev/core'
+import {useNavigate} from 'react-router-dom'
 import {CredentialMiniCardView, PrimaryButton, SSICredentialCardView} from '@sphereon/ui-components.ssi-react'
 import {ButtonIcon} from '@sphereon/ui-components.core'
 import AppHeaderBar from '@components/bars/AppHeaderBar'
@@ -15,6 +16,7 @@ type SortDirection = 'asc' | 'desc'
 const CredentialDesignsListPage: React.FC = () => {
   const translate = useTranslate()
   const {create, edit} = useNavigation()
+  const navigate = useNavigate()
   const {mutateAsync: deleteDesign} = useDelete<CredentialDesignTableItem, HttpError>()
   const allowCreateCredentialDesign = getEnv('BROWSER_PUBLIC_DISABLE_CREDENTIAL_DESIGN_INTERFACE') !== 'true'
 
@@ -165,6 +167,9 @@ const CredentialDesignsListPage: React.FC = () => {
     handleCloseMenu()
 
     switch (action) {
+      case 'view':
+        navigate(`/credentials/designs/show/${design.id}`)
+        break
       case 'edit':
         edit(DataResource.CREDENTIAL_DESIGNS, design.id)
         break
@@ -184,7 +189,12 @@ const CredentialDesignsListPage: React.FC = () => {
         }
         break
     }
-  }, [handleCloseMenu, edit, deleteDesign, selectedDesign, refetch])
+  }, [handleCloseMenu, navigate, edit, deleteDesign, selectedDesign, refetch])
+
+  // Handle view from detail panel
+  const handleView = useCallback((design: CredentialDesignTableItem): void => {
+    navigate(`/credentials/designs/show/${design.id}`)
+  }, [navigate])
 
   // Handle edit from detail panel
   const handleEdit = useCallback((design: CredentialDesignTableItem): void => {
@@ -228,6 +238,13 @@ const CredentialDesignsListPage: React.FC = () => {
       <>
         <div className={style.menuBackdrop} onClick={handleCloseMenu} />
         <div className={style.menuDropdown} style={{top: menuPosition.top, left: menuPosition.left}}>
+          <button className={style.menuItem} onClick={e => handleAction('view', design, e)}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+            {translate('credential_design_actions_view', 'View Details')}
+          </button>
           <button className={style.menuItem} onClick={e => handleAction('edit', design, e)}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
@@ -371,7 +388,7 @@ const CredentialDesignsListPage: React.FC = () => {
             key={design.id}
             className={`${style.tableRow} ${selectedDesign?.id === design.id ? style.selected : ''}`}
             onClick={() => setSelectedDesign(design)}
-            onDoubleClick={() => handleEdit(design)}
+            onDoubleClick={() => handleView(design)}
             role="row"
             tabIndex={0}
           >
@@ -503,15 +520,19 @@ const CredentialDesignsListPage: React.FC = () => {
 
         {/* Footer with Actions */}
         <div className={style.detailFooter}>
+          <button className={style.viewButton} onClick={() => handleView(selectedDesign)}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+            {translate('credential_design_actions_view', 'View Details')}
+          </button>
           <button className={style.editButton} onClick={() => handleEdit(selectedDesign)}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
             </svg>
             {translate('credential_design_actions_edit', 'Edit')}
-          </button>
-          <button className={style.deleteButton} onClick={() => handleDelete(selectedDesign)}>
-            {translate('credential_design_actions_delete', 'Delete')}
           </button>
         </div>
       </div>

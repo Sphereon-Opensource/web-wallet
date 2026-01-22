@@ -2,7 +2,7 @@ import type {Party} from '@sphereon/ssi-sdk.data-store-types'
 import {CredentialStatus} from '@sphereon/ui-components.core'
 import {CredentialMiniCardViewProps, formatDate} from '@sphereon/ui-components.ssi-react'
 import {CredentialSummary} from '@sphereon/ui-components.credential-branding'
-import {getMatchingIdentity} from '@helpers/IdentityFilters'
+import {getMatchingIdentity, getPartyByDid, extractIssuerDid} from '@helpers/IdentityFilters'
 import {CredentialMapper} from '@sphereon/ssi-types'
 import {IVerifiableCredential} from '@sphereon/ssi-types'
 import {DigitalCredential} from '@sphereon/ssi-sdk.credential-store'
@@ -41,7 +41,7 @@ export class CredentialTableItem {
   expirationDateStr?: string
   context: string
   type: string
-  issuer: Party
+  issuer: Party | undefined
   subject: Party | undefined
   raw: string
   status: CredentialStatus
@@ -57,7 +57,7 @@ export class CredentialTableItem {
     expirationDateStr?: string
     context: string
     type: string
-    issuer: Party
+    issuer: Party | undefined
     subject: Party | undefined
     raw: string
     status: CredentialStatus
@@ -81,18 +81,25 @@ export class CredentialTableItem {
   }
 
   static from(credential: DigitalCredential, parties: Party[], credentialSummary?: CredentialSummary): CredentialTableItem {
-    const issuerPartyIdentity = getMatchingIdentity(parties, credential.issuerCorrelationId)
+    const vc = JSON.parse(credential.uniformDocument ?? credential.rawDocument) as IVerifiableCredential
+
+    // Try to find issuer party by correlationId first, then fallback to DID from credential
+    let issuerPartyIdentity = credential.issuerCorrelationId && credential.issuerCorrelationId !== 'unknown'
+      ? getMatchingIdentity(parties, credential.issuerCorrelationId)
+      : undefined
     if (!issuerPartyIdentity) {
-      throw new Error(`Couldn't find matching identity for the issuer: ${credential.issuerCorrelationId}`)
+      const issuerDid = extractIssuerDid(vc)
+      if (issuerDid) {
+        issuerPartyIdentity = getPartyByDid(parties, issuerDid)
+      }
     }
+    const issuerParty = issuerPartyIdentity?.party
 
     const subjectPartyIdentity = credential.subjectCorrelationId ? getMatchingIdentity(parties, credential.subjectCorrelationId) : undefined
     const subjectParty = subjectPartyIdentity ? subjectPartyIdentity.party : undefined
 
     const issuanceDateStr = formatDate(credential.validFrom as unknown as string) // FIXME use other REST client
     const expirationDateStr = formatDate(credential.validUntil as unknown as string) // FIXME use other REST client
-
-    const vc = JSON.parse(credential.uniformDocument ?? credential.rawDocument) as IVerifiableCredential // TODO create function for this in CredentialMapper
     const status = CredentialMapper.hasProof(vc)
       ? credential.validUntil && new Date(credential.validUntil) < new Date()
         ? CredentialStatus.EXPIRED
@@ -120,7 +127,7 @@ export class CredentialTableItem {
       expirationDateStr,
       context: contextToString(vc['@context']),
       type: vcType,
-      issuer: issuerPartyIdentity.party,
+      issuer: issuerParty,
       subject: subjectParty,
       raw: credential.rawDocument,
       linkedVpId: credential.linkedVpId,

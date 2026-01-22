@@ -30,6 +30,8 @@ import {
   SdJwtDecodedVerifiableCredential,
 } from '@sphereon/ssi-types'
 import {defaultHasher} from '@sphereon/ssi-sdk.core'
+import {useRole} from '@/src/contexts/RoleContext'
+import {extractIssuerDid} from '@helpers/IdentityFilters'
 
 enum CredentialDetailsTabRoute {
   INFO = 'info',
@@ -48,7 +50,7 @@ interface ContactDisplayItem {
 }
 
 type Props = {
-  credentialRole: CredentialRole
+  credentialRole?: CredentialRole
 }
 
 async function getUnifiedVC(rawDocument: any): Promise<IVerifiableCredential> {
@@ -65,7 +67,8 @@ async function getUnifiedVC(rawDocument: any): Promise<IVerifiableCredential> {
 }
 
 const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
-  const {credentialRole} = props
+  const {credentialRole: credentialRoleFromContext} = useRole()
+  const credentialRole = props.credentialRole ?? credentialRoleFromContext
   const translate = useTranslate()
   const navigate = useNavigate()
   const params = useParams()
@@ -97,9 +100,25 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
       const {hash, issuerCorrelationId, subjectCorrelationId, rawDocument, linkedVpId, linkedVpFrom, linkedVpUntil} = credentialResult.data.data
 
       try {
-        const issuerParties: Party[] = await getAgent().cmGetContacts({
-          filter: [{identities: {identifier: {correlationId: issuerCorrelationId}}}],
-        })
+        const uniformVerifiableCredential = await getUnifiedVC(rawDocument)
+
+        // Try to find issuer by correlationId first
+        let issuerParties: Party[] = []
+        if (issuerCorrelationId && issuerCorrelationId !== 'unknown') {
+          issuerParties = await getAgent().cmGetContacts({
+            filter: [{identities: {identifier: {correlationId: issuerCorrelationId}}}],
+          })
+        }
+
+        // Fallback: if no issuer found, try to find by DID from the credential
+        if (issuerParties.length === 0) {
+          const issuerDid = extractIssuerDid(uniformVerifiableCredential)
+          if (issuerDid) {
+            issuerParties = await getAgent().cmGetContacts({
+              filter: [{identities: {identifier: {correlationId: issuerDid}}}],
+            })
+          }
+        }
 
         const subjectParties = subjectCorrelationId
           ? await getAgent().cmGetContacts({
@@ -118,7 +137,6 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
         const credentialBrandings = brandingSync.getBrandingsByVcHash(hash)
         console.debug('[ShowCredentialDetails] Found', credentialBrandings.length, 'brandings for hash', hash)
 
-        const uniformVerifiableCredential = await getUnifiedVC(rawDocument)
         const credentialSummary: CredentialSummary = await toCredentialSummary({
           verifiableCredential: uniformVerifiableCredential as VerifiableCredential,
           hash,
@@ -244,15 +262,16 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
       // Add issuer info
       if (rawDoc.issuer || rawDoc.iss) {
         const issuerValue = rawDoc.issuer || rawDoc.iss
+        const issuerDisplayName = credentialTableItem.issuer?.contact?.displayName ?? 'Unknown Issuer'
         if (typeof issuerValue === 'string') {
           result.issuer = {
             id: issuerValue,
-            name: credentialTableItem.issuer.contact.displayName,
+            name: issuerDisplayName,
           }
         } else if (typeof issuerValue === 'object') {
           result.issuer = {
             ...issuerValue,
-            name: credentialTableItem.issuer.contact.displayName,
+            name: issuerDisplayName,
           }
         }
       }
@@ -315,7 +334,7 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
                 logo: credentialSummary.branding?.logo,
               }}
               body={{
-                issuerName: credentialTableItem.issuer.contact.displayName,
+                issuerName: credentialTableItem.issuer?.contact?.displayName ?? 'Unknown Issuer',
               }}
               footer={{
                 credentialStatus: credentialTableItem.status,
@@ -477,19 +496,21 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
     // Build contacts array from issuer and subject
     const contacts: ContactDisplayItem[] = []
 
-    // Add issuer
-    const issuerLegalName = credentialTableItem.issuer.partyType.type === PartyTypeType.ORGANIZATION
-      ? (credentialTableItem.issuer.contact as Organization).legalName
-      : `${(credentialTableItem.issuer.contact as NaturalPerson).firstName} ${(credentialTableItem.issuer.contact as NaturalPerson).lastName}`
+    // Add issuer if present
+    if (credentialTableItem.issuer) {
+      const issuerLegalName = credentialTableItem.issuer.partyType.type === PartyTypeType.ORGANIZATION
+        ? (credentialTableItem.issuer.contact as Organization).legalName
+        : `${(credentialTableItem.issuer.contact as NaturalPerson).firstName} ${(credentialTableItem.issuer.contact as NaturalPerson).lastName}`
 
-    contacts.push({
-      id: credentialTableItem.issuer.id,
-      displayName: credentialTableItem.issuer.contact.displayName,
-      legalName: issuerLegalName,
-      partyType: credentialTableItem.issuer.partyType.type,
-      roles: credentialTableItem.issuer.roles,
-      role: 'issuer',
-    })
+      contacts.push({
+        id: credentialTableItem.issuer.id,
+        displayName: credentialTableItem.issuer.contact.displayName,
+        legalName: issuerLegalName,
+        partyType: credentialTableItem.issuer.partyType.type,
+        roles: credentialTableItem.issuer.roles,
+        role: 'issuer',
+      })
+    }
 
     // Add subject if present
     if (credentialTableItem.subject) {
