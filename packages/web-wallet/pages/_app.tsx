@@ -101,11 +101,14 @@ const _app = (props: React.PropsWithChildren<unknown>) => {
       name: DataResource.IDENTIFIERS,
       list: `${MainRoute.KEY_MANAGEMENT}/${KeyManagementRoute.IDENTIFIERS}`,
       create: `${MainRoute.KEY_MANAGEMENT}/${KeyManagementRoute.IDENTIFIERS}/${MainRoute.SUB_CREATE}`,
+      show: `${MainRoute.KEY_MANAGEMENT}/${KeyManagementRoute.IDENTIFIERS}/${MainRoute.SUB_SHOW}/${MainRoute.SUB_ID}`,
       edit: `${MainRoute.KEY_MANAGEMENT}/${KeyManagementRoute.IDENTIFIERS}/${MainRoute.SUB_EDIT}/${MainRoute.SUB_ID}`,
       meta: {dataProviderName: DataProvider.IDENTIFIERS},
     },
     {
       name: DataResource.KEYS,
+      list: `${MainRoute.KEY_MANAGEMENT}/${KeyManagementRoute.KEYS}`,
+      show: `${MainRoute.KEY_MANAGEMENT}/${KeyManagementRoute.KEYS}/${MainRoute.SUB_SHOW}/${MainRoute.SUB_ID}`,
       meta: {dataProviderName: DataProvider.KEYS},
     },
     {

@@ -56,6 +56,7 @@ import CreateIdentifierAddServiceEndpointContent from '@components/views/CreateI
 import CreateIdentifierSummaryContent from '@components/views/CreateIdentifierSummaryContent'
 import PresentationDefinitionPage from 'pages/presentationDefinitions/details'
 import KeysListPage from '../../pages/keyManagement/keys'
+import KeyShowPage from '../../pages/keyManagement/keys/show'
 import OID4VPStateMachineComponent from '../../pages/siopv2'
 import InformationRequestPage from '../../pages/siopv2/informationRequest'
 import Siopv2ErrorPage from '@/pages/siopv2/error'
@@ -66,6 +67,7 @@ import EditIdentifierContent from '@components/views/EditIdentifierContent'
 import EditIdentifierKeysContent from '@components/views/EditIdentifierKeysContent'
 import {IdentifiersEditContextProvider} from '@machines/identifiers/identifiersEditStateNavigation'
 import IdentifierEditPage from '@/pages/keyManagement/identifiers/edit'
+import ShowIdentifierDetails from '@/pages/keyManagement/identifiers/show'
 import CredentialDesignerCreateContextProvider from '@machines/credentials/credentialDesignerCreateStateNavigation'
 import CredentialDesignerCreatePage from '@/pages/credentials/design/create'
 import CredentialDesignerClaimsCreateContent from '@components/views/CredentialDesignerClaimsCreateContent'
@@ -252,9 +254,11 @@ const AppRouter: React.FC = () => {
                 <Route path={EditIdentifierRoute.KEYS} element={<EditIdentifierKeysContent />} />
                 <Route path={EditIdentifierRoute.SERVICE_ENDPOINTS} element={<CreateIdentifierAddServiceEndpointContent mode="edit" />} />
               </Route>
+              <Route path={`${MainRoute.SUB_SHOW}/${MainRoute.SUB_ID}`} element={<ShowIdentifierDetails />} />
             </Route>
             <Route path={KeyManagementRoute.KEYS}>
               <Route index element={<KeysListPage />} />
+              <Route path={`${MainRoute.SUB_SHOW}/${MainRoute.SUB_ID}`} element={<KeyShowPage />} />
             </Route>
           </Route>
           <Route path={MainRoute.QUERY_MANAGEMENT}>

@@ -38,7 +38,7 @@ const mapIdentifierData = (identifierData?: IIdentifier[]): IdentifierTableItem[
 
 const IdentifiersListPage: React.FC = () => {
   const translate = useTranslate()
-  const {create, edit} = useNavigation()
+  const {create, edit, show} = useNavigation()
   const {mutateAsync: deleteIdentifiers} = useDeleteMany<IIdentifier[], HttpError>()
 
   const [selectedIdentifier, setSelectedIdentifier] = useState<IdentifierTableItem | null>(null)
@@ -218,6 +218,14 @@ const IdentifiersListPage: React.FC = () => {
     setMenuPosition(null)
   }, [])
 
+  // Handle show details
+  const handleShowDetails = useCallback(
+    (identifier: IdentifierTableItem) => {
+      show(DataResource.IDENTIFIERS, encodeURIComponent(identifier.value))
+    },
+    [show],
+  )
+
   const handleMenuAction = useCallback(
     async (action: string, identifier: IdentifierTableItem, e: React.MouseEvent): Promise<void> => {
       e.stopPropagation()
@@ -225,7 +233,7 @@ const IdentifiersListPage: React.FC = () => {
 
       switch (action) {
         case 'details':
-          setSelectedIdentifier(identifier)
+          handleShowDetails(identifier)
           break
         case 'edit':
           handleEdit(identifier)
@@ -235,7 +243,7 @@ const IdentifiersListPage: React.FC = () => {
           break
       }
     },
-    [handleCloseMenu, handleEdit, handleDelete],
+    [handleCloseMenu, handleShowDetails, handleEdit, handleDelete],
   )
 
   // Truncate DID for display
@@ -386,6 +394,7 @@ const IdentifiersListPage: React.FC = () => {
             key={identifier.id}
             className={`${style.tableRow} ${selectedIdentifier?.id === identifier.id ? style.selected : ''}`}
             onClick={() => setSelectedIdentifier(identifier)}
+            onDoubleClick={() => handleShowDetails(identifier)}
             role="row"
             tabIndex={0}>
             <div className={style.checkboxCell}>
@@ -510,6 +519,15 @@ const IdentifiersListPage: React.FC = () => {
               {translate('action_copy', 'Copy DID')}
             </button>
           </section>
+
+          {/* View Full Details Button */}
+          <button className={style.viewFullButton} onClick={() => handleShowDetails(selectedIdentifier)}>
+            {translate('action_view_full_details', 'View Full Details')}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M5 12h14" />
+              <path d="M12 5l7 7-7 7" />
+            </svg>
+          </button>
         </div>
 
         <div className={style.detailFooter}>

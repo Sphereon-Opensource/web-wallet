@@ -5,6 +5,8 @@ import {
   CreateParams,
   CreateResponse,
   DataProvider,
+  DeleteManyParams,
+  DeleteManyResponse,
   DeleteOneParams,
   DeleteOneResponse,
   GetListParams,
@@ -290,7 +292,26 @@ export const identifiersDataProvider = (): DataProvider => ({
       return Promise.reject(Error(`Identifier with id ${id} not found`))
     }
 
-    const result: IdentifierRecord = {...identity, id: identity.did}
+    // Enrich services with metadata (including einvoice data)
+    const enrichedServices = await Promise.all(
+      (identity.services || []).map(async (service) => {
+        try {
+          const metadata = await getAgent().getServiceMetadata({
+            serviceId: service.id,
+            did: identity.did,
+          })
+          if (metadata) {
+            return {...service, ...metadata}
+          }
+        } catch (error) {
+          console.warn(`Failed to get metadata for service ${service.id}:`, error)
+        }
+        return service
+      })
+    )
+
+    const enrichedIdentity = {...identity, services: enrichedServices}
+    const result: IdentifierRecord = {...enrichedIdentity, id: enrichedIdentity.did}
     return {data: asIdentifierData<TData>(result)}
   },
 
@@ -519,10 +540,60 @@ export const identifiersDataProvider = (): DataProvider => ({
                                                                               resource,
                                                                               id,
                                                                             }: DeleteOneParams<TVariables>): Promise<DeleteOneResponse<TData>> => {
-    // TODO CWALL-244 implement
-    return {
-      data: {} as TData,
+    const did = id as string
+    console.log(`[IdentifiersDataProvider] Deleting identifier: ${did}`)
+
+    try {
+      // Get the identifier first to return it as deleted data
+      const identities: IIdentifier[] = await getAgent().didManagerFind()
+      const identifier = identities.find(i => i.did === did)
+
+      if (!identifier) {
+        return Promise.reject(Error(`Identifier with id ${did} not found`))
+      }
+
+      // Delete the identifier using Veramo's didManagerDelete
+      const deleted = await getAgent().didManagerDelete({did})
+
+      if (!deleted) {
+        return Promise.reject(Error(`Failed to delete identifier ${did}`))
+      }
+
+      console.log(`[IdentifiersDataProvider] Successfully deleted identifier: ${did}`)
+
+      const result: IdentifierRecord = {...identifier, id: identifier.did}
+      return {data: asIdentifierData<TData>(result)}
+    } catch (error) {
+      console.error(`[IdentifiersDataProvider] Error deleting identifier:`, error)
+      return Promise.reject(Error(`Failed to delete identifier: ${error}`))
     }
+  },
+  deleteMany: async <TData extends BaseRecord = BaseRecord, TVariables = {}>({
+                                                                               resource,
+                                                                               ids,
+                                                                             }: DeleteManyParams<TVariables>): Promise<DeleteManyResponse<TData>> => {
+    console.log(`[IdentifiersDataProvider] Deleting ${ids.length} identifiers`)
+    const deletedIdentifiers: TData[] = []
+
+    for (const id of ids) {
+      const did = id as string
+      try {
+        const identities: IIdentifier[] = await getAgent().didManagerFind()
+        const identifier = identities.find(i => i.did === did)
+
+        if (identifier) {
+          const deleted = await getAgent().didManagerDelete({did})
+          if (deleted) {
+            deletedIdentifiers.push({...identifier, id: identifier.did} as unknown as TData)
+            console.log(`[IdentifiersDataProvider] Deleted identifier: ${did}`)
+          }
+        }
+      } catch (error) {
+        console.error(`[IdentifiersDataProvider] Error deleting identifier ${did}:`, error)
+      }
+    }
+
+    return {data: deletedIdentifiers}
   },
   getApiUrl: (): string => {
     // TODO CWALL-244 implement

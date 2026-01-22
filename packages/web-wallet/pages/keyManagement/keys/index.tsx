@@ -1,12 +1,13 @@
 import React, {useCallback, useMemo, useState} from 'react'
 import {HttpError, useList, useTranslate} from '@refinedev/core'
+import {useNavigate} from 'react-router-dom'
 import {PrimaryButton} from '@sphereon/ui-components.ssi-react'
 import {ButtonIcon} from '@sphereon/ui-components.core'
 import KeyIcon from '@sphereon/ui-components.ssi-react/dist/components/assets/icons/Key'
 import AppHeaderBar from '@components/bars/AppHeaderBar'
 import {ListPageHeader, TabItem, FilterDropdown} from '@components/tables'
 import {staticPropsWithSST} from '@/src/i18n/server'
-import {DataResource} from '@typings'
+import {DataResource, KeyManagementRoute, MainRoute} from '@typings'
 import {IIdentifier, ManagedKeyInfo} from '@veramo/core'
 import style from './index.module.css'
 
@@ -41,6 +42,7 @@ const mapKeysData = (keys: ManagedKeyInfo[], identifiers: IIdentifier[]): KeyTab
 
 const KeysListPage: React.FC = () => {
   const translate = useTranslate()
+  const navigate = useNavigate()
 
   const [selectedKey, setSelectedKey] = useState<KeyTableItem | null>(null)
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
@@ -200,6 +202,13 @@ const KeysListPage: React.FC = () => {
     setMenuPosition(null)
   }, [])
 
+  const handleViewFullDetails = useCallback(
+    (kid: string) => {
+      navigate(`${MainRoute.KEY_MANAGEMENT}/${KeyManagementRoute.KEYS}/${MainRoute.SUB_SHOW}/${encodeURIComponent(kid)}`)
+    },
+    [navigate],
+  )
+
   const handleMenuAction = useCallback(
     async (action: string, key: KeyTableItem, e: React.MouseEvent): Promise<void> => {
       e.stopPropagation()
@@ -209,13 +218,16 @@ const KeysListPage: React.FC = () => {
         case 'details':
           setSelectedKey(key)
           break
+        case 'fullDetails':
+          handleViewFullDetails(key.kid)
+          break
         case 'delete':
           // TODO: Implement key deletion when backend supports it (CWALL-242)
           console.log('Delete key:', key.kid)
           break
       }
     },
-    [handleCloseMenu],
+    [handleCloseMenu, handleViewFullDetails],
   )
 
   // Truncate KID for display
@@ -304,8 +316,13 @@ const KeysListPage: React.FC = () => {
             </svg>
             {translate('action_details_label', 'Details')}
           </button>
-          {/* Delete action commented out - TODO: CWALL-242 */}
-          {/*
+          <button className={style.menuItem} onClick={e => handleMenuAction('fullDetails', key, e)}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+            {translate('action_full_details_label', 'Full Details')}
+          </button>
           <div className={style.menuDivider} />
           <button className={`${style.menuItem} ${style.menuItemDanger}`} onClick={e => handleMenuAction('delete', key, e)}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -314,7 +331,6 @@ const KeysListPage: React.FC = () => {
             </svg>
             {translate('action_delete_label', 'Delete')}
           </button>
-          */}
         </div>
       </>
     )
@@ -543,14 +559,22 @@ const KeysListPage: React.FC = () => {
           </section>
         </div>
 
-        {/* Footer - Delete action commented out until CWALL-242 is implemented */}
-        {/*
         <div className={style.detailFooter}>
+          <button className={style.fullDetailsButton} onClick={() => handleViewFullDetails(selectedKey.kid)}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+            {translate('keys_detail_view_full', 'View Full Details')}
+          </button>
           <button className={style.dangerButton} onClick={() => handleMenuAction('delete', selectedKey, {} as React.MouseEvent)}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <polyline points="3 6 5 6 21 6" />
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+            </svg>
             {translate('action_delete_label', 'Delete')}
           </button>
         </div>
-        */}
       </div>
     )
   }

@@ -12,6 +12,7 @@ export enum MainRoute {
   SETTINGS = '/settings',
   SUB_CREATE = 'create',
   SUB_EDIT = 'edit',
+  SUB_SHOW = 'show',
   SUB_ID = ':id',
   DESIGNS = 'designs',
   OID4VCI = '/oid4vci',

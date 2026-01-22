@@ -13,11 +13,13 @@ import {
   KeyManagementRoute,
   MainRoute,
   UIKeyCapabilitiesInfo,
+  EInvoiceServiceData,
 } from '@typings'
 import {IdentifiersEditContext} from '@typings/machine/identifiers/edit'
 import {CoreActions, JsonFormsCore} from '@jsonforms/core'
 import {IIdentifier, ManagedKeyInfo, TKeyType} from '@veramo/core'
 import addKeySchema from '../../../src/schemas/data/addKeySchema.json' assert {type: 'json'}
+import {isEInvoicingServiceType, getEInvoicingDefaults, EInvServiceType} from '../../constants/eInvoicingDefaults'
 
 // Supported key types - adjust based on your requirements
 const SUPPORTED_KEY_TYPES: TKeyType[] = ['Ed25519', 'Secp256k1', 'Secp256r1', 'X25519', 'RSA']
@@ -286,6 +288,34 @@ export const IdentifiersEditContextProvider = (props: {children: React.ReactNode
             endpointValue = JSON.stringify(service.serviceEndpoint)
           } else {
             endpointValue = String(service.serviceEndpoint)
+          }
+
+          // Check if this is an eInvoicing service type and reconstruct the einvoice metadata
+          const serviceType = service.type
+          if (isEInvoicingServiceType(serviceType)) {
+            const defaults = getEInvoicingDefaults(serviceType as EInvServiceType)
+            if (defaults) {
+              // Reconstruct einvoice data from defaults - entityName and country are not stored in DID document
+              // so we use placeholder values that indicate they need to be re-entered if editing
+              const einvoiceData: EInvoiceServiceData = {
+                vct: defaults.vct,
+                entityName: service.description?.replace(/^.*for\s+/i, '').replace(/\s+via.*$/i, '') || 'Unknown',
+                country: 'Unknown',
+                documentIdentifiers: [...defaults.documentIdentifiers],
+                processIdentifiers: [...defaults.processIdentifiers],
+                transportType: defaults.transportType,
+                inboxName: 'einvoices',
+                folderName: service.id.replace(/^#/, ''),
+              }
+
+              return {
+                id: service.id,
+                type: serviceType,
+                serviceEndpoint: endpointValue,
+                description: defaults.description,
+                einvoice: einvoiceData,
+              }
+            }
           }
 
           return {
