@@ -14,8 +14,8 @@ import { MigrationInterface, QueryRunner } from 'typeorm'
  *
  * All operations are idempotent (IF EXISTS).
  */
-export class CleanupWorkflowTables1737600000000 implements MigrationInterface {
-  name = 'CleanupWorkflowTables1737600000000'
+export class CleanupWorkflowTables1736780300000 implements MigrationInterface {
+  name = 'CleanupWorkflowTables1736780300000'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     // Drop workflow views first

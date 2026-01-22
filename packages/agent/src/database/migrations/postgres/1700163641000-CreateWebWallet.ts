@@ -301,11 +301,21 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
                 FOREIGN KEY ("asset_id") REFERENCES "asset" ("id") ON DELETE SET NULL
     `)
 
-    await queryRunner.query(`
-        ALTER TABLE "workflow_document"
-            ADD CONSTRAINT "FK_workflow_document_storage_object_id"
-                FOREIGN KEY ("storage_object_id") REFERENCES "storage"."objects" ("id")
+    // Only add foreign key to storage.objects if Supabase storage table exists
+    // This allows the migration to run on plain PostgreSQL without Supabase
+    const storageObjectsExists = await queryRunner.query(`
+        SELECT EXISTS (
+            SELECT 1 FROM information_schema.tables
+            WHERE table_schema = 'storage' AND table_name = 'objects'
+        ) as exists
     `)
+    if (storageObjectsExists[0]?.exists) {
+      await queryRunner.query(`
+          ALTER TABLE "workflow_document"
+              ADD CONSTRAINT "FK_workflow_document_storage_object_id"
+                  FOREIGN KEY ("storage_object_id") REFERENCES "storage"."objects" ("id")
+      `)
+    }
 
     await queryRunner.query(`
         ALTER TABLE "workflow_document"
@@ -331,13 +341,20 @@ export class CreateWebWallet1700163641000 implements MigrationInterface {
                 FOREIGN KEY ("recipient_id") REFERENCES "CorrelationIdentifier" ("correlation_id")
     `)
 
-    // TODO evaluate if not too much. (without these grants local Supabase instance won't have access to the tables)
-    await queryRunner.query(`
-        GRANT USAGE,CREATE ON SCHEMA PUBLIC TO POSTGRES, ANON, AUTHENTICATED, SERVICE_ROLE;
-        GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA "public" TO service_role;
-        GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA "public" TO authenticated;
-        GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA "public" TO anon;
-`)
+    // Only grant to Supabase roles if they exist (for local Supabase instances)
+    const supabaseRolesExist = await queryRunner.query(`
+        SELECT EXISTS (
+            SELECT 1 FROM pg_roles WHERE rolname = 'anon'
+        ) as exists
+    `)
+    if (supabaseRolesExist[0]?.exists) {
+      await queryRunner.query(`
+          GRANT USAGE,CREATE ON SCHEMA PUBLIC TO POSTGRES, ANON, AUTHENTICATED, SERVICE_ROLE;
+          GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA "public" TO service_role;
+          GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA "public" TO authenticated;
+          GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA "public" TO anon;
+      `)
+    }
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

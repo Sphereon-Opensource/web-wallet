@@ -56,7 +56,6 @@ import { KeyManagementSystem, SecretBox } from '@veramo/kms-local'
 import { RestKeyManagementSystem } from '@sphereon/ssi-sdk.kms-rest'
 import { SphereonKeyManagementSystem } from '@sphereon/ssi-sdk-ext.kms-local'
 import {
-  addEInvoicingServicesToDID,
   createDidProviders,
   createDidResolver,
   ensureDefaultOrganization,
@@ -337,10 +336,6 @@ if (!cliMode) {
   defaultDID = await getDefaultDID()
   if (defaultDID) {
     console.log(`[DID] default DID: ${defaultDID}`)
-    // Add eInvoicing service endpoints to the default DID if inbox is enabled
-    if (IS_INBOX_ENABLED) {
-      await addEInvoicingServicesToDID(defaultDID).catch((e) => console.log(`[eInvoice] Error adding services: ${e}`))
-    }
   }
   defaultKid = await getDefaultKeyRef({ did: defaultDID })
   console.log(`[DID] default key identifier: ${defaultKid}`)

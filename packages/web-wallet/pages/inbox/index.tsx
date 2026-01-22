@@ -207,7 +207,7 @@ const InboxPage: React.FC = () => {
           fontFamily: 'Poppins, sans-serif',
         }}
       >
-        <div style={{textAlign: 'center', padding: '24px', maxWidth: '400px'}}>
+        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '24px', maxWidth: '400px'}}>
           <div style={{color: '#8D9099', marginBottom: '16px'}}>
             <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
               <path d="M22 12h-6l-2 3h-4l-2-3H2" />
