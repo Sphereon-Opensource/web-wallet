@@ -368,6 +368,26 @@
     overflow: hidden;
 }
 
+.itemCardClickable {
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.itemCardClickable:hover {
+    border-color: var(--theme-color-primary, #7276F7);
+    box-shadow: 0 2px 8px rgba(114, 118, 247, 0.15);
+}
+
+.itemCardClickable:hover .itemCardArrow {
+    color: var(--theme-color-primary, #7276F7);
+}
+
+.itemCardArrow {
+    color: #C4C5CA;
+    transition: color 0.15s ease;
+    margin-left: auto;
+}
+
 .itemCardHeader {
     display: flex;
     align-items: center;
@@ -874,9 +894,18 @@
 }
 
 /* Contact Card */
+.contactsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+}
+
+/* Contact Card */
 .contactCard {
+    display: flex;
+    flex-direction: column;
     background: #FBFBFB;
-    border-radius: 8px;
+    border-radius: 6px;
     border: 1px solid #E3E3E3;
     overflow: hidden;
 }
@@ -884,89 +913,120 @@
 .contactCardHeader {
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding: 20px;
+    padding: 12px 16px;
     border-bottom: 1px solid #E3E3E3;
+    gap: 12px;
     background: #FFFFFF;
 }
 
-.contactAvatar {
-    width: 48px;
-    height: 48px;
-    background: linear-gradient(135deg, #7276F7 0%, #7C40E8 100%);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
+.contactCardAccent {
+    width: 4px;
+    height: 40px;
+    border-radius: 2px;
     flex-shrink: 0;
+    background: linear-gradient(180deg, #7276F7 0%, #7C40E8 100%);
 }
 
-.contactInfo {
+.contactCardInfo {
     flex: 1;
     min-width: 0;
 }
 
-.contactName {
-    font-size: 16px;
+.contactCardRole {
+    font-size: 11px;
     font-weight: 600;
-    color: #303030;
+    color: #8D9099;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.contactType {
-    font-size: 13px;
-    color: #8D9099;
+.contactCardName {
+    font-size: 14px;
+    font-weight: 600;
+    color: #303030;
     margin-top: 2px;
 }
 
 .viewContactButton {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 8px 16px;
-    border-radius: 6px;
-    font-size: 13px;
-    font-weight: 500;
-    color: #7276F7;
-    background: #FFFFFF;
-    border: 1px solid #7276F7;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    background: none;
+    border: 1px solid #E3E3E3;
+    color: #8D9099;
     cursor: pointer;
     transition: all 0.2s ease;
     flex-shrink: 0;
 }
 
 .viewContactButton:hover {
-    background: rgba(114, 118, 247, 0.1);
+    background: #F0F0FD;
+    border-color: #7276F7;
+    color: #7276F7;
 }
 
-.contactDetails {
-    padding: 20px;
+.contactCardBody {
+    padding: 16px;
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
-.contactDetailRow {
+.contactCardField {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 0;
-    border-bottom: 1px solid #F0F0F0;
+    flex-direction: column;
+    gap: 4px;
 }
 
-.contactDetailRow:last-child {
-    border-bottom: none;
-}
-
-.contactDetailLabel {
-    font-size: 13px;
+.contactCardFieldLabel {
+    font-size: 11px;
+    font-weight: 400;
     color: #8D9099;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.contactDetailValue {
+.contactCardFieldValue {
     font-size: 13px;
     font-weight: 500;
     color: #303030;
+    word-break: break-all;
+}
+
+.contactCardRoles {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+}
+
+.roleBadge {
+    display: inline-flex;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 500;
+}
+
+.roleBadgeIssuer {
+    background-color: rgba(45, 213, 197, 0.15);
+    color: #2CD5C5;
+    border: 1px solid #2CD5C5;
+}
+
+.roleBadgeVerifier {
+    background-color: rgba(114, 118, 247, 0.15);
+    color: #7276F7;
+    border: 1px solid #7276F7;
+}
+
+.roleBadgeHolder {
+    background-color: rgba(245, 166, 35, 0.15);
+    color: #F5A623;
+    border: 1px solid #F5A623;
 }
 
 /* No Contact State */
@@ -1056,18 +1116,7 @@
         padding: 12px 16px;
     }
 
-    .contactCardHeader {
-        flex-wrap: wrap;
-    }
-
-    .viewContactButton {
-        width: 100%;
-        justify-content: center;
-    }
-
-    .contactDetailRow {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 4px;
+    .contactsGrid {
+        grid-template-columns: 1fr;
     }
 }

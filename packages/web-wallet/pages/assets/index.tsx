@@ -1,4 +1,5 @@
 import React, {useCallback, useEffect, useState, useMemo, useRef} from 'react'
+import {useNavigate} from 'react-router-dom'
 import {useTranslate} from '@refinedev/core'
 import {PrimaryButton} from '@sphereon/ui-components.ssi-react'
 import {ButtonIcon} from '@sphereon/ui-components.core'
@@ -33,6 +34,7 @@ const VISIBILITY_TABS: {value: VisibilityFilter; labelKey: string; defaultLabel:
 
 const AssetsListPage: React.FC = () => {
   const translate = useTranslate()
+  const navigate = useNavigate()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [assets, setAssets] = useState<Asset[]>([])
@@ -775,19 +777,24 @@ const AssetsListPage: React.FC = () => {
                   </button>
                 </section>
               )}
+
+              {/* View Full Details Button */}
+              <button className={style.viewFullButton} onClick={() => navigate(`/assets/show/${selectedAsset.id}`)}>
+                {translate('action_view_full_details', 'View Full Details')}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                  <polyline points="15 3 21 3 21 9" />
+                  <line x1="10" y1="14" x2="21" y2="3" />
+                </svg>
+              </button>
             </div>
 
             <div className={style.detailFooter}>
-              {selectedAsset.isPublic ? (
-                <button className={style.secondaryButton} onClick={() => handleUnpublish(selectedAsset)}>
-                  {translate('action_make_private_label', 'Make Private')}
-                </button>
-              ) : (
-                <button className={style.primaryButton} onClick={() => handlePublish(selectedAsset)}>
-                  {translate('action_make_public_label', 'Publish (7 Years)')}
-                </button>
-              )}
               <button className={style.dangerButton} onClick={() => handleDelete(selectedAsset)}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                </svg>
                 {translate('action_delete_label', 'Delete')}
               </button>
             </div>

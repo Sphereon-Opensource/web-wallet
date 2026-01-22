@@ -558,16 +558,19 @@ const KeysListPage: React.FC = () => {
               {translate('action_copy', 'Copy Key ID')}
             </button>
           </section>
+
+          {/* View Full Details button in body */}
+          <button className={style.viewFullButton} onClick={() => handleViewFullDetails(selectedKey.kid)}>
+            {translate('action_view_full_details', 'View Full Details')}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+              <polyline points="15 3 21 3 21 9" />
+              <line x1="10" y1="14" x2="21" y2="3" />
+            </svg>
+          </button>
         </div>
 
         <div className={style.detailFooter}>
-          <button className={style.fullDetailsButton} onClick={() => handleViewFullDetails(selectedKey.kid)}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-              <circle cx="12" cy="12" r="3" />
-            </svg>
-            {translate('keys_detail_view_full', 'View Full Details')}
-          </button>
           <button className={style.dangerButton} onClick={() => handleMenuAction('delete', selectedKey, {} as React.MouseEvent)}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <polyline points="3 6 5 6 21 6" />

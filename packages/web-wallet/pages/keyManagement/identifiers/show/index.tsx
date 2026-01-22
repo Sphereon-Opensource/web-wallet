@@ -2,6 +2,7 @@ import React, {FC, ReactElement, useCallback, useEffect, useMemo, useState} from
 import {useParams, useNavigate} from 'react-router-dom'
 import {HttpError, useOne, useTranslation} from '@refinedev/core'
 import {IIdentifier} from '@veramo/core'
+import {CredentialRole} from '@sphereon/ssi-types'
 import {DIDResolutionResult} from 'did-resolver'
 import {FormView, PrimaryButton} from '@sphereon/ui-components.ssi-react'
 import {ButtonIcon} from '@sphereon/ui-components.core'
@@ -100,6 +101,7 @@ const ShowIdentifierDetails: FC = (): ReactElement => {
     email?: string
     phone?: string
     partyType?: string
+    roles?: string[]
   } | null>(null)
   const [isLoadingContact, setIsLoadingContact] = useState(false)
 
@@ -164,6 +166,7 @@ const ShowIdentifierDetails: FC = (): ReactElement => {
                 email,
                 phone,
                 partyType: party.partyType?.name,
+                roles: party.roles || [],
               })
               break
             }
@@ -753,7 +756,14 @@ const ShowIdentifierDetails: FC = (): ReactElement => {
         ) : (
           <div className={style.itemsGrid}>
             {keys.map((key) => (
-              <div key={key.kid} className={style.itemCard}>
+              <div
+                key={key.kid}
+                className={`${style.itemCard} ${style.itemCardClickable}`}
+                onClick={() => navigate(`/key-management/keys/show/${encodeURIComponent(key.kid)}`)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && navigate(`/key-management/keys/show/${encodeURIComponent(key.kid)}`)}
+              >
                 <div className={style.itemCardHeader}>
                   <div className={style.itemCardAccent} />
                   <div className={style.itemCardInfo}>
@@ -763,7 +773,10 @@ const ShowIdentifierDetails: FC = (): ReactElement => {
                   {isEditable && (
                     <button
                       className={style.removeButton}
-                      onClick={() => handleRemoveKey(key.kid)}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleRemoveKey(key.kid)
+                      }}
                       title={translate('action_remove', 'Remove') as string}
                     >
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -772,6 +785,13 @@ const ShowIdentifierDetails: FC = (): ReactElement => {
                       </svg>
                     </button>
                   )}
+                  <div className={style.itemCardArrow}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                      <polyline points="15 3 21 3 21 9" />
+                      <line x1="10" y1="14" x2="21" y2="3" />
+                    </svg>
+                  </div>
                 </div>
                 <div className={style.itemCardBody}>
                   <div className={style.itemCardField}>
@@ -919,52 +939,70 @@ const ShowIdentifierDetails: FC = (): ReactElement => {
             <span>{translate('identifier_details_loading_contact', 'Loading contact...')}</span>
           </div>
         ) : associatedContact ? (
-          <div className={style.contactCard}>
-            <div className={style.contactCardHeader}>
-              <div className={style.contactAvatar}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                  <circle cx="12" cy="7" r="4" />
-                </svg>
+          <div className={style.contactsGrid}>
+            <div className={style.contactCard}>
+              <div className={style.contactCardHeader}>
+                <div className={style.contactCardAccent} />
+                <div className={style.contactCardInfo}>
+                  <div className={style.contactCardRole}>
+                    {translate('identifier_contact_role_owner', 'Owner')}
+                  </div>
+                  <div className={style.contactCardName}>{associatedContact.displayName}</div>
+                </div>
+                <button
+                  className={style.viewContactButton}
+                  onClick={() => navigate(`/contacts/${associatedContact.id}`)}
+                  title={translate('action_view_contact', 'View Contact') as string}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                  </svg>
+                </button>
               </div>
-              <div className={style.contactInfo}>
-                <div className={style.contactName}>{associatedContact.displayName}</div>
+              <div className={style.contactCardBody}>
+                {associatedContact.legalName && (
+                  <div className={style.contactCardField}>
+                    <span className={style.contactCardFieldLabel}>{translate('contact_legal_name', 'Legal Name')}</span>
+                    <span className={style.contactCardFieldValue}>{associatedContact.legalName}</span>
+                  </div>
+                )}
                 {associatedContact.partyType && (
-                  <div className={style.contactType}>{associatedContact.partyType}</div>
+                  <div className={style.contactCardField}>
+                    <span className={style.contactCardFieldLabel}>{translate('contact_type', 'Type')}</span>
+                    <span className={style.contactCardFieldValue}>{associatedContact.partyType}</span>
+                  </div>
+                )}
+                {associatedContact.email && (
+                  <div className={style.contactCardField}>
+                    <span className={style.contactCardFieldLabel}>{translate('contact_email', 'Email')}</span>
+                    <span className={style.contactCardFieldValue}>{associatedContact.email}</span>
+                  </div>
+                )}
+                {associatedContact.phone && (
+                  <div className={style.contactCardField}>
+                    <span className={style.contactCardFieldLabel}>{translate('contact_phone', 'Phone')}</span>
+                    <span className={style.contactCardFieldValue}>{associatedContact.phone}</span>
+                  </div>
+                )}
+                {associatedContact.roles && associatedContact.roles.length > 0 && (
+                  <div className={style.contactCardRoles}>
+                    {associatedContact.roles.map((role) => (
+                      <span
+                        key={role}
+                        className={`${style.roleBadge} ${
+                          role === CredentialRole.ISSUER ? style.roleBadgeIssuer :
+                          role === CredentialRole.VERIFIER ? style.roleBadgeVerifier :
+                          style.roleBadgeHolder
+                        }`}
+                      >
+                        {role}
+                      </span>
+                    ))}
+                  </div>
                 )}
               </div>
-              <button
-                className={style.viewContactButton}
-                onClick={() => navigate(`/contacts/${associatedContact.id}`)}
-                title={translate('action_view_contact', 'View Contact') as string}
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                  <polyline points="15 3 21 3 21 9" />
-                  <line x1="10" y1="14" x2="21" y2="3" />
-                </svg>
-                {translate('action_view', 'View')}
-              </button>
-            </div>
-            <div className={style.contactDetails}>
-              {associatedContact.legalName && (
-                <div className={style.contactDetailRow}>
-                  <span className={style.contactDetailLabel}>{translate('contact_legal_name', 'Legal Name')}</span>
-                  <span className={style.contactDetailValue}>{associatedContact.legalName}</span>
-                </div>
-              )}
-              {associatedContact.email && (
-                <div className={style.contactDetailRow}>
-                  <span className={style.contactDetailLabel}>{translate('contact_email', 'Email')}</span>
-                  <span className={style.contactDetailValue}>{associatedContact.email}</span>
-                </div>
-              )}
-              {associatedContact.phone && (
-                <div className={style.contactDetailRow}>
-                  <span className={style.contactDetailLabel}>{translate('contact_phone', 'Phone')}</span>
-                  <span className={style.contactDetailValue}>{associatedContact.phone}</span>
-                </div>
-              )}
             </div>
           </div>
         ) : (

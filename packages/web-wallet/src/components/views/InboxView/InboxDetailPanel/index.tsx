@@ -248,6 +248,19 @@ const InboxDetailPanel: FC<Props> = (props: Props): ReactElement => {
           </ActionButton>
         </PanelFooter>
       )}
+      {/* Inbox: Show Delete for non-pending (accepted/rejected) items */}
+      {!isOutbox && invoice.status !== 'pending' && onDelete && (
+        <PanelFooter>
+          <ActionButton
+            variant="danger"
+            onClick={() => onDelete(invoice)}
+            disabled={isProcessing}
+            loading={isProcessing}
+          >
+            {translate('action_delete_label', 'Delete')}
+          </ActionButton>
+        </PanelFooter>
+      )}
     </BaseDetailPanel>
   )
 }

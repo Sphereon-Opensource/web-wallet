@@ -300,6 +300,46 @@
   white-space: nowrap;
 }
 
+.associationDidClickable {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  padding: 4px 8px;
+  margin: -4px -8px;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+  max-width: 100%;
+}
+
+.associationDidClickable:hover {
+  background-color: rgba(114, 118, 247, 0.08);
+}
+
+.associationDidClickable:hover .associationDidText {
+  color: var(--theme-color-primary, #7276F7);
+}
+
+.associationDidClickable:hover .associationDidIcon {
+  color: var(--theme-color-primary, #7276F7);
+}
+
+.associationDidText {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #6B7280;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+
+.associationDidIcon {
+  flex-shrink: 0;
+  color: #C4C5CA;
+  transition: color 0.15s ease;
+}
+
 .associationActions {
   display: flex;
   gap: 4px;

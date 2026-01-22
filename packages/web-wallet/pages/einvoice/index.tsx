@@ -937,6 +937,19 @@ const EInvoiceListPage: React.FC = () => {
     // Already verified invoices don't need rejection
   }, [])
 
+  // Handle delete for received invoices
+  const handleDeleteReceivedInvoice = useCallback(async (invoice: InboxEInvoice): Promise<void> => {
+    try {
+      const deleted = await deleteInboxInvoice(invoice)
+      if (deleted) {
+        await refreshReceivedInvoices()
+        setSelectedReceivedInvoice(null)
+      }
+    } catch (error) {
+      console.error('[EInvoice] Failed to delete received invoice:', error)
+    }
+  }, [refreshReceivedInvoices])
+
   // Handle send/resend for draft or failed sent invoices
   const handleSendInvoice = useCallback(
     async (_invoice: InboxEInvoice): Promise<void> => {
@@ -1100,6 +1113,7 @@ const EInvoiceListPage: React.FC = () => {
             onViewContact={handleViewContact}
             onApprove={handleApprove}
             onReject={handleReject}
+            onDelete={handleDeleteReceivedInvoice}
             className={style.detailPanel}
           />
         )}
