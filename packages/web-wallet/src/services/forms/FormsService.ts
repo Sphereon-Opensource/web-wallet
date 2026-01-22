@@ -1,4 +1,4 @@
-import {supabaseServiceClient} from '@helpers/SupabaseClient'
+import {getAgentBaseUrl} from '@/src/agent/environment'
 import {
   FormDefinitionDTO,
   FormDefinitionEntity,
@@ -12,6 +12,8 @@ import {
 import {MetaDataKeysDTO, MetaDataKeysEntity, MetaDataSetDTO, MetaDataSetEntity, MetaDataValuesEntity, ValueType} from '@typings/metadata'
 import {CredentialFormSelectionType} from '@sphereon/ui-components.ssi-react'
 
+const getApiUrl = () => `${getAgentBaseUrl()}/api`
+
 export type ById = {
   id: string
 }
@@ -23,35 +25,34 @@ export type ByFormName = {
 
 export class FormsService {
   async getFormDefinition(args: ById | ByFormName): Promise<FormDefinitionDTO> {
-    const query = `*, machine!fk_machine(*),
-                form_def_to_form_step!fk_form_definition(form_step!fk_form_step(*))`
-
-    let select = supabaseServiceClient().from('form_definition').select(query)
+    let url: string
 
     if ('id' in args) {
-      select = select.eq('id', args.id)
+      url = `${getApiUrl()}/forms/${args.id}`
     } else {
-      select = select.eq('name', args.formName)
-      if (args.tenantId) {
-        select = select.eq('tenant_id', args.tenantId)
-      }
+      url = `${getApiUrl()}/forms/by-name/${encodeURIComponent(args.formName)}${args.tenantId ? `?tenantId=${args.tenantId}` : ''}`
     }
 
-    const result = await select.single()
-    if (result.status >= 300 || !result.data) {
+    const response = await fetch(url)
+
+    if (!response.ok) {
       throw new Error(`Failed to retrieve form definition for ${JSON.stringify(args)}`)
     }
 
-    const formDefinitionEntity = new FormDefinitionEntity(result.data)
+    const {data} = await response.json()
+
+    const formDefinitionEntity = new FormDefinitionEntity(data)
     const formDefinitionDTO = formDefinitionEntity.asDTO([], [], [], [])
 
-    formDefinitionDTO.formSteps = await Promise.all(
-      result.data.form_def_to_form_step.map((formStepWrapper: Record<string, any>) => this.processFormStep(formStepWrapper.form_step)),
-    )
-
-    if (result.data.machine) {
-      formDefinitionDTO.machine = new MachineEntity(result.data.machine).asDTO()
+    // Process form steps from the API response
+    if (data.form_steps && Array.isArray(data.form_steps)) {
+      formDefinitionDTO.formSteps = data.form_steps.map((formStep: any) => this.processFormStep(formStep))
     }
+
+    if (data.machine) {
+      formDefinitionDTO.machine = new MachineEntity(data.machine).asDTO()
+    }
+
     return formDefinitionDTO
   }
 
@@ -115,37 +116,19 @@ export class FormsService {
     })
   }
 
-  private async processFormStep(formStep: FormStepEntity): Promise<FormStepDTO> {
-    const formStepEntity = new FormStepEntity(formStep)
-    const schemaDefinitions = await this.getSchemaDefinitions(formStep.id)
+  private processFormStep(formStep: any): FormStepDTO {
+    // Ensure step_nr and order are numbers (API may return strings)
+    const formStepEntity = new FormStepEntity({
+      ...formStep,
+      step_nr: typeof formStep.step_nr === 'string' ? parseInt(formStep.step_nr, 10) : formStep.step_nr,
+      order: typeof formStep.order === 'string' ? parseInt(formStep.order, 10) : formStep.order,
+    })
+    const schemaDefinitions = this.processSchemaDefinitions(formStep.schema_definitions || [])
     return formStepEntity.asDTO(schemaDefinitions)
   }
 
-  private async getSchemaDefinitions(formStepId: string): Promise<SchemaDefinitionDTO[]> {
-    const result = await supabaseServiceClient()
-      .from('form_step_to_schema_definition')
-      .select(
-        `
-        schema_definition!fk_schema_definition(
-          *,
-          meta_data_set_id,
-          meta_data_set!inner(
-            *,
-            meta_data_keys!inner(
-              *,
-              meta_data_values!inner(*)
-            )
-          )
-        )
-      `,
-      )
-      .eq('form_step_id', formStepId)
-
-    if (result.status >= 300 || !result.data) {
-      throw new Error(`Failed to retrieve schema definitions for form step ${formStepId}`)
-    }
-
-    return result.data.map((schemaDefWrapper: any) => this.processSchemaDefinition(schemaDefWrapper.schema_definition))
+  private processSchemaDefinitions(schemaDefinitions: any[]): SchemaDefinitionDTO[] {
+    return schemaDefinitions.map((sd: any) => this.processSchemaDefinition(sd))
   }
 
   private processSchemaDefinition(schemaDefinition: any): SchemaDefinitionDTO {
@@ -156,7 +139,7 @@ export class FormsService {
 
   private processMetaDataSet(metaDataSet: Record<string, any>): MetaDataSetDTO {
     const metaDataSetEntity = new MetaDataSetEntity(metaDataSet)
-    const metaDataKeysDTOs = metaDataSet.meta_data_keys.map((keyWrapper: Record<string, any>) => this.processMetaDataKeys(keyWrapper))
+    const metaDataKeysDTOs = (metaDataSet.meta_data_keys || []).map((keyWrapper: Record<string, any>) => this.processMetaDataKeys(keyWrapper))
     return metaDataSetEntity.asDTO(metaDataKeysDTOs)
   }
 

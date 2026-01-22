@@ -1,0 +1,189 @@
+/**
+ * CredentialDesignsList Styles
+ * Consistent styling with einvoice and contacts list views
+ */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+/* Content Area */
+.contentArea {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+  min-width: 0;
+}
+
+/* Table Container */
+.tableContainer {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  padding: 0 24px 24px;
+}
+
+/* Warning Banner */
+.warningBanner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 24px;
+  background-color: #FEF3C7;
+  border-bottom: 1px solid #FCD34D;
+  color: #92400E;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+}
+
+.warningBanner svg {
+  color: #D97706;
+  flex-shrink: 0;
+}
+
+/* Action Button for header */
+.actionButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background-color: #7276F7;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.actionButton:hover {
+  background-color: #5B5FD9;
+}
+
+.actionButton svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Empty State */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 32px;
+  text-align: center;
+  flex: 1;
+}
+
+.emptyStateIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  margin-bottom: 16px;
+  background-color: #F3F4F6;
+  border-radius: 50%;
+  color: #9CA3AF;
+}
+
+.emptyStateTitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1F2937;
+  margin-bottom: 8px;
+}
+
+.emptyStateDescription {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: #6B7280;
+  max-width: 360px;
+  margin-bottom: 24px;
+}
+
+.emptyStateButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background-color: #7276F7;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.emptyStateButton:hover {
+  background-color: #5B5FD9;
+}
+
+/* Loading State */
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 32px;
+  gap: 16px;
+  flex: 1;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #E5E7EB;
+  border-top-color: #7276F7;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loadingText {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: #6B7280;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .tableContainer {
+    padding: 0 16px 16px;
+  }
+
+  .warningBanner {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+
+  .emptyState {
+    padding: 48px 24px;
+  }
+
+  .emptyStateTitle {
+    font-size: 16px;
+  }
+
+  .emptyStateDescription {
+    font-size: 13px;
+  }
+}

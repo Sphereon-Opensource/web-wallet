@@ -182,11 +182,24 @@ export const IdentifiersEditContextProvider = (props: {children: React.ReactNode
       const provider = identifier.provider || ''
       const method = provider.replace('did:', '') || identifier.did.split(':')[1]
 
+      // For did:web, extract the hostname and path from the DID
+      // did:web:example.com -> hostName: "example.com"
+      // did:web:example.com:path:to:resource -> hostName: "example.com", path: "path/to/resource"
+      let web: { hostName: string; path?: string } | undefined
+      if (method === 'web' && identifier.did.startsWith('did:web:')) {
+        const didWithoutPrefix = identifier.did.substring('did:web:'.length)
+        const parts = didWithoutPrefix.split(':')
+        const hostName = parts[0]
+        const path = parts.length > 1 ? parts.slice(1).join('/') : undefined
+        web = { hostName, path }
+      }
+
       const formData = {
         data: {
           type: 'did',
           method,
           alias: identifier.alias,
+          ...(web && { web }),
         } as KeyManagementIdentifier,
         errors: [],
       }

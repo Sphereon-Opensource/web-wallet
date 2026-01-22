@@ -208,8 +208,7 @@ const ContactsListPage: React.FC = () => {
     for (const id of idsToDelete) {
       try {
         await deleteContact({
-          dataProviderName: 'supaBase',
-          resource: 'Party',
+          resource: DataResource.CONTACTS,
           id: id,
         })
         if (selectedContact?.id === id) {
@@ -236,8 +235,7 @@ const ContactsListPage: React.FC = () => {
         case 'delete':
           try {
             await deleteContact({
-              dataProviderName: 'supaBase',
-              resource: 'Party',
+              resource: DataResource.CONTACTS,
               id: contact.id,
             })
             if (selectedContact?.id === contact.id) {
@@ -262,8 +260,7 @@ const ContactsListPage: React.FC = () => {
   const handleDelete = useCallback(async (contact: Party): Promise<void> => {
     try {
       await deleteContact({
-        dataProviderName: 'supaBase',
-        resource: 'Party',
+        resource: DataResource.CONTACTS,
         id: contact.id,
       })
       setSelectedContact(null)

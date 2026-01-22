@@ -32,6 +32,8 @@ import { IServiceMetadata } from '../plugins/serviceMetadataPlugin'
 import { IInboxPlugin } from '../plugins/inbox'
 import { IAssetPlugin } from '../plugins/asset'
 import { IOutboxPlugin } from '../plugins/outbox'
+import { ICredentialDesignPlugin } from '../plugins/credentialDesign'
+import { IFormsPlugin } from '../plugins/forms'
 
 export const DID_PREFIX = 'did'
 
@@ -66,7 +68,9 @@ export type TAgentTypes = IDIDManager &
   IServiceMetadata &
   IInboxPlugin &
   IAssetPlugin &
-  IOutboxPlugin
+  IOutboxPlugin &
+  ICredentialDesignPlugin &
+  IFormsPlugin
 
 /**
  * The Key Management System (name) to use. Currently, there is only one KMS

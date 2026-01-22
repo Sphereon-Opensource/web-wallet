@@ -1,5 +1,4 @@
-import {AddNaturalPersonArgs, AddPartyRelationshipArgs, NaturalPersonData} from '@typings'
-import {supabaseServiceClient} from '@helpers/SupabaseClient'
+import {AddNaturalPersonArgs, NaturalPersonData} from '@typings'
 import {EventLogger, EventLoggerBuilder} from '@sphereon/ssi-sdk.core'
 import {ActionType, InitiatorType, LoggingEventType, LogLevel, SubSystem, System} from '@sphereon/ssi-types'
 import {getAgentContext, getAgent} from '@agent'
@@ -135,10 +134,15 @@ async function storeParty(data: AddNaturalPersonArgs): Promise<Party> {
 
 // TODO why are we not calling the add contact plugin
 async function storePartyRelationship(leftId: string, rightId: string): Promise<void> {
-  const partyRelationship: AddPartyRelationshipArgs = {left_id: leftId, right_id: rightId}
-  const {error} = await supabaseServiceClient().from('PartyRelationship').insert([partyRelationship])
-  if (error) {
-    throw error
+  const response = await fetch(`${getAgentBaseUrl()}/api/party-relationships`, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({leftId, rightId}),
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}))
+    throw new Error(errorData.error || `Failed to create party relationship: ${response.statusText}`)
   }
 }
 

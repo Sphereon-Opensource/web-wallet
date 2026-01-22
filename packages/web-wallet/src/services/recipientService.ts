@@ -80,6 +80,8 @@ export const getServiceTypeLabel = (serviceType: EInvServiceType): string => {
 
 /**
  * Fetch all contacts from the contact manager REST API
+ * For contacts with multiple did:web identities, creates separate entries for each
+ * to allow the user to select which DID to use.
  */
 export async function fetchContacts(): Promise<ContactParty[]> {
   try {
@@ -92,26 +94,67 @@ export async function fetchContacts(): Promise<ContactParty[]> {
 
     const parties = await response.json()
 
-    const contacts: ContactParty[] = parties.map((party: any) => {
-      // Extract identity (DID) if available
-      const identity = party.identities?.[0]
-      const did = identity?.identifier?.correlationId || identity?.identifier?.id
+    const contacts: ContactParty[] = []
 
-      // Extract organization info from party
+    for (const party of parties) {
       const partyType = party.partyType
       const contact = party.contact
+      const identities = party.identities || []
 
-      return {
-        id: party.id,
-        displayName: contact?.displayName || party.legalName || party.displayName || 'Unknown',
-        did,
-        organizationName: partyType?.name || party.legalName,
-        legalName: party.legalName,
-        email: contact?.email,
-        vatNumber: party.vatNumber,
-        chamberOfCommerce: party.chamberOfCommerce,
+      // Get all did:web identities (these are the ones we can send eInvoices to)
+      const didWebIdentities = identities.filter((identity: any) => {
+        const did = identity?.identifier?.correlationId || identity?.identifier?.id
+        return did && did.startsWith('did:web:')
+      })
+
+      // Sort did:web identities: non-localhost first
+      didWebIdentities.sort((a: any, b: any) => {
+        const didA = a?.identifier?.correlationId || a?.identifier?.id || ''
+        const didB = b?.identifier?.correlationId || b?.identifier?.id || ''
+        const isLocalhostA = didA.includes('localhost')
+        const isLocalhostB = didB.includes('localhost')
+        if (!isLocalhostA && isLocalhostB) return -1
+        if (isLocalhostA && !isLocalhostB) return 1
+        return 0
+      })
+
+      if (didWebIdentities.length > 0) {
+        // Create a contact entry for each did:web identity
+        for (const identity of didWebIdentities) {
+          const did = identity?.identifier?.correlationId || identity?.identifier?.id
+          const alias = identity?.alias
+
+          contacts.push({
+            id: `${party.id}#${did}`, // Unique ID combining party and DID
+            displayName: didWebIdentities.length > 1
+              ? `${contact?.displayName || party.legalName || 'Unknown'} (${alias || did.replace('did:web:', '')})`
+              : contact?.displayName || party.legalName || party.displayName || 'Unknown',
+            did,
+            organizationName: partyType?.name || party.legalName,
+            legalName: party.legalName,
+            email: contact?.email,
+            vatNumber: party.vatNumber,
+            chamberOfCommerce: party.chamberOfCommerce,
+          })
+        }
+      } else {
+        // Fallback: if no did:web, check for any DID (but warn it may not work)
+        const firstIdentity = identities[0]
+        const did = firstIdentity?.identifier?.correlationId || firstIdentity?.identifier?.id
+        if (did) {
+          contacts.push({
+            id: party.id,
+            displayName: contact?.displayName || party.legalName || party.displayName || 'Unknown',
+            did,
+            organizationName: partyType?.name || party.legalName,
+            legalName: party.legalName,
+            email: contact?.email,
+            vatNumber: party.vatNumber,
+            chamberOfCommerce: party.chamberOfCommerce,
+          })
+        }
       }
-    })
+    }
 
     // Filter to only contacts that have a DID
     return contacts.filter((c) => c.did)

@@ -15,8 +15,9 @@ import {
   UpdateResponse,
 } from '@refinedev/core'
 import {DID_PREFIX} from '@sphereon/ssi-sdk-ext.did-utils'
-import {getAgent, getAgentContext} from '@agent'
+import {getAgent, getAgentContext, getAgentBaseUrl} from '@agent'
 import {IdentifierKey, IdentifierServiceEndpoint, KeyManagementIdentifier, KeyManagementSystem} from '@typings'
+import {isEInvoicingServiceType} from '@/src/constants/eInvoicingDefaults'
 import {IIdentifier} from '@veramo/core'
 import type {EbsiAccessTokenOpts, EbsiEnvironment} from '@sphereon/ssi-sdk.ebsi-support'
 import {generateEbsiMethodSpecificId} from '@sphereon/ssi-sdk.ebsi-support'
@@ -158,6 +159,62 @@ const updateIdentifierKeys = async (did: string, currentKeys: any[], newKeys: Id
   }
 }
 
+/**
+ * Ensure inbox and folder exist for an eInvoicing service endpoint.
+ * Creates the inbox (if it doesn't exist) and the folder within it.
+ */
+const ensureInboxAndFolder = async (did: string, service: IdentifierServiceEndpoint): Promise<void> => {
+  if (!service.einvoice) return
+
+  const agentBaseUrl = getAgentBaseUrl()
+  const inboxName = service.einvoice.inboxName || 'einvoices'
+  const folderName = service.einvoice.folderName || service.id.replace(/^#/, '')
+
+  console.log(`[IdentifiersDataProvider] Ensuring inbox '${inboxName}' and folder '${folderName}' exist for DID ${did}`)
+
+  try {
+    // Try to create inbox (will get 409 if it already exists)
+    const createInboxResponse = await fetch(`${agentBaseUrl}/inbox`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({name: inboxName, did, description: `eInvoicing inbox for ${did}`}),
+    })
+
+    if (createInboxResponse.ok) {
+      console.log(`[IdentifiersDataProvider] Created inbox '${inboxName}'`)
+    } else if (createInboxResponse.status === 409) {
+      console.log(`[IdentifiersDataProvider] Inbox '${inboxName}' already exists`)
+    } else {
+      const error = await createInboxResponse.text()
+      console.warn(`[IdentifiersDataProvider] Failed to create inbox: ${error}`)
+    }
+
+    // Try to create folder (will get 409 if it already exists)
+    // Use 'einvoice' (lowercase) as the DCQL query ID - this matches the config file definition
+    const createFolderResponse = await fetch(`${agentBaseUrl}/inbox/${inboxName}/folders`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        name: folderName,
+        dcqlQueryId: 'einvoice',
+        description: `eInvoicing folder for service ${service.id}`,
+      }),
+    })
+
+    if (createFolderResponse.ok) {
+      console.log(`[IdentifiersDataProvider] Created folder '${folderName}' in inbox '${inboxName}'`)
+    } else if (createFolderResponse.status === 409) {
+      console.log(`[IdentifiersDataProvider] Folder '${folderName}' already exists in inbox '${inboxName}'`)
+    } else {
+      const error = await createFolderResponse.text()
+      console.warn(`[IdentifiersDataProvider] Failed to create folder: ${error}`)
+    }
+  } catch (error) {
+    console.error(`[IdentifiersDataProvider] Error ensuring inbox/folder:`, error)
+    // Don't fail the service endpoint creation if inbox setup fails
+  }
+}
+
 const replaceServices = async (did: string, currentServices: any[], newServices: IdentifierServiceEndpoint[]): Promise<void> => {
   try {
     // Remove all existing services
@@ -196,6 +253,11 @@ const replaceServices = async (did: string, currentServices: any[], newServices:
         } catch (metadataError) {
           console.warn(`Failed to update metadata for service ${service.id}:`, metadataError)
         }
+      }
+
+      // For eInvoicing services, ensure the inbox and folder exist
+      if (isEInvoicingServiceType(service.type)) {
+        await ensureInboxAndFolder(did, service)
       }
     }
   } catch (error) {
@@ -365,7 +427,7 @@ export const identifiersDataProvider = (): DataProvider => ({
       )
     }
 
-    // Update metadata for services with eInvoice data
+    // Update metadata for services with eInvoice data and ensure inbox/folder exist
     // Veramo's didManagerCreate doesn't persist custom metadata, so we need to update it separately
     if (variables.services) {
       for (const service of variables.services) {
@@ -381,6 +443,11 @@ export const identifiersDataProvider = (): DataProvider => ({
             console.warn(`Failed to update metadata for service ${service.id}:`, metadataError)
             // Don't fail the entire operation if metadata update fails
           }
+        }
+
+        // For eInvoicing services, ensure the inbox and folder exist
+        if (isEInvoicingServiceType(service.type)) {
+          await ensureInboxAndFolder(identifier.did, service)
         }
       }
     }

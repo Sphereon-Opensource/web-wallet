@@ -39,7 +39,7 @@ export const roleConfig: Array<RoleData> = [
           },
           {
             type: 'item',
-            label: 'Assets',
+            label: 'Documents',
             icon: 'asset',
             path: '/assets',
           },

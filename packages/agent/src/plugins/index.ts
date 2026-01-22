@@ -83,5 +83,44 @@ export type {
   OutboxItemSendArgs,
 } from './outbox'
 
+// Credential Design plugin
+export { CredentialDesignPlugin } from './credentialDesign'
+export type {
+  ICredentialDesignPlugin,
+  CredentialDesign,
+  CredentialDesignBranding,
+  CredentialDesignBrandingInput,
+  CredentialConfigurationOptions,
+  MetaDataKey,
+  MetaDataValue,
+  SchemaDefinition,
+  ImageAttributes,
+  ImageDimensions,
+  CredentialDesignCreateArgs,
+  CredentialDesignUpdateArgs,
+  CredentialDesignGetByIdArgs,
+  CredentialDesignListArgs,
+  CredentialDesignDeleteArgs,
+  FormStepGetOrCreateArgs,
+} from './credentialDesign'
+
+// Forms plugin
+export { FormsPlugin } from './forms'
+export type {
+  IFormsPlugin,
+  Machine,
+  FormSchemaDefinition,
+  FormMetaDataValue,
+  FormMetaDataKey,
+  FormMetaDataSet,
+  FormStep,
+  FormDefinition,
+  FormDefinitionGetByIdArgs,
+  FormDefinitionGetByNameArgs,
+  FormDefinitionListArgs,
+  SchemaDefinitionGetByFormStepArgs,
+  FormStepGetByIdArgs,
+} from './forms'
+
 // Shared utilities (for advanced use cases)
 export * from './shared'

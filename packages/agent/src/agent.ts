@@ -59,6 +59,7 @@ import {
   addEInvoicingServicesToDID,
   createDidProviders,
   createDidResolver,
+  ensureDefaultOrganization,
   expressBuilder,
   getDefaultDID,
   getDefaultKeyRef,
@@ -131,10 +132,15 @@ import { ServiceMetadataPlugin } from './plugins/serviceMetadataPlugin'
 import { InboxPlugin } from './plugins/inbox'
 import { AssetPlugin } from './plugins/asset'
 import { OutboxPlugin } from './plugins/outbox'
+import { CredentialDesignPlugin } from './plugins/credentialDesign'
+import { FormsPlugin } from './plugins/forms'
 import { InboxApiServer } from './api/inboxApiServer'
 import { AssetApiServer } from './api/assetApiServer'
 import { OutboxApiServer } from './api/outboxApiServer'
 import { EInvoiceApiServer } from './api/einvoiceApiServer'
+import { CredentialDesignApiServer } from './api/credentialDesignApiServer'
+import { FormsApiServer } from './api/formsApiServer'
+import { UtilityApiServer } from './api/utilityApiServer'
 import { processVerifiedPresentation } from './utils/inboxVerificationHandler'
 import { hasInboxContext } from './utils/inboxCredentialHandler'
 
@@ -226,6 +232,8 @@ const plugins: IAgentPlugin[] = [
   new OID4VCIHolder({ hasher: defaultHasher }),
   new EbsiSupport(),
   new ServiceMetadataPlugin({ dbConnection }),
+  new CredentialDesignPlugin({ dbConnection }),
+  new FormsPlugin({ dbConnection }),
   ...(IS_INBOX_ENABLED ? [new InboxPlugin({ dbConnection }), new AssetPlugin({ dbConnection }), new OutboxPlugin({ dbConnection })] : []),
   // The Animo funke cert is self-signed and not issued by a CA. Since we perform strict checks on certs, we blindly trust if for the Funke
   new MDLMdoc({ trustAnchors: [sphereonCA, funkeTestCA], opts: { blindlyTrustedAnchors: [animoFunkeCert] } }),
@@ -339,6 +347,9 @@ if (!cliMode) {
   if ((DEFAULT_MODE.toLowerCase() === 'did' && !defaultDID) || !defaultKid) {
     console.warn('[DID] Agent has no default DID and Key Identifier!')
   }
+
+  // Ensure default organization exists and is linked to all managed DIDs
+  await ensureDefaultOrganization(agent, defaultDID).catch((e) => console.log(`[Contact] Error ensuring default organization: ${e}`))
 
   const oid4vpOpts = IS_OID4VP_ENABLED
     ? await getDefaultOID4VPRPOptions({
@@ -616,6 +627,15 @@ if (!cliMode) {
     new AssetApiServer({ agent, expressSupport })
     new OutboxApiServer({ agent, expressSupport })
     new EInvoiceApiServer({ agent, expressSupport })
+  }
+
+  /**
+   * Enable the Credential Design API for managing credential configurations
+   */
+  if (expressSupport) {
+    new CredentialDesignApiServer({ agent, expressSupport })
+    new FormsApiServer({ agent, expressSupport })
+    new UtilityApiServer({ agent, expressSupport, dbConnection })
   }
 
   /**

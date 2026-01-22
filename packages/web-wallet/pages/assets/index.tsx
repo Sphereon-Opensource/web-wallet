@@ -476,12 +476,12 @@ const AssetsListPage: React.FC = () => {
               <line x1="9" y1="15" x2="15" y2="15" />
             </svg>
           </div>
-          <div className={style.emptyStateTitle}>{translate('assets_empty_title', 'No Assets Yet')}</div>
+          <div className={style.emptyStateTitle}>{translate('assets_empty_title', 'No Documents Yet')}</div>
           <div className={style.emptyStateDescription}>
-            {translate('assets_empty_description', 'Upload your first asset by clicking the button above or drag and drop files here.')}
+            {translate('assets_empty_description', 'Upload your first document by clicking the button above or drag and drop files here.')}
           </div>
           <button className={style.emptyStateButton} onClick={() => fileInputRef.current?.click()}>
-            {translate('assets_overview_action_add_asset', 'Upload Asset')}
+            {translate('assets_overview_action_add_asset', 'Upload Document')}
           </button>
         </div>
       ) : (
@@ -598,7 +598,7 @@ const AssetsListPage: React.FC = () => {
   if (loading && assets.length === 0) {
     return (
       <div className={style.container}>
-        <AppHeaderBar title={translate('assets_overview_title', 'Assets')} />
+        <AppHeaderBar title={translate('assets_overview_title', 'Documents')} />
         <div className={style.loadingState}>
           <div className={style.spinner} />
           <span>{translate('data_provider_loading_message', 'Loading...')}</span>
@@ -609,7 +609,7 @@ const AssetsListPage: React.FC = () => {
 
   return (
     <div className={style.container}>
-      <AppHeaderBar title={translate('assets_overview_title', 'Assets')} />
+      <AppHeaderBar title={translate('assets_overview_title', 'Documents')} />
 
       {error && (
         <div className={style.errorBanner}>
@@ -637,10 +637,10 @@ const AssetsListPage: React.FC = () => {
             selectionCount={selectedIds.size}
             onClearSelection={() => setSelectedIds(new Set())}
             onDeleteSelected={handleDeleteSelected}
-            selectionLabel={{singular: 'asset', plural: 'assets'}}
+            selectionLabel={{singular: 'document', plural: 'documents'}}
             actions={
               <PrimaryButton
-                caption={uploading ? translate('assets_uploading', 'Uploading...') : translate('assets_overview_action_add_asset', 'Upload Asset')}
+                caption={uploading ? translate('assets_uploading', 'Uploading...') : translate('assets_overview_action_add_asset', 'Upload Document')}
                 icon={ButtonIcon.ADD}
                 onClick={async () => { fileInputRef.current?.click() }}
                 disabled={uploading}
@@ -656,7 +656,7 @@ const AssetsListPage: React.FC = () => {
         {selectedAsset && (
           <div className={style.detailPanel}>
             <div className={style.detailHeader}>
-              <h3 className={style.detailTitle}>{translate('assets_detail_title', 'Asset Details')}</h3>
+              <h3 className={style.detailTitle}>{translate('assets_detail_title', 'Document Details')}</h3>
               <button className={style.closeButton} onClick={() => setSelectedAsset(null)}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <line x1="18" y1="6" x2="6" y2="18" />

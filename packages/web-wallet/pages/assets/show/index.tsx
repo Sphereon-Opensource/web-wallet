@@ -4,13 +4,11 @@ import {VerifiableCredential} from '@veramo/core'
 import React, {ReactElement, useEffect, useState} from 'react'
 import {useParams} from 'react-router-dom'
 import SideDetailsNavigationBar from '@components/bars/SideDetailsNavigationBar'
-import WorkflowList from '@components/views/WorkflowList'
-import DocumentsList from '@components/views/DocumentsList'
 import ContactsList from '@components/views/ContactsList'
 import KeyValueListView from '@components/views/KeyValueListView'
 import PageHeaderBar from '@components/bars/PageHeaderBar'
 import {buildInformationDetails} from '@helpers/Credentials/CredentialsHelper'
-import {Asset, DetailRoute, DetailsRoute, DocumentCategory, KeyValuePair} from '@typings'
+import {Asset, DetailRoute, DetailsRoute, KeyValuePair} from '@typings'
 import style from './index.module.css'
 import {CredentialStatus, fontColors} from '@sphereon/ui-components.core'
 import QRCodeModal, {QRValueResult} from 'src/components/modals/QRCodeModal'
@@ -24,8 +22,7 @@ function ShowAssetDetails() {
   const [showCredentialQRCodeModal, setShowCredentialQRCodeModal] = useState<boolean>(false)
   const {id} = useParams()
   const asset = useOne<Asset, HttpError>({
-    dataProviderName: 'supaBase',
-    resource: 'asset',
+    resource: 'assets',
     id,
   })
   const [credential, setCredential] = useState<VerifiableCredential | undefined>(undefined)
@@ -57,32 +54,6 @@ function ShowAssetDetails() {
       routeId: DetailRoute.DETAILS,
       label: translate('show_asset_details_menu_details_label'),
     },
-    // {
-    //     routeId: DetailRouteEnum.EVENTS,
-    //     label: translate('show_asset_details_menu_events_label'),
-    // },
-    {
-      routeId: DetailRoute.DOCUMENTS,
-      label: translate('show_asset_details_menu_documents_label'),
-      routes: [
-        {
-          routeId: DetailRoute.DOCUMENTS_REPORTS,
-          label: translate('show_asset_details_menu_documents_reports_label'),
-        },
-        {
-          routeId: DetailRoute.DOCUMENTS_CERTIFICATES,
-          label: translate('show_asset_details_menu_documents_certificates_label'),
-        },
-        {
-          routeId: DetailRoute.DOCUMENTS_OTHER_FILES,
-          label: translate('show_asset_details_menu_documents_other_files_label'),
-        },
-        // {
-        //     routeId: DetailRouteEnum.DOCUMENTS_VCS,
-        //     label: translate('show_asset_details_menu_documents_vcs_label')
-        // }
-      ],
-    },
     {
       routeId: DetailRoute.INVOLVED_CONTACTS,
       label: translate('show_asset_details_menu_involved_contacts_label'),
@@ -99,7 +70,6 @@ function ShowAssetDetails() {
 
   const onSubmitModal = async (): Promise<void> => {
     setShowCredentialQRCodeModal(false)
-    //TODO call the VC api
   }
 
   const onRouteChange = async (routeId: string): Promise<void> => {
@@ -201,54 +171,6 @@ function ShowAssetDetails() {
             />
           </div>
         </div>
-        <div className={style.detailsRelatedInformationContainer}>
-          <div className={style.detailsRelatedInformationCaption}>{translate('asset_details_related_information_caption')}</div>
-          <WorkflowList assetIdFilter={assetData.id} />
-        </div>
-      </div>
-    )
-  }
-
-  const getEventsContent = (): ReactElement => {
-    return <div style={{backgroundColor: 'blue', display: 'flex', flexDirection: 'column', flexGrow: 1}}></div>
-  }
-
-  const getDocumentsContent = (): ReactElement => {
-    return (
-      <div className={style.sectionContentContainer}>
-        <DocumentsList path={assetData.id} allowAddNewDocument={false} />
-      </div>
-    )
-  }
-
-  const getDocumentReportsContent = (): ReactElement => {
-    return (
-      <div className={style.sectionContentContainer}>
-        <DocumentsList path={`${assetData.id}/${DocumentCategory.REPORTS}`} allowAddNewDocument={false} />
-      </div>
-    )
-  }
-
-  const getDocumentCertificatesContent = (): ReactElement => {
-    return (
-      <div className={style.sectionContentContainer}>
-        <DocumentsList path={`${assetData.id}/${DocumentCategory.CERTIFICATES}`} allowAddNewDocument={false} />
-      </div>
-    )
-  }
-
-  const getDocumentOtherFilesContent = (): ReactElement => {
-    return (
-      <div className={style.sectionContentContainer}>
-        <DocumentsList path={`${assetData.id}/${DocumentCategory.OTHER}`} allowAddNewDocument={false} />
-      </div>
-    )
-  }
-
-  const getDocumentVCsContent = (): ReactElement => {
-    return (
-      <div className={style.sectionContentContainer}>
-        <DocumentsList path={`${assetData.id}/${DocumentCategory.VCS}`} allowAddNewDocument={false} />
       </div>
     )
   }
@@ -265,18 +187,6 @@ function ShowAssetDetails() {
     switch (activeRouteId) {
       case DetailRoute.DETAILS:
         return getDetailsContent()
-      case DetailRoute.EVENTS:
-        return getEventsContent()
-      case DetailRoute.DOCUMENTS:
-        return getDocumentsContent()
-      case DetailRoute.DOCUMENTS_REPORTS:
-        return getDocumentReportsContent()
-      case DetailRoute.DOCUMENTS_CERTIFICATES:
-        return getDocumentCertificatesContent()
-      case DetailRoute.DOCUMENTS_OTHER_FILES:
-        return getDocumentOtherFilesContent()
-      case DetailRoute.DOCUMENTS_VCS:
-        return getDocumentVCsContent()
       case DetailRoute.INVOLVED_CONTACTS:
         return getInvolvedContactsContent()
       default:

@@ -7,7 +7,6 @@ import {Options} from 'react-pdf/dist/esm/shared/types'
 
 import {pdfjs} from 'react-pdf'
 import DownloadIcon from '@components/assets/icons/DownloadIcon'
-import {ObjectStorage} from '@objectstorage'
 import {OnDocumentLoadSuccess} from 'react-pdf/src/shared/types'
 
 // Import PDF.js worker
@@ -15,7 +14,6 @@ pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js'
 
 export type Props = {
   pdfPath: string
-  storage?: ObjectStorage
   scale?: number
   renderAllPages?: boolean
 }
@@ -26,27 +24,12 @@ type PdfData = {
 type PdfSource = string | PdfData | null
 
 const PdfViewer: FC<Props> = (props: Props): ReactElement => {
-  const {scale = 1.5, renderAllPages = false, pdfPath, storage} = props
+  const {scale = 1.5, renderAllPages = false, pdfPath} = props
   const [numPages, setNumPages] = useState<number | null>(null)
   const [pageNumber, setPageNumber] = useState(1)
   const [pdfSource, setPdfSource] = useState<PdfSource>(null)
   if (!pdfSource && pdfPath) {
-    if (storage) {
-      storage.download(pdfPath).then(result => {
-        const {data, error} = result
-        if (error) {
-          throw error
-        }
-        if (data) {
-          const blob: Blob = data as Blob
-          blob.arrayBuffer().then(data => {
-            setPdfSource({data: new Uint8Array(data)})
-          })
-        }
-      })
-    } else {
-      setPdfSource(pdfPath)
-    }
+    setPdfSource(pdfPath)
   }
 
   const onDocumentLoadSuccess: OnDocumentLoadSuccess = document => {
@@ -67,9 +50,7 @@ const PdfViewer: FC<Props> = (props: Props): ReactElement => {
 
   const onDownloadPdf = async (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     event.preventDefault()
-    if (storage === undefined) {
-      window.open(pdfPath, '_blank') // TODO from BLOB storage and see if we can avoid it to be opened by the browser's PDF viewer
-    }
+    window.open(pdfPath, '_blank')
   }
 
   const extractFilenameFromURL = (url: string): string | null => {

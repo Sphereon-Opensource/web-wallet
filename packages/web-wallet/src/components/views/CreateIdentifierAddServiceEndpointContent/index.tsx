@@ -16,19 +16,21 @@ import {
   generateInboxEndpoint,
   EInvServiceType,
 } from '../../../constants/eInvoicingDefaults'
-import {getAgent} from '@agent'
+import {getAgent, getAgentBaseUrl} from '@agent'
 
-// eInvoice DCQL Query Definition - created on first eInvoicing endpoint
+// eInvoice DCQL Query Definition - created on first eInvoicing endpoint if not already present
+// Uses 'einvoice' (lowercase) to match the config file definition
+// Claims match the actual credential format from einvoiceCredentialIssuer.ts
 const EINVOICE_DCQL_QUERY = {
-  queryId: 'eInvoice',
+  queryId: 'einvoice',
   name: 'eInvoice Credential',
   defaultPurpose: 'We need to verify your eInvoice credential for processing electronic invoices.',
   query: {
     credentials: [
       {
-        id: 'einvoice',
+        id: 'einvoice-credential',
         format: 'dc+sd-jwt',
-        require_cryptographic_holder_binding: true,
+        require_cryptographic_holder_binding: false,
         multiple: false,
         meta: {
           vct_values: ['urn:org:fides:einvoice:1'],
@@ -36,12 +38,10 @@ const EINVOICE_DCQL_QUERY = {
         claims: [
           {path: ['invoice_id']},
           {path: ['invoice_date']},
-          {path: ['due_date']},
           {path: ['currency_code']},
-          {path: ['tax_exclusive_amount']},
-          {path: ['tax_amount']},
-          {path: ['tax_inclusive_amount']},
-          {path: ['evidence']},
+          {path: ['payable_amount']},
+          {path: ['seller_name']},
+          {path: ['buyer_name']},
         ],
       },
     ],
@@ -52,26 +52,70 @@ type Props = {
   mode: 'create' | 'edit'
 }
 
-// Get the base URL for generating eInvoicing endpoints
-const getBaseUrl = (): string => {
-  if (typeof window !== 'undefined') {
-    return window.location.origin
-  }
-  return process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3001'
-}
-
 const CreateIdentifierAddServiceEndpointContent: FC<Props> = ({mode}): ReactElement => {
   const translate = useTranslate()
   const isEditMode = mode === 'edit'
   const [formKey, setFormKey] = React.useState(0)
+  const [agentServiceEndpointBaseUrl, setAgentServiceEndpointBaseUrl] = React.useState<string | null>(null)
 
   const context = isEditMode ? useIdentifiersEditContext() : useIdentifierCreateOutletContext()
 
-  const {serviceEndpoints, onSetServiceEndpoints, serviceEndpointData, onServiceEndpointChange, capabilitiesInfo} = context
+  const {serviceEndpoints, onSetServiceEndpoints, serviceEndpointData, onServiceEndpointChange, capabilitiesInfo, identifierData} = context
 
   const serviceEndpointsPossible = capabilitiesInfo?.identifierCapability?.serviceEndpoints
 
   console.log(`Service endpoints possible: ${serviceEndpointsPossible}`)
+
+  // Fetch the service endpoint base URL from the agent on mount
+  React.useEffect(() => {
+    const fetchBaseUrl = async () => {
+      try {
+        const agentBaseUrl = getAgentBaseUrl()
+        const response = await fetch(`${agentBaseUrl}/api/config/service-endpoint-base-url`)
+        if (response.ok) {
+          const data = await response.json()
+          if (data.baseUrl) {
+            console.log(`Fetched service endpoint base URL from agent: ${data.baseUrl}`)
+            setAgentServiceEndpointBaseUrl(data.baseUrl)
+          }
+        }
+      } catch (error) {
+        console.warn('Failed to fetch service endpoint base URL from agent:', error)
+      }
+    }
+    fetchBaseUrl()
+  }, [])
+
+  /**
+   * Get the base URL for service endpoints.
+   * Priority:
+   * 1. Use EXTERNAL_HOSTNAME from agent (fetched via API)
+   * 2. Fall back to deriving from the did:web hostname
+   * 3. Final fallback to agent base URL
+   */
+  const getServiceEndpointBaseUrl = (): string => {
+    // First, try the URL fetched from the agent (based on EXTERNAL_HOSTNAME)
+    if (agentServiceEndpointBaseUrl && !agentServiceEndpointBaseUrl.includes('localhost')) {
+      console.log(`Using agent's external hostname for service endpoint: ${agentServiceEndpointBaseUrl}`)
+      return agentServiceEndpointBaseUrl
+    }
+
+    // Second, fall back to deriving from did:web hostname
+    const webData = identifierData?.data?.web
+    if (webData?.hostName) {
+      // Use https for non-localhost, http for localhost
+      const protocol = webData.hostName.includes('localhost') ? 'http' : 'https'
+      const path = webData.path ? `/${webData.path}` : ''
+      const derivedUrl = `${protocol}://${webData.hostName}${path}`
+      console.log(`Using did:web derived URL for service endpoint: ${derivedUrl}`)
+      return derivedUrl
+    }
+
+    // Final fallback - use agent base URL
+    const agentBaseUrl = getAgentBaseUrl()
+    console.warn('No external URL configured, using agent base URL fallback')
+    return agentBaseUrl
+  }
 
   const onRemoveServiceEndpoint = async (id: string): Promise<void> => {
     onSetServiceEndpoints(prevServiceEndpoints => prevServiceEndpoints.filter(serviceEndpoint => serviceEndpoint.id !== id))
@@ -86,15 +130,16 @@ const CreateIdentifierAddServiceEndpointContent: FC<Props> = ({mode}): ReactElem
       return null
     }
 
-    const baseUrl = getBaseUrl()
-    const serviceId = data.id as string
-    const endpoint = generateInboxEndpoint(baseUrl, serviceId, serviceType)
-
     // Get inbox and folder names with defaults
     // inboxName defaults to "einvoices"
     // folderName defaults to serviceId (strip # prefix if present)
+    const serviceId = data.id as string
     const inboxName = (data.inboxName as string) || 'einvoices'
     const folderName = (data.folderName as string) || serviceId.replace(/^#/, '')
+
+    // Use the DID's web hostname for the endpoint URL (this is the public URL that others will call)
+    const baseUrl = getServiceEndpointBaseUrl()
+    const endpoint = generateInboxEndpoint(baseUrl, inboxName, folderName)
 
     const baseData: EInvoiceServiceData = {
       vct: defaults.vct,
@@ -147,14 +192,21 @@ const CreateIdentifierAddServiceEndpointContent: FC<Props> = ({mode}): ReactElem
   }
 
   /**
-   * Get the service endpoint URL for eInvoicing services
+   * Get the service endpoint URL for eInvoicing services.
+   * Uses the DID's web hostname to construct the public URL.
    */
-  const getEInvoicingEndpointUrl = (data: Record<string, unknown>, serviceType: EInvServiceType): string => {
-    const baseUrl = getBaseUrl()
+  const getEInvoicingEndpointUrl = (data: Record<string, unknown>): string => {
+    const baseUrl = getServiceEndpointBaseUrl()
     const serviceId = data.id as string
-    return generateInboxEndpoint(baseUrl, serviceId, serviceType)
+    const inboxName = (data.inboxName as string) || 'einvoices'
+    const folderName = (data.folderName as string) || serviceId.replace(/^#/, '')
+    return generateInboxEndpoint(baseUrl, inboxName, folderName)
   }
 
+  /**
+   * Ensure the eInvoice DCQL definition exists in the RP manager persistence.
+   * Only creates it if it doesn't already exist.
+   */
   /**
    * Ensure the eInvoice DCQL definition exists in the RP manager persistence.
    * Only creates it if it doesn't already exist.
@@ -208,7 +260,7 @@ const CreateIdentifierAddServiceEndpointContent: FC<Props> = ({mode}): ReactElem
     if (isEInvoicingServiceType(serviceType)) {
       const defaults = getEInvoicingDefaults(serviceType)
       const einvoiceData = buildEInvoiceData(data, serviceType)
-      const endpointUrl = getEInvoicingEndpointUrl(data, serviceType)
+      const endpointUrl = getEInvoicingEndpointUrl(data)
 
       newServiceEndpoint = {
         id: data.id as string,

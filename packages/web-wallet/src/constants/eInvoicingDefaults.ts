@@ -92,6 +92,7 @@ export const getEInvoicingDefaults = (type: EInvServiceType) => {
 
 /**
  * Get the inbox path suffix for an eInvoicing service type
+ * @deprecated No longer used - folder name is now just the service ID
  */
 export const getInboxPathSuffix = (type: EInvServiceType): string => {
   switch (type) {
@@ -107,13 +108,30 @@ export const getInboxPathSuffix = (type: EInvServiceType): string => {
 }
 
 /**
- * Generate the full inbox endpoint URL
+ * Generate the full inbox endpoint URL for receiving eInvoices via OID4VP.
+ *
+ * The URL structure is: {baseUrl}/inbox/{inboxName}/{folderName}
+ * - baseUrl: The DID's public base URL (derived from did:web hostname, e.g., https://sphereon.ngrok.dev)
+ * - inboxName: The inbox to receive into (defaults to "einvoices")
+ * - folderName: The folder within the inbox (defaults to serviceId)
+ *
+ * For did:web identifiers, the baseUrl comes from the DID's web.hostName property.
+ * This ensures the service endpoint URL in the DID document points to the correct public endpoint.
+ *
+ * @param baseUrl - The DID's public base URL (derived from did:web hostname)
+ * @param inboxName - The inbox name (defaults to "einvoices")
+ * @param folderName - The folder name (usually the service ID)
  */
-export const generateInboxEndpoint = (baseUrl: string, serviceId: string, type: EInvServiceType): string => {
-  const pathSuffix = getInboxPathSuffix(type)
+export const generateInboxEndpoint = (
+  baseUrl: string,
+  inboxName: string = 'einvoices',
+  folderName: string
+): string => {
   // Remove trailing slash from baseUrl if present
   const cleanBaseUrl = baseUrl.replace(/\/$/, '')
-  return `${cleanBaseUrl}/api/inbox/${serviceId}/${pathSuffix}`
+  // Clean the folder name (remove # prefix if present)
+  const cleanFolderName = folderName.replace(/^#/, '')
+  return `${cleanBaseUrl}/inbox/${inboxName}/${cleanFolderName}`
 }
 
 // Export types for external use

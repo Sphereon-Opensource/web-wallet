@@ -3,7 +3,9 @@ import {HttpError, useDelete, useList, useNavigation, useTranslate} from '@refin
 import {ColumnHeader, Row, SSITableView, TableCellType} from '@sphereon/ui-components.ssi-react'
 import {ButtonIcon} from '@sphereon/ui-components.core'
 import {removeCredentialConfigurationFromOid4vciMetadata} from '@/src/services/credentials/credentialDesignService'
-import {Button, CredentialDesignDTO, CredentialDesignTableItem, DataResource} from '@typings'
+import {CredentialDesignDTO, CredentialDesignTableItem, DataResource} from '@typings'
+import {ListPageHeader} from '@components/tables/ListPageHeader'
+import style from './index.module.css'
 
 type Props = {
   allowCreateCredentialDesign?: boolean
@@ -141,31 +143,14 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
     },
   ]
 
-  const buildActionList = (): Array<Button> => {
-    const actions: Array<Button> = []
-    if (allowCreateCredentialDesign) {
-      actions.push({
-        caption: translate('credential_designs_overview_action_create_design'),
-        icon: ButtonIcon.ADD,
-        onClick: onCreate,
-      })
-    }
-
-    return actions
-  }
-
-  if (credentialDesignsLoading) {
-    return <div>{translate('data_provider_loading_message')}</div>
-  }
-
   // Handle error state - show empty state with option to create designs
-  // This allows the page to function even when the Supabase service is not running
   const designsData = credentialDesignsError ? [] : (credentialDesigns?.data ?? [])
   const totalDesigns = credentialDesignsError ? 0 : (credentialDesigns?.total ?? 0)
 
   const onPageChange = (_event: ChangeEvent<unknown>, page: number) => {
     setCurrent(page)
   }
+
   const onPageChangeKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter') {
       const input = event.target as HTMLInputElement
@@ -179,37 +164,144 @@ const CredentialDesignsList: FC<Props> = (props: Props): ReactElement => {
     }
   }
 
+  // Loading state
+  if (credentialDesignsLoading) {
+    return (
+      <div className={style.container}>
+        <ListPageHeader
+          actions={
+            allowCreateCredentialDesign ? (
+              <button type="button" className={style.actionButton} onClick={onCreate}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                {translate('credential_designs_overview_action_create_design')}
+              </button>
+            ) : undefined
+          }
+        />
+        <div className={style.loadingState}>
+          <div className={style.spinner} />
+          <span className={style.loadingText}>{translate('data_provider_loading_message')}</span>
+        </div>
+      </div>
+    )
+  }
+
+  // Empty state
+  if (designsData.length === 0) {
+    return (
+      <div className={style.container}>
+        <ListPageHeader
+          actions={
+            allowCreateCredentialDesign ? (
+              <button type="button" className={style.actionButton} onClick={onCreate}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                {translate('credential_designs_overview_action_create_design')}
+              </button>
+            ) : undefined
+          }
+        />
+        {credentialDesignsError && (
+          <div className={style.warningBanner}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+              <line x1="12" y1="9" x2="12" y2="13" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+            <span>
+              {translate(
+                'credential_designs_connection_error',
+                'Unable to connect to the credential design service. You can still create new designs.',
+              )}
+            </span>
+          </div>
+        )}
+        <div className={style.emptyState}>
+          <div className={style.emptyStateIcon}>
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <rect x="3" y="4" width="18" height="16" rx="2" />
+              <line x1="7" y1="8" x2="17" y2="8" />
+              <line x1="7" y1="12" x2="14" y2="12" />
+              <line x1="7" y1="16" x2="11" y2="16" />
+            </svg>
+          </div>
+          <h3 className={style.emptyStateTitle}>
+            {translate('credential_designs_empty_title', 'No credential designs yet')}
+          </h3>
+          <p className={style.emptyStateDescription}>
+            {translate(
+              'credential_designs_empty_description',
+              'Create your first credential design to define the structure and appearance of verifiable credentials.',
+            )}
+          </p>
+          {allowCreateCredentialDesign && (
+            <button type="button" className={style.emptyStateButton} onClick={onCreate}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              {translate('credential_designs_overview_action_create_design')}
+            </button>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  // Normal state with data
   return (
-    <div>
+    <div className={style.container}>
+      <ListPageHeader
+        actions={
+          allowCreateCredentialDesign ? (
+            <button type="button" className={style.actionButton} onClick={onCreate}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              {translate('credential_designs_overview_action_create_design')}
+            </button>
+          ) : undefined
+        }
+      />
       {credentialDesignsError && (
-        <div style={{
-          padding: '12px 16px',
-          marginBottom: '16px',
-          backgroundColor: '#FEF3C7',
-          border: '1px solid #F59E0B',
-          borderRadius: '6px',
-          color: '#92400E',
-          fontSize: '14px',
-          fontFamily: 'Poppins, sans-serif',
-        }}>
-          {translate('credential_designs_connection_error', 'Unable to connect to the credential design service. You can still try to create new designs.')}
+        <div className={style.warningBanner}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+            <line x1="12" y1="9" x2="12" y2="13" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+          <span>
+            {translate(
+              'credential_designs_connection_error',
+              'Unable to connect to the credential design service. You can still create new designs.',
+            )}
+          </span>
         </div>
       )}
-      <SSITableView
-        data={designsData}
-        columns={columns}
-        actions={buildActionList()}
-        onRowClick={onShow}
-        onRowDoubleClick={onEdit}
-        pagination={{
-          page: current,
-          count: Math.ceil(totalDesigns / pageSize),
-          onChange: onPageChange,
-          goToInputId: 'custom-goToInput',
-          containerStyle: {marginTop: '20px'},
-          onKeyDown: onPageChangeKeyDown,
-        }}
-      />
+      <div className={style.contentArea}>
+        <div className={style.tableContainer}>
+          <SSITableView
+            data={designsData}
+            columns={columns}
+            onRowClick={onShow}
+            onRowDoubleClick={onEdit}
+            pagination={{
+              page: current,
+              count: Math.ceil(totalDesigns / pageSize),
+              onChange: onPageChange,
+              goToInputId: 'custom-goToInput',
+              containerStyle: {marginTop: '20px'},
+              onKeyDown: onPageChangeKeyDown,
+            }}
+          />
+        </div>
+      </div>
     </div>
   )
 }

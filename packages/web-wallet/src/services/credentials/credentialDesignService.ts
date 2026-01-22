@@ -90,7 +90,11 @@ export const updateOid4vciMetadata = async (
 ): Promise<void> => {
   const issuerCorrelationId = getIssuerCorrelationId()
   if (!issuerCorrelationId) {
-    return Promise.reject('Env var BROWSER_PUBLIC_ISSUER_CORRELATION_ID is missing')
+    throw new Error(
+      'BROWSER_PUBLIC_ISSUER_CORRELATION_ID environment variable is not set. ' +
+        'This is required to update OID4VCI issuer metadata for credential designs. ' +
+        'Please set this to your issuer DID or correlation ID in .env.local',
+    )
   }
   const metadata = await getAgent().oid4vciStoreGetMetadata({
     metadataType: 'issuer',
@@ -129,7 +133,11 @@ export const updateOid4vciMetadata = async (
 export const removeCredentialConfigurationFromOid4vciMetadata = async (identifier: string): Promise<void> => {
   const issuerCorrelationId = getIssuerCorrelationId()
   if (!issuerCorrelationId) {
-    return Promise.reject('Env var BROWSER_PUBLIC_ISSUER_CORRELATION_ID is missing')
+    throw new Error(
+      'BROWSER_PUBLIC_ISSUER_CORRELATION_ID environment variable is not set. ' +
+        'This is required to update OID4VCI issuer metadata for credential designs. ' +
+        'Please set this to your issuer DID or correlation ID in .env.local',
+    )
   }
   const metadata = await getAgent().oid4vciStoreGetMetadata({
     metadataType: 'issuer',

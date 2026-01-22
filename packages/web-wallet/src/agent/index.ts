@@ -195,3 +195,6 @@ export const getAgentContext = (): IAgentContext<TAgentTypes> & {agent: TAgent<T
   }
   return _agentContext!
 }
+
+// Re-export environment functions
+export {getAgentBaseUrl} from './environment'

@@ -7,13 +7,11 @@ import {appWithTranslation, useTranslation} from 'next-i18next'
 import {I18nProvider, Refine, ResourceProps} from '@refinedev/core'
 import routerProvider from '@refinedev/react-router-v6'
 import dataProvider from '@refinedev/simple-rest'
-import {dataProvider as supabaseDataProvider, liveProvider as supabaseLiveProvider} from '@refinedev/supabase'
 import TopNavigationBar from '@components/bars/TopNavigationBar'
 import SideNavigationBar from '@components/bars/SideNavigationBar'
 import AppRouter from '../src/router/AppRouter'
 import {BrowserRouter} from 'react-router-dom'
 import {getAuthProvider} from '@helpers/AuthProvider'
-import {supabaseServiceClient} from '@helpers/SupabaseClient'
 import {ContactRoute, CredentialDesignerRoute, DataProvider, DataResource, KeyManagementRoute, MainRoute} from '@typings'
 import {keysDataProvider} from '@/src/dataProviders/keysDataProvider'
 import {identifiersDataProvider} from '@/src/dataProviders/identifiersDataProvider'
@@ -129,7 +127,6 @@ const _app = (props: React.PropsWithChildren<unknown>) => {
 
   const dataProviders = {
     [DataProvider.DEFAULT]: dataProvider(getEnv('BROWSER_PUBLIC_API_URL') ?? 'http://localhost:5010'),
-    [DataProvider.SUPABASE]: supabaseDataProvider(supabaseServiceClient()),
     [DataProvider.CREDENTIALS]: credentialDataProvider(),
     [DataProvider.KEYS]: keysDataProvider(),
     [DataProvider.IDENTIFIERS]: identifiersDataProvider(),
@@ -143,12 +140,10 @@ const _app = (props: React.PropsWithChildren<unknown>) => {
       <Refine
         routerProvider={routerProvider}
         dataProvider={dataProviders}
-        liveProvider={supabaseLiveProvider(supabaseServiceClient())}
         authProvider={getAuthProvider(data, status)}
         i18nProvider={i18nProvider}
         resources={resources}
         options={{
-          liveMode: 'auto',
           syncWithLocation: true,
           warnWhenUnsavedChanges: true,
           projectId: 'eufd47-35LeGm-U738uV',

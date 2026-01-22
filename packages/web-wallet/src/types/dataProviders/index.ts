@@ -2,7 +2,6 @@ import {DcqlCredentialQuery} from 'dcql'
 
 export enum DataProvider {
   DEFAULT = 'default',
-  SUPABASE = 'supaBase',
   CREDENTIALS = 'credentials',
   KEYS = 'keys',
   IDENTIFIERS = 'identifiers',

@@ -10,7 +10,6 @@ const config: Config.InitialOptions = {
     '^@styles(/?.*)$': '<rootDir>/src/styles$1',
     '^@helpers(/?.*)$': '<rootDir>/src/helpers$1',
     '^@machines(/?.*)$': '<rootDir>/src/machines$1',
-    '^@objectstorage(/?.*)$': '<rootDir>/src/helpers/ObjectStorage$1',
     '^@public(/?.*)$': '<rootDir>/public$1',
     '^@typings(/?.*)$': '<rootDir>/src/types$1',
     '^@hooks(/?.*)$': '<rootDir>/src/hooks$1',

@@ -125,24 +125,24 @@ const CredentialDesignerEditContextProvider = (props: any): ReactElement => {
     })
     setCredentialDesignerVisualDesignFormData({
       data: {
-        ...(credentialDesign.data.credentialDesignBranding.backgroundImage && {
+        ...(credentialDesign.data.credentialDesignBranding?.backgroundImage && {
           background_image: {
             uri: credentialDesign.data.credentialDesignBranding.backgroundImage.uri,
           },
         }),
-        ...(credentialDesign.data.credentialDesignBranding.logo && {
+        ...(credentialDesign.data.credentialDesignBranding?.logo && {
           logo: {
             uri: credentialDesign.data.credentialDesignBranding.logo.uri,
           },
         }),
-        ...(credentialDesign.data.credentialDesignBranding.backgroundColor && {
+        ...(credentialDesign.data.credentialDesignBranding?.backgroundColor && {
           background_color: credentialDesign.data.credentialDesignBranding.backgroundColor,
         }),
-        ...(credentialDesign.data.credentialDesignBranding.textColor && {text_color: credentialDesign.data.credentialDesignBranding.textColor}),
+        ...(credentialDesign.data.credentialDesignBranding?.textColor && {text_color: credentialDesign.data.credentialDesignBranding.textColor}),
       },
     })
-    setCredentialDesignerVisualDesignBackgroundImage(credentialDesign.data.credentialDesignBranding.backgroundImage)
-    setCredentialDesignerVisualDesignLogo(credentialDesign.data.credentialDesignBranding.logo)
+    setCredentialDesignerVisualDesignBackgroundImage(credentialDesign.data.credentialDesignBranding?.backgroundImage)
+    setCredentialDesignerVisualDesignLogo(credentialDesign.data.credentialDesignBranding?.logo)
     setCredentialDesignerClaimsFormData({data: isAdvancedSchema ? dataSchema : transformAdvancedSchema(dataSchema), errors: []})
   }, [credentialDesign])
 

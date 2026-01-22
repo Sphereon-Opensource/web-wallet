@@ -2,8 +2,10 @@ import {ICredentialContextType, IIssuer} from '@sphereon/ssi-types'
 import {KeyValuePair, Product} from '@typings'
 import {uuid} from 'short-uuid'
 import {CredentialPayload, VerifiableCredential} from '@veramo/core'
-import {supabaseServiceClient} from '@helpers/SupabaseClient'
+import {getAgentBaseUrl} from '@/src/agent/environment'
 import type {Contact, Identity} from '@sphereon/ssi-sdk.data-store-types'
+
+const getApiUrl = () => `${getAgentBaseUrl()}/api`
 
 const generateProduct = (product: Product): Record<string, unknown> => ({
   name: product.productNature,
@@ -66,21 +68,22 @@ export const buildInformationDetails = async (
   onGetCredential: (vc: VerifiableCredential) => Promise<void>,
 ): Promise<Array<KeyValuePair>> => {
   try {
-    const credentialResult = await supabaseServiceClient()
-      .from('credential_reference')
-      .select('*')
-      .eq('asset_id', assetId)
-      .single<VerifiableCredential>()
+    const response = await fetch(`${getApiUrl()}/credential-references/by-asset/${encodeURIComponent(assetId)}`)
 
-    if (credentialResult.error) {
-      throw credentialResult.error
+    if (!response.ok) {
+      if (response.status === 404) {
+        return []
+      }
+      throw new Error(`Failed to fetch credential reference: ${response.statusText}`)
     }
 
-    if (!credentialResult.data || !credentialResult.data.credential_string) {
+    const {data} = await response.json()
+
+    if (!data || !data.credential_string) {
       return []
     }
 
-    const credential = JSON.parse(credentialResult.data.credential_string) as VerifiableCredential
+    const credential = JSON.parse(data.credential_string) as VerifiableCredential
     await onGetCredential(credential)
     const informationDetails: Array<KeyValuePair> = []
 

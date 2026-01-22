@@ -50,8 +50,7 @@ const ContactsList: FC<Props> = (props: Props): ReactElement => {
   let workflowStepResults: any
   if (assetIdFilter) {
     workflowResults = useList<WorkflowEntity, HttpError>({
-      resource: 'workflow',
-      dataProviderName: 'supaBase',
+      resource: 'workflows',
       ...(assetIdFilter && {
         filters: [
           {
@@ -64,8 +63,7 @@ const ContactsList: FC<Props> = (props: Props): ReactElement => {
     })
 
     workflowStepResults = useList<WorkflowStepEntity, HttpError>({
-      resource: `view_latest_workflow_step`,
-      dataProviderName: 'supaBase',
+      resource: `workflow-steps`,
       pagination: {
         pageSize: 1000,
         mode: 'server',
@@ -175,8 +173,7 @@ const ContactsList: FC<Props> = (props: Props): ReactElement => {
                   contacts.map((contact: Party) =>
                     deleteContact(
                       {
-                        dataProviderName: 'supaBase',
-                        resource: 'Party',
+                        resource: 'parties',
                         id: contact.id,
                       },
                       {

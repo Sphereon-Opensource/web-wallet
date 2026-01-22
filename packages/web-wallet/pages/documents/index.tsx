@@ -1,7 +1,6 @@
 import React from 'react'
 import {useTranslate} from '@refinedev/core'
 import AppHeaderBar from '@components/bars/AppHeaderBar'
-import DocumentsList from '@components/views/DocumentsList'
 import style from './index.module.css'
 import {staticPropsWithSST} from '../../src/i18n/server'
 
@@ -11,7 +10,9 @@ const DocumentsListPage: React.FC = () => {
   return (
     <div className={style.container}>
       <AppHeaderBar title={translate('documents_overview_title')} />
-      <DocumentsList />
+      <div style={{padding: '2rem', textAlign: 'center', color: '#666'}}>
+        <p>Documents feature is not available.</p>
+      </div>
     </div>
   )
 }
