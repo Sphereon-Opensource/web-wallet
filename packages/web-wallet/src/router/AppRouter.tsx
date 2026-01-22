@@ -89,6 +89,7 @@ import EInvoiceDetailsContent from '@components/views/EInvoiceDetailsContent'
 import EInvoiceRecipientContent from '@components/views/EInvoiceRecipientContent'
 import EInvoiceEvidenceContent from '@components/views/EInvoiceEvidenceContent'
 import EInvoiceReviewContent from '@components/views/EInvoiceReviewContent'
+import LandingPage from '../../pages/landing'
 
 const KeycloakLoginPage = (props: PropsWithChildren<any>) => {
   const {mutate: login} = useLogin()
@@ -117,10 +118,8 @@ const AppRouter: React.FC = () => {
               <Outlet />
             </Authenticated>
           }>
-          {/*Code added to fix issue with the initial page which includes the local in URL. The workaround is to redirect to /credentials*/}
-          {/*{[MainRoute.ROOT, MainRoute.EN_CREDENTIALS, MainRoute.NL_CREDENTIALS].map((path: string, index: number) => {
-          return <Route key={index} path={path} element={<Navigate to={MainRoute.CREDENTIALS} />} />
-        })}*/}
+          {/* Landing page route */}
+          <Route path="/" element={<LandingPage />} />
           <Route path={MainRoute.ASSETS}>
             <Route index element={<AssetsListPage />} />
           </Route>

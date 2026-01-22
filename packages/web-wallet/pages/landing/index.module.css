@@ -1,0 +1,225 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 48px 24px;
+  background-color: var(--color-bg-primary, #f8f9fa);
+  overflow: auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--color-text-primary, #202537);
+  margin: 0 0 12px 0;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: var(--color-text-secondary, #6b7280);
+  margin: 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  max-width: 900px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  background-color: var(--color-bg-secondary, #ffffff);
+  border: 2px solid var(--color-border-primary, #e5e7eb);
+  border-radius: 16px;
+  padding: 24px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+}
+
+.card:hover.holderCard {
+  border-color: var(--color-holder, #7b61ff);
+}
+
+.card:hover.issuerCard {
+  border-color: var(--color-issuer, #10b981);
+}
+
+.card:hover.verifierCard {
+  border-color: var(--color-relying-party, #f59e0b);
+}
+
+.card:hover.adminCard {
+  border-color: var(--color-admin, #3b82f6);
+}
+
+.cardHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.iconWrapper {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconWrapper svg {
+  width: 24px;
+  height: 24px;
+}
+
+.holderIcon {
+  background-color: var(--color-holder, #7b61ff);
+}
+
+.issuerIcon {
+  background-color: var(--color-issuer, #10b981);
+}
+
+.verifierIcon {
+  background-color: var(--color-relying-party, #f59e0b);
+}
+
+.adminIcon {
+  background-color: var(--color-admin, #3b82f6);
+}
+
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.cardTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-text-primary, #202537);
+  margin: 0;
+}
+
+.cardDescription {
+  font-size: 14px;
+  color: var(--color-text-secondary, #6b7280);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Quick Links Section */
+.quickLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border-primary, #e5e7eb);
+}
+
+.quickLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--color-bg-tertiary, #f3f4f6);
+  border: 1px solid transparent;
+  border-radius: 20px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary, #4b5563);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+  text-align: left;
+}
+
+.quickLink:hover {
+  background-color: var(--color-bg-secondary, #ffffff);
+  border-color: var(--color-border-primary, #d1d5db);
+  color: var(--color-text-primary, #202537);
+}
+
+.quickLinkIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  opacity: 0.7;
+}
+
+.quickLinkIcon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.quickLinkLabel {
+  white-space: nowrap;
+}
+
+/* Role-specific quick link hover styles */
+.holderCard .quickLink:hover {
+  background-color: rgba(123, 97, 255, 0.1);
+  border-color: var(--color-holder, #7b61ff);
+  color: var(--color-holder, #7b61ff);
+}
+
+.holderCard .quickLink:hover .quickLinkIcon {
+  opacity: 1;
+}
+
+.issuerCard .quickLink:hover {
+  background-color: rgba(16, 185, 129, 0.1);
+  border-color: var(--color-issuer, #10b981);
+  color: var(--color-issuer, #10b981);
+}
+
+.issuerCard .quickLink:hover .quickLinkIcon {
+  opacity: 1;
+}
+
+.verifierCard .quickLink:hover {
+  background-color: rgba(245, 158, 11, 0.1);
+  border-color: var(--color-relying-party, #f59e0b);
+  color: var(--color-relying-party, #f59e0b);
+}
+
+.verifierCard .quickLink:hover .quickLinkIcon {
+  opacity: 1;
+}
+
+.adminCard .quickLink:hover {
+  background-color: rgba(59, 130, 246, 0.1);
+  border-color: var(--color-admin, #3b82f6);
+  color: var(--color-admin, #3b82f6);
+}
+
+.adminCard .quickLink:hover .quickLinkIcon {
+  opacity: 1;
+}

@@ -1,4 +1,5 @@
 import React, {ReactElement} from 'react'
+import {Link} from 'react-router-dom'
 import ProfileSwitcher from '@components/profiles/ProfileSwitcher'
 import style from './index.module.css'
 
@@ -11,7 +12,9 @@ const TopNavigationBar: React.FC<Props> = (props: Props): ReactElement => {
 
   return (
     <div className={style.container}>
-      <p className={style.titleCaption}>{title}</p>
+      <Link to="/" className={style.titleLink}>
+        <p className={style.titleCaption}>{title}</p>
+      </Link>
       <ProfileSwitcher />
     </div>
   )

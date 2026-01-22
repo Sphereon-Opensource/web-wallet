@@ -422,6 +422,7 @@ const ContactsListPage: React.FC = () => {
             key={contact.id}
             className={`${style.tableRow} ${selectedContact?.id === contact.id ? style.selected : ''}`}
             onClick={() => setSelectedContact(contact)}
+            onDoubleClick={() => handleViewDetails(contact)}
             role="row"
             tabIndex={0}
           >

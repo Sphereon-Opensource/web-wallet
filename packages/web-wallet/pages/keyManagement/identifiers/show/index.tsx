@@ -122,6 +122,18 @@ const ShowIdentifierDetails: FC = (): ReactElement => {
     fetchBaseUrl()
   }, [])
 
+  const {
+    isLoading,
+    isError,
+    data: identifierData,
+    refetch,
+  } = useOne<IIdentifier, HttpError>({
+    resource: DataResource.IDENTIFIERS,
+    id: decodedId,
+  })
+
+  const identifier = identifierData?.data
+
   // Fetch associated contact when identifier is loaded
   useEffect(() => {
     if (!identifier?.did) return
@@ -166,18 +178,6 @@ const ShowIdentifierDetails: FC = (): ReactElement => {
 
     fetchContact()
   }, [identifier?.did])
-
-  const {
-    isLoading,
-    isError,
-    data: identifierData,
-    refetch,
-  } = useOne<IIdentifier, HttpError>({
-    resource: DataResource.IDENTIFIERS,
-    id: decodedId,
-  })
-
-  const identifier = identifierData?.data
 
   // Resolve DID document (re-resolves when resolveVersion changes)
   useEffect(() => {
@@ -906,6 +906,88 @@ const ShowIdentifierDetails: FC = (): ReactElement => {
     )
   }
 
+  const getContactContent = (): ReactElement => {
+    return (
+      <div className={style.tabContent}>
+        <div className={style.sectionHeader}>
+          <h3 className={style.sectionTitle}>{translate('identifier_details_associated_contact', 'Associated Contact')}</h3>
+        </div>
+
+        {isLoadingContact ? (
+          <div className={style.loadingState}>
+            <div className={style.spinner} />
+            <span>{translate('identifier_details_loading_contact', 'Loading contact...')}</span>
+          </div>
+        ) : associatedContact ? (
+          <div className={style.contactCard}>
+            <div className={style.contactCardHeader}>
+              <div className={style.contactAvatar}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+              </div>
+              <div className={style.contactInfo}>
+                <div className={style.contactName}>{associatedContact.displayName}</div>
+                {associatedContact.partyType && (
+                  <div className={style.contactType}>{associatedContact.partyType}</div>
+                )}
+              </div>
+              <button
+                className={style.viewContactButton}
+                onClick={() => navigate(`/contacts/${associatedContact.id}`)}
+                title={translate('action_view_contact', 'View Contact') as string}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                  <polyline points="15 3 21 3 21 9" />
+                  <line x1="10" y1="14" x2="21" y2="3" />
+                </svg>
+                {translate('action_view', 'View')}
+              </button>
+            </div>
+            <div className={style.contactDetails}>
+              {associatedContact.legalName && (
+                <div className={style.contactDetailRow}>
+                  <span className={style.contactDetailLabel}>{translate('contact_legal_name', 'Legal Name')}</span>
+                  <span className={style.contactDetailValue}>{associatedContact.legalName}</span>
+                </div>
+              )}
+              {associatedContact.email && (
+                <div className={style.contactDetailRow}>
+                  <span className={style.contactDetailLabel}>{translate('contact_email', 'Email')}</span>
+                  <span className={style.contactDetailValue}>{associatedContact.email}</span>
+                </div>
+              )}
+              {associatedContact.phone && (
+                <div className={style.contactDetailRow}>
+                  <span className={style.contactDetailLabel}>{translate('contact_phone', 'Phone')}</span>
+                  <span className={style.contactDetailValue}>{associatedContact.phone}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div className={style.noContactContainer}>
+            <div className={style.noContactIcon}>
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+                <line x1="3" y1="3" x2="21" y2="21" />
+              </svg>
+            </div>
+            <div className={style.noContactText}>
+              {translate('identifier_details_no_associated_contact', 'No contact is associated with this identifier')}
+            </div>
+            <div className={style.noContactHint}>
+              {translate('identifier_details_contact_hint', 'To associate a contact, add this DID as an identity to an existing contact or create a new contact with this DID.')}
+            </div>
+          </div>
+        )}
+      </div>
+    )
+  }
+
   const getJsonContent = (): ReactElement => {
     return (
       <div className={style.tabContent}>
@@ -956,6 +1038,8 @@ const ShowIdentifierDetails: FC = (): ReactElement => {
         return getKeysContent()
       case IdentifierDetailsTabRoute.SERVICES:
         return getServicesContent()
+      case IdentifierDetailsTabRoute.CONTACT:
+        return getContactContent()
       case IdentifierDetailsTabRoute.JSON:
         return getJsonContent()
       default:

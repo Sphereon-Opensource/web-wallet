@@ -1,0 +1,100 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    background-color: var(--theme-form-bg, #FBFBFB);
+    padding: var(--theme-form-padding, 48px 24px);
+    border-radius: var(--theme-form-radius, 24px);
+    border: 1px solid var(--theme-form-border, #E3E3E3);
+    width: 100%;
+    max-width: 700px;
+}
+
+/* Evidence Section */
+.evidenceSection {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-top: 24px;
+    border-top: 1px solid var(--tw-gray-200, #E5E7EB);
+}
+
+.evidenceHeader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.evidenceTitle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--tw-gray-700);
+}
+
+.evidenceTitle svg {
+    width: 18px;
+    height: 18px;
+    color: var(--theme-color-accent);
+}
+
+.optionalBadge {
+    padding: 2px 8px;
+    background-color: var(--tw-gray-100);
+    color: var(--theme-text-secondary);
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.evidenceDescription {
+    margin: 0;
+    font-size: 13px;
+    color: var(--theme-text-secondary);
+    line-height: 1.5;
+}
+
+/* File List */
+.fileListSection {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.fileListHeader {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.fileListTitle {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--tw-gray-600);
+}
+
+.fileCount {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    background-color: var(--theme-color-accent);
+    color: white;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.fileList {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}

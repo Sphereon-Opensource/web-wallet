@@ -6,6 +6,7 @@ import SideNavigationItem from './SideNavigationItem'
 import SideNavigationGroup from './SideNavigationGroup'
 import {MenuEntry, MenuGroup, MenuItem, MenuSeparator, RoleData} from '@typings'
 import roleConfig from '../../../config/roleConfig'
+import {useRole} from '@/src/contexts/RoleContext'
 import styles from './index.module.css'
 
 // Custom role display names (Relying Party -> Verifier)
@@ -98,10 +99,9 @@ export const menuGroupFrom = (item: MenuGroup, allMenuItems: MenuItem[]): ReactE
 const SideNavigationBar: FC<Props> = (props: Props): ReactElement => {
   const {style} = props
   const translate = useTranslate()
-  // TODO SSISDK-19 replace dummy data for the Listbox
-  const [role, setRole] = React.useState<RoleData>(roleConfig[0])
+  const {currentRole, setCurrentRole} = useRole()
 
-  const onChangeRole = async (role: RoleData) => setRole(role)
+  const onChangeRole = async (role: RoleData) => setCurrentRole(role)
 
   const groupMenuBlocks = (items: MenuEntry[]) => {
     const blocks: MenuEntry[][] = []
@@ -174,7 +174,7 @@ const SideNavigationBar: FC<Props> = (props: Props): ReactElement => {
           menuTitle={translate('roles_selection_label')}
         />
       </div>
-      {menuFrom(role.navigation)}
+      {menuFrom(currentRole.navigation)}
     </nav>
   )
 }

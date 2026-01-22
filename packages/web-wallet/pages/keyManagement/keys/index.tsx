@@ -436,6 +436,7 @@ const KeysListPage: React.FC = () => {
             key={key.id}
             className={`${style.tableRow} ${selectedKey?.id === key.id ? style.selected : ''}`}
             onClick={() => setSelectedKey(key)}
+            onDoubleClick={() => handleViewFullDetails(key.kid)}
             role="row"
             tabIndex={0}>
             <div className={style.checkboxCell}>

@@ -873,6 +873,134 @@
     background: #F5F5F5;
 }
 
+/* Contact Card */
+.contactCard {
+    background: #FBFBFB;
+    border-radius: 8px;
+    border: 1px solid #E3E3E3;
+    overflow: hidden;
+}
+
+.contactCardHeader {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    border-bottom: 1px solid #E3E3E3;
+    background: #FFFFFF;
+}
+
+.contactAvatar {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #7276F7 0%, #7C40E8 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    flex-shrink: 0;
+}
+
+.contactInfo {
+    flex: 1;
+    min-width: 0;
+}
+
+.contactName {
+    font-size: 16px;
+    font-weight: 600;
+    color: #303030;
+}
+
+.contactType {
+    font-size: 13px;
+    color: #8D9099;
+    margin-top: 2px;
+}
+
+.viewContactButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #7276F7;
+    background: #FFFFFF;
+    border: 1px solid #7276F7;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.viewContactButton:hover {
+    background: rgba(114, 118, 247, 0.1);
+}
+
+.contactDetails {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.contactDetailRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #F0F0F0;
+}
+
+.contactDetailRow:last-child {
+    border-bottom: none;
+}
+
+.contactDetailLabel {
+    font-size: 13px;
+    color: #8D9099;
+}
+
+.contactDetailValue {
+    font-size: 13px;
+    font-weight: 500;
+    color: #303030;
+}
+
+/* No Contact State */
+.noContactContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+    text-align: center;
+    background: #FBFBFB;
+    border-radius: 8px;
+    border: 1px solid #E3E3E3;
+}
+
+.noContactIcon {
+    color: #C4C5CA;
+    margin-bottom: 16px;
+}
+
+.noContactText {
+    font-size: 16px;
+    font-weight: 500;
+    color: #303030;
+    margin-bottom: 8px;
+}
+
+.noContactHint {
+    font-size: 13px;
+    color: #8D9099;
+    max-width: 400px;
+    line-height: 1.5;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .container {
@@ -926,5 +1054,20 @@
 
     .modalFooter {
         padding: 12px 16px;
+    }
+
+    .contactCardHeader {
+        flex-wrap: wrap;
+    }
+
+    .viewContactButton {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .contactDetailRow {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
     }
 }

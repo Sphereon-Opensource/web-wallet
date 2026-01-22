@@ -356,6 +356,252 @@
     gap: 16px;
 }
 
+.infoCardActions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+/* Info Content */
+.infoContent {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Info Section */
+.infoSection {
+    background: #FBFBFB;
+    border-radius: 6px;
+    border: 1px solid #E3E3E3;
+    padding: 20px;
+}
+
+.infoSectionHeader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #E3E3E3;
+    color: #7276F7;
+}
+
+.infoSectionTitle {
+    font-size: 14px;
+    font-weight: 600;
+    color: #303030;
+}
+
+/* Edit Inputs */
+.editInput {
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #303030;
+    border: 1px solid #7276F7;
+    border-radius: 4px;
+    background: #FFFFFF;
+    margin-bottom: 8px;
+}
+
+.editInput:focus {
+    outline: none;
+    border-color: #7C40E8;
+    box-shadow: 0 0 0 2px rgba(114, 118, 247, 0.2);
+}
+
+.editInputSmall {
+    width: 100%;
+    padding: 6px 12px;
+    font-size: 13px;
+    color: #8D9099;
+    border: 1px solid #E3E3E3;
+    border-radius: 4px;
+    background: #FFFFFF;
+}
+
+.editInputSmall:focus {
+    outline: none;
+    border-color: #7276F7;
+}
+
+/* Edit/Save/Cancel Buttons */
+.editButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #7276F7;
+    background: #FFFFFF;
+    border: 1px solid #7276F7;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.editButton:hover {
+    background: rgba(114, 118, 247, 0.1);
+}
+
+.saveButton {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #FFFFFF;
+    background: linear-gradient(135deg, #7276F7 0%, #7C40E8 100%);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.saveButton:hover {
+    opacity: 0.9;
+}
+
+.saveButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.cancelButton {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #8D9099;
+    background: #FFFFFF;
+    border: 1px solid #E3E3E3;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.cancelButton:hover {
+    background: #F5F5F5;
+}
+
+.cancelButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Address List (Electronic) */
+.addressList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.addressItem {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: #FFFFFF;
+    border: 1px solid #E3E3E3;
+    border-radius: 6px;
+}
+
+.addressType {
+    display: inline-flex;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    background-color: rgba(114, 118, 247, 0.15);
+    color: #7276F7;
+    text-transform: capitalize;
+    flex-shrink: 0;
+}
+
+.addressValue {
+    font-size: 14px;
+    font-weight: 500;
+    color: #303030;
+    word-break: break-all;
+}
+
+/* Physical Address Grid */
+.addressGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.physicalAddressCard {
+    background: #FFFFFF;
+    border: 1px solid #E3E3E3;
+    border-radius: 6px;
+    padding: 16px;
+}
+
+.physicalAddressType {
+    font-size: 11px;
+    font-weight: 600;
+    color: #8D9099;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.physicalAddressContent {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.physicalAddressLine {
+    font-size: 14px;
+    color: #303030;
+}
+
+/* View DID Button */
+.viewDidButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    background: none;
+    border: 1px solid #E3E3E3;
+    color: #8D9099;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.viewDidButton:hover {
+    background: #F0F0FD;
+    border-color: #7276F7;
+    color: #7276F7;
+}
+
+/* Identifier Card Field Link */
+.identifierCardFieldLink {
+    font-size: 13px;
+    font-weight: 500;
+    color: #7276F7;
+    word-break: break-all;
+    font-family: monospace;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    text-align: left;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    transition: text-decoration-color 0.2s ease;
+}
+
+.identifierCardFieldLink:hover {
+    text-decoration-color: #7276F7;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .container {
@@ -383,5 +629,24 @@
     .tab {
         padding: 12px 16px;
         font-size: 13px;
+    }
+
+    .infoCardHeader {
+        flex-wrap: wrap;
+    }
+
+    .infoCardActions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .addressGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .addressItem {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
     }
 }

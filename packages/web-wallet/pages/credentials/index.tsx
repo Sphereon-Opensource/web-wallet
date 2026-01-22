@@ -595,6 +595,7 @@ const CredentialsListPage: React.FC = () => {
                 key={credential.hash}
                 className={`${style.tableRow} ${selectedCredential?.hash === credential.hash ? style.selected : ''}`}
                 onClick={() => setSelectedCredential(credential)}
+                onDoubleClick={() => handleViewDetails(credential)}
                 role="row"
                 tabIndex={0}
               >

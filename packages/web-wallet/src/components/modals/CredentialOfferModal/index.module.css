@@ -1,0 +1,415 @@
+.overlay {
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.modal {
+    position: relative;
+    width: 100%;
+    max-width: 520px;
+    background-color: var(--theme-bg-secondary, #FFFFFF);
+    border-radius: 20px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 24px 24px 0 24px;
+}
+
+.headerContent {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.title {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--theme-text-primary, #1a1a1a);
+    margin: 0;
+}
+
+.subtitle {
+    font-size: 14px;
+    color: var(--theme-text-secondary, #6b7280);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.closeButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    background-color: transparent;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--theme-text-tertiary, #9ca3af);
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+}
+
+.closeButton:hover {
+    background-color: var(--tw-gray-100, #f3f4f6);
+    color: var(--theme-text-primary, #1a1a1a);
+}
+
+/* Tabs */
+.tabsContainer {
+    display: flex;
+    gap: 4px;
+    padding: 20px 24px 0 24px;
+}
+
+.tab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background-color: transparent;
+    border: none;
+    border-radius: 10px 10px 0 0;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--theme-text-secondary, #6b7280);
+    transition: all 0.15s ease;
+    position: relative;
+}
+
+.tab:hover {
+    color: var(--theme-text-primary, #1a1a1a);
+    background-color: var(--tw-gray-50, #f9fafb);
+}
+
+.tabActive {
+    color: var(--theme-color-accent, #4f46e5);
+    background-color: var(--theme-color-accent-bg, #eef2ff);
+}
+
+.tabActive::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: var(--theme-color-accent, #4f46e5);
+    border-radius: 2px 2px 0 0;
+}
+
+.tabIcon {
+    width: 18px;
+    height: 18px;
+}
+
+/* Content Area */
+.content {
+    padding: 24px;
+}
+
+.contentDivider {
+    height: 1px;
+    background-color: var(--tw-gray-200, #e5e7eb);
+    margin: 0 24px;
+}
+
+/* QR Code Display */
+.qrContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.qrCodeWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.qrInstructions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+}
+
+.qrInstructionsTitle {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--theme-text-primary, #1a1a1a);
+    margin: 0;
+}
+
+.qrInstructionsText {
+    font-size: 13px;
+    color: var(--theme-text-secondary, #6b7280);
+    margin: 0;
+    max-width: 300px;
+    line-height: 1.5;
+}
+
+/* URL Input */
+.urlContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px 0;
+}
+
+.urlInputWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.urlLabel {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--theme-text-primary, #1a1a1a);
+}
+
+.urlInput {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 14px;
+    border: 1px solid var(--tw-gray-300, #d1d5db);
+    border-radius: 10px;
+    background-color: white;
+    color: var(--theme-text-primary, #1a1a1a);
+    transition: all 0.15s ease;
+    box-sizing: border-box;
+}
+
+.urlInput:focus {
+    outline: none;
+    border-color: var(--theme-color-accent, #4f46e5);
+    box-shadow: 0 0 0 3px var(--theme-color-accent-bg, rgba(79, 70, 229, 0.1));
+}
+
+.urlInput::placeholder {
+    color: var(--theme-text-tertiary, #9ca3af);
+}
+
+.urlHint {
+    font-size: 13px;
+    color: var(--theme-text-secondary, #6b7280);
+    line-height: 1.5;
+}
+
+/* Generated URL Display */
+.generatedUrlSection {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.generatedUrlLabel {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--theme-text-secondary, #6b7280);
+}
+
+.generatedUrlBox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    background-color: var(--tw-gray-50, #f9fafb);
+    border: 1px solid var(--tw-gray-200, #e5e7eb);
+    border-radius: 10px;
+}
+
+.generatedUrl {
+    flex: 1;
+    font-size: 12px;
+    color: var(--theme-text-secondary, #6b7280);
+    word-break: break-all;
+    font-family: 'Monaco', 'Menlo', monospace;
+}
+
+.copyButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    background-color: white;
+    border: 1px solid var(--tw-gray-300, #d1d5db);
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--theme-text-secondary, #6b7280);
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+}
+
+.copyButton:hover {
+    background-color: var(--tw-gray-100, #f3f4f6);
+    color: var(--theme-text-primary, #1a1a1a);
+}
+
+.copyButtonSuccess {
+    background-color: var(--tw-green-50, #f0fdf4);
+    border-color: var(--tw-green-300, #86efac);
+    color: var(--tw-green-600, #16a34a);
+}
+
+/* Footer */
+.footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px 24px 24px;
+}
+
+.buttonSecondary {
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--theme-text-secondary, #6b7280);
+    background-color: transparent;
+    border: 1px solid var(--tw-gray-300, #d1d5db);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.buttonSecondary:hover {
+    background-color: var(--tw-gray-50, #f9fafb);
+    border-color: var(--tw-gray-400, #9ca3af);
+}
+
+.buttonPrimary {
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    color: white;
+    background-color: var(--theme-color-accent, #4f46e5);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.buttonPrimary:hover:not(:disabled) {
+    background-color: var(--theme-color-accent-dark, #4338ca);
+}
+
+.buttonPrimary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Loading State */
+.loadingContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 60px 20px;
+}
+
+.loadingText {
+    font-size: 14px;
+    color: var(--theme-text-secondary, #6b7280);
+}
+
+/* Error State */
+.errorContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.errorIcon {
+    width: 48px;
+    height: 48px;
+    color: var(--tw-red-500, #ef4444);
+}
+
+.errorText {
+    font-size: 14px;
+    color: var(--tw-red-600, #dc2626);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .modal {
+        max-width: 100%;
+        border-radius: 16px;
+    }
+
+    .header {
+        padding: 20px 20px 0 20px;
+    }
+
+    .tabsContainer {
+        padding: 16px 20px 0 20px;
+    }
+
+    .content {
+        padding: 20px;
+    }
+
+    .contentDivider {
+        margin: 0 20px;
+    }
+
+    .footer {
+        padding: 16px 20px 20px 20px;
+    }
+
+    .tab {
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+}

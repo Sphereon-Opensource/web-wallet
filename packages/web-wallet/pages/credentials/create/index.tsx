@@ -5,11 +5,9 @@ import {PrimaryButton, ProgressStepIndicator} from '@sphereon/ui-components.ssi-
 import PageHeaderBar from '@components/bars/PageHeaderBar'
 import {Outlet} from 'react-router-dom'
 import {useCredentialsCreateMachine} from '@machines/credentials/credentialCreateStateNavigation'
-import QRCodeModal, {QRValueResult} from 'src/components/modals/QRCodeModal'
+import CredentialOfferModal, {QRValueResult} from '@components/modals/CredentialOfferModal'
 import {createCredentialPayloadWithSchema, qrValueGenerator} from '@/src/services/credentials/CredentialService'
 import {staticPropsWithSST} from '@/src/i18n/server'
-import WalletURLModal from '@components/modals/WalletURLModal'
-import {CredentialGenerationMethod} from '@typings'
 
 const CredentialsCreatePage: FC = () => {
   const translate = useTranslate()
@@ -23,13 +21,16 @@ const CredentialsCreatePage: FC = () => {
     onCredentialFormDataChange,
     onIssueCredential,
     onNext,
-    onCloseCredentialQRCodeModal,
-    onCloseCredentialWalletUrlModal,
-    showCredentialQRCodeModal,
-    showCredentialWalletUrlModal,
+    onCloseCredentialOfferModal,
+    showCredentialOfferModal,
+    initialModalTab,
     onIssueMethodChange,
     issueMethod,
     issueMethods,
+    evidenceFiles,
+    onAddEvidenceFile,
+    onRemoveEvidenceFile,
+    uploadedEvidenceFiles,
   } = useCredentialsCreateMachine()
 
   const onSubmitQr = async (): Promise<void> => {
@@ -65,9 +66,14 @@ const CredentialsCreatePage: FC = () => {
 
   return (
     <div className={style.container}>
-      {showCredentialQRCodeModal && <QRCodeModal qrValueGenerator={generateQr} onClose={onCloseCredentialQRCodeModal} onSubmit={onSubmitQr} />}
-      {showCredentialWalletUrlModal && (
-        <WalletURLModal qrValueGenerator={generateQr} onClose={onCloseCredentialWalletUrlModal} onSubmit={onSubmitUrl} />
+      {showCredentialOfferModal && (
+        <CredentialOfferModal
+          initialTab={initialModalTab}
+          qrValueGenerator={generateQr}
+          onClose={onCloseCredentialOfferModal}
+          onSubmitQr={onSubmitQr}
+          onSubmitUrl={onSubmitUrl}
+        />
       )}
       <PageHeaderBar path={translate('issue_credential_path_label')} />
       <div className={style.contentContainer}>
@@ -82,6 +88,10 @@ const CredentialsCreatePage: FC = () => {
               onIssueMethodChange,
               issueMethod,
               issueMethods,
+              evidenceFiles,
+              onAddEvidenceFile,
+              onRemoveEvidenceFile,
+              uploadedEvidenceFiles,
             }}
           />
           {credentialType && (
@@ -99,11 +109,6 @@ const CredentialsCreatePage: FC = () => {
               title: translate('issue_credential_enter_details_step_title'),
               description: translate('issue_credential_enter_details_step_description'),
             },
-            // TODO enable later
-            // {
-            //     title: translate('issue_credential_enter_advanced_options_title'),
-            //     description: translate('issue_credential_enter_advanced_options_description'),
-            // },
             {
               title: translate('issue_credential_enter_issue_method_title'),
               description: translate('issue_credential_enter_issue_method_description'),

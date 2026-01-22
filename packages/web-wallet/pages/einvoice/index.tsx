@@ -713,6 +713,7 @@ const EInvoiceListPage: React.FC = () => {
                 key={invoice.id}
                 className={`${style.tableRow} ${selectedSentInvoice?.id === invoice.id ? style.selected : ''}`}
                 onClick={() => setSelectedSentInvoice(invoice)}
+                onDoubleClick={() => push(`/einvoice/sent/${invoice.id}`)}
                 role="row"
                 tabIndex={0}
               >
@@ -847,6 +848,7 @@ const EInvoiceListPage: React.FC = () => {
               key={invoice.correlationId}
               className={`${style.tableRow} ${selectedReceivedInvoice?.correlationId === invoice.correlationId ? style.selected : ''}`}
               onClick={() => setSelectedReceivedInvoice(invoice)}
+              onDoubleClick={() => push(`/inbox/${invoice.inboxName}/${invoice.folderName}/${invoice.correlationId}`)}
               role="row"
               tabIndex={0}
             >

@@ -382,6 +382,7 @@ const PresentationDefinitionsListPage: React.FC = () => {
             key={query.id}
             className={`${style.tableRow} ${selectedQuery?.id === query.id ? style.selected : ''}`}
             onClick={() => setSelectedQuery(query)}
+            onDoubleClick={() => handleView(query)}
             role="row"
             tabIndex={0}>
             <div className={style.checkboxCell}>

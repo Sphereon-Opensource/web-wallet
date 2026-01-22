@@ -58,29 +58,7 @@ const nextConfig = {
   async redirects() {
     /*FIXME: Most of these redirects should not be here. The OID4VCI link handler should simply listen everywhere*/
     return [
-      // Existing rules
-      {
-        source: '/',
-        missing: [
-          {
-            type: 'query',
-            key: 'credential_offer',
-          },
-          {
-            type: 'query',
-            key: 'credential_offer_uri',
-          },
-          {
-            type: 'query',
-            key: 'request_uri',
-          }, {
-            type: 'query',
-            key: 'response_type',
-          },
-        ],
-        destination: '/credentials',
-        permanent: false,
-      },
+      // OID4VCI and SIOPV2 redirects
       {
         source: '/',
         has: [

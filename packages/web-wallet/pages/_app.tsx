@@ -10,7 +10,9 @@ import dataProvider from '@refinedev/simple-rest'
 import TopNavigationBar from '@components/bars/TopNavigationBar'
 import SideNavigationBar from '@components/bars/SideNavigationBar'
 import AppRouter from '../src/router/AppRouter'
-import {BrowserRouter} from 'react-router-dom'
+import {BrowserRouter, useLocation} from 'react-router-dom'
+import {RoleProvider} from '@/src/contexts/RoleContext'
+import clsx from 'clsx'
 import {getAuthProvider} from '@helpers/AuthProvider'
 import {ContactRoute, CredentialDesignerRoute, DataProvider, DataResource, KeyManagementRoute, MainRoute} from '@typings'
 import {keysDataProvider} from '@/src/dataProviders/keysDataProvider'
@@ -151,21 +153,34 @@ const _app = (props: React.PropsWithChildren<unknown>) => {
           warnWhenUnsavedChanges: true,
           projectId: 'eufd47-35LeGm-U738uV',
         }}>
-        <div className={styles.container}>
-          <TopNavigationBar title={t('top_navigation_header_title')} />
-          <div className={styles.main}>
-            <div className={styles.sideNavigationContainer}>
-              <SideNavigationBar />
-            </div>
-            <main className={styles.fragment}>
-              <AppRouter />
-            </main>
-          </div>
-        </div>
+        <RoleProvider>
+          <AppLayout title={t('top_navigation_header_title')} />
+        </RoleProvider>
       </Refine>
       {/*   <DevtoolsPanel />
       </DevtoolsProvider>*/}
     </BrowserRouter>
+  )
+}
+
+const AppLayout: React.FC<{title: string}> = ({title}) => {
+  const location = useLocation()
+  const isLandingPage = location.pathname === '/'
+
+  return (
+    <div className={styles.container}>
+      <TopNavigationBar title={title} />
+      <div className={styles.main}>
+        {!isLandingPage && (
+          <div className={styles.sideNavigationContainer}>
+            <SideNavigationBar />
+          </div>
+        )}
+        <main className={clsx(styles.fragment, isLandingPage && styles.fullWidth)}>
+          <AppRouter />
+        </main>
+      </div>
+    </div>
   )
 }
 
