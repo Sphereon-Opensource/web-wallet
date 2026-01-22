@@ -1,10 +1,10 @@
 import React, {FC, ReactElement, useCallback, useEffect, useMemo, useState} from 'react'
 import {useParams, useNavigate} from 'react-router-dom'
 import {HttpError, useOne, useTranslation} from '@refinedev/core'
-import {IIdentifier} from '@veramo/core'
+import {IIdentifier, TKeyType} from '@veramo/core'
 import {CredentialRole} from '@sphereon/ssi-types'
 import {DIDResolutionResult} from 'did-resolver'
-import {FormView, PrimaryButton} from '@sphereon/ui-components.ssi-react'
+import {FormView, JSONFormState, PrimaryButton} from '@sphereon/ui-components.ssi-react'
 import {ButtonIcon} from '@sphereon/ui-components.core'
 import PageHeaderBar from '@components/bars/PageHeaderBar'
 import {staticPropsWithSST} from '@/src/i18n/server'
@@ -88,7 +88,7 @@ const ShowIdentifierDetails: FC = (): ReactElement => {
 
   // Services state
   const [isAddingService, setIsAddingService] = useState(false)
-  const [serviceFormData, setServiceFormData] = useState<{data?: Record<string, unknown>; errors: any[]}>({errors: []})
+  const [serviceFormData, setServiceFormData] = useState<JSONFormState>({data: undefined, errors: []})
   const [serviceFormKey, setServiceFormKey] = useState(0)
   const [agentServiceEndpointBaseUrl, setAgentServiceEndpointBaseUrl] = useState<string | null>(null)
   const [selectedServiceDetail, setSelectedServiceDetail] = useState<ServiceDisplayItem | null>(null)
@@ -367,7 +367,7 @@ const ShowIdentifierDetails: FC = (): ReactElement => {
   }, [])
 
   // Handle service form state change
-  const handleServiceFormChange = useCallback((formState: {data?: Record<string, unknown>; errors: any[]}) => {
+  const handleServiceFormChange = useCallback(async (formState: JSONFormState): Promise<void> => {
     setServiceFormData(formState)
   }, [])
 
@@ -398,7 +398,7 @@ const ShowIdentifierDetails: FC = (): ReactElement => {
       // Create a new key
       const newKey = await getAgent().keyManagerCreate({
         kms: 'local',
-        type: newKeyType,
+        type: newKeyType as TKeyType,
         meta: {
           alias: newKeyAlias || undefined,
           purposes: newKeyPurposes,
@@ -532,7 +532,7 @@ const ShowIdentifierDetails: FC = (): ReactElement => {
       }
 
       setIsAddingService(false)
-      setServiceFormData({errors: []})
+      setServiceFormData({data: undefined, errors: []})
       setServiceFormKey(prev => prev + 1)
       await refetch()
       setResolveVersion(v => v + 1) // Trigger DID document re-resolution
@@ -847,7 +847,7 @@ const ShowIdentifierDetails: FC = (): ReactElement => {
                 className={style.cancelButton}
                 onClick={() => {
                   setIsAddingService(false)
-                  setServiceFormData({errors: []})
+                  setServiceFormData({data: undefined, errors: []})
                   setServiceFormKey(prev => prev + 1)
                 }}
               >
@@ -1285,6 +1285,5 @@ const ShowIdentifierDetails: FC = (): ReactElement => {
 }
 
 export const getStaticProps = async ({locale = 'en'}: {locale?: string}) => staticPropsWithSST({locale})
-export const getStaticPaths = async () => ({paths: [], fallback: 'blocking'})
 
 export default ShowIdentifierDetails

@@ -2,7 +2,7 @@ import React, {FC, useState, useMemo} from 'react'
 import {HttpError, useList, useTranslate} from '@refinedev/core'
 import {useNaturalPersonOutletContext} from '@typings'
 import {StepHeader, FormSection, ContactCard} from '@components/fields'
-import type {Party} from '@sphereon/ssi-sdk.data-store-types'
+import type {Organization, Party} from '@sphereon/ssi-sdk.data-store-types'
 import {PartyTypeType} from '@sphereon/ssi-sdk.data-store-types'
 import style from './index.module.css'
 
@@ -31,14 +31,14 @@ const CreateNaturalPersonOrganizationContent: FC = () => {
     const query = searchQuery.toLowerCase()
     return organizations.filter(org => {
       const displayName = org.contact.displayName?.toLowerCase() || ''
-      const legalName = org.contact.legalName?.toLowerCase() || ''
+      const legalName = (org.contact as Organization).legalName?.toLowerCase() || ''
       return displayName.includes(query) || legalName.includes(query)
     })
   }, [organizations, searchQuery])
 
   // Get email from organization's electronic addresses
   const getOrgEmail = (org: Party): string | undefined => {
-    const emailAddr = org.contact.electronicAddresses?.find(ea => ea.type === 'email')
+    const emailAddr = org.electronicAddresses?.find(ea => ea.type === 'email')
     return emailAddr?.electronicAddress
   }
 
@@ -61,7 +61,7 @@ const CreateNaturalPersonOrganizationContent: FC = () => {
 
   // Render organization dropdown item
   const renderOrganizationItem = (org: Party) => {
-    const displayName = org.contact.displayName || org.contact.legalName || 'Unknown'
+    const displayName = org.contact.displayName || (org.contact as Organization).legalName || 'Unknown'
     const email = getOrgEmail(org)
     return (
       <button
@@ -190,7 +190,7 @@ const CreateNaturalPersonOrganizationContent: FC = () => {
           </button>
           <ContactCard
             type="organization"
-            name={organization.contact.displayName || organization.contact.legalName || 'Unknown'}
+            name={organization.contact.displayName || (organization.contact as Organization).legalName || 'Unknown'}
             fields={[
               {
                 label: translate('contact_create_email_address_field_caption', 'Email') as string,

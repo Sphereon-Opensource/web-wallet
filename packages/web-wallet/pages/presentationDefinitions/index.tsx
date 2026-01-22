@@ -81,7 +81,7 @@ const PresentationDefinitionsListPage: React.FC = () => {
   )
 
   // Handle create
-  const handleCreate = useCallback(() => {
+  const handleCreate = useCallback(async () => {
     create(DataResource.QUERIES)
   }, [create])
 

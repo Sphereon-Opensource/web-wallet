@@ -546,7 +546,7 @@ const ContactsListPage: React.FC = () => {
           {physicalAddress && (
             <AddressCard
               streetName={physicalAddress.streetName}
-              streetNumber={physicalAddress.houseNumber}
+              streetNumber={physicalAddress.streetNumber}
               buildingName={physicalAddress.buildingName}
               postalCode={physicalAddress.postalCode}
               cityName={physicalAddress.cityName}

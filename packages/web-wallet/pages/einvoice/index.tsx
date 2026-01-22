@@ -157,29 +157,36 @@ const EInvoiceListPage: React.FC = () => {
     loadSentInvoices()
   }, [activeTab])
 
+  // Refresh received invoices list
+  const refreshReceivedInvoices = useCallback(async () => {
+    try {
+      const allReceived = await fetchInboxInvoices()
+
+      // Only show verified/approved invoices in the eInvoice list
+      // Pending and rejected invoices are only visible in the inbox
+      const verifiedInvoices = allReceived.filter((inv) => inv.status === 'verified')
+      setReceivedInvoices(verifiedInvoices)
+
+      // Track pending count for inbox indicator
+      const pendingCount = allReceived.filter((inv) => inv.status === 'pending').length
+      setPendingInboxCount(pendingCount)
+    } catch (error) {
+      console.error('Error refreshing received invoices:', error)
+    }
+  }, [])
+
   // Fetch received invoices on mount
   useEffect(() => {
     const loadReceivedInvoices = async () => {
       setIsLoading(true)
       try {
-        const allReceived = await fetchInboxInvoices()
-
-        // Only show verified/approved invoices in the eInvoice list
-        // Pending and rejected invoices are only visible in the inbox
-        const verifiedInvoices = allReceived.filter((inv) => inv.status === 'verified')
-        setReceivedInvoices(verifiedInvoices)
-
-        // Track pending count for inbox indicator
-        const pendingCount = allReceived.filter((inv) => inv.status === 'pending').length
-        setPendingInboxCount(pendingCount)
-      } catch (error) {
-        console.error('Error loading invoices:', error)
+        await refreshReceivedInvoices()
       } finally {
         setIsLoading(false)
       }
     }
     loadReceivedInvoices()
-  }, [])
+  }, [refreshReceivedInvoices])
 
   // Refresh sent invoices list
   const refreshSentInvoices = useCallback(async () => {

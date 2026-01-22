@@ -84,7 +84,7 @@ export const OrganizationContactMachineContextProvider = (props: OrganizationCon
     const contactType = await getContactType('organizations')
 
     // Build electronic addresses array only with provided values
-    const electronicAddresses: Array<{type: string; electronicAddress: string}> = []
+    const electronicAddresses: Array<{type: 'email' | 'phone'; electronicAddress: string}> = []
     if (emailAddress) {
       electronicAddresses.push({type: 'email', electronicAddress: emailAddress})
     }
@@ -97,14 +97,14 @@ export const OrganizationContactMachineContextProvider = (props: OrganizationCon
     const physicalAddresses = hasPhysicalAddress
       ? [
           {
-            type: 'visit',
-            buildingName: buildingName || undefined,
-            cityName: cityName || undefined,
-            countryCode: countryCode || undefined,
-            postalCode: postalCode || undefined,
-            provinceName: provinceName || undefined,
-            streetName: streetName || undefined,
-            streetNumber: streetNumber || undefined,
+            type: 'visit' as const,
+            buildingName,
+            cityName,
+            countryCode,
+            postalCode,
+            provinceName,
+            streetName,
+            streetNumber,
           },
         ]
       : []

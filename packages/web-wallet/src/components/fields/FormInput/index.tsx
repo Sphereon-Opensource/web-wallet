@@ -2,6 +2,7 @@ import React, {FC, ReactNode, ReactElement, ChangeEvent, SelectHTMLAttributes} f
 import TextField from '@mui/material/TextField'
 import MenuItem from '@mui/material/MenuItem'
 import InputAdornment from '@mui/material/InputAdornment'
+import {SxProps, Theme} from '@mui/material/styles'
 import style from './index.module.css'
 
 /**
@@ -456,7 +457,7 @@ export const FormSelect: FC<FormSelectProps> = ({
   }
 
   // Additional styles to hide dropdown arrow and border when read-only
-  const readOnlySelectSx = readOnly ? {
+  const readOnlySelectSx: SxProps<Theme> = readOnly ? {
     '& .MuiSelect-icon': {
       display: 'none',
     },
