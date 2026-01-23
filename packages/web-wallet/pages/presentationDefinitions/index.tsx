@@ -6,6 +6,8 @@ import ManagementIcon from '@sphereon/ui-components.ssi-react/dist/components/as
 import type {DcqlQueryItem} from '@sphereon/ssi-sdk.data-store-types'
 import AppHeaderBar from '@components/bars/AppHeaderBar'
 import {ListPageHeader, TabItem} from '@components/tables'
+import ConfirmDeleteModal, {useConfirmDelete, useBulkDelete} from '@components/modals/ConfirmDeleteModal'
+import {useListPageState} from '@/src/hooks/useListPageState'
 import {DataProvider, DataResource} from '@typings'
 import {staticPropsWithSST} from '@/src/i18n/server'
 import style from './index.module.css'
@@ -23,11 +25,28 @@ const PresentationDefinitionsListPage: React.FC = () => {
   const dataProvider = useDataProvider()
 
   const [selectedQuery, setSelectedQuery] = useState<QueryTableItem | null>(null)
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
-  const [sortField, setSortField] = useState<SortField>('queryId')
-  const [sortDirection, setSortDirection] = useState<SortDirection>('asc')
-  const [openMenuId, setOpenMenuId] = useState<string | null>(null)
-  const [menuPosition, setMenuPosition] = useState<{top: number; left: number} | null>(null)
+
+  const {
+    selectedIds,
+    selectionCount,
+    isSelected,
+    isAllSelected,
+    isIndeterminate,
+    toggleSelection,
+    clearSelection,
+    handleSelectAll: handleSelectAllItems,
+    sortColumn: sortField,
+    sortDirection,
+    handleSort,
+    openMenuId,
+    menuPosition,
+    toggleMenu,
+    closeMenu,
+  } = useListPageState<SortField>({
+    defaultSortColumn: 'queryId',
+    defaultSortDirection: 'asc',
+    getItemId: (item: QueryTableItem) => item.id,
+  })
 
   const {mutateAsync: deleteQueries} = useDeleteMany<DcqlQueryItem[], HttpError>()
 
@@ -67,19 +86,6 @@ const PresentationDefinitionsListPage: React.FC = () => {
     })
   }, [queries, sortField, sortDirection])
 
-  // Handle sort
-  const handleSort = useCallback(
-    (field: SortField) => {
-      if (sortField === field) {
-        setSortDirection(prev => (prev === 'asc' ? 'desc' : 'asc'))
-      } else {
-        setSortField(field)
-        setSortDirection('asc')
-      }
-    },
-    [sortField],
-  )
-
   // Handle create
   const handleCreate = useCallback(async () => {
     create(DataResource.QUERIES)
@@ -101,138 +107,86 @@ const PresentationDefinitionsListPage: React.FC = () => {
     [edit],
   )
 
-  // Handle delete
-  const handleDelete = useCallback(
+  // Helper function to delete a query and all its versions
+  const deleteQueryWithVersions = useCallback(
     async (query: QueryTableItem): Promise<void> => {
-      try {
-        // Get all versions of this query
-        const allVersions = await dataProvider(DataProvider.QUERIES).getList<DcqlQueryItem>({
+      // Get all versions of this query
+      const allVersions = await dataProvider(DataProvider.QUERIES).getList<DcqlQueryItem>({
+        resource: DataResource.QUERIES,
+        filters: [
+          {field: 'queryId', operator: 'eq', value: query.queryId},
+          {field: 'tenantId', operator: 'eq', value: query.tenantId},
+        ],
+        meta: {
+          variables: {showVersionHistory: true},
+        },
+      })
+
+      if (allVersions.data) {
+        await deleteQueries({
           resource: DataResource.QUERIES,
-          filters: [
-            {field: 'queryId', operator: 'eq', value: query.queryId},
-            {field: 'tenantId', operator: 'eq', value: query.tenantId},
-          ],
-          meta: {
-            variables: {showVersionHistory: true},
-          },
+          ids: allVersions.data.map((item: DcqlQueryItem) => item.id),
         })
+      }
+    },
+    [dataProvider, deleteQueries],
+  )
 
-        if (allVersions.data) {
-          await deleteQueries({
-            resource: DataResource.QUERIES,
-            ids: allVersions.data.map((item: DcqlQueryItem) => item.id),
-          })
-        }
-
-        if (selectedQuery?.id === query.id) {
+  // Delete confirmation hooks
+  const singleDelete = useConfirmDelete({
+    onConfirm: async (id: string) => {
+      const query = queries.find(q => q.id === id)
+      if (query) {
+        await deleteQueryWithVersions(query)
+        if (selectedQuery?.id === id) {
           setSelectedQuery(null)
         }
-        setSelectedIds(prev => {
-          const next = new Set(prev)
-          next.delete(query.id)
-          return next
-        })
-
-        await refetch()
-      } catch (error) {
-        console.error('Failed to delete query:', error)
       }
     },
-    [dataProvider, deleteQueries, selectedQuery, refetch],
-  )
+    onSuccess: () => {
+      void refetch()
+    },
+    onError: err => {
+      console.error('Failed to delete query:', err)
+    },
+  })
 
-  // Selection handlers
-  const handleToggleSelection = useCallback((id: string, e: React.MouseEvent): void => {
-    e.stopPropagation()
-    setSelectedIds(prev => {
-      const next = new Set(prev)
-      if (next.has(id)) {
-        next.delete(id)
-      } else {
-        next.add(id)
+  const bulkDelete = useBulkDelete({
+    onConfirm: async (ids: string[]) => {
+      const queriesToDelete = queries.filter(q => ids.includes(q.id))
+      for (const query of queriesToDelete) {
+        await deleteQueryWithVersions(query)
       }
-      return next
-    })
-  }, [])
-
-  const handleSelectAll = useCallback(
-    (selectAll: boolean): void => {
-      if (selectAll) {
-        const allIds = new Set(sortedQueries.map(q => q.id))
-        setSelectedIds(allIds)
-      } else {
-        setSelectedIds(new Set())
+      if (selectedQuery && ids.includes(selectedQuery.id)) {
+        setSelectedQuery(null)
       }
     },
-    [sortedQueries],
+    onSuccess: () => {
+      clearSelection()
+      void refetch()
+    },
+    onError: err => {
+      console.error('Failed to delete queries:', err)
+    },
+  })
+
+  const handleDeleteSelected = useCallback((): void => {
+    if (selectionCount === 0) return
+    bulkDelete.openModal(Array.from(selectedIds))
+  }, [selectionCount, selectedIds, bulkDelete])
+
+  // Handle delete from detail panel
+  const handleDelete = useCallback(
+    (query: QueryTableItem): void => {
+      singleDelete.openModal(query.id, query.queryId)
+    },
+    [singleDelete],
   )
-
-  const handleDeleteSelected = useCallback(async (): Promise<void> => {
-    const idsToDelete = Array.from(selectedIds)
-    const queriesToDelete = queries.filter(q => idsToDelete.includes(q.id))
-
-    for (const query of queriesToDelete) {
-      try {
-        // Get all versions of this query
-        const allVersions = await dataProvider(DataProvider.QUERIES).getList<DcqlQueryItem>({
-          resource: DataResource.QUERIES,
-          filters: [
-            {field: 'queryId', operator: 'eq', value: query.queryId},
-            {field: 'tenantId', operator: 'eq', value: query.tenantId},
-          ],
-          meta: {
-            variables: {showVersionHistory: true},
-          },
-        })
-
-        if (allVersions.data) {
-          await deleteQueries({
-            resource: DataResource.QUERIES,
-            ids: allVersions.data.map((item: DcqlQueryItem) => item.id),
-          })
-        }
-      } catch (error) {
-        console.error('Failed to delete query:', query.id, error)
-      }
-    }
-
-    if (selectedQuery && idsToDelete.includes(selectedQuery.id)) {
-      setSelectedQuery(null)
-    }
-    setSelectedIds(new Set())
-    await refetch()
-  }, [selectedIds, queries, dataProvider, deleteQueries, selectedQuery, refetch])
-
-  // Menu handlers
-  const handleToggleMenu = useCallback((id: string, e: React.MouseEvent<HTMLButtonElement>): void => {
-    e.stopPropagation()
-    e.preventDefault()
-
-    const button = e.currentTarget
-    const rect = button.getBoundingClientRect()
-
-    setOpenMenuId(prev => {
-      if (prev === id) {
-        setMenuPosition(null)
-        return null
-      }
-      setMenuPosition({
-        top: rect.bottom + 4,
-        left: rect.right - 180,
-      })
-      return id
-    })
-  }, [])
-
-  const handleCloseMenu = useCallback((): void => {
-    setOpenMenuId(null)
-    setMenuPosition(null)
-  }, [])
 
   const handleMenuAction = useCallback(
-    async (action: string, query: QueryTableItem, e: React.MouseEvent): Promise<void> => {
+    (action: string, query: QueryTableItem, e: React.MouseEvent): void => {
       e.stopPropagation()
-      handleCloseMenu()
+      closeMenu()
 
       switch (action) {
         case 'details':
@@ -245,11 +199,11 @@ const PresentationDefinitionsListPage: React.FC = () => {
           handleEdit(query)
           break
         case 'delete':
-          await handleDelete(query)
+          singleDelete.openModal(query.id, query.queryId)
           break
       }
     },
-    [handleCloseMenu, handleView, handleEdit, handleDelete],
+    [closeMenu, handleView, handleEdit, singleDelete],
   )
 
   // Build tabs for ListPageHeader
@@ -279,7 +233,7 @@ const PresentationDefinitionsListPage: React.FC = () => {
 
     return (
       <>
-        <div className={style.menuBackdrop} onClick={handleCloseMenu} />
+        <div className={style.menuBackdrop} onClick={closeMenu} />
         <div className={style.menuDropdown} style={{top: menuPosition.top, left: menuPosition.left}}>
           <button className={style.menuItem} onClick={e => handleMenuAction('details', query, e)}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -346,13 +300,13 @@ const PresentationDefinitionsListPage: React.FC = () => {
             <input
               type="checkbox"
               className={style.checkbox}
-              checked={sortedQueries.length > 0 && selectedIds.size === sortedQueries.length}
+              checked={isAllSelected(sortedQueries)}
               ref={input => {
                 if (input) {
-                  input.indeterminate = selectedIds.size > 0 && selectedIds.size < sortedQueries.length
+                  input.indeterminate = isIndeterminate(sortedQueries)
                 }
               }}
-              onChange={e => handleSelectAll(e.target.checked)}
+              onChange={e => handleSelectAllItems(sortedQueries, e.target.checked)}
               aria-label="Select all"
             />
           </div>
@@ -388,9 +342,12 @@ const PresentationDefinitionsListPage: React.FC = () => {
             <div className={style.checkboxCell}>
               <input
                 type="checkbox"
-                checked={selectedIds.has(query.id)}
+                checked={isSelected(query.id)}
                 onChange={() => {}}
-                onClick={e => handleToggleSelection(query.id, e)}
+                onClick={e => {
+                  e.stopPropagation()
+                  toggleSelection(query.id)
+                }}
                 className={style.checkbox}
                 aria-label={`Select ${query.queryId}`}
               />
@@ -409,7 +366,7 @@ const PresentationDefinitionsListPage: React.FC = () => {
                 <button
                   type="button"
                   className={style.meatballsButton}
-                  onClick={e => handleToggleMenu(query.id, e)}
+                  onClick={e => toggleMenu(query.id, e)}
                   onMouseDown={e => e.stopPropagation()}
                   aria-label="Open menu">
                   {renderMeatballsIcon()}
@@ -554,8 +511,8 @@ const PresentationDefinitionsListPage: React.FC = () => {
             tabs={headerTabs}
             activeTab="all"
             onTabChange={() => {}}
-            selectionCount={selectedIds.size}
-            onClearSelection={() => setSelectedIds(new Set())}
+            selectionCount={selectionCount}
+            onClearSelection={clearSelection}
             onDeleteSelected={handleDeleteSelected}
             selectionLabel={{singular: 'query', plural: 'queries'}}
             actions={
@@ -574,6 +531,26 @@ const PresentationDefinitionsListPage: React.FC = () => {
         {/* Detail Panel */}
         {renderDetailPanel()}
       </div>
+
+      {/* Delete Confirmation Modals */}
+      <ConfirmDeleteModal
+        isOpen={singleDelete.isOpen}
+        title="Delete Query"
+        message="Are you sure you want to delete this query and all its versions? This action cannot be undone."
+        itemName={singleDelete.itemName ?? undefined}
+        onCancel={singleDelete.closeModal}
+        onConfirm={singleDelete.handleConfirm}
+        isLoading={singleDelete.isLoading}
+      />
+      <ConfirmDeleteModal
+        isOpen={bulkDelete.isOpen}
+        title="Delete Queries"
+        message="Are you sure you want to delete these queries and all their versions? This action cannot be undone."
+        itemCount={bulkDelete.itemIds.length}
+        onCancel={bulkDelete.closeModal}
+        onConfirm={bulkDelete.handleConfirm}
+        isLoading={bulkDelete.isLoading}
+      />
     </div>
   )
 }

@@ -19,6 +19,8 @@ import {
   getAssetPublicUrl,
   publishAssetForEvidence,
 } from '@/src/services/assetService'
+import {useListPageState} from '@/src/hooks/useListPageState'
+import ConfirmDeleteModal, {useConfirmDelete, useBulkDelete} from '@components/modals/ConfirmDeleteModal'
 import style from './index.module.css'
 
 type SortField = 'filename' | 'assetType' | 'fileSize' | 'isPublic' | 'createdAt'
@@ -42,14 +44,66 @@ const AssetsListPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null)
   const [uploading, setUploading] = useState(false)
   const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null)
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [filterType, setFilterType] = useState<AssetType | ''>('')
   const [filterPublic, setFilterPublic] = useState<VisibilityFilter>('all')
-  const [sortField, setSortField] = useState<SortField>('createdAt')
-  const [sortDirection, setSortDirection] = useState<SortDirection>('desc')
   const [copiedId, setCopiedId] = useState<string | null>(null)
-  const [openMenuId, setOpenMenuId] = useState<string | null>(null)
-  const [menuPosition, setMenuPosition] = useState<{top: number; left: number} | null>(null)
+
+  // Use shared list page state hook for selection, sorting, and context menu
+  const {
+    selectedIds,
+    selectionCount,
+    isSelected,
+    isAllSelected,
+    isIndeterminate,
+    toggleSelection,
+    clearSelection,
+    handleSelectAll: handleSelectAllItems,
+    sortColumn: sortField,
+    sortDirection,
+    handleSort,
+    openMenuId,
+    menuPosition,
+    toggleMenu,
+    closeMenu,
+  } = useListPageState<SortField>({
+    defaultSortColumn: 'createdAt',
+    defaultSortDirection: 'desc',
+    getItemId: (item: Asset) => item.id,
+  })
+
+  // Delete confirmation hooks
+  const singleDelete = useConfirmDelete({
+    onConfirm: async (id: string) => {
+      await deleteAsset(id)
+      setAssets((prev) => prev.filter((a) => a.id !== id))
+      if (selectedAsset?.id === id) {
+        setSelectedAsset(null)
+      }
+    },
+    onError: (err) => {
+      console.error('[AssetsListPage] Error deleting asset:', err)
+      setError('Failed to delete asset. Please try again.')
+    },
+  })
+
+  const bulkDelete = useBulkDelete({
+    onConfirm: async (ids: string[]) => {
+      for (const id of ids) {
+        await deleteAsset(id)
+        setAssets((prev) => prev.filter((a) => a.id !== id))
+        if (selectedAsset?.id === id) {
+          setSelectedAsset(null)
+        }
+      }
+    },
+    onSuccess: () => {
+      clearSelection()
+    },
+    onError: (err) => {
+      console.error('[AssetsListPage] Error deleting assets:', err)
+      setError('Failed to delete some assets. Please try again.')
+    },
+  })
 
   const loadAssets = useCallback(async () => {
     try {
@@ -171,23 +225,10 @@ const AssetsListPage: React.FC = () => {
   }, [])
 
   const handleDelete = useCallback(
-    async (asset: Asset) => {
-      if (!confirm(`Are you sure you want to delete "${asset.filename}"?`)) {
-        return
-      }
-
-      try {
-        await deleteAsset(asset.id)
-        setAssets((prev) => prev.filter((a) => a.id !== asset.id))
-        if (selectedAsset?.id === asset.id) {
-          setSelectedAsset(null)
-        }
-      } catch (err) {
-        console.error('[AssetsListPage] Error deleting asset:', err)
-        setError('Failed to delete asset. Please try again.')
-      }
+    (asset: Asset) => {
+      singleDelete.openModal(asset.id, asset.originalFilename || asset.filename)
     },
-    [selectedAsset]
+    [singleDelete]
   )
 
   const handleCopyUrl = useCallback((asset: Asset) => {
@@ -198,18 +239,6 @@ const AssetsListPage: React.FC = () => {
       setTimeout(() => setCopiedId(null), 2000)
     })
   }, [])
-
-  const handleSort = useCallback(
-    (field: SortField) => {
-      if (sortField === field) {
-        setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'))
-      } else {
-        setSortField(field)
-        setSortDirection('asc')
-      }
-    },
-    [sortField]
-  )
 
   // Sort assets
   const sortedAssets = [...assets].sort((a, b) => {
@@ -234,50 +263,10 @@ const AssetsListPage: React.FC = () => {
     return sortDirection === 'asc' ? comparison : -comparison
   })
 
-  // Selection handlers (must be after sortedAssets is defined)
-  const handleToggleSelection = useCallback((id: string, e: React.MouseEvent): void => {
-    e.stopPropagation()
-    setSelectedIds((prev) => {
-      const next = new Set(prev)
-      if (next.has(id)) {
-        next.delete(id)
-      } else {
-        next.add(id)
-      }
-      return next
-    })
-  }, [])
-
-  const handleSelectAll = useCallback(
-    (selectAll: boolean): void => {
-      if (selectAll) {
-        const allIds = new Set(sortedAssets.map((a) => a.id))
-        setSelectedIds(allIds)
-      } else {
-        setSelectedIds(new Set())
-      }
-    },
-    [sortedAssets]
-  )
-
-  const handleDeleteSelected = useCallback(async (): Promise<void> => {
-    if (selectedIds.size === 0) return
-    if (!confirm(`Are you sure you want to delete ${selectedIds.size} asset(s)?`)) return
-
-    const idsToDelete = Array.from(selectedIds)
-    for (const id of idsToDelete) {
-      try {
-        await deleteAsset(id)
-        setAssets((prev) => prev.filter((a) => a.id !== id))
-        if (selectedAsset?.id === id) {
-          setSelectedAsset(null)
-        }
-      } catch (err) {
-        console.error('[AssetsListPage] Error deleting asset:', id, err)
-      }
-    }
-    setSelectedIds(new Set())
-  }, [selectedIds, selectedAsset])
+  const handleDeleteSelected = useCallback((): void => {
+    if (selectionCount === 0) return
+    bulkDelete.openModal(Array.from(selectedIds))
+  }, [selectionCount, selectedIds, bulkDelete])
 
   // Get visibility count
   const getVisibilityCount = useCallback(
@@ -344,36 +333,10 @@ const AssetsListPage: React.FC = () => {
     })
   }
 
-  // Menu handlers
-  const handleToggleMenu = useCallback((id: string, e: React.MouseEvent<HTMLButtonElement>): void => {
-    e.stopPropagation()
-    e.preventDefault()
-
-    const button = e.currentTarget
-    const rect = button.getBoundingClientRect()
-
-    setOpenMenuId((prev) => {
-      if (prev === id) {
-        setMenuPosition(null)
-        return null
-      }
-      setMenuPosition({
-        top: rect.bottom + 4,
-        left: rect.right - 180,
-      })
-      return id
-    })
-  }, [])
-
-  const handleCloseMenu = useCallback((): void => {
-    setOpenMenuId(null)
-    setMenuPosition(null)
-  }, [])
-
   const handleMenuAction = useCallback(
     async (action: string, asset: Asset, e: React.MouseEvent): Promise<void> => {
       e.stopPropagation()
-      handleCloseMenu()
+      closeMenu()
 
       switch (action) {
         case 'details':
@@ -393,7 +356,7 @@ const AssetsListPage: React.FC = () => {
           break
       }
     },
-    [handleCloseMenu, handleCopyUrl, handlePublish, handleUnpublish, handleDelete]
+    [closeMenu, handleCopyUrl, handlePublish, handleUnpublish, handleDelete]
   )
 
   // Render meatballs icon
@@ -411,7 +374,7 @@ const AssetsListPage: React.FC = () => {
 
     return (
       <>
-        <div className={style.menuBackdrop} onClick={handleCloseMenu} />
+        <div className={style.menuBackdrop} onClick={closeMenu} />
         <div className={style.menuDropdown} style={{top: menuPosition.top, left: menuPosition.left}}>
           <button className={style.menuItem} onClick={(e) => handleMenuAction('details', asset, e)}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -487,19 +450,19 @@ const AssetsListPage: React.FC = () => {
           </button>
         </div>
       ) : (
-        <div className={`${style.table} ${selectedIds.size > 0 ? style.tableWithSelections : ''}`}>
+        <div className={`${style.table} ${selectionCount > 0 ? style.tableWithSelections : ''}`}>
           <div className={style.tableHeader}>
             <div className={style.checkboxCell}>
               <input
                 type="checkbox"
                 className={style.checkbox}
-                checked={sortedAssets.length > 0 && selectedIds.size === sortedAssets.length}
+                checked={isAllSelected(sortedAssets)}
                 ref={(input) => {
                   if (input) {
-                    input.indeterminate = selectedIds.size > 0 && selectedIds.size < sortedAssets.length
+                    input.indeterminate = isIndeterminate(sortedAssets)
                   }
                 }}
-                onChange={(e) => handleSelectAll(e.target.checked)}
+                onChange={(e) => handleSelectAllItems(sortedAssets, e.target.checked)}
                 aria-label="Select all"
               />
             </div>
@@ -552,9 +515,9 @@ const AssetsListPage: React.FC = () => {
               <div className={style.checkboxCell}>
                 <input
                   type="checkbox"
-                  checked={selectedIds.has(asset.id)}
+                  checked={isSelected(asset.id)}
                   onChange={() => {}}
-                  onClick={(e) => handleToggleSelection(asset.id, e)}
+                  onClick={(e) => toggleSelection(asset.id, e)}
                   className={style.checkbox}
                   aria-label={`Select ${asset.filename}`}
                 />
@@ -581,7 +544,7 @@ const AssetsListPage: React.FC = () => {
                   <button
                     type="button"
                     className={style.meatballsButton}
-                    onClick={(e) => handleToggleMenu(asset.id, e)}
+                    onClick={(e) => toggleMenu(asset.id, e)}
                     onMouseDown={(e) => e.stopPropagation()}
                     aria-label="Open menu"
                   >
@@ -636,8 +599,8 @@ const AssetsListPage: React.FC = () => {
             activeTab={filterPublic}
             onTabChange={(tabId) => setFilterPublic(tabId as VisibilityFilter)}
             filters={headerFilters}
-            selectionCount={selectedIds.size}
-            onClearSelection={() => setSelectedIds(new Set())}
+            selectionCount={selectionCount}
+            onClearSelection={clearSelection}
             onDeleteSelected={handleDeleteSelected}
             selectionLabel={{singular: 'document', plural: 'documents'}}
             actions={
@@ -803,6 +766,30 @@ const AssetsListPage: React.FC = () => {
       </div>
 
       <input ref={fileInputRef} type="file" onChange={handleFileSelect} style={{display: 'none'}} />
+
+      {/* Delete Confirmation Modals */}
+      <ConfirmDeleteModal
+        isOpen={singleDelete.isOpen}
+        title={translate('assets_delete_title', 'Delete Document')}
+        message={translate('assets_delete_message', 'Are you sure you want to delete "{name}"? This action cannot be undone.')}
+        itemName={singleDelete.itemName || undefined}
+        onCancel={singleDelete.closeModal}
+        onConfirm={singleDelete.handleConfirm}
+        isLoading={singleDelete.isLoading}
+        cancelText={translate('action_cancel', 'Cancel')}
+        confirmText={translate('action_delete', 'Delete')}
+      />
+      <ConfirmDeleteModal
+        isOpen={bulkDelete.isOpen}
+        title={translate('assets_delete_bulk_title', 'Delete Documents')}
+        message={translate('assets_delete_bulk_message', 'Are you sure you want to delete {count} document(s)? This action cannot be undone.')}
+        itemCount={bulkDelete.itemIds.length}
+        onCancel={bulkDelete.closeModal}
+        onConfirm={bulkDelete.handleConfirm}
+        isLoading={bulkDelete.isLoading}
+        cancelText={translate('action_cancel', 'Cancel')}
+        confirmText={translate('action_delete', 'Delete')}
+      />
     </div>
   )
 }

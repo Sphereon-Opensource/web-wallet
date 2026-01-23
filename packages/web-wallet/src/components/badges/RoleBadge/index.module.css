@@ -1,0 +1,46 @@
+/* RoleBadge Component Styles */
+
+.roleBadgesContainer {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.roleBadge {
+  display: inline-flex;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+/* Small variant */
+.roleBadge.small {
+  padding: 1px 6px;
+  font-size: 9px;
+  letter-spacing: 0.2px;
+}
+
+/* Variant: issuer (teal) */
+.roleBadge.issuer {
+  background-color: rgba(45, 213, 197, 0.15);
+  color: #2CD5C5;
+  border: 1px solid #2CD5C5;
+}
+
+/* Variant: verifier (purple) */
+.roleBadge.verifier {
+  background-color: rgba(114, 118, 247, 0.15);
+  color: #7276F7;
+  border: 1px solid #7276F7;
+}
+
+/* Variant: holder (orange) */
+.roleBadge.holder {
+  background-color: rgba(245, 166, 35, 0.15);
+  color: #F5A623;
+  border: 1px solid #F5A623;
+}

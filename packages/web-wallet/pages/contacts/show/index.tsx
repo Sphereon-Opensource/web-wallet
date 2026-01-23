@@ -6,6 +6,7 @@ import {OpenID4VCIClient} from '@sphereon/oid4vci-client'
 import {CredentialStatus} from '@sphereon/ui-components.core'
 import {oid4vciCredentialLocaleBrandingFrom} from '@sphereon/ssi-sdk.oid4vci-holder'
 import PageHeaderBar from '@components/bars/PageHeaderBar'
+import {RoleBadges} from '@components/badges'
 import {staticPropsWithSST} from '@/src/i18n/server'
 import {CredentialConfigurationSupported, CredentialConfigurationSupportedV1_0_15, CredentialsSupportedDisplay} from '@sphereon/oid4vci-common'
 import {getAgent, getAgentBaseUrl} from '@agent'
@@ -283,31 +284,10 @@ const ShowContactDetails: FC = (): ReactElement => {
     console.log(`Get credential clicked for type: ${item.configId}`)
   }
 
-  // Get role badges for header
-  const getRoleBadges = (): ReactElement[] => {
-    const badges: ReactElement[] = []
-    if (party.roles?.includes(CredentialRole.ISSUER)) {
-      badges.push(
-        <span key="issuer" className={`${style.roleBadge} ${style.roleBadgeIssuer}`}>
-          {translate('contact_role_issuer')}
-        </span>
-      )
-    }
-    if (party.roles?.includes(CredentialRole.VERIFIER)) {
-      badges.push(
-        <span key="verifier" className={`${style.roleBadge} ${style.roleBadgeVerifier}`}>
-          {translate('contact_role_verifier')}
-        </span>
-      )
-    }
-    if (party.roles?.includes(CredentialRole.HOLDER)) {
-      badges.push(
-        <span key="holder" className={`${style.roleBadge} ${style.roleBadgeHolder}`}>
-          {translate('contact_role_holder')}
-        </span>
-      )
-    }
-    return badges
+  // Role badges rendered using shared RoleBadges component
+  const renderRoleBadges = (): ReactElement | null => {
+    if (!party.roles || party.roles.length === 0) return null
+    return <RoleBadges roles={party.roles} size="small" />
   }
 
   // Build tabs array
@@ -601,18 +581,7 @@ const ShowContactDetails: FC = (): ReactElement => {
                 )}
                 {identity.roles && identity.roles.length > 0 && (
                   <div className={style.identifierCardRoles}>
-                    {identity.roles.map(role => (
-                      <span
-                        key={role}
-                        className={`${style.roleBadge} ${
-                          role === CredentialRole.ISSUER ? style.roleBadgeIssuer :
-                          role === CredentialRole.VERIFIER ? style.roleBadgeVerifier :
-                          style.roleBadgeHolder
-                        }`}
-                      >
-                        {role}
-                      </span>
-                    ))}
+                    <RoleBadges roles={identity.roles} size="small" />
                   </div>
                 )}
               </div>
@@ -649,7 +618,7 @@ const ShowContactDetails: FC = (): ReactElement => {
           <div className={style.titleSection}>
             <div className={style.titleRow}>
               <div className={style.title}>{party.contact.displayName}</div>
-              {getRoleBadges()}
+              {renderRoleBadges()}
             </div>
             <div className={style.subtitle}>
               {party.uri || translate('contact_details_no_uri')}

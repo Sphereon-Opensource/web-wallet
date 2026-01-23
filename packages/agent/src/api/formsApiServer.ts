@@ -9,42 +9,19 @@
  * - GET /api/form-steps/:id/schemas - Get schema definitions for a form step
  */
 
-import { Router, Request, Response, NextFunction } from 'express'
-import { TAgent } from '@veramo/core'
-import { ExpressSupport } from '@sphereon/ssi-express-support'
-import { TAgentTypes } from '../types'
-
-export interface FormsApiServerOptions {
-  agent: TAgent<TAgentTypes>
-  expressSupport: ExpressSupport
-  opts?: {
-    basePath?: string
-  }
-}
+import { Request, Response, NextFunction } from 'express'
+import { BaseApiServer, BaseApiServerOptions } from './BaseApiServer'
 
 /**
  * API Server for form definition read operations.
+ * Extends BaseApiServer for standardized response handling.
  */
-export class FormsApiServer {
-  private readonly agent: TAgent<TAgentTypes>
-  private readonly router: Router
-  private readonly basePath: string
-
-  constructor(options: FormsApiServerOptions) {
-    this.agent = options.agent
-    this.basePath = options.opts?.basePath ?? '/api'
-    this.router = Router()
-
-    this.setupRoutes()
-
-    // Register routes with express
-    const app = options.expressSupport.express
-    app.use(this.basePath, this.router)
-
-    console.log(`[Forms] API server started at ${this.basePath}/forms`)
+export class FormsApiServer extends BaseApiServer {
+  constructor(options: BaseApiServerOptions) {
+    super(options, '/api', 'Forms')
   }
 
-  private setupRoutes(): void {
+  protected setupRoutes(): void {
     // List form definitions
     this.router.get('/forms', this.listFormDefinitions.bind(this))
 
@@ -77,11 +54,11 @@ export class FormsApiServer {
 
       const forms = await this.agent.formDefinitionList({
         tenantId: tenantId as string | undefined,
-        limit: limit ? parseInt(limit as string, 10) : undefined,
-        offset: offset ? parseInt(offset as string, 10) : undefined,
+        limit: this.parseIntQuery(limit),
+        offset: this.parseIntQuery(offset),
       })
 
-      res.json({ data: forms })
+      this.success(res, { data: forms })
     } catch (error) {
       next(error)
     }
@@ -99,11 +76,11 @@ export class FormsApiServer {
       const form = await this.agent.formDefinitionGetById({ id })
 
       if (!form) {
-        res.status(404).json({ error: 'Form definition not found' })
+        this.notFound(res, 'Form definition not found')
         return
       }
 
-      res.json({ data: form })
+      this.success(res, { data: form })
     } catch (error) {
       next(error)
     }
@@ -128,11 +105,11 @@ export class FormsApiServer {
       })
 
       if (!form) {
-        res.status(404).json({ error: 'Form definition not found' })
+        this.notFound(res, 'Form definition not found')
         return
       }
 
-      res.json({ data: form })
+      this.success(res, { data: form })
     } catch (error) {
       next(error)
     }
@@ -150,11 +127,11 @@ export class FormsApiServer {
       const formStep = await this.agent.formStepGetById({ id })
 
       if (!formStep) {
-        res.status(404).json({ error: 'Form step not found' })
+        this.notFound(res, 'Form step not found')
         return
       }
 
-      res.json({ data: formStep })
+      this.success(res, { data: formStep })
     } catch (error) {
       next(error)
     }
@@ -171,9 +148,12 @@ export class FormsApiServer {
 
       const schemas = await this.agent.schemaDefinitionGetByFormStep({ formStepId: id })
 
-      res.json({ data: schemas })
+      this.success(res, { data: schemas })
     } catch (error) {
       next(error)
     }
   }
 }
+
+// Re-export the options type for convenience
+export type FormsApiServerOptions = BaseApiServerOptions

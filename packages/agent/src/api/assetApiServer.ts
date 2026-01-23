@@ -1,18 +1,12 @@
-import { Router, Request, Response, NextFunction } from 'express'
-import { TAgent } from '@veramo/core'
-import { ExpressSupport } from '@sphereon/ssi-express-support'
+import { Router, Request, Response, NextFunction, Express } from 'express'
 import multer from 'multer'
 import * as fs from 'fs'
-import * as path from 'path'
-import { TAgentTypes } from '../types'
 import { ASSET_API_BASE_PATH, ASSET_BASE_URI } from '../environment-vars'
 import { AssetType } from '../plugins/asset'
+import { BaseApiServer, BaseApiServerOptions } from './BaseApiServer'
 
-export interface AssetApiServerOptions {
-  agent: TAgent<TAgentTypes>
-  expressSupport: ExpressSupport
-  opts?: {
-    basePath?: string
+export interface AssetApiServerOptions extends BaseApiServerOptions {
+  opts?: BaseApiServerOptions['opts'] & {
     publicBasePath?: string
   }
 }
@@ -33,19 +27,14 @@ export interface AssetApiServerOptions {
  * - POST /assets/:id/unpublish - Make asset private
  * - POST /assets/:id/restore - Restore soft-deleted asset
  */
-export class AssetApiServer {
-  private readonly agent: TAgent<TAgentTypes>
-  private readonly router: Router
+export class AssetApiServer extends BaseApiServer {
   private readonly publicRouter: Router
-  private readonly basePath: string
   private readonly publicBasePath: string
   private readonly upload: multer.Multer
 
   constructor(options: AssetApiServerOptions) {
-    this.agent = options.agent
-    this.basePath = options.opts?.basePath ?? ASSET_API_BASE_PATH
+    super(options, ASSET_API_BASE_PATH, 'Asset')
     this.publicBasePath = options.opts?.publicBasePath ?? '/api/assets'
-    this.router = Router()
     this.publicRouter = Router()
 
     // Configure multer for file uploads (store in memory for hash computation)
@@ -56,23 +45,16 @@ export class AssetApiServer {
       },
     })
 
-    this.setupRoutes()
     this.setupPublicRoutes()
 
-    // Register routes with express
+    // Register public routes with express (in addition to management routes from base class)
     const app = options.expressSupport.express
-
-    // Public routes first (no authentication needed)
     app.use(this.publicBasePath, this.publicRouter)
 
-    // Management routes (authentication handled by existing middleware)
-    // Always register the router, using '/' as the mount point when basePath is empty
-    app.use(this.basePath || '/', this.router)
-
-    console.log(`[Asset] API server started at ${this.basePath || '/'} (management) and ${this.publicBasePath} (public)`)
+    console.log(`[Asset] Public routes available at ${this.publicBasePath}`)
   }
 
-  private setupRoutes(): void {
+  protected setupRoutes(): void {
     // List assets
     this.router.get('/assets', this.listAssets.bind(this))
 
@@ -127,7 +109,7 @@ export class AssetApiServer {
       const fileResult = await this.agent.assetGetFile({ digestMultibase })
 
       if (!fileResult) {
-        res.status(404).json({ error: 'Asset not found' })
+        this.notFound(res, 'Asset not found')
         return
       }
 
@@ -136,35 +118,29 @@ export class AssetApiServer {
       if (!availability.isAvailable) {
         switch (availability.reason) {
           case 'deleted':
-            res.status(410).json({ error: 'Asset has been deleted' })
+            this.gone(res, 'Asset has been deleted')
             return
           case 'not_public':
-            res.status(403).json({ error: 'Asset is not public' })
+            this.forbidden(res, 'Asset is not public')
             return
           case 'not_yet_available':
-            res.status(425).json({
-              error: 'Asset is not yet available',
-              availableFrom: availability.availableFrom,
-            })
+            this.tooEarly(res, 'Asset is not yet available', availability.availableFrom)
             return
           case 'expired':
-            res.status(410).json({
-              error: 'Asset has expired',
-              expiredAt: availability.availableUntil,
-            })
+            this.gone(res, 'Asset has expired', { expiredAt: availability.availableUntil })
             return
           case 'file_missing':
-            res.status(404).json({ error: 'Asset file not found' })
+            this.notFound(res, 'Asset file not found')
             return
           default:
-            res.status(404).json({ error: 'Asset not available' })
+            this.notFound(res, 'Asset not available')
             return
         }
       }
 
       // Check if file exists
       if (!fs.existsSync(filePath)) {
-        res.status(404).json({ error: 'Asset file not found' })
+        this.notFound(res, 'Asset file not found')
         return
       }
 
@@ -201,22 +177,24 @@ export class AssetApiServer {
   private async listAssets(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { assetType, isPublic, credentialId, includeDeleted, limit, offset } = req.query
+      const parsedLimit = this.parseIntQuery(limit)
+      const parsedOffset = this.parseIntQuery(offset, 0)
 
       const assets = await this.agent.assetList({
         assetType: assetType as AssetType | undefined,
-        isPublic: isPublic === 'true' ? true : isPublic === 'false' ? false : undefined,
+        isPublic: this.parseBooleanQuery(isPublic),
         credentialId: credentialId as string | undefined,
-        includeDeleted: includeDeleted === 'true',
-        limit: limit ? parseInt(limit as string, 10) : undefined,
-        offset: offset ? parseInt(offset as string, 10) : undefined,
+        includeDeleted: this.parseBooleanQuery(includeDeleted) ?? false,
+        limit: parsedLimit,
+        offset: parsedOffset,
       })
 
       // Get total count for pagination
       const total = await this.agent.assetCount({
         assetType: assetType as AssetType | undefined,
-        isPublic: isPublic === 'true' ? true : isPublic === 'false' ? false : undefined,
+        isPublic: this.parseBooleanQuery(isPublic),
         credentialId: credentialId as string | undefined,
-        includeDeleted: includeDeleted === 'true',
+        includeDeleted: this.parseBooleanQuery(includeDeleted) ?? false,
       })
 
       // Add publicUrl to each public asset
@@ -225,11 +203,11 @@ export class AssetApiServer {
         publicUrl: asset.isPublic ? this.getPublicUrl(asset.digestMultibase) : undefined,
       }))
 
-      res.json({
+      this.success(res, {
         assets: assetsWithUrls,
         total,
-        limit: limit ? parseInt(limit as string, 10) : undefined,
-        offset: offset ? parseInt(offset as string, 10) : 0,
+        limit: parsedLimit,
+        offset: parsedOffset,
       })
     } catch (error) {
       next(error)
@@ -254,7 +232,7 @@ export class AssetApiServer {
   private async uploadAsset(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       if (!req.file) {
-        res.status(400).json({ error: 'No file provided' })
+        this.badRequest(res, 'No file provided')
         return
       }
 
@@ -281,7 +259,7 @@ export class AssetApiServer {
         metadata: metadata ? (typeof metadata === 'string' ? JSON.parse(metadata) : metadata) : undefined,
       })
 
-      res.status(201).json(result)
+      this.created(res, result)
     } catch (error: any) {
       console.error('[Asset] Upload error:', error)
       next(error)
@@ -300,14 +278,14 @@ export class AssetApiServer {
       const asset = await this.agent.assetGetById({ id })
 
       if (!asset) {
-        res.status(404).json({ error: 'Asset not found' })
+        this.notFound(res, 'Asset not found')
         return
       }
 
       // Include public URL if asset is public
       const publicUrl = asset.isPublic ? this.getPublicUrl(asset.digestMultibase) : undefined
 
-      res.json({
+      this.success(res, {
         ...asset,
         publicUrl,
       })
@@ -357,13 +335,13 @@ export class AssetApiServer {
       // Include public URL if asset is public
       const publicUrl = asset.isPublic ? this.getPublicUrl(asset.digestMultibase) : undefined
 
-      res.json({
+      this.success(res, {
         ...asset,
         publicUrl,
       })
     } catch (error: any) {
-      if (error.message?.includes('not found')) {
-        res.status(404).json({ error: 'Asset not found' })
+      if (this.isNotFoundError(error)) {
+        this.notFound(res, 'Asset not found')
         return
       }
       next(error)
@@ -385,15 +363,15 @@ export class AssetApiServer {
 
       const deleted = await this.agent.assetDelete({
         id,
-        hardDelete: hardDelete === 'true',
+        hardDelete: this.parseBooleanQuery(hardDelete) ?? false,
       })
 
       if (!deleted) {
-        res.status(404).json({ error: 'Asset not found' })
+        this.notFound(res, 'Asset not found')
         return
       }
 
-      res.status(204).send()
+      this.noContent(res)
     } catch (error) {
       next(error)
     }
@@ -421,13 +399,13 @@ export class AssetApiServer {
 
       const publicUrl = this.getPublicUrl(asset.digestMultibase)
 
-      res.json({
+      this.success(res, {
         ...asset,
         publicUrl,
       })
     } catch (error: any) {
-      if (error.message?.includes('not found')) {
-        res.status(404).json({ error: 'Asset not found' })
+      if (this.isNotFoundError(error)) {
+        this.notFound(res, 'Asset not found')
         return
       }
       next(error)
@@ -445,10 +423,10 @@ export class AssetApiServer {
 
       const asset = await this.agent.assetUnpublish({ id })
 
-      res.json(asset)
+      this.success(res, asset)
     } catch (error: any) {
-      if (error.message?.includes('not found')) {
-        res.status(404).json({ error: 'Asset not found' })
+      if (this.isNotFoundError(error)) {
+        this.notFound(res, 'Asset not found')
         return
       }
       next(error)
@@ -469,13 +447,13 @@ export class AssetApiServer {
       // Include public URL if asset is public
       const publicUrl = asset.isPublic ? this.getPublicUrl(asset.digestMultibase) : undefined
 
-      res.json({
+      this.success(res, {
         ...asset,
         publicUrl,
       })
     } catch (error: any) {
-      if (error.message?.includes('not found')) {
-        res.status(404).json({ error: 'Asset not found' })
+      if (this.isNotFoundError(error)) {
+        this.notFound(res, 'Asset not found')
         return
       }
       next(error)

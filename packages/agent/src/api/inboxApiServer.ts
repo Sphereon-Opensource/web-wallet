@@ -1,17 +1,7 @@
-import { Router, Request, Response, NextFunction } from 'express'
-import { TAgent } from '@veramo/core'
-import { ExpressSupport } from '@sphereon/ssi-express-support'
+import { Request, Response, NextFunction } from 'express'
 import { v4 as uuidv4 } from 'uuid'
-import { TAgentTypes } from '../types'
 import { INBOX_API_BASE_PATH } from '../environment-vars'
-
-export interface InboxApiServerOptions {
-  agent: TAgent<TAgentTypes>
-  expressSupport: ExpressSupport
-  opts?: {
-    basePath?: string
-  }
-}
+import { BaseApiServer, BaseApiServerOptions } from './BaseApiServer'
 
 /**
  * API Server for inbox operations.
@@ -33,26 +23,25 @@ export interface InboxApiServerOptions {
  * - POST /inbox/:inboxName/allowed-senders - Add allowed sender
  * - DELETE /inbox/:inboxName/allowed-senders/:clientId - Remove allowed sender
  */
-export class InboxApiServer {
-  private readonly agent: TAgent<TAgentTypes>
-  private readonly router: Router
-  private readonly basePath: string
+export class InboxApiServer extends BaseApiServer {
+  /**
+   * Static store for inbox context (temporary - should use KeyValueStore)
+   */
+  static inboxContextStore = new Map<
+    string,
+    {
+      inboxName: string
+      folderName: string
+      clientId?: string
+      clientIdPrefix?: string
+    }
+  >()
 
-  constructor(options: InboxApiServerOptions) {
-    this.agent = options.agent
-    this.basePath = options.opts?.basePath ?? INBOX_API_BASE_PATH
-    this.router = Router()
-
-    this.setupRoutes()
-
-    // Register routes with express
-    const app = options.expressSupport.express
-    app.use(this.basePath, this.router)
-
-    console.log(`[Inbox] API server started at ${this.basePath}`)
+  constructor(options: BaseApiServerOptions) {
+    super(options, INBOX_API_BASE_PATH, 'Inbox')
   }
 
-  private setupRoutes(): void {
+  protected setupRoutes(): void {
     // Inbox CRUD
     this.router.get('/inbox', this.listInboxes.bind(this))
     this.router.post('/inbox', this.createInbox.bind(this))
@@ -79,12 +68,19 @@ export class InboxApiServer {
     this.router.post('/inbox/:inboxName/:folderName', this.initiateOid4vpFlow.bind(this))
   }
 
+  /**
+   * Get stored inbox context by correlation ID
+   */
+  static getInboxContext(correlationId: string) {
+    return InboxApiServer.inboxContextStore.get(correlationId)
+  }
+
   // ===== Inbox Endpoints =====
 
   private async listInboxes(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const inboxes = await this.agent.inboxGetAll()
-      res.json(inboxes)
+      this.success(res, inboxes)
     } catch (error) {
       next(error)
     }
@@ -95,15 +91,15 @@ export class InboxApiServer {
       const { name, did, description, tenantId } = req.body
 
       if (!name || !did) {
-        res.status(400).json({ error: 'name and did are required' })
+        this.badRequest(res, 'name and did are required')
         return
       }
 
       const inbox = await this.agent.inboxCreate({ name, did, description, tenantId })
-      res.status(201).json(inbox)
+      this.created(res, inbox)
     } catch (error: any) {
-      if (error.message?.includes('duplicate') || error.message?.includes('unique')) {
-        res.status(409).json({ error: 'Inbox with this name already exists' })
+      if (this.isConflictError(error)) {
+        this.conflict(res, 'Inbox with this name already exists')
         return
       }
       next(error)
@@ -116,11 +112,11 @@ export class InboxApiServer {
       const inbox = await this.agent.inboxGet({ name: inboxName })
 
       if (!inbox) {
-        res.status(404).json({ error: 'Inbox not found' })
+        this.notFound(res, 'Inbox not found')
         return
       }
 
-      res.json(inbox)
+      this.success(res, inbox)
     } catch (error) {
       next(error)
     }
@@ -132,11 +128,11 @@ export class InboxApiServer {
       const deleted = await this.agent.inboxDelete({ name: inboxName })
 
       if (!deleted) {
-        res.status(404).json({ error: 'Inbox not found' })
+        this.notFound(res, 'Inbox not found')
         return
       }
 
-      res.status(204).send()
+      this.noContent(res)
     } catch (error) {
       next(error)
     }
@@ -148,7 +144,7 @@ export class InboxApiServer {
     try {
       const { inboxName } = req.params
       const folders = await this.agent.inboxFolderGetByInbox({ inboxName })
-      res.json(folders)
+      this.success(res, folders)
     } catch (error) {
       next(error)
     }
@@ -160,19 +156,19 @@ export class InboxApiServer {
       const { name, dcqlQueryId, description } = req.body
 
       if (!name) {
-        res.status(400).json({ error: 'name is required' })
+        this.badRequest(res, 'name is required')
         return
       }
 
       const folder = await this.agent.inboxFolderCreate({ inboxName, name, dcqlQueryId, description })
-      res.status(201).json(folder)
+      this.created(res, folder)
     } catch (error: any) {
-      if (error.message?.includes('Inbox not found')) {
-        res.status(404).json({ error: 'Inbox not found' })
+      if (this.isNotFoundError(error)) {
+        this.notFound(res, 'Inbox not found')
         return
       }
-      if (error.message?.includes('duplicate') || error.message?.includes('unique')) {
-        res.status(409).json({ error: 'Folder with this name already exists in inbox' })
+      if (this.isConflictError(error)) {
+        this.conflict(res, 'Folder with this name already exists in inbox')
         return
       }
       next(error)
@@ -185,11 +181,11 @@ export class InboxApiServer {
       const folder = await this.agent.inboxFolderGet({ inboxName, folderName })
 
       if (!folder) {
-        res.status(404).json({ error: 'Folder not found' })
+        this.notFound(res, 'Folder not found')
         return
       }
 
-      res.json(folder)
+      this.success(res, folder)
     } catch (error) {
       next(error)
     }
@@ -201,11 +197,11 @@ export class InboxApiServer {
       const deleted = await this.agent.inboxFolderDelete({ inboxName, folderName })
 
       if (!deleted) {
-        res.status(404).json({ error: 'Folder not found' })
+        this.notFound(res, 'Folder not found')
         return
       }
 
-      res.status(204).send()
+      this.noContent(res)
     } catch (error) {
       next(error)
     }
@@ -237,19 +233,19 @@ export class InboxApiServer {
       // Validate inbox exists
       const inbox = await this.agent.inboxGet({ name: inboxName })
       if (!inbox) {
-        res.status(404).json({ error: 'Inbox not found' })
+        this.notFound(res, 'Inbox not found')
         return
       }
 
       // Validate folder exists and has DCQL query configured
       const folder = await this.agent.inboxFolderGet({ inboxName, folderName })
       if (!folder) {
-        res.status(404).json({ error: 'Folder not found' })
+        this.notFound(res, 'Folder not found')
         return
       }
 
       if (!folder.dcqlQueryId) {
-        res.status(400).json({ error: 'Folder does not have a DCQL query configured' })
+        this.badRequest(res, 'Folder does not have a DCQL query configured')
         return
       }
 
@@ -270,7 +266,7 @@ export class InboxApiServer {
         })
 
         if (!isAllowed) {
-          res.status(403).json({ error: 'Sender is not allowed' })
+          this.forbidden(res, 'Sender is not allowed')
           return
         }
       }
@@ -302,7 +298,7 @@ export class InboxApiServer {
       // Format receiver's client_id with prefix
       const receiverClientId = `decentralized_identifier:${inbox.did}`
 
-      res.status(201).json({
+      this.created(res, {
         request_uri: requestUri,
         client_id: receiverClientId,
       })
@@ -359,26 +355,6 @@ export class InboxApiServer {
     InboxApiServer.inboxContextStore.set(correlationId, context)
   }
 
-  /**
-   * Static store for inbox context (temporary - should use KeyValueStore)
-   */
-  static inboxContextStore = new Map<
-    string,
-    {
-      inboxName: string
-      folderName: string
-      clientId?: string
-      clientIdPrefix?: string
-    }
-  >()
-
-  /**
-   * Get stored inbox context by correlation ID
-   */
-  static getInboxContext(correlationId: string) {
-    return InboxApiServer.inboxContextStore.get(correlationId)
-  }
-
   // ===== Credentials Endpoints =====
 
   private async listCredentials(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -387,7 +363,7 @@ export class InboxApiServer {
       const { folderName } = req.query as { folderName?: string }
 
       const credentials = await this.agent.inboxCredentialList({ inboxName, folderName })
-      res.json(credentials)
+      this.success(res, credentials)
     } catch (error) {
       next(error)
     }
@@ -404,11 +380,11 @@ export class InboxApiServer {
       const credential = await this.agent.inboxCredentialGetByCorrelationId({ correlationId })
 
       if (!credential) {
-        res.status(404).json({ error: 'Credential not found' })
+        this.notFound(res, 'Credential not found')
         return
       }
 
-      res.json(credential)
+      this.success(res, credential)
     } catch (error) {
       next(error)
     }
@@ -426,7 +402,7 @@ export class InboxApiServer {
       const { parsedData } = req.body
 
       if (!parsedData || typeof parsedData !== 'object') {
-        res.status(400).json({ error: 'parsedData object is required' })
+        this.badRequest(res, 'parsedData object is required')
         return
       }
 
@@ -435,10 +411,10 @@ export class InboxApiServer {
         parsedData,
       })
 
-      res.json(credential)
+      this.success(res, credential)
     } catch (error: any) {
-      if (error.message?.includes('not found')) {
-        res.status(404).json({ error: 'Credential not found' })
+      if (this.isNotFoundError(error)) {
+        this.notFound(res, 'Credential not found')
         return
       }
       next(error)
@@ -451,7 +427,7 @@ export class InboxApiServer {
     try {
       const { inboxName } = req.params
       const senders = await this.agent.inboxAllowedSenderList({ inboxName })
-      res.json(senders)
+      this.success(res, senders)
     } catch (error) {
       next(error)
     }
@@ -463,7 +439,7 @@ export class InboxApiServer {
       const { clientId, clientIdPrefix, description } = req.body
 
       if (!clientId) {
-        res.status(400).json({ error: 'clientId is required' })
+        this.badRequest(res, 'clientId is required')
         return
       }
 
@@ -474,14 +450,14 @@ export class InboxApiServer {
         description,
       })
 
-      res.status(201).json(sender)
+      this.created(res, sender)
     } catch (error: any) {
-      if (error.message?.includes('Inbox not found')) {
-        res.status(404).json({ error: 'Inbox not found' })
+      if (this.isNotFoundError(error)) {
+        this.notFound(res, 'Inbox not found')
         return
       }
-      if (error.message?.includes('duplicate') || error.message?.includes('unique')) {
-        res.status(409).json({ error: 'Sender already in allowlist' })
+      if (this.isConflictError(error)) {
+        this.conflict(res, 'Sender already in allowlist')
         return
       }
       next(error)
@@ -500,13 +476,16 @@ export class InboxApiServer {
       })
 
       if (!removed) {
-        res.status(404).json({ error: 'Sender not found in allowlist' })
+        this.notFound(res, 'Sender not found in allowlist')
         return
       }
 
-      res.status(204).send()
+      this.noContent(res)
     } catch (error) {
       next(error)
     }
   }
 }
+
+// Re-export the options type for convenience
+export type InboxApiServerOptions = BaseApiServerOptions

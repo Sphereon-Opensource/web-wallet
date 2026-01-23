@@ -16,6 +16,8 @@ import {getMatchingIdentity, getPartyByDid, extractIssuerDid} from '@helpers/Ide
 import {CredentialMapper, OriginalVerifiableCredential} from '@sphereon/ssi-types'
 import {VerifiableCredential} from '@veramo/core'
 import {useRole} from '@/src/contexts/RoleContext'
+import {useListPageState, createSortComparator} from '@/src/hooks/useListPageState'
+import ConfirmDeleteModal, {useConfirmDelete, useBulkDelete} from '@components/modals/ConfirmDeleteModal'
 import style from './index.module.css'
 
 type StatusFilter = 'all' | 'valid' | 'expired' | 'revoked' | 'suspended'
@@ -73,13 +75,78 @@ const CredentialsListPage: React.FC = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [selectedCredential, setSelectedCredential] = useState<CredentialTableItem | null>(null)
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [filterStatus, setFilterStatus] = useState<StatusFilter>('all')
   const [filterType, setFilterType] = useState<CredentialTypeFilter>('credentials')
-  const [sortField, setSortField] = useState<SortField>('validFrom')
-  const [sortDirection, setSortDirection] = useState<SortDirection>('desc')
-  const [openMenuId, setOpenMenuId] = useState<string | null>(null)
-  const [menuPosition, setMenuPosition] = useState<{top: number; left: number} | null>(null)
+
+  // Use shared list page state hook for selection, sorting, and context menu
+  const {
+    selectedIds,
+    selectionCount,
+    isSelected,
+    isAllSelected,
+    isIndeterminate,
+    toggleSelection,
+    clearSelection,
+    handleSelectAll: handleSelectAllItems,
+    sortColumn: sortField,
+    sortDirection,
+    handleSort,
+    getSortIconState,
+    openMenuId,
+    menuPosition,
+    toggleMenu,
+    closeMenu,
+  } = useListPageState<SortField>({
+    defaultSortColumn: 'validFrom',
+    defaultSortDirection: 'desc',
+    getItemId: (item: CredentialTableItem) => item.hash,
+  })
+
+  // Delete confirmation hooks
+  const singleDelete = useConfirmDelete({
+    onConfirm: async (hash: string) => {
+      await deleteCredential({
+        dataProviderName: DataProvider.CREDENTIALS,
+        meta: {idColumnName: 'hash'},
+        resource: 'CREDENTIALS',
+        id: hash,
+      })
+      if (selectedCredential?.hash === hash) {
+        setSelectedCredential(null)
+      }
+    },
+    onSuccess: () => {
+      void refetchCredentials()
+    },
+    onError: (err) => {
+      console.error('[CredentialsListPage] Error deleting credential:', err)
+      setError('Failed to delete credential. Please try again.')
+    },
+  })
+
+  const bulkDelete = useBulkDelete({
+    onConfirm: async (hashes: string[]) => {
+      for (const hash of hashes) {
+        await deleteCredential({
+          dataProviderName: DataProvider.CREDENTIALS,
+          meta: {idColumnName: 'hash'},
+          resource: 'CREDENTIALS',
+          id: hash,
+        })
+        if (selectedCredential?.hash === hash) {
+          setSelectedCredential(null)
+        }
+      }
+    },
+    onSuccess: () => {
+      clearSelection()
+      void refetchCredentials()
+    },
+    onError: (err) => {
+      console.error('[CredentialsListPage] Error deleting credentials:', err)
+      setError('Failed to delete some credentials. Please try again.')
+    },
+  })
 
   const {service: brandingSync, sync: syncBrandings} = useBrandingSync()
 
@@ -301,90 +368,17 @@ const CredentialsListPage: React.FC = () => {
     }]
   }, [filterStatus, translate, getStatusCount])
 
-  const handleSort = useCallback(
-    (field: SortField) => {
-      if (sortField === field) {
-        setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'))
-      } else {
-        setSortField(field)
-        setSortDirection('asc')
-      }
-    },
-    [sortField],
-  )
 
-  // Selection handlers
-  const handleToggleSelection = useCallback((hash: string, e: React.MouseEvent): void => {
-    e.stopPropagation()
-    setSelectedIds((prev) => {
-      const next = new Set(prev)
-      if (next.has(hash)) {
-        next.delete(hash)
-      } else {
-        next.add(hash)
-      }
-      return next
-    })
-  }, [])
-
-  const handleSelectAll = useCallback(
-    (selectAll: boolean): void => {
-      const sortedCredentials = getSortedCredentials()
-      if (selectAll) {
-        const allIds = new Set(sortedCredentials.map((c) => c.hash))
-        setSelectedIds(allIds)
-      } else {
-        setSelectedIds(new Set())
-      }
-    },
-    [getSortedCredentials]
-  )
-
-  const handleDeleteSelected = useCallback(async (): Promise<void> => {
-    if (selectedIds.size === 0) return
-    if (!confirm(`Are you sure you want to delete ${selectedIds.size} credential(s)?`)) return
-
-    const hashesToDelete = Array.from(selectedIds)
-    for (const hash of hashesToDelete) {
-      try {
-        await deleteCredential({
-          dataProviderName: DataProvider.CREDENTIALS,
-          meta: {idColumnName: 'hash'},
-          resource: 'CREDENTIALS',
-          id: hash,
-        })
-        if (selectedCredential?.hash === hash) {
-          setSelectedCredential(null)
-        }
-      } catch (err) {
-        console.error('[CredentialsListPage] Error deleting credential:', hash, err)
-      }
-    }
-    setSelectedIds(new Set())
-    void refetchCredentials()
-  }, [selectedIds, selectedCredential, deleteCredential, refetchCredentials])
+  const handleDeleteSelected = useCallback((): void => {
+    if (selectionCount === 0) return
+    bulkDelete.openModal(Array.from(selectedIds))
+  }, [selectionCount, selectedIds, bulkDelete])
 
   const handleDelete = useCallback(
-    async (credential: CredentialTableItem) => {
-      if (!confirm(`Are you sure you want to delete this credential?`)) return
-
-      try {
-        await deleteCredential({
-          dataProviderName: DataProvider.CREDENTIALS,
-          meta: {idColumnName: 'hash'},
-          resource: 'CREDENTIALS',
-          id: credential.hash,
-        })
-        if (selectedCredential?.hash === credential.hash) {
-          setSelectedCredential(null)
-        }
-        void refetchCredentials()
-      } catch (err) {
-        console.error('[CredentialsListPage] Error deleting credential:', err)
-        setError('Failed to delete credential. Please try again.')
-      }
+    (credential: CredentialTableItem) => {
+      singleDelete.openModal(credential.hash, credential.type)
     },
-    [deleteCredential, selectedCredential, refetchCredentials],
+    [singleDelete],
   )
 
   const handleViewDetails = useCallback(
@@ -414,32 +408,11 @@ const CredentialsListPage: React.FC = () => {
     }
   }, [refetchCredentials])
 
-  // Menu handlers
-  const handleToggleMenu = useCallback((id: string, e: React.MouseEvent<HTMLButtonElement>): void => {
-    e.stopPropagation()
-    e.preventDefault()
-    const button = e.currentTarget
-    const rect = button.getBoundingClientRect()
-
-    setOpenMenuId((prev) => {
-      if (prev === id) {
-        setMenuPosition(null)
-        return null
-      }
-      setMenuPosition({top: rect.bottom + 4, left: rect.right - 180})
-      return id
-    })
-  }, [])
-
-  const handleCloseMenu = useCallback((): void => {
-    setOpenMenuId(null)
-    setMenuPosition(null)
-  }, [])
 
   const handleMenuAction = useCallback(
     async (action: string, credential: CredentialTableItem, e: React.MouseEvent): Promise<void> => {
       e.stopPropagation()
-      handleCloseMenu()
+      closeMenu()
 
       switch (action) {
         case 'details':
@@ -456,7 +429,7 @@ const CredentialsListPage: React.FC = () => {
           break
       }
     },
-    [handleCloseMenu, handleViewDetails, handlePublish, handleUnpublish, handleDelete],
+    [closeMenu, handleViewDetails, handlePublish, handleUnpublish, handleDelete],
   )
 
   const getStatusVariant = (status: string): 'valid' | 'expired' | 'revoked' | 'pending' => {
@@ -488,7 +461,7 @@ const CredentialsListPage: React.FC = () => {
 
     return (
       <>
-        <div className={style.menuBackdrop} onClick={handleCloseMenu} />
+        <div className={style.menuBackdrop} onClick={closeMenu} />
         <div className={style.menuDropdown} style={{top: menuPosition.top, left: menuPosition.left}}>
           <button className={style.menuItem} onClick={(e) => handleMenuAction('details', credential, e)}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -564,19 +537,19 @@ const CredentialsListPage: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className={`${style.table} ${selectedIds.size > 0 ? style.tableWithSelections : ''}`}>
+          <div className={`${style.table} ${selectionCount > 0 ? style.tableWithSelections : ''}`}>
             <div className={style.tableHeader}>
               <div className={style.checkboxCell}>
                 <input
                   type="checkbox"
                   className={style.checkbox}
-                  checked={sortedCredentials.length > 0 && selectedIds.size === sortedCredentials.length}
+                  checked={isAllSelected(sortedCredentials)}
                   ref={(input) => {
                     if (input) {
-                      input.indeterminate = selectedIds.size > 0 && selectedIds.size < sortedCredentials.length
+                      input.indeterminate = isIndeterminate(sortedCredentials)
                     }
                   }}
-                  onChange={(e) => handleSelectAll(e.target.checked)}
+                  onChange={(e) => handleSelectAllItems(sortedCredentials, e.target.checked)}
                   aria-label="Select all"
                 />
               </div>
@@ -631,9 +604,9 @@ const CredentialsListPage: React.FC = () => {
                 <div className={style.checkboxCell}>
                   <input
                     type="checkbox"
-                    checked={selectedIds.has(credential.hash)}
+                    checked={isSelected(credential.hash)}
                     onChange={() => {}}
-                    onClick={(e) => handleToggleSelection(credential.hash, e)}
+                    onClick={(e) => toggleSelection(credential.hash, e)}
                     className={style.checkbox}
                     aria-label={`Select ${credential.type}`}
                   />
@@ -661,7 +634,7 @@ const CredentialsListPage: React.FC = () => {
                     <button
                       type="button"
                       className={style.meatballsButton}
-                      onClick={(e) => handleToggleMenu(credential.hash, e)}
+                      onClick={(e) => toggleMenu(credential.hash, e)}
                       onMouseDown={(e) => e.stopPropagation()}
                       aria-label="Open menu"
                     >
@@ -849,8 +822,8 @@ const CredentialsListPage: React.FC = () => {
             activeTab={filterType}
             onTabChange={(tabId) => setFilterType(tabId as CredentialTypeFilter)}
             filters={headerFilters}
-            selectionCount={selectedIds.size}
-            onClearSelection={() => setSelectedIds(new Set())}
+            selectionCount={selectionCount}
+            onClearSelection={clearSelection}
             onDeleteSelected={handleDeleteSelected}
             selectionLabel={{
               singular: isVerifier ? 'presentation' : 'credential',
@@ -865,6 +838,30 @@ const CredentialsListPage: React.FC = () => {
         {/* Detail Panel */}
         {renderDetailPanel()}
       </div>
+
+      {/* Delete Confirmation Modals */}
+      <ConfirmDeleteModal
+        isOpen={singleDelete.isOpen}
+        title={translate('credentials_delete_title', 'Delete Credential')}
+        message={translate('credentials_delete_message', 'Are you sure you want to delete "{name}"? This action cannot be undone.')}
+        itemName={singleDelete.itemName || undefined}
+        onCancel={singleDelete.closeModal}
+        onConfirm={singleDelete.handleConfirm}
+        isLoading={singleDelete.isLoading}
+        cancelText={translate('action_cancel', 'Cancel')}
+        confirmText={translate('action_delete', 'Delete')}
+      />
+      <ConfirmDeleteModal
+        isOpen={bulkDelete.isOpen}
+        title={translate('credentials_delete_bulk_title', 'Delete Credentials')}
+        message={translate('credentials_delete_bulk_message', 'Are you sure you want to delete {count} credential(s)? This action cannot be undone.')}
+        itemCount={bulkDelete.itemIds.length}
+        onCancel={bulkDelete.closeModal}
+        onConfirm={bulkDelete.handleConfirm}
+        isLoading={bulkDelete.isLoading}
+        cancelText={translate('action_cancel', 'Cancel')}
+        confirmText={translate('action_delete', 'Delete')}
+      />
     </div>
   )
 }

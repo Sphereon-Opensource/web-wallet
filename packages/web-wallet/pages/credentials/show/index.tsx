@@ -8,6 +8,7 @@ import {
   SSISwitchItem,
 } from '@sphereon/ui-components.ssi-react'
 import {EvidenceList, EvidenceItem} from '@components/views/EvidenceList'
+import {RoleBadges} from '@components/badges'
 import {getAgentBaseUrl} from '@agent'
 import PageHeaderBar from '@components/bars/PageHeaderBar'
 import style from './index.module.css'
@@ -576,18 +577,7 @@ const ShowCredentialDetails: FC<Props> = (props: Props): ReactElement => {
                   </div>
                   {contact.roles && contact.roles.length > 0 && (
                     <div className={style.contactCardRoles}>
-                      {contact.roles.map((role) => (
-                        <span
-                          key={role}
-                          className={`${style.roleBadge} ${
-                            role === CredentialRole.ISSUER ? style.roleBadgeIssuer :
-                            role === CredentialRole.VERIFIER ? style.roleBadgeVerifier :
-                            style.roleBadgeHolder
-                          }`}
-                        >
-                          {role}
-                        </span>
-                      ))}
+                      <RoleBadges roles={contact.roles} size="small" />
                     </div>
                   )}
                 </div>

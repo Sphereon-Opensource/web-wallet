@@ -6,6 +6,8 @@ import {ButtonIcon} from '@sphereon/ui-components.core'
 import KeyIcon from '@sphereon/ui-components.ssi-react/dist/components/assets/icons/Key'
 import AppHeaderBar from '@components/bars/AppHeaderBar'
 import {ListPageHeader, TabItem, FilterDropdown} from '@components/tables'
+import ConfirmDeleteModal, {useConfirmDelete, useBulkDelete} from '@components/modals/ConfirmDeleteModal'
+import {useListPageState, createSortComparator} from '@/src/hooks/useListPageState'
 import {staticPropsWithSST} from '@/src/i18n/server'
 import {DataResource, KeyManagementRoute, MainRoute} from '@typings'
 import {IIdentifier, ManagedKeyInfo} from '@veramo/core'
@@ -45,13 +47,30 @@ const KeysListPage: React.FC = () => {
   const navigate = useNavigate()
 
   const [selectedKey, setSelectedKey] = useState<KeyTableItem | null>(null)
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
-  const [sortField, setSortField] = useState<SortField>('type')
-  const [sortDirection, setSortDirection] = useState<SortDirection>('asc')
-  const [openMenuId, setOpenMenuId] = useState<string | null>(null)
-  const [menuPosition, setMenuPosition] = useState<{top: number; left: number} | null>(null)
   const [typeFilter, setTypeFilter] = useState<string>('all')
   const [kmsFilter, setKmsFilter] = useState<string>('all')
+
+  const {
+    selectedIds,
+    selectionCount,
+    isSelected,
+    isAllSelected,
+    isIndeterminate,
+    toggleSelection,
+    clearSelection,
+    handleSelectAll: handleSelectAllItems,
+    sortColumn: sortField,
+    sortDirection,
+    handleSort,
+    openMenuId,
+    menuPosition,
+    toggleMenu,
+    closeMenu,
+  } = useListPageState<SortField>({
+    defaultSortColumn: 'type',
+    defaultSortDirection: 'asc',
+    getItemId: (item: KeyTableItem) => item.id,
+  })
 
   const {
     data: keyData,
@@ -126,81 +145,44 @@ const KeysListPage: React.FC = () => {
   // Alias for backwards compatibility
   const sortedKeys = filteredAndSortedKeys
 
-  // Handle sort
-  const handleSort = useCallback(
-    (field: SortField) => {
-      if (sortField === field) {
-        setSortDirection(prev => (prev === 'asc' ? 'desc' : 'asc'))
-      } else {
-        setSortField(field)
-        setSortDirection('asc')
-      }
-    },
-    [sortField],
-  )
-
   // Handle add key (placeholder)
   const handleAddKey = useCallback(async () => {
     console.log('Add key clicked')
   }, [])
 
-  // Selection handlers
-  const handleToggleSelection = useCallback((id: string, e: React.MouseEvent): void => {
-    e.stopPropagation()
-    setSelectedIds(prev => {
-      const next = new Set(prev)
-      if (next.has(id)) {
-        next.delete(id)
-      } else {
-        next.add(id)
-      }
-      return next
-    })
-  }, [])
-
-  const handleSelectAll = useCallback(
-    (selectAll: boolean): void => {
-      if (selectAll) {
-        const allIds = new Set(sortedKeys.map(k => k.id))
-        setSelectedIds(allIds)
-      } else {
-        setSelectedIds(new Set())
-      }
+  // Delete confirmation hooks
+  // TODO: Implement key deletion when backend supports it (CWALL-242)
+  const singleDelete = useConfirmDelete({
+    onConfirm: async (id: string) => {
+      console.log('Delete key:', id)
+      // Backend deletion not yet supported
     },
-    [sortedKeys],
-  )
+    onSuccess: () => {
+      // void refetch() when backend supports deletion
+    },
+    onError: err => {
+      console.error('Failed to delete key:', err)
+    },
+  })
 
-  const handleDeleteSelected = useCallback(async (): Promise<void> => {
-    // TODO: Implement key deletion when backend supports it (CWALL-242)
-    console.log('Delete selected keys:', Array.from(selectedIds))
-    setSelectedIds(new Set())
-  }, [selectedIds])
+  const bulkDelete = useBulkDelete({
+    onConfirm: async (ids: string[]) => {
+      console.log('Delete keys:', ids)
+      // Backend deletion not yet supported
+    },
+    onSuccess: () => {
+      clearSelection()
+      // void refetch() when backend supports deletion
+    },
+    onError: err => {
+      console.error('Failed to delete keys:', err)
+    },
+  })
 
-  // Menu handlers
-  const handleToggleMenu = useCallback((id: string, e: React.MouseEvent<HTMLButtonElement>): void => {
-    e.stopPropagation()
-    e.preventDefault()
-
-    const button = e.currentTarget
-    const rect = button.getBoundingClientRect()
-
-    setOpenMenuId(prev => {
-      if (prev === id) {
-        setMenuPosition(null)
-        return null
-      }
-      setMenuPosition({
-        top: rect.bottom + 4,
-        left: rect.right - 180,
-      })
-      return id
-    })
-  }, [])
-
-  const handleCloseMenu = useCallback((): void => {
-    setOpenMenuId(null)
-    setMenuPosition(null)
-  }, [])
+  const handleDeleteSelected = useCallback((): void => {
+    if (selectionCount === 0) return
+    bulkDelete.openModal(Array.from(selectedIds))
+  }, [selectionCount, selectedIds, bulkDelete])
 
   const handleViewFullDetails = useCallback(
     (kid: string) => {
@@ -210,9 +192,9 @@ const KeysListPage: React.FC = () => {
   )
 
   const handleMenuAction = useCallback(
-    async (action: string, key: KeyTableItem, e: React.MouseEvent): Promise<void> => {
+    (action: string, key: KeyTableItem, e: React.MouseEvent): void => {
       e.stopPropagation()
-      handleCloseMenu()
+      closeMenu()
 
       switch (action) {
         case 'details':
@@ -222,12 +204,11 @@ const KeysListPage: React.FC = () => {
           handleViewFullDetails(key.kid)
           break
         case 'delete':
-          // TODO: Implement key deletion when backend supports it (CWALL-242)
-          console.log('Delete key:', key.kid)
+          singleDelete.openModal(key.id, key.alias || key.type)
           break
       }
     },
-    [handleCloseMenu, handleViewFullDetails],
+    [closeMenu, handleViewFullDetails, singleDelete],
   )
 
   // Truncate KID for display
@@ -306,7 +287,7 @@ const KeysListPage: React.FC = () => {
 
     return (
       <>
-        <div className={style.menuBackdrop} onClick={handleCloseMenu} />
+        <div className={style.menuBackdrop} onClick={closeMenu} />
         <div className={style.menuDropdown} style={{top: menuPosition.top, left: menuPosition.left}}>
           <button className={style.menuItem} onClick={e => handleMenuAction('details', key, e)}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -388,13 +369,13 @@ const KeysListPage: React.FC = () => {
             <input
               type="checkbox"
               className={style.checkbox}
-              checked={sortedKeys.length > 0 && selectedIds.size === sortedKeys.length}
+              checked={isAllSelected(sortedKeys)}
               ref={input => {
                 if (input) {
-                  input.indeterminate = selectedIds.size > 0 && selectedIds.size < sortedKeys.length
+                  input.indeterminate = isIndeterminate(sortedKeys)
                 }
               }}
-              onChange={e => handleSelectAll(e.target.checked)}
+              onChange={e => handleSelectAllItems(sortedKeys, e.target.checked)}
               aria-label="Select all"
             />
           </div>
@@ -442,9 +423,12 @@ const KeysListPage: React.FC = () => {
             <div className={style.checkboxCell}>
               <input
                 type="checkbox"
-                checked={selectedIds.has(key.id)}
+                checked={isSelected(key.id)}
                 onChange={() => {}}
-                onClick={e => handleToggleSelection(key.id, e)}
+                onClick={e => {
+                  e.stopPropagation()
+                  toggleSelection(key.id)
+                }}
                 className={style.checkbox}
                 aria-label={`Select ${key.alias || key.kid}`}
               />
@@ -471,7 +455,7 @@ const KeysListPage: React.FC = () => {
                 <button
                   type="button"
                   className={style.meatballsButton}
-                  onClick={e => handleToggleMenu(key.id, e)}
+                  onClick={e => toggleMenu(key.id, e)}
                   onMouseDown={e => e.stopPropagation()}
                   aria-label="Open menu">
                   {renderMeatballsIcon()}
@@ -629,8 +613,8 @@ const KeysListPage: React.FC = () => {
             activeTab="all"
             onTabChange={() => {}}
             filters={headerFilters}
-            selectionCount={selectedIds.size}
-            onClearSelection={() => setSelectedIds(new Set())}
+            selectionCount={selectionCount}
+            onClearSelection={clearSelection}
             onDeleteSelected={handleDeleteSelected}
             selectionLabel={{singular: 'key', plural: 'keys'}}
             actions={
@@ -649,6 +633,26 @@ const KeysListPage: React.FC = () => {
         {/* Detail Panel */}
         {renderDetailPanel()}
       </div>
+
+      {/* Delete Confirmation Modals */}
+      <ConfirmDeleteModal
+        isOpen={singleDelete.isOpen}
+        title="Delete Key"
+        message="Are you sure you want to delete this key? This action cannot be undone."
+        itemName={singleDelete.itemName ?? undefined}
+        onCancel={singleDelete.closeModal}
+        onConfirm={singleDelete.handleConfirm}
+        isLoading={singleDelete.isLoading}
+      />
+      <ConfirmDeleteModal
+        isOpen={bulkDelete.isOpen}
+        title="Delete Keys"
+        message="Are you sure you want to delete these keys? This action cannot be undone."
+        itemCount={bulkDelete.itemIds.length}
+        onCancel={bulkDelete.closeModal}
+        onConfirm={bulkDelete.handleConfirm}
+        isLoading={bulkDelete.isLoading}
+      />
     </div>
   )
 }

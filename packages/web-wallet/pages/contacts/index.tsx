@@ -1,10 +1,13 @@
-import React, {useCallback, useEffect, useState, useMemo} from 'react'
+import React, {useCallback, useState, useMemo} from 'react'
 import {HttpError, useDelete, useList, useNavigation, useTranslate} from '@refinedev/core'
 import {PrimaryButton} from '@sphereon/ui-components.ssi-react'
 import {ButtonIcon} from '@sphereon/ui-components.core'
 import {CredentialRole} from '@sphereon/ssi-types'
 import AppHeaderBar from '@components/bars/AppHeaderBar'
 import {ContactCard, AddressCard} from '@components/fields'
+import {RoleBadges} from '@components/badges'
+import ConfirmDeleteModal, {useConfirmDelete, useBulkDelete} from '@components/modals/ConfirmDeleteModal'
+import {useListPageState} from '@/src/hooks/useListPageState'
 import {staticPropsWithSST} from '@/src/i18n/server'
 import {DataResource} from '@typings'
 import type {Party, Identity} from '@sphereon/ssi-sdk.data-store-types'
@@ -27,12 +30,30 @@ const ContactsListPage: React.FC = () => {
   const {mutateAsync: deleteContact} = useDelete<Party, HttpError>()
 
   const [selectedContact, setSelectedContact] = useState<Party | null>(null)
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [filterType, setFilterType] = useState<ContactTypeFilter>('organizations')
-  const [openMenuId, setOpenMenuId] = useState<string | null>(null)
-  const [menuPosition, setMenuPosition] = useState<{top: number; left: number} | null>(null)
-  const [sortColumn, setSortColumn] = useState<SortColumn>('name')
-  const [sortDirection, setSortDirection] = useState<SortDirection>('asc')
+
+  // Use shared list page state hook for selection, sorting, and context menu
+  const {
+    selectedIds,
+    selectionCount,
+    isSelected,
+    isAllSelected,
+    isIndeterminate,
+    toggleSelection,
+    clearSelection,
+    handleSelectAll: handleSelectAllItems,
+    sortColumn,
+    sortDirection,
+    handleSort,
+    openMenuId,
+    menuPosition,
+    toggleMenu,
+    closeMenu,
+  } = useListPageState<SortColumn>({
+    defaultSortColumn: 'name',
+    defaultSortDirection: 'asc',
+    getItemId: (item: Party) => item.id,
+  })
 
   const {data: partiesData, isLoading, isError, refetch} = useList<Party, HttpError>({resource: 'parties'})
 
@@ -71,19 +92,6 @@ const ContactsListPage: React.FC = () => {
     })
   }, [parties, filterType, sortColumn, sortDirection])
 
-  // Handle column sort
-  const handleSort = useCallback(
-    (column: SortColumn) => {
-      if (sortColumn === column) {
-        setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'))
-      } else {
-        setSortColumn(column)
-        setSortDirection('asc')
-      }
-    },
-    [sortColumn]
-  )
-
   // Get count by type
   const getTypeCount = useCallback((type: ContactTypeFilter): number => {
     const partyType = type === 'organizations' ? PartyTypeType.ORGANIZATION : PartyTypeType.NATURAL_PERSON
@@ -114,99 +122,36 @@ const ContactsListPage: React.FC = () => {
     return `${did.substring(0, 15)}...${did.substring(did.length - 10)}`
   }
 
-  // Check if party has issuer role
-  const hasIssuerRole = (party: Party): boolean => {
-    return party.roles?.includes(CredentialRole.ISSUER) ?? false
-  }
-
-  // Check if party has verifier role
-  const hasVerifierRole = (party: Party): boolean => {
-    return party.roles?.includes(CredentialRole.VERIFIER) ?? false
-  }
-
-  // Check if party has holder role
-  const hasHolderRole = (party: Party): boolean => {
-    return party.roles?.includes(CredentialRole.HOLDER) ?? false
-  }
-
-  // Render role badges for organization
+  // Render role badges for organization using the shared RoleBadges component
   const renderRoleBadges = (party: Party) => {
     if (filterType !== 'organizations') return null
+    if (!party.roles || party.roles.length === 0) return null
 
-    const isIssuer = hasIssuerRole(party)
-    const isVerifier = hasVerifierRole(party)
-    const isHolder = hasHolderRole(party)
-
-    if (!isIssuer && !isVerifier && !isHolder) return null
-
-    return (
-      <div className={style.roleBadges}>
-        {isIssuer && <span className={`${style.roleBadge} ${style.roleBadgeIssuer}`}>Issuer</span>}
-        {isVerifier && <span className={`${style.roleBadge} ${style.roleBadgeVerifier}`}>Verifier</span>}
-        {isHolder && <span className={`${style.roleBadge} ${style.roleBadgeHolder}`}>Holder</span>}
-      </div>
-    )
+    return <RoleBadges roles={party.roles} size="small" />
   }
 
-  // Handle menu toggle
-  const handleToggleMenu = useCallback((id: string, e: React.MouseEvent<HTMLButtonElement>): void => {
-    e.stopPropagation()
-    e.preventDefault()
-
-    const button = e.currentTarget
-    const rect = button.getBoundingClientRect()
-
-    setOpenMenuId(prev => {
-      if (prev === id) {
-        setMenuPosition(null)
-        return null
-      }
-      setMenuPosition({
-        top: rect.bottom + 4,
-        left: rect.right - 180,
+  // Delete confirmation hooks
+  const singleDelete = useConfirmDelete({
+    onConfirm: async (id: string) => {
+      await deleteContact({
+        resource: DataResource.CONTACTS,
+        id: id,
       })
-      return id
-    })
-  }, [])
-
-  const handleCloseMenu = useCallback((): void => {
-    setOpenMenuId(null)
-    setMenuPosition(null)
-  }, [])
-
-  // Selection handlers
-  const handleToggleSelection = useCallback((id: string, e: React.MouseEvent): void => {
-    e.stopPropagation()
-    setSelectedIds((prev) => {
-      const next = new Set(prev)
-      if (next.has(id)) {
-        next.delete(id)
-      } else {
-        next.add(id)
-      }
-      return next
-    })
-  }, [])
-
-  const handleSelectAll = useCallback(
-    (selectAll: boolean): void => {
-      if (selectAll) {
-        const allIds = new Set(filteredContacts.map((c) => c.id))
-        setSelectedIds(allIds)
-      } else {
-        setSelectedIds(new Set())
+      if (selectedContact?.id === id) {
+        setSelectedContact(null)
       }
     },
-    [filteredContacts]
-  )
+    onSuccess: () => {
+      void refetch()
+    },
+    onError: (err) => {
+      console.error('Failed to delete contact:', err)
+    },
+  })
 
-  const handleDeleteSelected = useCallback(async (): Promise<void> => {
-    if (selectedIds.size === 0) return
-    if (!confirm(`Are you sure you want to delete ${selectedIds.size} contact(s)?`)) return
-
-    const idsToDelete = Array.from(selectedIds)
-    for (const id of idsToDelete) {
-      try {
+  const bulkDelete = useBulkDelete({
+    onConfirm: async (ids: string[]) => {
+      for (const id of ids) {
         await deleteContact({
           resource: DataResource.CONTACTS,
           id: id,
@@ -214,41 +159,38 @@ const ContactsListPage: React.FC = () => {
         if (selectedContact?.id === id) {
           setSelectedContact(null)
         }
-      } catch (error) {
-        console.error('Failed to delete contact:', id, error)
       }
-    }
-    setSelectedIds(new Set())
-    await refetch()
-  }, [selectedIds, selectedContact, deleteContact, refetch])
+    },
+    onSuccess: () => {
+      clearSelection()
+      void refetch()
+    },
+    onError: (err) => {
+      console.error('Failed to delete contacts:', err)
+    },
+  })
+
+  const handleDeleteSelected = useCallback((): void => {
+    if (selectionCount === 0) return
+    bulkDelete.openModal(Array.from(selectedIds))
+  }, [selectionCount, selectedIds, bulkDelete])
 
   // Handle contact actions
   const handleAction = useCallback(
-    async (action: string, contact: Party, e: React.MouseEvent): Promise<void> => {
+    (action: string, contact: Party, e: React.MouseEvent): void => {
       e.stopPropagation()
-      handleCloseMenu()
+      closeMenu()
 
       switch (action) {
         case 'view':
           show(DataResource.CONTACTS, contact.id)
           break
         case 'delete':
-          try {
-            await deleteContact({
-              resource: DataResource.CONTACTS,
-              id: contact.id,
-            })
-            if (selectedContact?.id === contact.id) {
-              setSelectedContact(null)
-            }
-            await refetch()
-          } catch (error) {
-            console.error('Failed to delete contact:', error)
-          }
+          singleDelete.openModal(contact.id, contact.contact.displayName)
           break
       }
     },
-    [handleCloseMenu, show, deleteContact, selectedContact, refetch]
+    [closeMenu, show, singleDelete]
   )
 
   // Handle view details
@@ -257,18 +199,9 @@ const ContactsListPage: React.FC = () => {
   }, [show])
 
   // Handle delete from detail panel
-  const handleDelete = useCallback(async (contact: Party): Promise<void> => {
-    try {
-      await deleteContact({
-        resource: DataResource.CONTACTS,
-        id: contact.id,
-      })
-      setSelectedContact(null)
-      await refetch()
-    } catch (error) {
-      console.error('Failed to delete contact:', error)
-    }
-  }, [deleteContact, refetch])
+  const handleDelete = useCallback((contact: Party): void => {
+    singleDelete.openModal(contact.id, contact.contact.displayName)
+  }, [singleDelete])
 
   // Navigate to create
   const handleCreateContact = useCallback(async (): Promise<void> => {
@@ -291,7 +224,7 @@ const ContactsListPage: React.FC = () => {
 
     return (
       <>
-        <div className={style.menuBackdrop} onClick={handleCloseMenu} />
+        <div className={style.menuBackdrop} onClick={closeMenu} />
         <div className={style.menuDropdown} style={{top: menuPosition.top, left: menuPosition.left}}>
           <button className={style.menuItem} onClick={(e) => handleAction('view', contact, e)}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -349,19 +282,19 @@ const ContactsListPage: React.FC = () => {
     }
 
     return (
-      <div className={`${style.table} ${selectedIds.size > 0 ? style.tableWithSelections : ''}`}>
+      <div className={`${style.table} ${selectionCount > 0 ? style.tableWithSelections : ''}`}>
         <div className={style.tableHeader}>
           <div className={style.checkboxCell}>
             <input
               type="checkbox"
               className={style.checkbox}
-              checked={filteredContacts.length > 0 && selectedIds.size === filteredContacts.length}
+              checked={isAllSelected(filteredContacts)}
               ref={(input) => {
                 if (input) {
-                  input.indeterminate = selectedIds.size > 0 && selectedIds.size < filteredContacts.length
+                  input.indeterminate = isIndeterminate(filteredContacts)
                 }
               }}
-              onChange={(e) => handleSelectAll(e.target.checked)}
+              onChange={(e) => handleSelectAllItems(filteredContacts, e.target.checked)}
               aria-label="Select all"
             />
           </div>
@@ -429,9 +362,9 @@ const ContactsListPage: React.FC = () => {
             <div className={style.checkboxCell}>
               <input
                 type="checkbox"
-                checked={selectedIds.has(contact.id)}
+                checked={isSelected(contact.id)}
                 onChange={() => {}}
-                onClick={(e) => handleToggleSelection(contact.id, e)}
+                onClick={(e) => toggleSelection(contact.id, e)}
                 className={style.checkbox}
                 aria-label={`Select ${contact.contact.displayName}`}
               />
@@ -478,7 +411,7 @@ const ContactsListPage: React.FC = () => {
                 <button
                   type="button"
                   className={style.meatballsButton}
-                  onClick={(e) => handleToggleMenu(contact.id, e)}
+                  onClick={(e) => toggleMenu(contact.id, e)}
                   onMouseDown={(e) => e.stopPropagation()}
                   aria-label="Open menu"
                 >
@@ -628,13 +561,13 @@ const ContactsListPage: React.FC = () => {
             </div>
 
             {/* Selection Actions Overlay */}
-            {selectedIds.size > 0 && (
+            {selectionCount > 0 && (
               <div className={style.selectionOverlay}>
                 <div className={style.selectionInfo}>
                   <button
                     type="button"
                     className={style.deselectButton}
-                    onClick={() => setSelectedIds(new Set())}
+                    onClick={clearSelection}
                     aria-label={translate('action_deselect_all', 'Deselect all')}
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -643,7 +576,7 @@ const ContactsListPage: React.FC = () => {
                     </svg>
                   </button>
                   <span className={style.selectionCount}>
-                    {selectedIds.size} {selectedIds.size === 1 ? 'item' : 'items'} selected
+                    {selectionCount} {selectionCount === 1 ? 'item' : 'items'} selected
                   </span>
                 </div>
                 <button
@@ -682,6 +615,30 @@ const ContactsListPage: React.FC = () => {
         {/* Detail Panel */}
         {renderDetailPanel()}
       </div>
+
+      {/* Delete Confirmation Modals */}
+      <ConfirmDeleteModal
+        isOpen={singleDelete.isOpen}
+        title={translate('contacts_delete_title', 'Delete Contact')}
+        message={translate('contacts_delete_message', 'Are you sure you want to delete "{name}"? This action cannot be undone.')}
+        itemName={singleDelete.itemName || undefined}
+        onCancel={singleDelete.closeModal}
+        onConfirm={singleDelete.handleConfirm}
+        isLoading={singleDelete.isLoading}
+        cancelText={translate('action_cancel', 'Cancel')}
+        confirmText={translate('action_delete', 'Delete')}
+      />
+      <ConfirmDeleteModal
+        isOpen={bulkDelete.isOpen}
+        title={translate('contacts_delete_bulk_title', 'Delete Contacts')}
+        message={translate('contacts_delete_bulk_message', 'Are you sure you want to delete {count} contact(s)? This action cannot be undone.')}
+        itemCount={bulkDelete.itemIds.length}
+        onCancel={bulkDelete.closeModal}
+        onConfirm={bulkDelete.handleConfirm}
+        isLoading={bulkDelete.isLoading}
+        cancelText={translate('action_cancel', 'Cancel')}
+        confirmText={translate('action_delete', 'Delete')}
+      />
     </div>
   )
 }

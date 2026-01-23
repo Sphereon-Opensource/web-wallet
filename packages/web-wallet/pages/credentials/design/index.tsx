@@ -4,6 +4,8 @@ import {useNavigate} from 'react-router-dom'
 import {CredentialMiniCardView, PrimaryButton, SSICredentialCardView} from '@sphereon/ui-components.ssi-react'
 import {ButtonIcon} from '@sphereon/ui-components.core'
 import AppHeaderBar from '@components/bars/AppHeaderBar'
+import ConfirmDeleteModal, {useConfirmDelete, useBulkDelete} from '@components/modals/ConfirmDeleteModal'
+import {useListPageState} from '@/src/hooks/useListPageState'
 import {staticPropsWithSST} from '@/src/i18n/server'
 import {CredentialDesignTableItem, DataResource} from '@typings'
 import {removeCredentialConfigurationFromOid4vciMetadata} from '@/src/services/credentials/credentialDesignService'
@@ -21,11 +23,28 @@ const CredentialDesignsListPage: React.FC = () => {
   const allowCreateCredentialDesign = getEnv('BROWSER_PUBLIC_DISABLE_CREDENTIAL_DESIGN_INTERFACE') !== 'true'
 
   const [selectedDesign, setSelectedDesign] = useState<CredentialDesignTableItem | null>(null)
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
-  const [openMenuId, setOpenMenuId] = useState<string | null>(null)
-  const [menuPosition, setMenuPosition] = useState<{top: number; left: number} | null>(null)
-  const [sortColumn, setSortColumn] = useState<SortColumn>('name')
-  const [sortDirection, setSortDirection] = useState<SortDirection>('asc')
+
+  const {
+    selectedIds,
+    selectionCount,
+    isSelected,
+    isAllSelected,
+    isIndeterminate,
+    toggleSelection,
+    clearSelection,
+    handleSelectAll: handleSelectAllItems,
+    sortColumn,
+    sortDirection,
+    handleSort,
+    openMenuId,
+    menuPosition,
+    toggleMenu,
+    closeMenu,
+  } = useListPageState<SortColumn>({
+    defaultSortColumn: 'name',
+    defaultSortDirection: 'asc',
+    getItemId: (item: CredentialDesignTableItem) => item.id,
+  })
 
   const {data: designsData, isLoading, isError, refetch} = useList<CredentialDesignTableItem, HttpError>({
     resource: DataResource.CREDENTIAL_DESIGNS,
@@ -76,72 +95,32 @@ const CredentialDesignsListPage: React.FC = () => {
     })
   }, [designs, sortColumn, sortDirection, getCredentialFormat, getCredentialTypes])
 
-  // Handle column sort
-  const handleSort = useCallback((column: SortColumn) => {
-    if (sortColumn === column) {
-      setSortDirection(prev => (prev === 'asc' ? 'desc' : 'asc'))
-    } else {
-      setSortColumn(column)
-      setSortDirection('asc')
-    }
-  }, [sortColumn])
-
-  // Handle menu toggle
-  const handleToggleMenu = useCallback((id: string, e: React.MouseEvent<HTMLButtonElement>): void => {
-    e.stopPropagation()
-    e.preventDefault()
-
-    const button = e.currentTarget
-    const rect = button.getBoundingClientRect()
-
-    setOpenMenuId(prev => {
-      if (prev === id) {
-        setMenuPosition(null)
-        return null
-      }
-      setMenuPosition({
-        top: rect.bottom + 4,
-        left: rect.right - 180,
+  // Delete confirmation hooks
+  const singleDelete = useConfirmDelete({
+    onConfirm: async (id: string) => {
+      const design = designs.find(d => d.id === id)
+      await deleteDesign({
+        resource: DataResource.CREDENTIAL_DESIGNS,
+        id: id,
       })
-      return id
-    })
-  }, [])
-
-  const handleCloseMenu = useCallback((): void => {
-    setOpenMenuId(null)
-    setMenuPosition(null)
-  }, [])
-
-  // Selection handlers
-  const handleToggleSelection = useCallback((id: string, e: React.MouseEvent): void => {
-    e.stopPropagation()
-    setSelectedIds(prev => {
-      const next = new Set(prev)
-      if (next.has(id)) {
-        next.delete(id)
-      } else {
-        next.add(id)
+      if (design) {
+        await removeCredentialConfigurationFromOid4vciMetadata(design.name)
       }
-      return next
-    })
-  }, [])
+      if (selectedDesign?.id === id) {
+        setSelectedDesign(null)
+      }
+    },
+    onSuccess: () => {
+      void refetch()
+    },
+    onError: err => {
+      console.error('Failed to delete design:', err)
+    },
+  })
 
-  const handleSelectAll = useCallback((selectAll: boolean): void => {
-    if (selectAll) {
-      const allIds = new Set(sortedDesigns.map(d => d.id))
-      setSelectedIds(allIds)
-    } else {
-      setSelectedIds(new Set())
-    }
-  }, [sortedDesigns])
-
-  const handleDeleteSelected = useCallback(async (): Promise<void> => {
-    if (selectedIds.size === 0) return
-    if (!confirm(`Are you sure you want to delete ${selectedIds.size} credential design(s)?`)) return
-
-    const idsToDelete = Array.from(selectedIds)
-    for (const id of idsToDelete) {
-      try {
+  const bulkDelete = useBulkDelete({
+    onConfirm: async (ids: string[]) => {
+      for (const id of ids) {
         const design = designs.find(d => d.id === id)
         await deleteDesign({
           resource: DataResource.CREDENTIAL_DESIGNS,
@@ -153,18 +132,26 @@ const CredentialDesignsListPage: React.FC = () => {
         if (selectedDesign?.id === id) {
           setSelectedDesign(null)
         }
-      } catch (error) {
-        console.error('Failed to delete design:', id, error)
       }
-    }
-    setSelectedIds(new Set())
-    await refetch()
-  }, [selectedIds, selectedDesign, designs, deleteDesign, refetch])
+    },
+    onSuccess: () => {
+      clearSelection()
+      void refetch()
+    },
+    onError: err => {
+      console.error('Failed to delete designs:', err)
+    },
+  })
+
+  const handleDeleteSelected = useCallback((): void => {
+    if (selectionCount === 0) return
+    bulkDelete.openModal(Array.from(selectedIds))
+  }, [selectionCount, selectedIds, bulkDelete])
 
   // Handle design actions
-  const handleAction = useCallback(async (action: string, design: CredentialDesignTableItem, e: React.MouseEvent): Promise<void> => {
+  const handleAction = useCallback((action: string, design: CredentialDesignTableItem, e: React.MouseEvent): void => {
     e.stopPropagation()
-    handleCloseMenu()
+    closeMenu()
 
     switch (action) {
       case 'view':
@@ -174,22 +161,10 @@ const CredentialDesignsListPage: React.FC = () => {
         edit(DataResource.CREDENTIAL_DESIGNS, design.id)
         break
       case 'delete':
-        try {
-          await deleteDesign({
-            resource: DataResource.CREDENTIAL_DESIGNS,
-            id: design.id,
-          })
-          await removeCredentialConfigurationFromOid4vciMetadata(design.name)
-          if (selectedDesign?.id === design.id) {
-            setSelectedDesign(null)
-          }
-          await refetch()
-        } catch (error) {
-          console.error('Failed to delete design:', error)
-        }
+        singleDelete.openModal(design.id, design.name)
         break
     }
-  }, [handleCloseMenu, navigate, edit, deleteDesign, selectedDesign, refetch])
+  }, [closeMenu, navigate, edit, singleDelete])
 
   // Handle view from detail panel
   const handleView = useCallback((design: CredentialDesignTableItem): void => {
@@ -202,19 +177,9 @@ const CredentialDesignsListPage: React.FC = () => {
   }, [edit])
 
   // Handle delete from detail panel
-  const handleDelete = useCallback(async (design: CredentialDesignTableItem): Promise<void> => {
-    try {
-      await deleteDesign({
-        resource: DataResource.CREDENTIAL_DESIGNS,
-        id: design.id,
-      })
-      await removeCredentialConfigurationFromOid4vciMetadata(design.name)
-      setSelectedDesign(null)
-      await refetch()
-    } catch (error) {
-      console.error('Failed to delete design:', error)
-    }
-  }, [deleteDesign, refetch])
+  const handleDelete = useCallback((design: CredentialDesignTableItem): void => {
+    singleDelete.openModal(design.id, design.name)
+  }, [singleDelete])
 
   // Navigate to create
   const handleCreateDesign = useCallback(async (): Promise<void> => {
@@ -236,7 +201,7 @@ const CredentialDesignsListPage: React.FC = () => {
 
     return (
       <>
-        <div className={style.menuBackdrop} onClick={handleCloseMenu} />
+        <div className={style.menuBackdrop} onClick={closeMenu} />
         <div className={style.menuDropdown} style={{top: menuPosition.top, left: menuPosition.left}}>
           <button className={style.menuItem} onClick={e => handleAction('view', design, e)}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -340,13 +305,13 @@ const CredentialDesignsListPage: React.FC = () => {
             <input
               type="checkbox"
               className={style.checkbox}
-              checked={sortedDesigns.length > 0 && selectedIds.size === sortedDesigns.length}
+              checked={isAllSelected(sortedDesigns)}
               ref={input => {
                 if (input) {
-                  input.indeterminate = selectedIds.size > 0 && selectedIds.size < sortedDesigns.length
+                  input.indeterminate = isIndeterminate(sortedDesigns)
                 }
               }}
-              onChange={e => handleSelectAll(e.target.checked)}
+              onChange={e => handleSelectAllItems(sortedDesigns, e.target.checked)}
               aria-label="Select all"
             />
           </div>
@@ -395,9 +360,12 @@ const CredentialDesignsListPage: React.FC = () => {
             <div className={style.checkboxCell}>
               <input
                 type="checkbox"
-                checked={selectedIds.has(design.id)}
+                checked={isSelected(design.id)}
                 onChange={() => {}}
-                onClick={e => handleToggleSelection(design.id, e)}
+                onClick={e => {
+                  e.stopPropagation()
+                  toggleSelection(design.id)
+                }}
                 className={style.checkbox}
                 aria-label={`Select ${design.name}`}
               />
@@ -419,7 +387,7 @@ const CredentialDesignsListPage: React.FC = () => {
                 <button
                   type="button"
                   className={style.meatballsButton}
-                  onClick={e => handleToggleMenu(design.id, e)}
+                  onClick={e => toggleMenu(design.id, e)}
                   onMouseDown={e => e.stopPropagation()}
                   aria-label="Open menu"
                 >
@@ -567,13 +535,13 @@ const CredentialDesignsListPage: React.FC = () => {
             </div>
 
             {/* Selection Actions Overlay */}
-            {selectedIds.size > 0 && (
+            {selectionCount > 0 && (
               <div className={style.selectionOverlay}>
                 <div className={style.selectionInfo}>
                   <button
                     type="button"
                     className={style.deselectButton}
-                    onClick={() => setSelectedIds(new Set())}
+                    onClick={clearSelection}
                     aria-label={translate('action_deselect_all', 'Deselect all')}
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -582,7 +550,7 @@ const CredentialDesignsListPage: React.FC = () => {
                     </svg>
                   </button>
                   <span className={style.selectionCount}>
-                    {selectedIds.size} {selectedIds.size === 1 ? 'item' : 'items'} selected
+                    {selectionCount} {selectionCount === 1 ? 'item' : 'items'} selected
                   </span>
                 </div>
                 <button
@@ -631,6 +599,26 @@ const CredentialDesignsListPage: React.FC = () => {
         {/* Detail Panel */}
         {renderDetailPanel()}
       </div>
+
+      {/* Delete Confirmation Modals */}
+      <ConfirmDeleteModal
+        isOpen={singleDelete.isOpen}
+        title="Delete Credential Design"
+        message="Are you sure you want to delete this credential design? This action cannot be undone."
+        itemName={singleDelete.itemName ?? undefined}
+        onCancel={singleDelete.closeModal}
+        onConfirm={singleDelete.handleConfirm}
+        isLoading={singleDelete.isLoading}
+      />
+      <ConfirmDeleteModal
+        isOpen={bulkDelete.isOpen}
+        title="Delete Credential Designs"
+        message="Are you sure you want to delete these credential designs? This action cannot be undone."
+        itemCount={bulkDelete.itemIds.length}
+        onCancel={bulkDelete.closeModal}
+        onConfirm={bulkDelete.handleConfirm}
+        isLoading={bulkDelete.isLoading}
+      />
     </div>
   )
 }

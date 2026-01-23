@@ -1,25 +1,11 @@
-import { Router, Request, Response, NextFunction } from 'express'
-import { TAgent } from '@veramo/core'
-import { ExpressSupport } from '@sphereon/ssi-express-support'
-import { TAgentTypes } from '../types'
-import { INBOX_API_BASE_PATH, ASSET_BASE_URI, ASSET_DEFAULT_AVAILABILITY_YEARS } from '../environment-vars'
+import { Request, Response, NextFunction } from 'express'
+import { INBOX_API_BASE_PATH, ASSET_BASE_URI } from '../environment-vars'
 import { issueEInvoiceCredential } from '../utils/einvoiceCredentialIssuer'
 import { validateParsedEInvoice } from '../utils/ublParser'
-import { Asset } from '../plugins/asset'
 import { getDefaultDID, getIdentifier } from '../utils'
-import { CredentialCorrelationType, type AddDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
-import { CredentialRole } from '@sphereon/ssi-types'
-import type { Siopv2AuthorizationRequestData } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
-import { v4 as uuidv4 } from 'uuid'
+import { completeOid4vpPresentation, prepareEvidenceAssets } from '../services'
 import { OutboxItem } from '../plugins/outbox'
-
-export interface OutboxApiServerOptions {
-  agent: TAgent<TAgentTypes>
-  expressSupport: ExpressSupport
-  opts?: {
-    basePath?: string
-  }
-}
+import { BaseApiServer, BaseApiServerOptions } from './BaseApiServer'
 
 /**
  * API Server for outbox operations.
@@ -32,26 +18,12 @@ export interface OutboxApiServerOptions {
  * - DELETE /outbox/:id - Delete outbox item
  * - POST /outbox/:id/send - Send outbox item to recipient
  */
-export class OutboxApiServer {
-  private readonly agent: TAgent<TAgentTypes>
-  private readonly router: Router
-  private readonly basePath: string
-
-  constructor(options: OutboxApiServerOptions) {
-    this.agent = options.agent
-    this.basePath = options.opts?.basePath ?? INBOX_API_BASE_PATH
-    this.router = Router()
-
-    this.setupRoutes()
-
-    // Register routes with express
-    const app = options.expressSupport.express
-    app.use(this.basePath, this.router)
-
-    console.log(`[Outbox] API server started at ${this.basePath}`)
+export class OutboxApiServer extends BaseApiServer {
+  constructor(options: BaseApiServerOptions) {
+    super(options, INBOX_API_BASE_PATH, 'Outbox')
   }
 
-  private setupRoutes(): void {
+  protected setupRoutes(): void {
     // Outbox CRUD
     this.router.get('/outbox', this.listOutboxItems.bind(this))
     this.router.post('/outbox', this.createOutboxItem.bind(this))
@@ -99,23 +71,17 @@ export class OutboxApiServer {
             break
         }
       } else if (status) {
-        // Parse status - can be single value or comma-separated
-        const statusStr = status as string
-        if (statusStr.includes(',')) {
-          statusFilter = statusStr.split(',').map(s => s.trim())
-        } else {
-          statusFilter = statusStr
-        }
+        statusFilter = this.parseArrayQuery(status) || (status as string)
       }
 
       const items = await this.agent.outboxItemList({
         status: statusFilter as any,
         recipientDid: recipientDid as string | undefined,
-        limit: limit ? parseInt(limit as string, 10) : undefined,
-        offset: offset ? parseInt(offset as string, 10) : undefined,
+        limit: this.parseIntQuery(limit),
+        offset: this.parseIntQuery(offset),
       })
 
-      res.json(items)
+      this.success(res, items)
     } catch (error) {
       next(error)
     }
@@ -151,9 +117,7 @@ export class OutboxApiServer {
 
       // Validate required fields
       if (!invoiceId || !invoiceDate || !currencyCode || !recipientDid) {
-        res.status(400).json({
-          error: 'invoiceId, invoiceDate, currencyCode, and recipientDid are required'
-        })
+        this.badRequest(res, 'invoiceId, invoiceDate, currencyCode, and recipientDid are required')
         return
       }
 
@@ -180,7 +144,7 @@ export class OutboxApiServer {
         tenantId,
       })
 
-      res.status(201).json(item)
+      this.created(res, item)
     } catch (error) {
       next(error)
     }
@@ -195,11 +159,11 @@ export class OutboxApiServer {
       const item = await this.agent.outboxItemGet({ id })
 
       if (!item) {
-        res.status(404).json({ error: 'Outbox item not found' })
+        this.notFound(res, 'Outbox item not found')
         return
       }
 
-      res.json(item)
+      this.success(res, item)
     } catch (error) {
       next(error)
     }
@@ -217,15 +181,13 @@ export class OutboxApiServer {
       // Check if item exists
       const existing = await this.agent.outboxItemGet({ id })
       if (!existing) {
-        res.status(404).json({ error: 'Outbox item not found' })
+        this.notFound(res, 'Outbox item not found')
         return
       }
 
       // Only allow updates to draft or failed items
       if (existing.status !== 'draft' && existing.status !== 'failed') {
-        res.status(400).json({
-          error: `Cannot update outbox item with status: ${existing.status}`
-        })
+        this.badRequest(res, `Cannot update outbox item with status: ${existing.status}`)
         return
       }
 
@@ -234,10 +196,10 @@ export class OutboxApiServer {
         ...updateData,
       })
 
-      res.json(item)
+      this.success(res, item)
     } catch (error: any) {
       if (error.message?.includes('Cannot update')) {
-        res.status(400).json({ error: error.message })
+        this.badRequest(res, error.message)
         return
       }
       next(error)
@@ -253,11 +215,11 @@ export class OutboxApiServer {
       const deleted = await this.agent.outboxItemDelete({ id })
 
       if (!deleted) {
-        res.status(404).json({ error: 'Outbox item not found' })
+        this.notFound(res, 'Outbox item not found')
         return
       }
 
-      res.status(204).send()
+      this.noContent(res)
     } catch (error) {
       next(error)
     }
@@ -274,20 +236,18 @@ export class OutboxApiServer {
       // Get the item first
       const item = await this.agent.outboxItemGet({ id })
       if (!item) {
-        res.status(404).json({ error: 'Outbox item not found' })
+        this.notFound(res, 'Outbox item not found')
         return
       }
 
       // Check if it can be sent
       if (item.status !== 'draft' && item.status !== 'failed') {
-        res.status(400).json({
-          error: `Cannot send outbox item with status: ${item.status}`
-        })
+        this.badRequest(res, `Cannot send outbox item with status: ${item.status}`)
         return
       }
 
       if (!item.recipientEndpoint) {
-        res.status(400).json({ error: 'No recipient endpoint configured' })
+        this.badRequest(res, 'No recipient endpoint configured')
         return
       }
 
@@ -311,7 +271,7 @@ export class OutboxApiServer {
             correlationId: sendResult.correlationId,
           })
 
-          res.json({
+          this.success(res, {
             success: true,
             credentialId: sendResult.credentialId,
             correlationId: sendResult.correlationId,
@@ -324,10 +284,7 @@ export class OutboxApiServer {
             errorMessage: sendResult.errorMessage,
           })
 
-          res.status(500).json({
-            success: false,
-            error: sendResult.errorMessage,
-          })
+          this.serverError(res, sendResult.errorMessage || 'Failed to send eInvoice')
         }
       } catch (sendError: any) {
         // Update status to failed
@@ -337,10 +294,7 @@ export class OutboxApiServer {
           errorMessage: sendError.message || 'Failed to send eInvoice',
         })
 
-        res.status(500).json({
-          success: false,
-          error: sendError.message || 'Failed to send eInvoice',
-        })
+        this.serverError(res, sendError.message || 'Failed to send eInvoice')
       }
     } catch (error) {
       next(error)
@@ -378,32 +332,13 @@ export class OutboxApiServer {
 
       console.log(`[Outbox] Sender DID: ${senderDid}`)
 
-      // Step 2: Fetch and publish evidence assets
-      const evidenceFiles: Asset[] = []
-      const availableUntil = new Date()
-      availableUntil.setFullYear(availableUntil.getFullYear() + ASSET_DEFAULT_AVAILABILITY_YEARS)
-
-      for (const evidenceFile of item.evidenceFiles || []) {
-        const asset = await this.agent.assetGetById({ id: evidenceFile.id })
-        if (asset) {
-          // Publish asset if not already public or availability window needs update
-          const needsPublish = !asset.isPublic || !asset.availableUntil || asset.availableUntil < availableUntil
-          if (needsPublish) {
-            console.log(`[Outbox] Publishing asset ${evidenceFile.id} with ${ASSET_DEFAULT_AVAILABILITY_YEARS} year availability`)
-            const publishedAsset = await this.agent.assetPublish({
-              id: evidenceFile.id,
-              availableUntil,
-            })
-            evidenceFiles.push(publishedAsset)
-          } else {
-            evidenceFiles.push(asset)
-          }
-        } else {
-          console.warn(`[Outbox] Asset not found: ${evidenceFile.id}`)
-        }
-      }
-
-      console.log(`[Outbox] Loaded and published ${evidenceFiles.length} assets`)
+      // Step 2: Fetch and publish evidence assets using shared service
+      const evidenceIds = (item.evidenceFiles || []).map(f => f.id)
+      const evidenceFiles = await prepareEvidenceAssets(
+        this.agent,
+        evidenceIds,
+        { logPrefix: '[Outbox]' }
+      )
 
       // Step 3: Build parsed invoice format and issue credential
       const parsedInvoice = {
@@ -478,10 +413,12 @@ export class OutboxApiServer {
 
       // Step 5: Complete the OID4VP presentation flow
       if (sendResult.requestUri) {
-        const presentationResult = await this.completeOid4vpPresentation(
+        const presentationResult = await completeOid4vpPresentation(
+          this.agent,
           sendResult.requestUri,
           issuedCredential.credential,
-          senderDid
+          senderDid,
+          { logPrefix: '[Outbox]' }
         )
 
         if (!presentationResult.success) {
@@ -509,104 +446,7 @@ export class OutboxApiServer {
       }
     }
   }
-
-  /**
-   * Complete the OID4VP presentation flow using the SDK's SIOP OP holder methods.
-   */
-  private async completeOid4vpPresentation(
-    requestUri: string,
-    credential: string,
-    holderDid: string
-  ): Promise<{ success: boolean; error?: string }> {
-    try {
-      console.log(`[Outbox] Starting OID4VP presentation using SDK methods`)
-
-      // Step 1: Store the SD-JWT credential in the credential store
-      const credentialToStore: AddDigitalCredential = {
-        rawDocument: credential,
-        issuerCorrelationId: holderDid,
-        issuerCorrelationType: CredentialCorrelationType.DID,
-        subjectCorrelationId: holderDid,
-        subjectCorrelationType: CredentialCorrelationType.DID,
-        credentialRole: CredentialRole.HOLDER,
-        isIssuerSigned: true,
-      }
-
-      console.log(`[Outbox] Storing credential in credential store`)
-      const storedCredential = await this.agent.crsAddCredential({
-        credential: credentialToStore,
-      })
-      console.log(`[Outbox] Credential stored with id: ${storedCredential.id}`)
-
-      // Step 2: Use SDK's siopGetSiopRequest to parse the authorization request
-      console.log(`[Outbox] Calling siopGetSiopRequest with URL: ${requestUri}`)
-      let authorizationRequestData: Siopv2AuthorizationRequestData
-
-      const sessionId = `outbox-${Date.now()}`
-      const stateId = uuidv4()
-      const didAuthConfig = {
-        id: sessionId,
-        sessionId,
-        stateId,
-        redirectUrl: requestUri,
-        idOpts: {
-          method: 'did' as const,
-          identifier: holderDid,
-        },
-      }
-
-      try {
-        authorizationRequestData = await this.agent.siopGetSiopRequest({
-          url: requestUri,
-          didAuthConfig,
-        })
-        console.log(`[Outbox] Authorization request parsed, correlationId: ${authorizationRequestData.correlationId}`)
-      } catch (error: any) {
-        console.error(`[Outbox] Failed to parse authorization request:`, error)
-        return { success: false, error: `Failed to parse authorization request: ${error.message}` }
-      }
-
-      // Step 3: Get the holder's identifier for signing
-      const holderIdentifier = await getIdentifier(holderDid)
-      if (!holderIdentifier) {
-        return { success: false, error: 'Could not get holder identifier' }
-      }
-
-      // Step 4: Retrieve the credential as a UniqueDigitalCredential
-      console.log(`[Outbox] Retrieving credential with id: ${storedCredential.id}, hash: ${storedCredential.hash}`)
-      const uniqueCredential = await this.agent.crsGetUniqueCredentialByIdOrHash({
-        credentialRole: CredentialRole.HOLDER,
-        idOrHash: storedCredential.hash,
-      })
-
-      if (!uniqueCredential) {
-        return { success: false, error: 'Could not retrieve stored credential' }
-      }
-
-      console.log(`[Outbox] Calling siopSendResponse with holder: ${holderDid}`)
-
-      try {
-        const response = await this.agent.siopSendResponse({
-          didAuthConfig,
-          authorizationRequestData,
-          selectedCredentials: [uniqueCredential],
-          idOpts: {
-            method: 'did',
-            identifier: holderDid,
-          },
-        })
-
-        console.log(`[Outbox] OID4VP response sent successfully`)
-        console.log(`[Outbox] Response URL: ${response.url}`)
-
-        return { success: true }
-      } catch (error: any) {
-        console.error(`[Outbox] Failed to send OID4VP response:`, error)
-        return { success: false, error: `Failed to send OID4VP response: ${error.message}` }
-      }
-    } catch (error: any) {
-      console.error('[Outbox] Error in OID4VP presentation:', error)
-      return { success: false, error: error.message }
-    }
-  }
 }
+
+// Re-export the options type for convenience
+export type OutboxApiServerOptions = BaseApiServerOptions

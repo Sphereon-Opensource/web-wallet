@@ -10,42 +10,19 @@
  * - POST /api/form-steps - Get or create form step
  */
 
-import { Router, Request, Response, NextFunction } from 'express'
-import { TAgent } from '@veramo/core'
-import { ExpressSupport } from '@sphereon/ssi-express-support'
-import { TAgentTypes } from '../types'
-
-export interface CredentialDesignApiServerOptions {
-  agent: TAgent<TAgentTypes>
-  expressSupport: ExpressSupport
-  opts?: {
-    basePath?: string
-  }
-}
+import { Request, Response, NextFunction } from 'express'
+import { BaseApiServer, BaseApiServerOptions } from './BaseApiServer'
 
 /**
  * API Server for credential design CRUD operations.
+ * Extends BaseApiServer for standardized response handling.
  */
-export class CredentialDesignApiServer {
-  private readonly agent: TAgent<TAgentTypes>
-  private readonly router: Router
-  private readonly basePath: string
-
-  constructor(options: CredentialDesignApiServerOptions) {
-    this.agent = options.agent
-    this.basePath = options.opts?.basePath ?? '/api'
-    this.router = Router()
-
-    this.setupRoutes()
-
-    // Register routes with express
-    const app = options.expressSupport.express
-    app.use(this.basePath, this.router)
-
-    console.log(`[CredentialDesign] API server started at ${this.basePath}/credential-designs`)
+export class CredentialDesignApiServer extends BaseApiServer {
+  constructor(options: BaseApiServerOptions) {
+    super(options, '/api', 'CredentialDesign')
   }
 
-  private setupRoutes(): void {
+  protected setupRoutes(): void {
     // List credential designs
     this.router.get('/credential-designs', this.listCredentialDesigns.bind(this))
 
@@ -78,22 +55,24 @@ export class CredentialDesignApiServer {
   private async listCredentialDesigns(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { tenantId, limit, offset } = req.query
+      const parsedLimit = this.parseIntQuery(limit, 100)
+      const parsedOffset = this.parseIntQuery(offset, 0)
 
       const designs = await this.agent.credentialDesignList({
         tenantId: tenantId as string | undefined,
-        limit: limit ? parseInt(limit as string, 10) : 100,
-        offset: offset ? parseInt(offset as string, 10) : 0,
+        limit: parsedLimit,
+        offset: parsedOffset,
       })
 
       const total = await this.agent.credentialDesignCount({
         tenantId: tenantId as string | undefined,
       })
 
-      res.json({
+      this.success(res, {
         data: designs,
         total,
-        limit: limit ? parseInt(limit as string, 10) : 100,
-        offset: offset ? parseInt(offset as string, 10) : 0,
+        limit: parsedLimit,
+        offset: parsedOffset,
       })
     } catch (error) {
       next(error)
@@ -112,11 +91,11 @@ export class CredentialDesignApiServer {
       const design = await this.agent.credentialDesignGetById({ id })
 
       if (!design) {
-        res.status(404).json({ error: 'Credential design not found' })
+        this.notFound(res, 'Credential design not found')
         return
       }
 
-      res.json({ data: design })
+      this.success(res, { data: design })
     } catch (error) {
       next(error)
     }
@@ -141,7 +120,7 @@ export class CredentialDesignApiServer {
       const { name, schema, uiSchema, options, isAdvancedSchema, branding, statusListUri } = req.body
 
       if (!name || !schema || !uiSchema || !options) {
-        res.status(400).json({ error: 'Missing required fields: name, schema, uiSchema, options' })
+        this.badRequest(res, 'Missing required fields: name, schema, uiSchema, options')
         return
       }
 
@@ -155,7 +134,7 @@ export class CredentialDesignApiServer {
         statusListUri,
       })
 
-      res.status(201).json({ data: design })
+      this.created(res, { data: design })
     } catch (error: any) {
       console.error('[CredentialDesign] Create error:', error)
       next(error)
@@ -181,7 +160,7 @@ export class CredentialDesignApiServer {
       const { name, schema, uiSchema, options, isAdvancedSchema, branding } = req.body
 
       if (!name || !schema || !uiSchema || !options) {
-        res.status(400).json({ error: 'Missing required fields: name, schema, uiSchema, options' })
+        this.badRequest(res, 'Missing required fields: name, schema, uiSchema, options')
         return
       }
 
@@ -195,10 +174,10 @@ export class CredentialDesignApiServer {
         branding,
       })
 
-      res.json({ data: design })
+      this.success(res, { data: design })
     } catch (error: any) {
-      if (error.code === 'NOT_FOUND' || error.message?.includes('not found')) {
-        res.status(404).json({ error: 'Credential design not found' })
+      if (this.isNotFoundError(error) || error.code === 'NOT_FOUND') {
+        this.notFound(res, 'Credential design not found')
         return
       }
       console.error('[CredentialDesign] Update error:', error)
@@ -218,11 +197,11 @@ export class CredentialDesignApiServer {
       const deleted = await this.agent.credentialDesignDelete({ id })
 
       if (!deleted) {
-        res.status(404).json({ error: 'Credential design not found' })
+        this.notFound(res, 'Credential design not found')
         return
       }
 
-      res.status(204).send()
+      this.noContent(res)
     } catch (error) {
       next(error)
     }
@@ -241,15 +220,18 @@ export class CredentialDesignApiServer {
       const { formId } = req.body
 
       if (!formId) {
-        res.status(400).json({ error: 'Missing required field: formId' })
+        this.badRequest(res, 'Missing required field: formId')
         return
       }
 
       const stepId = await this.agent.formStepGetOrCreate({ formId })
 
-      res.json({ data: { id: stepId } })
+      this.success(res, { data: { id: stepId } })
     } catch (error) {
       next(error)
     }
   }
 }
+
+// Re-export the options type for convenience
+export type CredentialDesignApiServerOptions = BaseApiServerOptions

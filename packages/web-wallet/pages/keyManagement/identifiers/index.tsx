@@ -4,6 +4,8 @@ import {PrimaryButton} from '@sphereon/ui-components.ssi-react'
 import {ButtonIcon} from '@sphereon/ui-components.core'
 import AppHeaderBar from '@components/bars/AppHeaderBar'
 import {ListPageHeader, TabItem} from '@components/tables'
+import ConfirmDeleteModal, {useConfirmDelete, useBulkDelete} from '@components/modals/ConfirmDeleteModal'
+import {useListPageState} from '@/src/hooks/useListPageState'
 import {staticPropsWithSST} from '@/src/i18n/server'
 import {DataResource} from '@typings'
 import {IIdentifier} from '@veramo/core'
@@ -42,11 +44,29 @@ const IdentifiersListPage: React.FC = () => {
   const {mutateAsync: deleteIdentifiers} = useDeleteMany<IIdentifier[], HttpError>()
 
   const [selectedIdentifier, setSelectedIdentifier] = useState<IdentifierTableItem | null>(null)
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
-  const [sortField, setSortField] = useState<SortField>('method')
-  const [sortDirection, setSortDirection] = useState<SortDirection>('asc')
-  const [openMenuId, setOpenMenuId] = useState<string | null>(null)
-  const [menuPosition, setMenuPosition] = useState<{top: number; left: number} | null>(null)
+
+  // Use shared list page state hook for selection, sorting, and context menu
+  const {
+    selectedIds,
+    selectionCount,
+    isSelected,
+    isAllSelected,
+    isIndeterminate,
+    toggleSelection,
+    clearSelection,
+    handleSelectAll: handleSelectAllItems,
+    sortColumn: sortField,
+    sortDirection,
+    handleSort,
+    openMenuId,
+    menuPosition,
+    toggleMenu,
+    closeMenu,
+  } = useListPageState<SortField>({
+    defaultSortColumn: 'method',
+    defaultSortDirection: 'asc',
+    getItemId: (item: IdentifierTableItem) => item.id,
+  })
 
   const {
     data: identifierData,
@@ -86,18 +106,43 @@ const IdentifiersListPage: React.FC = () => {
     })
   }, [identifiers, sortField, sortDirection])
 
-  // Handle sort
-  const handleSort = useCallback(
-    (field: SortField) => {
-      if (sortField === field) {
-        setSortDirection(prev => (prev === 'asc' ? 'desc' : 'asc'))
-      } else {
-        setSortField(field)
-        setSortDirection('asc')
+  // Delete confirmation hooks
+  const singleDelete = useConfirmDelete({
+    onConfirm: async (id: string) => {
+      await deleteIdentifiers({
+        resource: DataResource.IDENTIFIERS,
+        ids: [id],
+      })
+      if (selectedIdentifier?.id === id) {
+        setSelectedIdentifier(null)
       }
     },
-    [sortField],
-  )
+    onSuccess: () => {
+      void refetch()
+    },
+    onError: (err) => {
+      console.error('Failed to delete identifier:', err)
+    },
+  })
+
+  const bulkDelete = useBulkDelete({
+    onConfirm: async (ids: string[]) => {
+      await deleteIdentifiers({
+        resource: DataResource.IDENTIFIERS,
+        ids: ids,
+      })
+      if (selectedIdentifier && ids.includes(selectedIdentifier.id)) {
+        setSelectedIdentifier(null)
+      }
+    },
+    onSuccess: () => {
+      clearSelection()
+      void refetch()
+    },
+    onError: (err) => {
+      console.error('Failed to delete identifiers:', err)
+    },
+  })
 
   // Handle create
   const handleCreate = useCallback(async () => {
@@ -117,106 +162,16 @@ const IdentifiersListPage: React.FC = () => {
 
   // Handle delete
   const handleDelete = useCallback(
-    async (identifier: IdentifierTableItem) => {
-      if (!confirm(`Are you sure you want to delete this identifier?`)) {
-        return
-      }
-
-      await deleteIdentifiers(
-        {
-          resource: DataResource.IDENTIFIERS,
-          ids: [identifier.value],
-        },
-        {
-          onError: error => {
-            console.error('Failed to delete identifier:', error)
-          },
-        },
-      )
-
-      if (selectedIdentifier?.id === identifier.id) {
-        setSelectedIdentifier(null)
-      }
-      await refetch()
+    (identifier: IdentifierTableItem) => {
+      singleDelete.openModal(identifier.value, identifier.alias || identifier.method)
     },
-    [deleteIdentifiers, selectedIdentifier, refetch],
+    [singleDelete],
   )
 
-  // Selection handlers
-  const handleToggleSelection = useCallback((id: string, e: React.MouseEvent): void => {
-    e.stopPropagation()
-    setSelectedIds(prev => {
-      const next = new Set(prev)
-      if (next.has(id)) {
-        next.delete(id)
-      } else {
-        next.add(id)
-      }
-      return next
-    })
-  }, [])
-
-  const handleSelectAll = useCallback(
-    (selectAll: boolean): void => {
-      if (selectAll) {
-        const allIds = new Set(sortedIdentifiers.map(i => i.id))
-        setSelectedIds(allIds)
-      } else {
-        setSelectedIds(new Set())
-      }
-    },
-    [sortedIdentifiers],
-  )
-
-  const handleDeleteSelected = useCallback(async (): Promise<void> => {
-    if (selectedIds.size === 0) return
-    if (!confirm(`Are you sure you want to delete ${selectedIds.size} identifier(s)?`)) return
-
-    const idsToDelete = Array.from(selectedIds)
-    await deleteIdentifiers(
-      {
-        resource: DataResource.IDENTIFIERS,
-        ids: idsToDelete,
-      },
-      {
-        onError: error => {
-          console.error('Failed to delete identifiers:', error)
-        },
-      },
-    )
-
-    if (selectedIdentifier && selectedIds.has(selectedIdentifier.id)) {
-      setSelectedIdentifier(null)
-    }
-    setSelectedIds(new Set())
-    await refetch()
-  }, [selectedIds, deleteIdentifiers, selectedIdentifier, refetch])
-
-  // Menu handlers
-  const handleToggleMenu = useCallback((id: string, e: React.MouseEvent<HTMLButtonElement>): void => {
-    e.stopPropagation()
-    e.preventDefault()
-
-    const button = e.currentTarget
-    const rect = button.getBoundingClientRect()
-
-    setOpenMenuId(prev => {
-      if (prev === id) {
-        setMenuPosition(null)
-        return null
-      }
-      setMenuPosition({
-        top: rect.bottom + 4,
-        left: rect.right - 180,
-      })
-      return id
-    })
-  }, [])
-
-  const handleCloseMenu = useCallback((): void => {
-    setOpenMenuId(null)
-    setMenuPosition(null)
-  }, [])
+  const handleDeleteSelected = useCallback((): void => {
+    if (selectionCount === 0) return
+    bulkDelete.openModal(Array.from(selectedIds))
+  }, [selectionCount, selectedIds, bulkDelete])
 
   // Handle show details
   const handleShowDetails = useCallback(
@@ -226,10 +181,11 @@ const IdentifiersListPage: React.FC = () => {
     [show],
   )
 
+  // Menu action handler
   const handleMenuAction = useCallback(
-    async (action: string, identifier: IdentifierTableItem, e: React.MouseEvent): Promise<void> => {
+    (action: string, identifier: IdentifierTableItem, e: React.MouseEvent): void => {
       e.stopPropagation()
-      handleCloseMenu()
+      closeMenu()
 
       switch (action) {
         case 'details':
@@ -239,11 +195,11 @@ const IdentifiersListPage: React.FC = () => {
           handleEdit(identifier)
           break
         case 'delete':
-          await handleDelete(identifier)
+          handleDelete(identifier)
           break
       }
     },
-    [handleCloseMenu, handleShowDetails, handleEdit, handleDelete],
+    [closeMenu, handleShowDetails, handleEdit, handleDelete],
   )
 
   // Truncate DID for display
@@ -286,7 +242,7 @@ const IdentifiersListPage: React.FC = () => {
 
     return (
       <>
-        <div className={style.menuBackdrop} onClick={handleCloseMenu} />
+        <div className={style.menuBackdrop} onClick={closeMenu} />
         <div className={style.menuDropdown} style={{top: menuPosition.top, left: menuPosition.left}}>
           <button className={style.menuItem} onClick={e => handleMenuAction('details', identifier, e)}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -340,19 +296,19 @@ const IdentifiersListPage: React.FC = () => {
     }
 
     return (
-      <div className={`${style.table} ${selectedIds.size > 0 ? style.tableWithSelections : ''}`}>
+      <div className={`${style.table} ${selectionCount > 0 ? style.tableWithSelections : ''}`}>
         <div className={style.tableHeader}>
           <div className={style.checkboxCell}>
             <input
               type="checkbox"
               className={style.checkbox}
-              checked={sortedIdentifiers.length > 0 && selectedIds.size === sortedIdentifiers.length}
+              checked={isAllSelected(sortedIdentifiers)}
               ref={input => {
                 if (input) {
-                  input.indeterminate = selectedIds.size > 0 && selectedIds.size < sortedIdentifiers.length
+                  input.indeterminate = isIndeterminate(sortedIdentifiers)
                 }
               }}
-              onChange={e => handleSelectAll(e.target.checked)}
+              onChange={e => handleSelectAllItems(sortedIdentifiers, e.target.checked)}
               aria-label="Select all"
             />
           </div>
@@ -400,9 +356,9 @@ const IdentifiersListPage: React.FC = () => {
             <div className={style.checkboxCell}>
               <input
                 type="checkbox"
-                checked={selectedIds.has(identifier.id)}
+                checked={isSelected(identifier.id)}
                 onChange={() => {}}
-                onClick={e => handleToggleSelection(identifier.id, e)}
+                onClick={e => toggleSelection(identifier.id, e)}
                 className={style.checkbox}
                 aria-label={`Select ${identifier.alias || identifier.value}`}
               />
@@ -429,7 +385,7 @@ const IdentifiersListPage: React.FC = () => {
                 <button
                   type="button"
                   className={style.meatballsButton}
-                  onClick={e => handleToggleMenu(identifier.id, e)}
+                  onClick={e => toggleMenu(identifier.id, e)}
                   onMouseDown={e => e.stopPropagation()}
                   aria-label="Open menu">
                   {renderMeatballsIcon()}
@@ -590,8 +546,8 @@ const IdentifiersListPage: React.FC = () => {
             tabs={headerTabs}
             activeTab="all"
             onTabChange={() => {}}
-            selectionCount={selectedIds.size}
-            onClearSelection={() => setSelectedIds(new Set())}
+            selectionCount={selectionCount}
+            onClearSelection={clearSelection}
             onDeleteSelected={handleDeleteSelected}
             selectionLabel={{singular: 'identifier', plural: 'identifiers'}}
             actions={
@@ -610,6 +566,30 @@ const IdentifiersListPage: React.FC = () => {
         {/* Detail Panel */}
         {renderDetailPanel()}
       </div>
+
+      {/* Delete Confirmation Modals */}
+      <ConfirmDeleteModal
+        isOpen={singleDelete.isOpen}
+        title={translate('identifiers_delete_title', 'Delete Identifier')}
+        message={translate('identifiers_delete_message', 'Are you sure you want to delete "{name}"? This action cannot be undone.')}
+        itemName={singleDelete.itemName || undefined}
+        onCancel={singleDelete.closeModal}
+        onConfirm={singleDelete.handleConfirm}
+        isLoading={singleDelete.isLoading}
+        cancelText={translate('action_cancel', 'Cancel')}
+        confirmText={translate('action_delete', 'Delete')}
+      />
+      <ConfirmDeleteModal
+        isOpen={bulkDelete.isOpen}
+        title={translate('identifiers_delete_bulk_title', 'Delete Identifiers')}
+        message={translate('identifiers_delete_bulk_message', 'Are you sure you want to delete {count} identifier(s)? This action cannot be undone.')}
+        itemCount={bulkDelete.itemIds.length}
+        onCancel={bulkDelete.closeModal}
+        onConfirm={bulkDelete.handleConfirm}
+        isLoading={bulkDelete.isLoading}
+        cancelText={translate('action_cancel', 'Cancel')}
+        confirmText={translate('action_delete', 'Delete')}
+      />
     </div>
   )
 }
