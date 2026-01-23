@@ -2,34 +2,15 @@ import React, {FC, ReactElement} from 'react'
 import {ColumnHeader, Row, SSITableView, SSITabView, TableCellType} from '@sphereon/ui-components.ssi-react'
 import {HttpError, useDelete, useList, useNavigation, useTranslate} from '@refinedev/core'
 import short from 'short-uuid'
-import {WorkflowEntity, WorkflowStepEntity, DataResource} from '@typings'
+import {DataResource} from '@typings'
 import {ButtonIcon} from '@sphereon/ui-components.core'
-import type {Contact, Identity, MetadataItem, Party, MetadataTypes} from '@sphereon/ssi-sdk.data-store-types'
+import type {Contact, MetadataItem, Party, MetadataTypes} from '@sphereon/ssi-sdk.data-store-types'
 import {PartyTypeType} from '@sphereon/ssi-sdk.data-store-types'
 import {camelToSnakeCase} from '@helpers/StringUtils'
 import {getEnvInt} from '@/src/services/env'
 
 type Props = {
-  assetIdFilter?: string
   allowAddNewContact?: boolean
-}
-
-function getContactIdentities(workflowSteps: Array<WorkflowStepEntity>): Array<string> {
-  const contacts: Set<string> = new Set()
-
-  workflowSteps.forEach((workflowStep: any): void => {
-    if (workflowStep.sender_id) {
-      contacts.add(workflowStep.sender_id)
-    }
-    if (workflowStep.recipient_id) {
-      contacts.add(workflowStep.recipient_id)
-    }
-    if (workflowStep.owner) {
-      contacts.add(workflowStep.owner)
-    }
-  })
-
-  return Array.from(contacts)
 }
 
 type GenerateHeaderProps = {
@@ -39,49 +20,17 @@ type GenerateHeaderProps = {
 }
 
 const ContactsList: FC<Props> = (props: Props): ReactElement => {
-  const {allowAddNewContact = true, assetIdFilter} = props
+  const {allowAddNewContact = true} = props
   const truncationLength: number = getEnvInt('BROWSER_PUBLIC_TRUNCATION_LENGTH', 8)
   const translate = useTranslate()
   const {create, show} = useNavigation()
   const {mutateAsync: deleteContact} = useDelete<Party, HttpError>()
   const partiesData = useList<Party, HttpError>({resource: 'parties'})
 
-  let workflowResults: any
-  let workflowStepResults: any
-  if (assetIdFilter) {
-    workflowResults = useList<WorkflowEntity, HttpError>({
-      resource: 'workflows',
-      ...(assetIdFilter && {
-        filters: [
-          {
-            field: 'asset_id',
-            operator: 'eq',
-            value: assetIdFilter,
-          },
-        ],
-      }),
-    })
-
-    workflowStepResults = useList<WorkflowStepEntity, HttpError>({
-      resource: `workflow-steps`,
-      pagination: {
-        pageSize: 1000,
-        mode: 'server',
-      },
-      filters: [
-        {
-          field: 'workflow_id',
-          operator: 'in',
-          value: Array.from(new Set(workflowResults.data?.data?.map((v: WorkflowStepEntity) => v.id) || [])),
-        },
-      ],
-    })
-  }
-
-  if (partiesData.isLoading || (assetIdFilter && (workflowStepResults.isLoading || workflowResults.isLoading))) {
+  if (partiesData.isLoading) {
     return <div>{translate('data_provider_loading_message')}</div>
   }
-  if (partiesData.isError || (assetIdFilter && (workflowStepResults.isError || workflowResults.isError))) {
+  if (partiesData.isError) {
     return <div>{translate('data_provider_error_message')}</div>
   }
 
@@ -135,14 +84,7 @@ const ContactsList: FC<Props> = (props: Props): ReactElement => {
     return Object.values(PartyTypeType)
       .reverse()
       .flatMap(key => {
-        const partiesOfType = parties.filter(
-          party =>
-            party.partyType.type === key &&
-            (!assetIdFilter ||
-              party.identities.some((identity: Identity) =>
-                getContactIdentities(workflowStepResults?.data?.data ?? []).includes(identity.identifier.correlationId),
-              )),
-        )
+        const partiesOfType = parties.filter(party => party.partyType.type === key)
         const columns = generateHeader({
           type: orderAndOmitContactProperties(partiesOfType[0]?.contact || createEmptyContactOfType(key), [
             'createdAt',

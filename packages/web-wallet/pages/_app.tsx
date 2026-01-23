@@ -92,10 +92,6 @@ const _app = (props: React.PropsWithChildren<unknown>) => {
       meta: {dataProviderName: DataProvider.CREDENTIALS},
     },
     {
-      name: DataResource.WORKFLOWS,
-      list: MainRoute.WORKFLOW,
-    },
-    {
       name: DataResource.DOCUMENTS,
       list: MainRoute.DOCUMENTS,
     },

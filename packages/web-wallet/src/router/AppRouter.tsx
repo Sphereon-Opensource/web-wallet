@@ -2,7 +2,6 @@ import {Authenticated, ErrorComponent, useLogin} from '@refinedev/core'
 import React, {FC, PropsWithChildren, ReactElement, useEffect} from 'react'
 import {Navigate, Outlet, Route, Routes, useParams} from 'react-router-dom'
 import AssetsListPage from '../../pages/assets'
-import WorkflowListPage from '../../pages/workflows'
 import ContactsListPage from '../../pages/contacts'
 import DocumentsListPage from '../../pages/documents'
 import ContactsCreatePage from '../../pages/contacts/create'
@@ -122,9 +121,6 @@ const AppRouter: React.FC = () => {
           <Route path="/" element={<LandingPage />} />
           <Route path={MainRoute.ASSETS}>
             <Route index element={<AssetsListPage />} />
-          </Route>
-          <Route path={MainRoute.WORKFLOW}>
-            <Route index element={<WorkflowListPage />} />
           </Route>
           <Route path={MainRoute.CONTACTS}>
             <Route index element={<ContactsListPage />} />

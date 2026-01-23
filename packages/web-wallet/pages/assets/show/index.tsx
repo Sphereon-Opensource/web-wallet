@@ -178,7 +178,7 @@ function ShowAssetDetails() {
   const getInvolvedContactsContent = (): ReactElement => {
     return (
       <div className={style.sectionContentContainer}>
-        <ContactsList assetIdFilter={assetData.id} allowAddNewContact={false} />
+        <ContactsList allowAddNewContact={false} />
       </div>
     )
   }

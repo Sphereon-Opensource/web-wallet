@@ -33,17 +33,24 @@ export class AssetApiServer extends BaseApiServer {
   private readonly upload: multer.Multer
 
   constructor(options: AssetApiServerOptions) {
-    super(options, ASSET_API_BASE_PATH, 'Asset')
-    this.publicBasePath = options.opts?.publicBasePath ?? '/api/assets'
-    this.publicRouter = Router()
-
-    // Configure multer for file uploads (store in memory for hash computation)
-    this.upload = multer({
+    // Initialize upload before super() since base class calls setupRoutes()
+    const upload = multer({
       storage: multer.memoryStorage(),
       limits: {
         fileSize: 100 * 1024 * 1024, // 100MB limit
       },
     })
+    // Temporarily store it so we can assign to this.upload after super()
+    ;(AssetApiServer.prototype as any)._tempUpload = upload
+
+    super(options, ASSET_API_BASE_PATH, 'Asset')
+
+    // Now properly assign from temp storage
+    this.upload = (AssetApiServer.prototype as any)._tempUpload
+    delete (AssetApiServer.prototype as any)._tempUpload
+
+    this.publicBasePath = options.opts?.publicBasePath ?? '/api/assets'
+    this.publicRouter = Router()
 
     this.setupPublicRoutes()
 
@@ -55,11 +62,14 @@ export class AssetApiServer extends BaseApiServer {
   }
 
   protected setupRoutes(): void {
+    // Get upload middleware (may be accessed before constructor completes via temp storage)
+    const upload = this.upload || (AssetApiServer.prototype as any)._tempUpload
+
     // List assets
     this.router.get('/assets', this.listAssets.bind(this))
 
     // Upload new asset
-    this.router.post('/assets', this.upload.single('file'), this.uploadAsset.bind(this))
+    this.router.post('/assets', upload.single('file'), this.uploadAsset.bind(this))
 
     // Get asset by ID
     this.router.get('/assets/:id', this.getAssetById.bind(this))

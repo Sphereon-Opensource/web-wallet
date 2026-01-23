@@ -1,6 +1,5 @@
 export enum MainRoute {
   ASSETS = '/assets',
-  WORKFLOW = '/workflow',
   CONTACTS = '/contacts',
   CREDENTIALS = '/credentials',
   DOCUMENTS = '/documents',
@@ -21,13 +20,6 @@ export enum MainRoute {
   OID4VP = '/siopv2',
 }
 
-export enum AssetCreateSubRoute {
-  CONTACTS = 'contacts',
-  PRODUCTS = 'products',
-  DOCUMENTS = 'documents',
-  SUMMARY = 'summary',
-  PUBLISH = 'publish',
-}
 export enum NaturalPersonCreationRoute {
   PERSONAL_INFO = 'personal-info',
   PHYSICAL_ADDRESS = 'physical-address',

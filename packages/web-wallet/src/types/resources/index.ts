@@ -4,7 +4,6 @@ export enum DataResource {
   ORGANIZATION_CONTACTS = 'ORGANIZATION_CONTACTS',
   ASSETS = 'ASSETS',
   CREDENTIALS = 'CREDENTIALS',
-  WORKFLOWS = 'WORKFLOWS',
   DOCUMENTS = 'DOCUMENTS',
   IDENTIFIERS = 'key-management/identifiers',
   KEYS = 'KEYS',
