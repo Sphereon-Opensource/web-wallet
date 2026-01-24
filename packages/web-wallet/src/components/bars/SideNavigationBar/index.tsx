@@ -5,7 +5,6 @@ import {RoleType} from '@sphereon/ui-components.core'
 import SideNavigationItem from './SideNavigationItem'
 import SideNavigationGroup from './SideNavigationGroup'
 import {MenuEntry, MenuGroup, MenuItem, MenuSeparator, RoleData} from '@typings'
-import roleConfig from '../../../config/roleConfig'
 import {useRole} from '@/src/contexts/RoleContext'
 import styles from './index.module.css'
 
@@ -99,7 +98,7 @@ export const menuGroupFrom = (item: MenuGroup, allMenuItems: MenuItem[]): ReactE
 const SideNavigationBar: FC<Props> = (props: Props): ReactElement => {
   const {style} = props
   const translate = useTranslate()
-  const {currentRole, setCurrentRole} = useRole()
+  const {currentRole, setCurrentRole, availableRoleConfigs} = useRole()
 
   const onChangeRole = async (role: RoleData) => setCurrentRole(role)
 
@@ -167,8 +166,7 @@ const SideNavigationBar: FC<Props> = (props: Props): ReactElement => {
     <nav className={styles.container} style={style}>
       <div className={styles.roleSwitcherContainer}>
         <Listbox<RoleData>
-          // TODO SSISDK-19 replace dummy data for the Listbox
-          items={roleConfig}
+          items={availableRoleConfigs}
           renderItem={(role: RoleData) => <CustomRoleViewItem role={role.role} accountName={role.accountName} />}
           onChange={onChangeRole}
           menuTitle={translate('roles_selection_label')}

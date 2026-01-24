@@ -1,6 +1,7 @@
 import {Authenticated, ErrorComponent, useLogin} from '@refinedev/core'
 import React, {FC, PropsWithChildren, ReactElement, useEffect} from 'react'
 import {Navigate, Outlet, Route, Routes, useParams} from 'react-router-dom'
+import {RoleType} from '@sphereon/ui-components.core'
 import AssetsListPage from '../../pages/assets'
 import ContactsListPage from '../../pages/contacts'
 import DocumentsListPage from '../../pages/documents'
@@ -89,6 +90,7 @@ import EInvoiceRecipientContent from '@components/views/EInvoiceRecipientContent
 import EInvoiceEvidenceContent from '@components/views/EInvoiceEvidenceContent'
 import EInvoiceReviewContent from '@components/views/EInvoiceReviewContent'
 import LandingPage from '../../pages/landing'
+import CanAccessRoute from '@components/auth/CanAccessRoute'
 
 const KeycloakLoginPage = (props: PropsWithChildren<any>) => {
   const {mutate: login} = useLogin()
@@ -119,9 +121,20 @@ const AppRouter: React.FC = () => {
           }>
           {/* Landing page route */}
           <Route path="/" element={<LandingPage />} />
+
+          {/* Assets - Holder and Admin */}
           <Route path={MainRoute.ASSETS}>
-            <Route index element={<AssetsListPage />} />
+            <Route
+              index
+              element={
+                <CanAccessRoute allowedRoles={[RoleType.HOLDER, RoleType.ADMIN]}>
+                  <AssetsListPage />
+                </CanAccessRoute>
+              }
+            />
           </Route>
+
+          {/* Contacts - All roles */}
           <Route path={MainRoute.CONTACTS}>
             <Route index element={<ContactsListPage />} />
             <Route
@@ -150,66 +163,153 @@ const AppRouter: React.FC = () => {
             </Route>
             <Route path={MainRoute.SUB_ID} element={<ShowContactDetails />} />
           </Route>
+
+          {/* Credentials - All roles can view, but create/designs require specific roles */}
           <Route path={MainRoute.CREDENTIALS}>
             <Route index element={<CredentialsListPage />} />
+            {/* Credential creation - Issuer and Admin only */}
             <Route
               path={MainRoute.SUB_CREATE}
               element={
-                <CredentialsCreateContextProvider>
-                  <CredentialsCreatePage />
-                </CredentialsCreateContextProvider>
+                <CanAccessRoute allowedRoles={[RoleType.ISSUER, RoleType.ADMIN]}>
+                  <CredentialsCreateContextProvider>
+                    <CredentialsCreatePage />
+                  </CredentialsCreateContextProvider>
+                </CanAccessRoute>
               }>
               <Route path={IssueCredentialRoute.DETAILS} element={<IssueCredentialEnterDetailsContent />} />
               <Route path={IssueCredentialRoute.ISSUE_METHOD} element={<IssueCredentialIssueMethodContent />} />
             </Route>
+            {/* Credential designs - Issuer and Admin only */}
             <Route path={MainRoute.DESIGNS}>
-              <Route index element={<CredentialDesignsListPage />} />
+              <Route
+                index
+                element={
+                  <CanAccessRoute allowedRoles={[RoleType.ISSUER, RoleType.ADMIN]}>
+                    <CredentialDesignsListPage />
+                  </CanAccessRoute>
+                }
+              />
               <Route
                 path={MainRoute.SUB_CREATE}
                 element={
-                  <CredentialDesignerCreateContextProvider>
-                    <CredentialDesignerCreatePage />
-                  </CredentialDesignerCreateContextProvider>
+                  <CanAccessRoute allowedRoles={[RoleType.ISSUER, RoleType.ADMIN]}>
+                    <CredentialDesignerCreateContextProvider>
+                      <CredentialDesignerCreatePage />
+                    </CredentialDesignerCreateContextProvider>
+                  </CanAccessRoute>
                 }>
                 <Route path={CredentialDesignerRoute.DETAILS} element={<CredentialDesignerDetailsCreateContent />} />
                 <Route path={CredentialDesignerRoute.VISUAL_DESIGN} element={<CredentialDesignerVisualDesignCreateContent />} />
                 <Route path={CredentialDesignerRoute.CLAIMS} element={<CredentialDesignerClaimsCreateContent />} />
               </Route>
-              <Route path={`${MainRoute.SUB_EDIT}/${MainRoute.SUB_ID}`} element={<CredentialDesignerEditWrapper />}>
+              <Route
+                path={`${MainRoute.SUB_EDIT}/${MainRoute.SUB_ID}`}
+                element={
+                  <CanAccessRoute allowedRoles={[RoleType.ISSUER, RoleType.ADMIN]}>
+                    <CredentialDesignerEditWrapper />
+                  </CanAccessRoute>
+                }>
                 <Route path={CredentialDesignerRoute.DETAILS} element={<CredentialDesignerDetailsEditContent />} />
                 <Route path={CredentialDesignerRoute.VISUAL_DESIGN} element={<CredentialDesignerVisualDesignEditContent />} />
                 <Route path={CredentialDesignerRoute.CLAIMS} element={<CredentialDesignerClaimsEditContent />} />
               </Route>
-              <Route path={`${MainRoute.SUB_SHOW}/${MainRoute.SUB_ID}`} element={<ShowCredentialDesignDetails />} />
+              <Route
+                path={`${MainRoute.SUB_SHOW}/${MainRoute.SUB_ID}`}
+                element={
+                  <CanAccessRoute allowedRoles={[RoleType.ISSUER, RoleType.ADMIN]}>
+                    <ShowCredentialDesignDetails />
+                  </CanAccessRoute>
+                }
+              />
             </Route>
             <Route path={MainRoute.SUB_ID} element={<ShowCredentialDetails />} />
           </Route>
+
+          {/* eInvoice - Holder and Admin */}
           <Route path={MainRoute.EINVOICE}>
-            <Route index element={<EInvoiceListPage />} />
+            <Route
+              index
+              element={
+                <CanAccessRoute allowedRoles={[RoleType.HOLDER, RoleType.ADMIN]}>
+                  <EInvoiceListPage />
+                </CanAccessRoute>
+              }
+            />
             <Route
               path={MainRoute.SUB_CREATE}
               element={
-                <EInvoiceCreateContextProvider>
-                  <EInvoiceCreatePage />
-                </EInvoiceCreateContextProvider>
+                <CanAccessRoute allowedRoles={[RoleType.HOLDER, RoleType.ADMIN]}>
+                  <EInvoiceCreateContextProvider>
+                    <EInvoiceCreatePage />
+                  </EInvoiceCreateContextProvider>
+                </CanAccessRoute>
               }>
               <Route path={EInvoiceCreateRoute.DETAILS} element={<EInvoiceDetailsContent />} />
               <Route path={EInvoiceCreateRoute.RECIPIENT} element={<EInvoiceRecipientContent />} />
               <Route path={EInvoiceCreateRoute.EVIDENCE} element={<EInvoiceEvidenceContent />} />
               <Route path={EInvoiceCreateRoute.REVIEW} element={<EInvoiceReviewContent />} />
             </Route>
-            <Route path="sent/:id" element={<SentInvoiceDetailPage />} />
-            <Route path={MainRoute.SUB_ID} element={<InboxItemDetailPage />} />
+            <Route
+              path="sent/:id"
+              element={
+                <CanAccessRoute allowedRoles={[RoleType.HOLDER, RoleType.ADMIN]}>
+                  <SentInvoiceDetailPage />
+                </CanAccessRoute>
+              }
+            />
+            <Route
+              path={MainRoute.SUB_ID}
+              element={
+                <CanAccessRoute allowedRoles={[RoleType.HOLDER, RoleType.ADMIN]}>
+                  <InboxItemDetailPage />
+                </CanAccessRoute>
+              }
+            />
           </Route>
+
+          {/* Inbox - Holder and Admin */}
           <Route path={MainRoute.INBOX}>
-            <Route index element={<InboxPage />} />
-            <Route path={`${InboxRoute.SUB_INBOX_NAME}/${InboxRoute.SUB_FOLDER_NAME}/${MainRoute.SUB_ID}`} element={<InboxItemDetailPage />} />
+            <Route
+              index
+              element={
+                <CanAccessRoute allowedRoles={[RoleType.HOLDER, RoleType.ADMIN]}>
+                  <InboxPage />
+                </CanAccessRoute>
+              }
+            />
+            <Route
+              path={`${InboxRoute.SUB_INBOX_NAME}/${InboxRoute.SUB_FOLDER_NAME}/${MainRoute.SUB_ID}`}
+              element={
+                <CanAccessRoute allowedRoles={[RoleType.HOLDER, RoleType.ADMIN]}>
+                  <InboxItemDetailPage />
+                </CanAccessRoute>
+              }
+            />
           </Route>
+
+          {/* Documents - Holder and Admin */}
           <Route path={MainRoute.DOCUMENTS}>
-            <Route index element={<DocumentsListPage />} />
+            <Route
+              index
+              element={
+                <CanAccessRoute allowedRoles={[RoleType.HOLDER, RoleType.ADMIN]}>
+                  <DocumentsListPage />
+                </CanAccessRoute>
+              }
+            />
           </Route>
+
+          {/* OID4VCI - Holder and Admin (credential receiving flow) */}
           <Route path={MainRoute.OID4VCI}>
-            <Route index element={<OID4VCIStateMachineComponent />} />
+            <Route
+              index
+              element={
+                <CanAccessRoute allowedRoles={[RoleType.HOLDER, RoleType.ADMIN]}>
+                  <OID4VCIStateMachineComponent />
+                </CanAccessRoute>
+              }
+            />
             <Route path={OID4VCIRoute.LOADING} element={<LoadingPage />} />
             <Route path={OID4VCIRoute.ADD_CONTACT} element={<AddContactPage />} />
             <Route path={OID4VCIRoute.SELECT_CREDENTIALS} element={<SelectCredentialsPage />} />
@@ -218,21 +318,41 @@ const AppRouter: React.FC = () => {
             <Route path={OID4VCIRoute.REVIEW_CREDENTIALS} element={<ReviewCredentialsPage />} />
             <Route path={OID4VCIRoute.ERROR} element={<Oid4vciErrorPage />} />
           </Route>
+
+          {/* OID4VP/SIOPv2 - Holder and Admin (presentation flow) */}
           <Route path={MainRoute.OID4VP}>
-            <Route index element={<OID4VPStateMachineComponent />} />
+            <Route
+              index
+              element={
+                <CanAccessRoute allowedRoles={[RoleType.HOLDER, RoleType.ADMIN]}>
+                  <OID4VPStateMachineComponent />
+                </CanAccessRoute>
+              }
+            />
             <Route path={SIOPV2Route.LOADING} element={<LoadingPage />} />
             <Route path={SIOPV2Route.INFORMATION_REQUEST} element={<InformationRequestPage />} />
             <Route path={SIOPV2Route.ERROR} element={<Siopv2ErrorPage />} />
           </Route>
+
+          {/* Key Management - Admin only */}
           <Route path={MainRoute.KEY_MANAGEMENT}>
             <Route path={KeyManagementRoute.IDENTIFIERS}>
-              <Route index element={<IdentifiersListPage />} />
+              <Route
+                index
+                element={
+                  <CanAccessRoute allowedRoles={[RoleType.ADMIN]}>
+                    <IdentifiersListPage />
+                  </CanAccessRoute>
+                }
+              />
               <Route
                 path={MainRoute.SUB_CREATE}
                 element={
-                  <IdentifiersCreateContextProvider>
-                    <IdentifierCreatePage />
-                  </IdentifiersCreateContextProvider>
+                  <CanAccessRoute allowedRoles={[RoleType.ADMIN]}>
+                    <IdentifiersCreateContextProvider>
+                      <IdentifierCreatePage />
+                    </IdentifiersCreateContextProvider>
+                  </CanAccessRoute>
                 }>
                 <Route path={CreateIdentifierRoute.TYPE} element={<CreateIdentifierSelectTypeContent />} />
                 <Route path={CreateIdentifierRoute.KEYS} element={<CreateIdentifierKeysContent />} />
@@ -242,26 +362,79 @@ const AppRouter: React.FC = () => {
               <Route
                 path={`${MainRoute.SUB_EDIT}/${MainRoute.SUB_ID}`}
                 element={
-                  <IdentifiersEditContextProvider>
-                    <IdentifierEditPage />
-                  </IdentifiersEditContextProvider>
+                  <CanAccessRoute allowedRoles={[RoleType.ADMIN]}>
+                    <IdentifiersEditContextProvider>
+                      <IdentifierEditPage />
+                    </IdentifiersEditContextProvider>
+                  </CanAccessRoute>
                 }>
                 <Route path={EditIdentifierRoute.ALIAS} element={<EditIdentifierContent />} />
                 <Route path={EditIdentifierRoute.KEYS} element={<EditIdentifierKeysContent />} />
                 <Route path={EditIdentifierRoute.SERVICE_ENDPOINTS} element={<CreateIdentifierAddServiceEndpointContent mode="edit" />} />
               </Route>
-              <Route path={`${MainRoute.SUB_SHOW}/${MainRoute.SUB_ID}`} element={<ShowIdentifierDetails />} />
+              <Route
+                path={`${MainRoute.SUB_SHOW}/${MainRoute.SUB_ID}`}
+                element={
+                  <CanAccessRoute allowedRoles={[RoleType.ADMIN]}>
+                    <ShowIdentifierDetails />
+                  </CanAccessRoute>
+                }
+              />
             </Route>
             <Route path={KeyManagementRoute.KEYS}>
-              <Route index element={<KeysListPage />} />
-              <Route path={`${MainRoute.SUB_SHOW}/${MainRoute.SUB_ID}`} element={<KeyShowPage />} />
+              <Route
+                index
+                element={
+                  <CanAccessRoute allowedRoles={[RoleType.ADMIN]}>
+                    <KeysListPage />
+                  </CanAccessRoute>
+                }
+              />
+              <Route
+                path={`${MainRoute.SUB_SHOW}/${MainRoute.SUB_ID}`}
+                element={
+                  <CanAccessRoute allowedRoles={[RoleType.ADMIN]}>
+                    <KeyShowPage />
+                  </CanAccessRoute>
+                }
+              />
             </Route>
           </Route>
+
+          {/* Query Management - Verifier (Relying Party) and Admin */}
           <Route path={MainRoute.QUERY_MANAGEMENT}>
-            <Route index element={<PresentationDefinitionsListPage />} />
-            <Route path={MainRoute.SUB_ID} element={<PresentationDefinitionPage mode="show" />}></Route>
-            <Route path={MainRoute.SUB_CREATE} element={<PresentationDefinitionPage mode="create" />}></Route>
-            <Route path={`${MainRoute.SUB_EDIT}/${MainRoute.SUB_ID}`} element={<PresentationDefinitionPage mode="edit" />}></Route>
+            <Route
+              index
+              element={
+                <CanAccessRoute allowedRoles={[RoleType.RELYING_PARTY, RoleType.ADMIN]}>
+                  <PresentationDefinitionsListPage />
+                </CanAccessRoute>
+              }
+            />
+            <Route
+              path={MainRoute.SUB_ID}
+              element={
+                <CanAccessRoute allowedRoles={[RoleType.RELYING_PARTY, RoleType.ADMIN]}>
+                  <PresentationDefinitionPage mode="show" />
+                </CanAccessRoute>
+              }
+            />
+            <Route
+              path={MainRoute.SUB_CREATE}
+              element={
+                <CanAccessRoute allowedRoles={[RoleType.RELYING_PARTY, RoleType.ADMIN]}>
+                  <PresentationDefinitionPage mode="create" />
+                </CanAccessRoute>
+              }
+            />
+            <Route
+              path={`${MainRoute.SUB_EDIT}/${MainRoute.SUB_ID}`}
+              element={
+                <CanAccessRoute allowedRoles={[RoleType.RELYING_PARTY, RoleType.ADMIN]}>
+                  <PresentationDefinitionPage mode="edit" />
+                </CanAccessRoute>
+              }
+            />
           </Route>
         </Route>
         <Route

@@ -1,0 +1,104 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 48px 24px;
+  background-color: var(--color-bg-primary, #f8f9fa);
+  min-height: 60vh;
+}
+
+.content {
+  text-align: center;
+  max-width: 480px;
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 24px;
+  background-color: rgba(239, 68, 68, 0.1);
+  border-radius: 50%;
+  color: #ef4444;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-text-primary, #202537);
+  margin: 0 0 16px 0;
+}
+
+.description {
+  font-size: 16px;
+  color: var(--color-text-secondary, #6b7280);
+  margin: 0 0 12px 0;
+  line-height: 1.5;
+}
+
+.roleInfo {
+  font-size: 14px;
+  color: var(--color-text-secondary, #6b7280);
+  margin: 0 0 32px 0;
+}
+
+.roleLabel {
+  display: inline-block;
+  padding: 4px 12px;
+  background-color: var(--color-bg-tertiary, #f3f4f6);
+  border-radius: 16px;
+  font-weight: 500;
+  color: var(--color-text-primary, #202537);
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.buttonPrimary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  background-color: var(--color-primary, #7b61ff);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-family: inherit;
+}
+
+.buttonPrimary:hover {
+  background-color: var(--color-primary-hover, #6b51ef);
+}
+
+.buttonSecondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  background-color: transparent;
+  color: var(--color-text-secondary, #6b7280);
+  border: 1px solid var(--color-border-primary, #e5e7eb);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.buttonSecondary:hover {
+  background-color: var(--color-bg-tertiary, #f3f4f6);
+  color: var(--color-text-primary, #202537);
+}

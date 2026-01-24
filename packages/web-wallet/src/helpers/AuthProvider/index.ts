@@ -1,6 +1,7 @@
 import {Session} from 'next-auth'
 import {AuthBindings} from '@refinedev/core'
 import {signIn, signOut} from 'next-auth/react'
+import {mapOidcRolesToAppRoles, shouldAllowAllWhenNoRoles, getAllRoleTypes} from '@/src/config/oidcRoleMapping'
 
 export const getAuthProvider = (data: Session | null, status: 'authenticated' | 'unauthenticated' | 'loading'): AuthBindings => {
   return {
@@ -43,7 +44,22 @@ export const getAuthProvider = (data: Session | null, status: 'authenticated' | 
       }
     },
     getPermissions: async () => {
-      return null
+      // Extract OIDC roles from session and map to app roles
+      const oidcRoles = data?.oidcRoles ?? []
+      const appRoles = mapOidcRolesToAppRoles(oidcRoles)
+
+      // If no OIDC roles found and we should allow all roles (backward compatibility)
+      if (appRoles.length === 0 && shouldAllowAllWhenNoRoles()) {
+        return {
+          roles: getAllRoleTypes(),
+          oidcRoles: [],
+        }
+      }
+
+      return {
+        roles: appRoles,
+        oidcRoles,
+      }
     },
     getIdentity: async () => {
       if (data?.user) {

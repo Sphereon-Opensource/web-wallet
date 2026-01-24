@@ -12,7 +12,6 @@ import ManagementIcon from '@sphereon/ui-components.ssi-react/dist/components/as
 import KeyIcon from '@sphereon/ui-components.ssi-react/dist/components/assets/icons/Key'
 import UXIcon from '@sphereon/ui-components.ssi-react/dist/components/assets/icons/UX'
 import {useRole} from '@/src/contexts/RoleContext'
-import roleConfig from '@/src/config/roleConfig'
 import {MenuEntry, MenuItem, MenuGroup, MenuIcon} from '@/src/types'
 import styles from './index.module.css'
 
@@ -191,7 +190,7 @@ const LandingPage: FC = (): ReactElement => {
   const {t} = useTranslation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const {setCurrentRole} = useRole()
+  const {setCurrentRole, availableRoleConfigs, authorizedRoles} = useRole()
   const {data: session} = useSession()
   const userName = session?.user?.name?.split(' ')[0] ?? 'User' // Get first name only
 
@@ -213,17 +212,19 @@ const LandingPage: FC = (): ReactElement => {
     }
   }, [searchParams, navigate])
 
-  // Build role cards with their navigation items
+  // Build role cards with their navigation items, filtered to only authorized roles
   const roleCards = useMemo(() => {
-    return roleCardConfig.map(cardData => {
-      const roleData = roleConfig.find(r => r.role === cardData.role)
-      const quickLinks = roleData ? extractMenuItems(roleData.navigation) : []
-      return {...cardData, quickLinks, roleData}
-    })
-  }, [])
+    return roleCardConfig
+      .filter(cardData => authorizedRoles.includes(cardData.role))
+      .map(cardData => {
+        const roleData = availableRoleConfigs.find(r => r.role === cardData.role)
+        const quickLinks = roleData ? extractMenuItems(roleData.navigation) : []
+        return {...cardData, quickLinks, roleData}
+      })
+  }, [authorizedRoles, availableRoleConfigs])
 
   const handleCardClick = (role: RoleType) => {
-    const roleData = roleConfig.find(r => r.role === role)
+    const roleData = availableRoleConfigs.find(r => r.role === role)
     if (roleData) {
       setCurrentRole(roleData)
       const firstLink = extractMenuItems(roleData.navigation)[0]
@@ -233,7 +234,7 @@ const LandingPage: FC = (): ReactElement => {
 
   const handleQuickLinkClick = (e: React.MouseEvent, role: RoleType, path: string) => {
     e.stopPropagation()
-    const roleData = roleConfig.find(r => r.role === role)
+    const roleData = availableRoleConfigs.find(r => r.role === role)
     if (roleData) {
       setCurrentRole(roleData)
     }
