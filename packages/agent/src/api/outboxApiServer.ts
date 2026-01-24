@@ -1,9 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
-import { INBOX_API_BASE_PATH, ASSET_BASE_URI } from '../environment-vars'
-import { issueEInvoiceCredential } from '../utils/einvoiceCredentialIssuer'
-import { validateParsedEInvoice } from '../utils/ublParser'
-import { getDefaultDID, getIdentifier } from '../utils'
-import { completeOid4vpPresentation, prepareEvidenceAssets } from '../services'
+import { INBOX_API_BASE_PATH } from '../environment-vars'
+import { sendInvoiceToRecipient, mapOutboxItemToInvoiceData } from '../services'
 import { OutboxItem } from '../plugins/outbox'
 import { BaseApiServer, BaseApiServerOptions } from './BaseApiServer'
 
@@ -156,13 +153,12 @@ export class OutboxApiServer extends BaseApiServer {
   private async getOutboxItem(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { id } = req.params
-      const item = await this.agent.outboxItemGet({ id })
-
-      if (!item) {
-        this.notFound(res, 'Outbox item not found')
-        return
-      }
-
+      const item = await this.getResourceOrNotFound(
+        () => this.agent.outboxItemGet({ id }),
+        res,
+        'Outbox item'
+      )
+      if (!item) return
       this.success(res, item)
     } catch (error) {
       next(error)
@@ -179,11 +175,12 @@ export class OutboxApiServer extends BaseApiServer {
       const updateData = req.body
 
       // Check if item exists
-      const existing = await this.agent.outboxItemGet({ id })
-      if (!existing) {
-        this.notFound(res, 'Outbox item not found')
-        return
-      }
+      const existing = await this.getResourceOrNotFound(
+        () => this.agent.outboxItemGet({ id }),
+        res,
+        'Outbox item'
+      )
+      if (!existing) return
 
       // Only allow updates to draft or failed items
       if (existing.status !== 'draft' && existing.status !== 'failed') {
@@ -212,14 +209,11 @@ export class OutboxApiServer extends BaseApiServer {
   private async deleteOutboxItem(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { id } = req.params
-      const deleted = await this.agent.outboxItemDelete({ id })
-
-      if (!deleted) {
-        this.notFound(res, 'Outbox item not found')
-        return
-      }
-
-      this.noContent(res)
+      await this.deleteResourceOrNotFound(
+        () => this.agent.outboxItemDelete({ id }),
+        res,
+        'Outbox item'
+      )
     } catch (error) {
       next(error)
     }
@@ -303,12 +297,7 @@ export class OutboxApiServer extends BaseApiServer {
 
   /**
    * Actually send the invoice to the recipient.
-   * This follows the same flow as einvoiceApiServer.ts:
-   * 1. Get sender's DID and identifier
-   * 2. Fetch and publish evidence assets
-   * 3. Issue the eInvoice credential
-   * 4. Send via OID4VP
-   * 5. Complete the OID4VP presentation flow
+   * Uses the shared sendInvoiceToRecipient service.
    */
   private async sendToRecipient(item: OutboxItem): Promise<{
     success: boolean
@@ -316,134 +305,27 @@ export class OutboxApiServer extends BaseApiServer {
     correlationId?: string
     errorMessage?: string
   }> {
-    try {
-      console.log(`[Outbox] Sending invoice ${item.invoiceId} to ${item.recipientDid}`)
+    // Map OutboxItem to InvoiceData format and extract evidence IDs
+    const invoiceData = mapOutboxItemToInvoiceData(item)
+    const evidenceIds = (item.evidenceFiles || []).map(f => f.id)
 
-      // Step 1: Get sender's DID and identifier
-      const senderDid = await getDefaultDID()
-      if (!senderDid) {
-        return { success: false, errorMessage: 'No default DID configured for this agent' }
-      }
-
-      const senderIdentifier = await getIdentifier(senderDid)
-      if (!senderIdentifier) {
-        return { success: false, errorMessage: 'Could not get identifier for sender DID' }
-      }
-
-      console.log(`[Outbox] Sender DID: ${senderDid}`)
-
-      // Step 2: Fetch and publish evidence assets using shared service
-      const evidenceIds = (item.evidenceFiles || []).map(f => f.id)
-      const evidenceFiles = await prepareEvidenceAssets(
-        this.agent,
+    const result = await sendInvoiceToRecipient(
+      this.agent,
+      {
+        invoiceData,
         evidenceIds,
-        { logPrefix: '[Outbox]' }
-      )
-
-      // Step 3: Build parsed invoice format and issue credential
-      const parsedInvoice = {
-        invoice_id: item.invoiceId,
-        invoice_date: item.invoiceDate,
-        due_date: item.dueDate,
-        currency_code: item.currencyCode,
-        tax_exclusive_amount: item.taxExclusiveAmount ?? 0,
-        tax_amount: item.taxAmount ?? 0,
-        tax_inclusive_amount: item.taxInclusiveAmount ?? 0,
-        payable_amount: item.payableAmount ?? 0,
-        seller_name: item.sellerData?.name || 'Unknown Seller',
-        seller_tax_id: item.sellerData?.vatNumber,
-        seller_address: item.sellerData?.address ? {
-          street: item.sellerData.address.street,
-          city: item.sellerData.address.city,
-          postal_code: item.sellerData.address.postalCode,
-          country_code: item.sellerData.address.country,
-        } : undefined,
-        buyer_name: item.buyerData?.name || 'Unknown Buyer',
-        buyer_tax_id: item.buyerData?.vatNumber,
-        buyer_address: item.buyerData?.address ? {
-          street: item.buyerData.address.street,
-          city: item.buyerData.address.city,
-          postal_code: item.buyerData.address.postalCode,
-          country_code: item.buyerData.address.country,
-        } : undefined,
-      }
-
-      // Validate invoice data
-      const validationErrors = validateParsedEInvoice(parsedInvoice)
-      if (validationErrors.length > 0) {
-        return { success: false, errorMessage: `Invalid invoice data: ${validationErrors.join(', ')}` }
-      }
-
-      const evidenceBaseUrl = ASSET_BASE_URI
-      console.log(`[Outbox] Asset base URL: ${evidenceBaseUrl}`)
-
-      // Issue the credential
-      const issuedCredential = await issueEInvoiceCredential(
-        this.agent,
-        senderIdentifier,
-        {
-          invoiceData: parsedInvoice,
-          evidenceFiles,
-          evidenceBaseUrl,
-          subjectDid: item.recipientDid,
-        }
-      )
-
-      console.log(`[Outbox] Credential issued with hash: ${issuedCredential.hash}`)
-
-      // Step 4: Send credential to recipient's inbox via OID4VP
-      console.log(`[Outbox] Sending to inbox, endpoint: ${item.recipientEndpoint}`)
-      const sendResult = await this.agent.inboxSendToRecipient({
         recipientDid: item.recipientDid,
-        credential: issuedCredential.credential,
-        senderDid: senderDid,
-        serviceType: item.recipientEndpointType || 'EInvoiceInbox',
-        endpoint: item.recipientEndpoint,
-      })
+        recipientEndpoint: item.recipientEndpoint!,
+        recipientEndpointType: item.recipientEndpointType,
+      },
+      { logPrefix: '[Outbox]' }
+    )
 
-      if (!sendResult.success) {
-        console.error(`[Outbox] Failed to initiate OID4VP flow: ${sendResult.error}`)
-        return {
-          success: false,
-          errorMessage: `Failed to initiate OID4VP flow: ${sendResult.error}`,
-        }
-      }
-
-      console.log(`[Outbox] OID4VP flow initiated, request_uri: ${sendResult.requestUri}`)
-
-      // Step 5: Complete the OID4VP presentation flow
-      if (sendResult.requestUri) {
-        const presentationResult = await completeOid4vpPresentation(
-          this.agent,
-          sendResult.requestUri,
-          issuedCredential.credential,
-          senderDid,
-          { logPrefix: '[Outbox]' }
-        )
-
-        if (!presentationResult.success) {
-          console.error(`[Outbox] Failed to complete OID4VP presentation: ${presentationResult.error}`)
-          return {
-            success: false,
-            credentialId: issuedCredential.hash,
-            errorMessage: `Failed to complete OID4VP presentation: ${presentationResult.error}`,
-          }
-        }
-
-        console.log(`[Outbox] OID4VP presentation completed successfully`)
-      }
-
-      return {
-        success: true,
-        credentialId: issuedCredential.hash,
-        correlationId: sendResult.correlationId,
-      }
-    } catch (error: any) {
-      console.error('[Outbox] Error sending invoice:', error)
-      return {
-        success: false,
-        errorMessage: error.message || 'Failed to send to recipient',
-      }
+    return {
+      success: result.success,
+      credentialId: result.credentialId,
+      correlationId: result.correlationId,
+      errorMessage: result.error,
     }
   }
 }

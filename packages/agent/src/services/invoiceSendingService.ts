@@ -11,6 +11,7 @@ import { ASSET_BASE_URI, ASSET_DEFAULT_AVAILABILITY_YEARS } from '../environment
 import { issueEInvoiceCredential } from '../utils/einvoiceCredentialIssuer'
 import { validateParsedEInvoice, ParsedEInvoice } from '../utils/ublParser'
 import { Asset } from '../plugins/asset'
+import { OutboxItem } from '../plugins/outbox'
 import { getDefaultDID, getIdentifier } from '../utils'
 import { completeOid4vpPresentation } from './oid4vpPresentationService'
 
@@ -117,6 +118,38 @@ export function mapToParseEInvoice(data: InvoiceData): ParsedEInvoice {
     note: data.note,
     payment_terms: data.paymentTerms,
     payment_means_code: data.paymentMeansCode,
+  }
+}
+
+/**
+ * Convert an OutboxItem to InvoiceData format for sending via the shared service.
+ */
+export function mapOutboxItemToInvoiceData(item: OutboxItem): InvoiceData {
+  return {
+    invoiceId: item.invoiceId,
+    invoiceDate: item.invoiceDate,
+    dueDate: item.dueDate,
+    currencyCode: item.currencyCode,
+    taxExclusiveAmount: item.taxExclusiveAmount ?? 0,
+    taxAmount: item.taxAmount ?? 0,
+    taxInclusiveAmount: item.taxInclusiveAmount ?? 0,
+    payableAmount: item.payableAmount ?? 0,
+    sellerName: item.sellerData?.name || 'Unknown Seller',
+    sellerTaxId: item.sellerData?.vatNumber,
+    sellerAddress: item.sellerData?.address ? {
+      street: item.sellerData.address.street,
+      city: item.sellerData.address.city,
+      postalCode: item.sellerData.address.postalCode,
+      countryCode: item.sellerData.address.country,
+    } : undefined,
+    buyerName: item.buyerData?.name || 'Unknown Buyer',
+    buyerTaxId: item.buyerData?.vatNumber,
+    buyerAddress: item.buyerData?.address ? {
+      street: item.buyerData.address.street,
+      city: item.buyerData.address.city,
+      postalCode: item.buyerData.address.postalCode,
+      countryCode: item.buyerData.address.country,
+    } : undefined,
   }
 }
 

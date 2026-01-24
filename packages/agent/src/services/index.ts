@@ -14,6 +14,7 @@ export {
   sendInvoiceToRecipient,
   prepareEvidenceAssets,
   mapToParseEInvoice,
+  mapOutboxItemToInvoiceData,
   type InvoiceSendResult,
   type InvoiceData,
   type SendInvoiceParams,

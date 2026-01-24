@@ -109,13 +109,12 @@ export class InboxApiServer extends BaseApiServer {
   private async getInbox(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { inboxName } = req.params
-      const inbox = await this.agent.inboxGet({ name: inboxName })
-
-      if (!inbox) {
-        this.notFound(res, 'Inbox not found')
-        return
-      }
-
+      const inbox = await this.getResourceOrNotFound(
+        () => this.agent.inboxGet({ name: inboxName }),
+        res,
+        'Inbox'
+      )
+      if (!inbox) return
       this.success(res, inbox)
     } catch (error) {
       next(error)
@@ -125,14 +124,11 @@ export class InboxApiServer extends BaseApiServer {
   private async deleteInbox(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { inboxName } = req.params
-      const deleted = await this.agent.inboxDelete({ name: inboxName })
-
-      if (!deleted) {
-        this.notFound(res, 'Inbox not found')
-        return
-      }
-
-      this.noContent(res)
+      await this.deleteResourceOrNotFound(
+        () => this.agent.inboxDelete({ name: inboxName }),
+        res,
+        'Inbox'
+      )
     } catch (error) {
       next(error)
     }
@@ -178,13 +174,12 @@ export class InboxApiServer extends BaseApiServer {
   private async getFolder(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { inboxName, folderName } = req.params
-      const folder = await this.agent.inboxFolderGet({ inboxName, folderName })
-
-      if (!folder) {
-        this.notFound(res, 'Folder not found')
-        return
-      }
-
+      const folder = await this.getResourceOrNotFound(
+        () => this.agent.inboxFolderGet({ inboxName, folderName }),
+        res,
+        'Folder'
+      )
+      if (!folder) return
       this.success(res, folder)
     } catch (error) {
       next(error)
@@ -194,14 +189,11 @@ export class InboxApiServer extends BaseApiServer {
   private async deleteFolder(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { inboxName, folderName } = req.params
-      const deleted = await this.agent.inboxFolderDelete({ inboxName, folderName })
-
-      if (!deleted) {
-        this.notFound(res, 'Folder not found')
-        return
-      }
-
-      this.noContent(res)
+      await this.deleteResourceOrNotFound(
+        () => this.agent.inboxFolderDelete({ inboxName, folderName }),
+        res,
+        'Folder'
+      )
     } catch (error) {
       next(error)
     }
@@ -376,14 +368,12 @@ export class InboxApiServer extends BaseApiServer {
   private async getCredentialByCorrelationId(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { correlationId } = req.params
-
-      const credential = await this.agent.inboxCredentialGetByCorrelationId({ correlationId })
-
-      if (!credential) {
-        this.notFound(res, 'Credential not found')
-        return
-      }
-
+      const credential = await this.getResourceOrNotFound(
+        () => this.agent.inboxCredentialGetByCorrelationId({ correlationId }),
+        res,
+        'Credential'
+      )
+      if (!credential) return
       this.success(res, credential)
     } catch (error) {
       next(error)
@@ -468,19 +458,15 @@ export class InboxApiServer extends BaseApiServer {
     try {
       const { inboxName, clientId } = req.params
       const { clientIdPrefix } = req.query as { clientIdPrefix?: string }
-
-      const removed = await this.agent.inboxAllowedSenderRemove({
-        inboxName,
-        clientId: decodeURIComponent(clientId),
-        clientIdPrefix,
-      })
-
-      if (!removed) {
-        this.notFound(res, 'Sender not found in allowlist')
-        return
-      }
-
-      this.noContent(res)
+      await this.deleteResourceOrNotFound(
+        () => this.agent.inboxAllowedSenderRemove({
+          inboxName,
+          clientId: decodeURIComponent(clientId),
+          clientIdPrefix,
+        }),
+        res,
+        'Sender'
+      )
     } catch (error) {
       next(error)
     }

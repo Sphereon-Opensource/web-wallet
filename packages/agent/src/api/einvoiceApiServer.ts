@@ -1,9 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
-import { ASSET_BASE_URI } from '../environment-vars'
-import { issueEInvoiceCredential } from '../utils/einvoiceCredentialIssuer'
-import { parseUblInvoice, validateParsedEInvoice } from '../utils/ublParser'
-import { getDefaultDID, getIdentifier } from '../utils'
-import { completeOid4vpPresentation, prepareEvidenceAssets, mapToParseEInvoice } from '../services'
+import { parseUblInvoice } from '../utils/ublParser'
+import { sendInvoiceToRecipient } from '../services'
 import { BaseApiServer, BaseApiServerOptions } from './BaseApiServer'
 
 /**
@@ -93,13 +90,7 @@ export class EInvoiceApiServer extends BaseApiServer {
    * POST /api/einvoice/send
    *
    * Send an eInvoice to a recipient's inbox via OID4VP.
-   *
-   * This endpoint:
-   * 1. Gets the sender's default DID and issuer identifier
-   * 2. Fetches evidence files by IDs
-   * 3. Creates the eInvoice credential
-   * 4. Initiates OID4VP flow with recipient's inbox
-   * 5. Completes the OID4VP presentation flow
+   * Uses the shared sendInvoiceToRecipient service.
    */
   private async sendEInvoice(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
@@ -111,118 +102,41 @@ export class EInvoiceApiServer extends BaseApiServer {
         return
       }
 
-      console.log(`[eInvoice] Sending invoice ${body.invoiceData.invoiceId} to ${body.recipientDid}`)
-
-      // Step 1: Get sender's DID and identifier
-      const senderDid = await getDefaultDID()
-      if (!senderDid) {
-        this.serverError(res, 'No default DID configured for this agent')
-        return
-      }
-
-      const senderIdentifier = await getIdentifier(senderDid)
-      if (!senderIdentifier) {
-        this.serverError(res, 'Could not get identifier for sender DID')
-        return
-      }
-
-      console.log(`[eInvoice] Sender DID: ${senderDid}`)
-
-      // Step 2: Fetch and publish assets using shared service
-      const evidenceFiles = await prepareEvidenceAssets(
+      // Use shared service to send the invoice
+      const result = await sendInvoiceToRecipient(
         this.agent,
-        body.evidenceIds || [],
+        {
+          invoiceData: body.invoiceData,
+          evidenceIds: body.evidenceIds || [],
+          recipientDid: body.recipientDid,
+          recipientEndpoint: body.recipientEndpoint,
+          recipientEndpointType: body.recipientEndpointType,
+        },
         { logPrefix: '[eInvoice]' }
       )
 
-      // Step 3: Issue the eInvoice credential
-      // Map frontend invoice data to backend ParsedEInvoice format using shared mapper
-      const parsedInvoice = mapToParseEInvoice(body.invoiceData)
-
-      // Validate invoice data
-      const validationErrors = validateParsedEInvoice(parsedInvoice)
-      if (validationErrors.length > 0) {
-        this.badRequest(res, `Invalid invoice data: ${validationErrors.join(', ')}`)
-        return
-      }
-
-      // Use ASSET_BASE_URI (which defaults to AGENT_BASE_URI in environment-vars)
-      const evidenceBaseUrl = ASSET_BASE_URI
-
-      console.log(`[eInvoice] Asset base URL: ${evidenceBaseUrl}`)
-
-      // Issue the credential
-      const issuedCredential = await issueEInvoiceCredential(
-        this.agent,
-        senderIdentifier,
-        {
-          invoiceData: parsedInvoice,
-          evidenceFiles,
-          evidenceBaseUrl,
-          subjectDid: body.recipientDid,
-        }
-      )
-
-      console.log(`[eInvoice] Credential issued with hash: ${issuedCredential.hash}`)
-
-      // Step 4: Send credential to recipient's inbox via OID4VP
-      // First, POST to the inbox endpoint to initiate the flow
-      console.log(`[eInvoice] Sending to inbox, endpoint: ${body.recipientEndpoint}`)
-      const sendResult = await this.agent.inboxSendToRecipient({
-        recipientDid: body.recipientDid,
-        credential: issuedCredential.credential,
-        senderDid: senderDid,
-        serviceType: body.recipientEndpointType || 'EInvoiceInbox',
-        endpoint: body.recipientEndpoint,
-      })
-
-      if (!sendResult.success) {
-        console.error(`[eInvoice] Failed to initiate OID4VP flow: ${sendResult.error}`)
-        this.badGateway(res, `Failed to initiate OID4VP flow: ${sendResult.error}`, {
-          inboxEndpoint: sendResult.inboxEndpoint,
-        })
-        return
-      }
-
-      console.log(`[eInvoice] OID4VP flow initiated, request_uri: ${sendResult.requestUri}`)
-
-      // Step 5: Complete the OID4VP presentation flow
-      if (sendResult.requestUri) {
-        try {
-          const presentationResult = await completeOid4vpPresentation(
-            this.agent,
-            sendResult.requestUri,
-            issuedCredential.credential,
-            senderDid,
-            { logPrefix: '[eInvoice]' }
-          )
-
-          if (!presentationResult.success) {
-            console.error(`[eInvoice] Failed to complete OID4VP presentation: ${presentationResult.error}`)
-            this.badGateway(res, `Failed to complete OID4VP presentation: ${presentationResult.error}`, {
-              credentialHash: issuedCredential.hash,
-            })
-            return
-          }
-
-          console.log(`[eInvoice] OID4VP presentation completed successfully`)
-        } catch (error: any) {
-          console.error(`[eInvoice] Error completing OID4VP presentation:`, error)
-          this.badGateway(res, `Error completing OID4VP presentation: ${error.message}`, {
-            credentialHash: issuedCredential.hash,
+      if (!result.success) {
+        // Determine appropriate error response based on error type
+        if (result.error?.includes('No default DID') || result.error?.includes('Could not get identifier')) {
+          this.serverError(res, result.error)
+        } else if (result.error?.includes('Invalid invoice data')) {
+          this.badRequest(res, result.error)
+        } else {
+          this.badGateway(res, result.error || 'Failed to send eInvoice', {
+            credentialHash: result.credentialHash,
           })
-          return
         }
+        return
       }
 
       // Success - credential was sent to recipient
       this.success(res, {
         success: true,
-        credentialId: issuedCredential.hash,
-        credentialHash: issuedCredential.hash,
-        evidenceCount: issuedCredential.evidence.length,
+        credentialId: result.credentialId,
+        credentialHash: result.credentialHash,
+        evidenceCount: result.evidenceCount,
         recipientDid: body.recipientDid,
-        correlationId: sendResult.correlationId,
+        correlationId: result.correlationId,
       })
     } catch (error: any) {
       console.error('[eInvoice] Error sending eInvoice:', error)

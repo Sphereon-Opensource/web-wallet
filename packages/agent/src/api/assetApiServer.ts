@@ -284,21 +284,16 @@ export class AssetApiServer extends BaseApiServer {
   private async getAssetById(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { id } = req.params
-
-      const asset = await this.agent.assetGetById({ id })
-
-      if (!asset) {
-        this.notFound(res, 'Asset not found')
-        return
-      }
+      const asset = await this.getResourceOrNotFound(
+        () => this.agent.assetGetById({ id }),
+        res,
+        'Asset'
+      )
+      if (!asset) return
 
       // Include public URL if asset is public
       const publicUrl = asset.isPublic ? this.getPublicUrl(asset.digestMultibase) : undefined
-
-      this.success(res, {
-        ...asset,
-        publicUrl,
-      })
+      this.success(res, { ...asset, publicUrl })
     } catch (error) {
       next(error)
     }
@@ -370,18 +365,14 @@ export class AssetApiServer extends BaseApiServer {
     try {
       const { id } = req.params
       const { hardDelete } = req.query
-
-      const deleted = await this.agent.assetDelete({
-        id,
-        hardDelete: this.parseBooleanQuery(hardDelete) ?? false,
-      })
-
-      if (!deleted) {
-        this.notFound(res, 'Asset not found')
-        return
-      }
-
-      this.noContent(res)
+      await this.deleteResourceOrNotFound(
+        () => this.agent.assetDelete({
+          id,
+          hardDelete: this.parseBooleanQuery(hardDelete) ?? false,
+        }),
+        res,
+        'Asset'
+      )
     } catch (error) {
       next(error)
     }

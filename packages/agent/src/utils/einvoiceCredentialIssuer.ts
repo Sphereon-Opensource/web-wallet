@@ -71,8 +71,8 @@ export interface IssueEInvoiceCredentialOptions {
   /** Base URL for evidence download links */
   evidenceBaseUrl?: string
 
-  /** Subject DID (buyer/recipient) - optional for self-asserted credentials */
-  subjectDid?: string
+  /** Subject DID (buyer/recipient) - required, this is who the invoice is sent to */
+  subjectDid: string
 
   /** Expiration date for the credential */
   expirationDate?: Date
@@ -137,9 +137,10 @@ export function buildEvidenceReferences(
  */
 export function buildCredentialSubject(
   invoiceData: ParsedEInvoice,
-  subjectDid?: string
-): EInvoiceCredentialSubject & { id?: string } {
-  const subject: EInvoiceCredentialSubject & { id?: string } = {
+  subjectDid: string
+): EInvoiceCredentialSubject & { id: string } {
+  const subject: EInvoiceCredentialSubject & { id: string } = {
+    id: subjectDid,
     // Invoice identification
     invoice_id: invoiceData.invoice_id,
     invoice_date: invoiceData.invoice_date,
@@ -168,11 +169,6 @@ export function buildCredentialSubject(
   if (invoiceData.note) subject.note = invoiceData.note
   if (invoiceData.payment_terms) subject.payment_terms = invoiceData.payment_terms
   if (invoiceData.payment_means_code) subject.payment_means_code = invoiceData.payment_means_code
-
-  // Add subject DID if provided
-  if (subjectDid) {
-    subject.id = subjectDid
-  }
 
   return subject
 }
@@ -205,11 +201,11 @@ export async function issueEInvoiceCredential(
 
   // Create the credential payload for SD-JWT
   // SD-JWT uses flat claims with vct instead of nested credentialSubject
-  // Note: 'sub' claim is important for holder binding - it identifies the credential holder
+  // Note: 'sub' claim is important for holder binding - it identifies the credential holder (recipient)
   const credentialPayload: Record<string, unknown> = {
     vct: 'urn:org:fides:einvoice:1',
     iss: issuer.did,
-    sub: subjectDid || issuer.did, // Set subject to recipient DID or issuer if self-asserted
+    sub: subjectDid,
     iat: Math.floor(Date.now() / 1000),
     ...credentialSubject,
     ...additionalClaims,
@@ -253,14 +249,14 @@ export async function issueEInvoiceCredential(
  * @param agent - The Veramo agent instance
  * @param issuer - The issuer identifier (sender wallet DID)
  * @param ublXml - The UBL XML content as string or Buffer
- * @param options - Additional options (evidenceFiles, subjectDid, etc.)
+ * @param options - Additional options (evidenceFiles, etc.) - subjectDid is required
  * @returns The issued credential and metadata
  */
 export async function issueEInvoiceCredentialFromUbl(
   agent: TAgent<TAgentTypes>,
   issuer: IIdentifier,
   ublXml: string | Buffer,
-  options: Omit<IssueEInvoiceCredentialOptions, 'invoiceData'> = {}
+  options: Omit<IssueEInvoiceCredentialOptions, 'invoiceData'>
 ): Promise<IssuedEInvoiceCredential> {
   const { parseUblInvoice, validateParsedEInvoice } = await import('./ublParser')
 

@@ -280,6 +280,87 @@ export abstract class BaseApiServer {
     return false
   }
 
+  // ===== Resource Operation Helpers =====
+
+  /**
+   * Fetch a resource and automatically send 404 if not found.
+   * Returns the resource if found, or null if 404 was sent.
+   *
+   * @param fetcher - Async function that fetches the resource
+   * @param res - Express response object
+   * @param resourceName - Name of the resource for error messages (e.g., 'Asset', 'Inbox')
+   * @returns The resource if found, null if 404 was sent
+   *
+   * @example
+   * ```typescript
+   * const asset = await this.getResourceOrNotFound(
+   *   () => this.agent.assetGetById({ id }),
+   *   res,
+   *   'Asset'
+   * )
+   * if (!asset) return // 404 already sent
+   * this.success(res, asset)
+   * ```
+   */
+  protected async getResourceOrNotFound<T>(
+    fetcher: () => Promise<T | null | undefined>,
+    res: Response,
+    resourceName: string
+  ): Promise<T | null> {
+    const resource = await fetcher()
+    if (!resource) {
+      this.notFound(res, `${resourceName} not found`)
+      return null
+    }
+    return resource
+  }
+
+  /**
+   * Delete a resource and automatically send 404 if not found, or 204 on success.
+   * Returns true if deleted, false if 404 was sent.
+   *
+   * @param deleter - Async function that deletes the resource (should return boolean)
+   * @param res - Express response object
+   * @param resourceName - Name of the resource for error messages
+   * @returns true if deleted and 204 sent, false if 404 was sent
+   *
+   * @example
+   * ```typescript
+   * const deleted = await this.deleteResourceOrNotFound(
+   *   () => this.agent.assetDelete({ id }),
+   *   res,
+   *   'Asset'
+   * )
+   * // Response already sent (204 or 404)
+   * ```
+   */
+  protected async deleteResourceOrNotFound(
+    deleter: () => Promise<boolean>,
+    res: Response,
+    resourceName: string
+  ): Promise<boolean> {
+    const deleted = await deleter()
+    if (!deleted) {
+      this.notFound(res, `${resourceName} not found`)
+      return false
+    }
+    this.noContent(res)
+    return true
+  }
+
+  /**
+   * Standard pagination parameters parsed from query string.
+   */
+  protected getPaginationParams(query: { limit?: unknown; offset?: unknown }): {
+    limit: number | undefined
+    offset: number | undefined
+  } {
+    return {
+      limit: this.parseIntQuery(query.limit),
+      offset: this.parseIntQuery(query.offset, 0),
+    }
+  }
+
   // ===== Query Parameter Helpers =====
 
   /**
