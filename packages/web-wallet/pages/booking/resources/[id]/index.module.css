@@ -1,0 +1,866 @@
+/**
+ * Resource Detail Page Styles
+ * Matches mockup design with timeline calendar and booking sidebar
+ */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background-color: #FBFBFB;
+  overflow: hidden;
+}
+
+/* Content Wrapper - Two columns */
+.contentWrapper {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.contentMain {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+}
+
+/* Resource Info Card */
+.resourceInfoCard {
+  background-color: white;
+  border-radius: 12px;
+  border: 1px solid #E3E3E3;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.resourceInfoHeader {
+  display: flex;
+  gap: 20px;
+  padding: 24px;
+}
+
+.resourceImageContainer {
+  width: 140px;
+  height: 140px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #E0F2FE 0%, #E0E7FF 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.resourceImageIcon {
+  width: 56px;
+  height: 56px;
+  background-color: white;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.resourceImageIcon svg {
+  color: #7276F7;
+}
+
+.resourceDetails {
+  flex: 1;
+}
+
+.resourceCategory {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background-color: #EFEFEF;
+  border-radius: 9999px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: #6B7280;
+  margin-bottom: 8px;
+}
+
+.resourceTitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: #303030;
+  margin: 0 0 8px;
+}
+
+.resourceDesc {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: #6B7280;
+  line-height: 1.6;
+  margin: 0 0 16px;
+}
+
+.resourceMetaGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.metaBox {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.metaLabel {
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: #9CA3AF;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.metaValue {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #303030;
+}
+
+.metaValue svg {
+  color: #7276F7;
+}
+
+/* Calendar Section */
+.calendarSection {
+  background-color: white;
+  border-radius: 12px;
+  border: 1px solid #E3E3E3;
+  overflow: hidden;
+}
+
+.calendarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #E3E3E3;
+}
+
+.calendarTitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #303030;
+  margin: 0;
+}
+
+.viewToggle {
+  display: flex;
+  border: 1px solid #E3E3E3;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.viewToggleBtn {
+  padding: 6px 14px;
+  background-color: white;
+  border: none;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #6B7280;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.viewToggleBtn:hover {
+  background-color: #EFEFEF;
+}
+
+.viewToggleBtn.active {
+  background-color: #7276F7;
+  color: white;
+}
+
+.calendarNav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  background-color: #F5F5F5;
+  border-bottom: 1px solid #E3E3E3;
+}
+
+.navBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: white;
+  border: 1px solid #E3E3E3;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #6B7280;
+  transition: all 0.15s;
+}
+
+.navBtn:hover:not(:disabled) {
+  background-color: #EFEFEF;
+  color: #303030;
+}
+
+.navBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.navDate {
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #303030;
+}
+
+.todayBtn {
+  padding: 6px 12px;
+  background: white;
+  border: 1px solid #E3E3E3;
+  border-radius: 6px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #6B7280;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.todayBtn:hover {
+  background-color: #EFEFEF;
+  color: #303030;
+}
+
+/* Slot Interval Selector */
+.intervalSelector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 16px;
+  padding-left: 16px;
+  border-left: 1px solid #E3E3E3;
+}
+
+.intervalLabel {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  color: #6B7280;
+}
+
+.intervalSelect {
+  padding: 4px 8px;
+  border: 1px solid #E3E3E3;
+  border-radius: 4px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  background: white;
+  cursor: pointer;
+}
+
+.intervalSelect:focus {
+  outline: none;
+  border-color: #7276F7;
+}
+
+/* Timeline Container */
+.timelineContainer {
+  padding: 0 20px 20px;
+  overflow-x: auto;
+}
+
+.timeline {
+  min-width: 800px;
+}
+
+.timelineHours {
+  display: flex;
+  border-bottom: 1px solid #E3E3E3;
+  padding: 12px 0;
+  margin-left: 60px;
+}
+
+.hourLabel {
+  flex: 1;
+  min-width: 60px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  color: #9CA3AF;
+  font-weight: 500;
+}
+
+.timelineDays {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 12px;
+}
+
+.timelineDay {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+}
+
+.dayLabel {
+  width: 48px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #6B7280;
+  text-align: center;
+  flex-shrink: 0;
+  line-height: 1.3;
+}
+
+.dayLabel.today {
+  color: #7276F7;
+  font-weight: 600;
+}
+
+.daySlots {
+  display: flex;
+  flex: 1;
+  height: 44px;
+  background-color: #F5F5F5;
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+.slot {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 4px;
+}
+
+.slotAvailable {
+  background-color: #D1FAE5;
+  border: 1px solid #A7F3D0;
+  color: #059669;
+}
+
+.slotAvailable:hover {
+  background-color: #A7F3D0;
+  transform: scaleY(1.05);
+}
+
+.slotUnavailable {
+  background-color: #E5E5E5;
+  border: 1px solid #D4D4D4;
+  color: #9CA3AF;
+  cursor: not-allowed;
+}
+
+.slotBooked {
+  background-color: #FEE2E2;
+  border: 1px solid #FECACA;
+  color: #DC2626;
+  cursor: not-allowed;
+}
+
+.slotMyBooking {
+  background-color: #DBEAFE;
+  border: 1px solid #93C5FD;
+  color: #1D4ED8;
+  cursor: pointer;
+}
+
+.slotMyBooking:hover {
+  background-color: #BFDBFE;
+}
+
+.slotSelected {
+  background-color: #7276F7;
+  border-color: #5558C9;
+  color: white;
+  box-shadow: 0 2px 8px rgba(114, 118, 247, 0.3);
+}
+
+/* Multi-slot selection range styles */
+.slotInRange {
+  background-color: #C7D2FE;
+  border: 1px solid #A5B4FC;
+  color: #4338CA;
+}
+
+.slotInRange:hover {
+  background-color: #A5B4FC;
+}
+
+.slotRangeStart {
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+  border-right: none;
+}
+
+.slotRangeEnd {
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+  border-left: none;
+}
+
+.slotRangeMiddle {
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+}
+
+/* Legend */
+.timelineLegend {
+  display: flex;
+  gap: 20px;
+  padding: 16px 20px;
+  border-top: 1px solid #E3E3E3;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  color: #6B7280;
+}
+
+.legendDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+.legendDotAvailable {
+  background-color: #D1FAE5;
+  border: 1px solid #A7F3D0;
+}
+
+.legendDotUnavailable {
+  background-color: #E5E5E5;
+  border: 1px solid #D4D4D4;
+}
+
+.legendDotBooked {
+  background-color: #FEE2E2;
+  border: 1px solid #FECACA;
+}
+
+.legendDotMyBooking {
+  background-color: #DBEAFE;
+  border: 1px solid #93C5FD;
+}
+
+.legendDotSelected {
+  background-color: #7276F7;
+}
+
+/* Booking Sidebar - Styled like other detail panels */
+.bookingSidebar {
+  width: 380px;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-left: 1px solid #E5E7EB;
+  flex-shrink: 0;
+  overflow: hidden;
+  min-height: 0;
+  max-height: 100%;
+}
+
+.sidebarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  height: 54px;
+  min-height: 54px;
+  background-color: #F5F5F5;
+  border-bottom: 1px solid #E5E7EB;
+  flex-shrink: 0;
+}
+
+.sidebarTitle {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #303030;
+}
+
+.sidebarBody {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 16px;
+  gap: 16px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  min-height: 0;
+}
+
+/* Selected Slot Card - Matches metadataSection pattern */
+.selectedSlotCard {
+  display: flex;
+  position: relative;
+  background-color: #FFFFFF;
+  border: 1px solid #E3E3E3;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.selectedSlotCardEmpty {
+  border-style: dashed;
+}
+
+.slotCardBorder {
+  width: 4px;
+  background-color: #7276F7;
+  flex-shrink: 0;
+}
+
+.slotCardBorderEmpty {
+  background-color: #E3E3E3;
+}
+
+.slotCardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 16px;
+  flex: 1;
+}
+
+.slotCardLabel {
+  font-family: 'Poppins', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: #ACACAC;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.slotCardDate {
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #7276F7;
+}
+
+.slotCardTime {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: #303030;
+}
+
+.slotCardDuration {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  color: #6B7280;
+  margin-top: 4px;
+}
+
+.slotCardError {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  color: #DC2626;
+  margin-top: 4px;
+  padding: 4px 8px;
+  background-color: #FEE2E2;
+  border-radius: 4px;
+}
+
+.slotCardEmpty {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: #9CA3AF;
+  text-align: center;
+  padding: 8px 0;
+}
+
+/* Form Sections */
+.formSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.formLabel {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6B7280;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.formInput {
+  width: 100%;
+  padding: 12px 14px;
+  background-color: white;
+  border: 1px solid #E3E3E3;
+  border-radius: 6px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: #303030;
+  transition: border-color 0.15s;
+}
+
+.formInput:focus {
+  outline: none;
+  border-color: #7276F7;
+}
+
+.formInput::placeholder {
+  color: #9CA3AF;
+}
+
+.formTextarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* Credential Section */
+.credentialSection {
+  display: flex;
+  position: relative;
+  background-color: #FFFFFF;
+  border: 1px solid #E3E3E3;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.credentialBorder {
+  width: 4px;
+  background-color: #00C249;
+  flex-shrink: 0;
+}
+
+.credentialBorderRequired {
+  background-color: #F5A623;
+}
+
+.credentialContent {
+  padding: 12px 16px;
+  flex: 1;
+}
+
+.credentialHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.credentialIcon {
+  color: #00C249;
+}
+
+.credentialIconRequired {
+  color: #F5A623;
+}
+
+.credentialTitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #303030;
+}
+
+.credentialDesc {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  color: #6B7280;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Submit Button */
+.submitButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 24px;
+  width: 100%;
+  background: linear-gradient(135deg, #7276F7 0%, #7C40E8 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  margin-top: auto;
+}
+
+.submitButton:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.submitButton:disabled {
+  background: #C4C5CA;
+  cursor: not-allowed;
+}
+
+/* Loading State */
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 32px;
+  gap: 16px;
+  flex: 1;
+  color: #8D9099;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #E5E7EB;
+  border-top-color: #7276F7;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Empty State */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 32px;
+  text-align: center;
+  flex: 1;
+}
+
+.emptyState h3 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1F2937;
+  margin: 0 0 8px;
+}
+
+.emptyState p {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: #6B7280;
+  margin: 0 0 20px;
+}
+
+.primaryButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #7276F7 0%, #7C40E8 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.primaryButton:hover {
+  opacity: 0.9;
+}
+
+/* Responsive */
+@media (max-width: 1280px) {
+  .bookingSidebar {
+    width: 340px;
+  }
+
+  .resourceMetaGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 1024px) {
+  .bookingSidebar {
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 380px;
+    z-index: 200;
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .resourceInfoHeader {
+    flex-direction: column;
+  }
+
+  .resourceImageContainer {
+    width: 100%;
+    height: 160px;
+  }
+}
+
+@media (max-width: 768px) {
+  .contentMain {
+    padding: 16px;
+  }
+
+  .resourceMetaGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .bookingSidebar {
+    width: 100%;
+  }
+
+  .calendarNav {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .intervalSelector {
+    margin-left: 0;
+    padding-left: 0;
+    border-left: none;
+    width: 100%;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #E3E3E3;
+  }
+}

@@ -37,6 +37,9 @@ import CreateIdentifierSelectTypeContent from 'src/components/views/CreateIdenti
 import {IdentifiersCreateContextProvider} from '@machines/identifiers/identifiersCreateStateNavigation'
 import PresentationDefinitionsListPage from 'pages/presentationDefinitions'
 import {
+  BookingAdminRoute,
+  BookingCreateRoute,
+  BookingRoute,
   ContactRoute,
   CreateIdentifierRoute,
   CredentialDesignerRoute,
@@ -67,6 +70,7 @@ import EditIdentifierKeysContent from '@components/views/EditIdentifierKeysConte
 import {IdentifiersEditContextProvider} from '@machines/identifiers/identifiersEditStateNavigation'
 import IdentifierEditPage from '@/pages/keyManagement/identifiers/edit'
 import ShowIdentifierDetails from '@/pages/keyManagement/identifiers/show'
+import ShowExternalIdentifierDetails from '@/pages/keyManagement/identifiers/external/show'
 import CredentialDesignerCreateContextProvider from '@machines/credentials/credentialDesignerCreateStateNavigation'
 import CredentialDesignerCreatePage from '@/pages/credentials/design/create'
 import CredentialDesignerClaimsCreateContent from '@components/views/CredentialDesignerClaimsCreateContent'
@@ -90,7 +94,30 @@ import EInvoiceRecipientContent from '@components/views/EInvoiceRecipientContent
 import EInvoiceEvidenceContent from '@components/views/EInvoiceEvidenceContent'
 import EInvoiceReviewContent from '@components/views/EInvoiceReviewContent'
 import LandingPage from '../../pages/landing'
-import CanAccessRoute from '@components/auth/CanAccessRoute'
+import CanAccessRoute, {AdminOnly, BookerOrAdmin} from '@components/auth/CanAccessRoute'
+import BookingResourcesPage from '../../pages/booking/resources'
+import BookingResourceDetailPage from '../../pages/booking/resources/[id]'
+import MyBookingsPage from '../../pages/booking/my-bookings'
+import BookingVerificationPage from '../../pages/booking/create/verification'
+import BookingConfirmationPage from '../../pages/booking/create/confirmation'
+import AdminResourcesPage from '../../pages/booking/admin/resources'
+import AdminResourceCreatePage from '../../pages/booking/admin/resources/create'
+import AdminResourceEditPage from '../../pages/booking/admin/resources/edit/[id]'
+import AdminResourceDetailPage from '../../pages/booking/admin/resources/[id]'
+import AdminCategoriesPage from '../../pages/booking/admin/categories'
+import AdminCategoryDetailPage from '../../pages/booking/admin/categories/[id]'
+import AdminCategoryCreatePage from '../../pages/booking/admin/categories/create'
+import AdminPoliciesPage from '../../pages/booking/admin/policies'
+import AdminPolicyDetailPage from '../../pages/booking/admin/policies/[id]'
+import AdminPolicyCreatePage from '../../pages/booking/admin/policies/create'
+import AdminSchedulesPage from '../../pages/booking/admin/schedules'
+import AdminScheduleDetailPage from '../../pages/booking/admin/schedules/[id]'
+import AdminScheduleCreatePage from '../../pages/booking/admin/schedules/create'
+import AdminScheduleEditPage from '../../pages/booking/admin/schedules/[id]/edit'
+import AdminGroupsPage from '../../pages/booking/admin/groups'
+import AdminGroupDetailPage from '../../pages/booking/admin/groups/[id]'
+import AdminGroupCreatePage from '../../pages/booking/admin/groups/create'
+import AdminGroupEditPage from '../../pages/booking/admin/groups/[id]/edit'
 
 const KeycloakLoginPage = (props: PropsWithChildren<any>) => {
   const {mutate: login} = useLogin()
@@ -300,6 +327,216 @@ const AppRouter: React.FC = () => {
             />
           </Route>
 
+          {/* Booking - Booker and Admin */}
+          <Route path={MainRoute.BOOKING}>
+            <Route index element={<Navigate to={`${MainRoute.BOOKING}/${BookingRoute.RESOURCES}`} replace />} />
+            <Route
+              path={BookingRoute.RESOURCES}
+              element={
+                <BookerOrAdmin>
+                  <BookingResourcesPage />
+                </BookerOrAdmin>
+              }
+            />
+            <Route
+              path={`${BookingRoute.RESOURCES}/:id`}
+              element={
+                <BookerOrAdmin>
+                  <BookingResourceDetailPage />
+                </BookerOrAdmin>
+              }
+            />
+            <Route
+              path={BookingRoute.MY_BOOKINGS}
+              element={
+                <BookerOrAdmin>
+                  <MyBookingsPage />
+                </BookerOrAdmin>
+              }
+            />
+            {/* Booking wizard */}
+            <Route path={BookingRoute.CREATE}>
+              <Route
+                path={BookingCreateRoute.VERIFICATION}
+                element={
+                  <BookerOrAdmin>
+                    <BookingVerificationPage />
+                  </BookerOrAdmin>
+                }
+              />
+              <Route
+                path={BookingCreateRoute.CONFIRMATION}
+                element={
+                  <BookerOrAdmin>
+                    <BookingConfirmationPage />
+                  </BookerOrAdmin>
+                }
+              />
+            </Route>
+            {/* Admin routes - Admin only */}
+            <Route path={BookingRoute.ADMIN}>
+              {/* Resources */}
+              <Route path={BookingAdminRoute.RESOURCES}>
+                <Route
+                  index
+                  element={
+                    <AdminOnly>
+                      <AdminResourcesPage />
+                    </AdminOnly>
+                  }
+                />
+                <Route
+                  path={MainRoute.SUB_CREATE}
+                  element={
+                    <AdminOnly>
+                      <AdminResourceCreatePage />
+                    </AdminOnly>
+                  }
+                />
+                <Route
+                  path=":id"
+                  element={
+                    <AdminOnly>
+                      <AdminResourceDetailPage />
+                    </AdminOnly>
+                  }
+                />
+                <Route
+                  path={`${MainRoute.SUB_EDIT}/:id`}
+                  element={
+                    <AdminOnly>
+                      <AdminResourceEditPage />
+                    </AdminOnly>
+                  }
+                />
+              </Route>
+              {/* Categories */}
+              <Route path={BookingAdminRoute.CATEGORIES}>
+                <Route
+                  index
+                  element={
+                    <AdminOnly>
+                      <AdminCategoriesPage />
+                    </AdminOnly>
+                  }
+                />
+                <Route
+                  path={MainRoute.SUB_CREATE}
+                  element={
+                    <AdminOnly>
+                      <AdminCategoryCreatePage />
+                    </AdminOnly>
+                  }
+                />
+                <Route
+                  path=":id"
+                  element={
+                    <AdminOnly>
+                      <AdminCategoryDetailPage />
+                    </AdminOnly>
+                  }
+                />
+              </Route>
+              {/* Policies */}
+              <Route path={BookingAdminRoute.POLICIES}>
+                <Route
+                  index
+                  element={
+                    <AdminOnly>
+                      <AdminPoliciesPage />
+                    </AdminOnly>
+                  }
+                />
+                <Route
+                  path={MainRoute.SUB_CREATE}
+                  element={
+                    <AdminOnly>
+                      <AdminPolicyCreatePage />
+                    </AdminOnly>
+                  }
+                />
+                <Route
+                  path=":id"
+                  element={
+                    <AdminOnly>
+                      <AdminPolicyDetailPage />
+                    </AdminOnly>
+                  }
+                />
+              </Route>
+              {/* Schedules */}
+              <Route path={BookingAdminRoute.SCHEDULES}>
+                <Route
+                  index
+                  element={
+                    <AdminOnly>
+                      <AdminSchedulesPage />
+                    </AdminOnly>
+                  }
+                />
+                <Route
+                  path={MainRoute.SUB_CREATE}
+                  element={
+                    <AdminOnly>
+                      <AdminScheduleCreatePage />
+                    </AdminOnly>
+                  }
+                />
+                <Route
+                  path=":id"
+                  element={
+                    <AdminOnly>
+                      <AdminScheduleDetailPage />
+                    </AdminOnly>
+                  }
+                />
+                <Route
+                  path=":id/edit"
+                  element={
+                    <AdminOnly>
+                      <AdminScheduleEditPage />
+                    </AdminOnly>
+                  }
+                />
+              </Route>
+              {/* Groups */}
+              <Route path={BookingAdminRoute.GROUPS}>
+                <Route
+                  index
+                  element={
+                    <AdminOnly>
+                      <AdminGroupsPage />
+                    </AdminOnly>
+                  }
+                />
+                <Route
+                  path={MainRoute.SUB_CREATE}
+                  element={
+                    <AdminOnly>
+                      <AdminGroupCreatePage />
+                    </AdminOnly>
+                  }
+                />
+                <Route
+                  path=":id"
+                  element={
+                    <AdminOnly>
+                      <AdminGroupDetailPage />
+                    </AdminOnly>
+                  }
+                />
+                <Route
+                  path=":id/edit"
+                  element={
+                    <AdminOnly>
+                      <AdminGroupEditPage />
+                    </AdminOnly>
+                  }
+                />
+              </Route>
+            </Route>
+          </Route>
+
           {/* OID4VCI - Holder and Admin (credential receiving flow) */}
           <Route path={MainRoute.OID4VCI}>
             <Route
@@ -377,6 +614,14 @@ const AppRouter: React.FC = () => {
                 element={
                   <CanAccessRoute allowedRoles={[RoleType.ADMIN]}>
                     <ShowIdentifierDetails />
+                  </CanAccessRoute>
+                }
+              />
+              <Route
+                path={`external/${MainRoute.SUB_SHOW}/${MainRoute.SUB_ID}`}
+                element={
+                  <CanAccessRoute allowedRoles={[RoleType.ADMIN]}>
+                    <ShowExternalIdentifierDetails />
                   </CanAccessRoute>
                 }
               />

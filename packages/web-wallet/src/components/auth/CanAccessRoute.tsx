@@ -1,11 +1,12 @@
 import React, {FC, ReactElement, ReactNode} from 'react'
 import {RoleType} from '@sphereon/ui-components.core'
+import {ExtendedRoleType} from '@typings'
 import {useRole} from '@/src/contexts/RoleContext'
 import UnauthorizedPage from '@/src/pages/UnauthorizedPage'
 
 interface CanAccessRouteProps {
   /** Roles that can access this route */
-  allowedRoles: RoleType[]
+  allowedRoles: ExtendedRoleType[]
   /** Content to render if access is granted */
   children: ReactNode
   /** Optional fallback to render if access is denied (defaults to UnauthorizedPage) */
@@ -13,8 +14,12 @@ interface CanAccessRouteProps {
 }
 
 /**
- * Route guard component that checks if the current role has access to the route.
- * Uses the RoleContext to get the current role and checks against allowed roles.
+ * Route guard component that checks if the user has any authorized role that can access the route.
+ * Uses the RoleContext to get authorized roles and checks if any match the allowed roles.
+ *
+ * Note: This checks authorizedRoles (what the user CAN access), not currentRole (what they have selected).
+ * This means if a user has ADMIN in their authorized roles, they can access admin routes even if
+ * their currently selected role is BOOKER.
  *
  * @example
  * ```tsx
@@ -24,9 +29,10 @@ interface CanAccessRouteProps {
  * ```
  */
 const CanAccessRoute: FC<CanAccessRouteProps> = ({allowedRoles, children, fallback}): ReactElement => {
-  const {currentRole} = useRole()
+  const {authorizedRoles} = useRole()
 
-  const hasAccess = allowedRoles.includes(currentRole.role)
+  // Check if user has ANY authorized role that matches the allowed roles
+  const hasAccess = allowedRoles.some(role => authorizedRoles.includes(role))
 
   if (!hasAccess) {
     return <>{fallback ?? <UnauthorizedPage />}</>
@@ -65,6 +71,13 @@ export const VerifierOrAdmin: FC<{children: ReactNode; fallback?: ReactNode}> = 
 /** Holder and Admin can access */
 export const HolderOrAdmin: FC<{children: ReactNode; fallback?: ReactNode}> = ({children, fallback}) => (
   <CanAccessRoute allowedRoles={[RoleType.HOLDER, RoleType.ADMIN]} fallback={fallback}>
+    {children}
+  </CanAccessRoute>
+)
+
+/** Booker and Admin can access */
+export const BookerOrAdmin: FC<{children: ReactNode; fallback?: ReactNode}> = ({children, fallback}) => (
+  <CanAccessRoute allowedRoles={[ExtendedRoleType.BOOKER, RoleType.ADMIN]} fallback={fallback}>
     {children}
   </CanAccessRoute>
 )

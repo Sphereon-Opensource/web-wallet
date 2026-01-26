@@ -1,9 +1,45 @@
 import {DIDDocumentSection, TKeyType} from '@veramo/core'
 import {JsonFormsCore} from '@jsonforms/core'
 import {v4} from 'uuid'
+import {CredentialRole} from '@sphereon/ssi-types'
 
 export enum KeyManagementSystem {
   LOCAL = 'local',
+}
+
+/**
+ * External Identifier - represents a DID or URL identifier from an external party
+ */
+export interface ExternalIdentifierItem {
+  id: string
+  type: 'DID' | 'URL'
+  method: string
+  alias: string
+  value: string
+  origin: 'External' | 'Internal'
+  roles: CredentialRole[]
+  partyId: string | null
+  partyName: string | null
+}
+
+/**
+ * Data for creating a new external identifier
+ */
+export interface CreateExternalIdentifierData {
+  value: string
+  type: 'DID' | 'URL'
+  alias?: string
+  roles?: CredentialRole[]
+  partyId: string // Required - must associate with a contact
+}
+
+/**
+ * Data for updating an external identifier
+ */
+export interface UpdateExternalIdentifierData {
+  alias?: string
+  roles?: CredentialRole[]
+  partyId?: string // For reassociation
 }
 
 export type IdentifierType = 'did'

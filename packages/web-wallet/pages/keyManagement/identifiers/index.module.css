@@ -208,8 +208,18 @@
 }
 
 .cellOrigin {
-  flex: 0.8;
-  min-width: 100px;
+  flex: 0.6;
+  min-width: 80px;
+}
+
+.cellValueSmall {
+  flex: 1.5;
+  min-width: 150px;
+}
+
+.cellContact {
+  flex: 1;
+  min-width: 120px;
 }
 
 .cellActions {
@@ -248,6 +258,36 @@
   font-size: 12px;
   font-weight: 500;
   color: #047857;
+}
+
+.originExternal {
+  background-color: #FEF3C7;
+  color: #92400E;
+}
+
+.originInternal {
+  background-color: #DBEAFE;
+  color: #1D4ED8;
+}
+
+/* Contact Link */
+.contactLink {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: #7276F7;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.contactLink:hover {
+  text-decoration: underline;
+}
+
+.noContact {
+  color: #9CA3AF;
 }
 
 /* Alias Value */
@@ -524,6 +564,93 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* Contact Section */
+.contactSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.contactSectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6B7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.contactSectionHeader svg {
+  color: #9CA3AF;
+}
+
+.contactCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background-color: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.contactCard:hover {
+  background-color: #F3F4F6;
+  border-color: #D1D5DB;
+}
+
+.contactAvatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background-color: #7276F7;
+  border-radius: 50%;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+}
+
+.contactName {
+  flex: 1;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1F2937;
+}
+
+.contactCard svg {
+  color: #9CA3AF;
+  flex-shrink: 0;
+}
+
+/* Roles Section */
+.rolesSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 16px;
+  background-color: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+}
+
+.rolesSectionTitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: #ACACAC;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
 /* DID Section */

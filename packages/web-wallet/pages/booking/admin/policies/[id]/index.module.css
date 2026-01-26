@@ -1,0 +1,650 @@
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.container {
+  width: 100%;
+  max-width: 900px;
+  background: #FFFFFF;
+  border-radius: 8px;
+  border: 1px solid #C4C5CA;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  margin: 24px;
+}
+
+/* Loading & Error States */
+.loadingContainer,
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px;
+  margin: 24px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #E3E3E3;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #E5E7EB;
+  border-top-color: #7276F7;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px 24px;
+  border-bottom: 1px solid #E3E3E3;
+  background: linear-gradient(135deg, rgba(114, 118, 247, 0.05) 0%, rgba(124, 64, 232, 0.05) 100%);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.titleSection {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #303030;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: #8D9099;
+}
+
+.typeBadge {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.typeDefault {
+  background-color: rgba(34, 197, 94, 0.15);
+  color: #16A34A;
+}
+
+.typeCustom {
+  background-color: rgba(114, 118, 247, 0.15);
+  color: #7276F7;
+}
+
+.headerActions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.deleteButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  border: 1px solid #E3E3E3;
+  background: white;
+  color: #8D9099;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.deleteButton:hover {
+  border-color: #EF4444;
+  color: #EF4444;
+  background: rgba(239, 68, 68, 0.05);
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid #E3E3E3;
+  background: #FBFBFB;
+  overflow-x: auto;
+}
+
+.tab {
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #8D9099;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  font-family: inherit;
+}
+
+.tab:hover {
+  color: #7276F7;
+}
+
+.tabActive {
+  color: #7276F7;
+  border-bottom-color: #7276F7;
+}
+
+/* Body */
+.body {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Tab Content */
+.tabContent {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Info Card */
+.infoCard {
+  background: #FBFBFB;
+  border-radius: 6px;
+  border: 1px solid #E3E3E3;
+  overflow: hidden;
+}
+
+.infoCardHeader {
+  padding: 12px 16px;
+  border-bottom: 1px solid #E3E3E3;
+  background: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.infoCardTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #303030;
+}
+
+.infoCardActions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.editButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #7276F7;
+  background: transparent;
+  border: 1px solid #7276F7;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.editButton:hover {
+  background: rgba(114, 118, 247, 0.1);
+}
+
+.deleteButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #8D9099;
+  background: transparent;
+  border: 1px solid #E3E3E3;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.deleteButton:hover {
+  color: #E74C3C;
+  border-color: #E74C3C;
+  background: rgba(231, 76, 60, 0.05);
+}
+
+.infoCardBody {
+  padding: 16px;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.infoField {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.infoField.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.infoLabel {
+  font-size: 11px;
+  font-weight: 400;
+  color: #8D9099;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.infoValue {
+  font-size: 14px;
+  font-weight: 500;
+  color: #303030;
+}
+
+/* Summary Card */
+.summaryCard {
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #E3E3E3;
+  overflow: hidden;
+}
+
+.summaryHeader {
+  padding: 12px 16px;
+  border-bottom: 1px solid #E3E3E3;
+  background: #FBFBFB;
+}
+
+.summaryTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #303030;
+}
+
+.summaryBody {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: #E3E3E3;
+}
+
+.summaryItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: white;
+}
+
+.summaryIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(114, 118, 247, 0.1) 0%, rgba(124, 64, 232, 0.1) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7276F7;
+  flex-shrink: 0;
+}
+
+.summaryContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.summaryLabel {
+  font-size: 12px;
+  color: #8D9099;
+}
+
+.summaryValue {
+  font-size: 16px;
+  font-weight: 600;
+  color: #303030;
+}
+
+/* Constraint Section */
+.constraintSection {
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #E3E3E3;
+  overflow: hidden;
+}
+
+.constraintHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  background: #FBFBFB;
+  border-bottom: 1px solid #E3E3E3;
+  color: #7276F7;
+}
+
+.constraintTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #303030;
+}
+
+.constraintGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: #E3E3E3;
+}
+
+.constraintItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px;
+  background: white;
+}
+
+.constraintLabel {
+  font-size: 12px;
+  color: #8D9099;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.constraintValue {
+  font-size: 18px;
+  font-weight: 600;
+  color: #303030;
+}
+
+.constraintDescription {
+  font-size: 12px;
+  color: #9CA3AF;
+  margin-top: 4px;
+}
+
+/* Flags */
+.flagsList {
+  display: flex;
+  flex-direction: column;
+}
+
+.flagItem {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border-bottom: 1px solid #E3E3E3;
+}
+
+.flagItem:last-child {
+  border-bottom: none;
+}
+
+.flagEnabled {
+  background: rgba(34, 197, 94, 0.05);
+}
+
+.flagDisabled {
+  background: white;
+}
+
+.flagIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.flagEnabled .flagIcon {
+  background: rgba(34, 197, 94, 0.15);
+  color: #16A34A;
+}
+
+.flagDisabled .flagIcon {
+  background: #F3F4F6;
+  color: #9CA3AF;
+}
+
+.flagContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.flagLabel {
+  font-size: 14px;
+  font-weight: 500;
+  color: #303030;
+}
+
+.flagDescription {
+  font-size: 13px;
+  color: #6B7280;
+}
+
+/* Empty State */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  color: #8D9099;
+  background: #FBFBFB;
+  border-radius: 6px;
+  border: 1px dashed #E3E3E3;
+  text-align: center;
+}
+
+.emptyState svg {
+  margin-bottom: 16px;
+  color: #C4C5CA;
+}
+
+.emptyState p {
+  margin: 0;
+  font-size: 14px;
+  color: #6B7280;
+}
+
+.emptyNote {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #9CA3AF;
+}
+
+/* Assignments List */
+.assignmentsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.assignmentCard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #E3E3E3;
+}
+
+.assignmentCardIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.assignmentTypeDefault {
+  background: rgba(34, 197, 94, 0.15);
+  color: #16A34A;
+}
+
+.assignmentTypeCategory {
+  background: rgba(245, 158, 11, 0.15);
+  color: #D97706;
+}
+
+.assignmentTypeGroup {
+  background: rgba(114, 118, 247, 0.15);
+  color: #7276F7;
+}
+
+.assignmentTypeResource {
+  background: rgba(59, 130, 246, 0.15);
+  color: #2563EB;
+}
+
+.assignmentCardInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.assignmentType {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #8D9099;
+}
+
+.assignmentName {
+  font-size: 15px;
+  font-weight: 500;
+  color: #303030;
+}
+
+.assignmentCardMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.assignmentPriority {
+  font-size: 12px;
+  font-weight: 500;
+  color: #6B7280;
+}
+
+.assignmentValidity {
+  font-size: 11px;
+  color: #9CA3AF;
+}
+
+/* Assignment Note */
+.assignmentNote {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  background: rgba(114, 118, 247, 0.05);
+  border-radius: 8px;
+  font-size: 13px;
+  color: #6B7280;
+  border: 1px solid rgba(114, 118, 247, 0.15);
+}
+
+.assignmentNote svg {
+  flex-shrink: 0;
+  color: #7276F7;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    margin: 16px;
+    max-width: none;
+  }
+
+  .header {
+    padding: 16px;
+  }
+
+  .body {
+    padding: 16px;
+  }
+
+  .infoGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .summaryBody {
+    grid-template-columns: 1fr;
+  }
+
+  .constraintGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .tab {
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+
+  .assignmentCard {
+    flex-wrap: wrap;
+  }
+
+  .assignmentCardMeta {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 8px;
+  }
+}

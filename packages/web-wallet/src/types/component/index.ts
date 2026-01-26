@@ -98,6 +98,7 @@ export type MenuItem = {
   path: string
   end?: boolean
   topLevel?: boolean
+  adminOnly?: boolean
 }
 
 export type MenuGroup = {
@@ -127,3 +128,7 @@ export type MenuIcon =
   | 'received'
   | 'sent'
   | 'asset'
+  | 'resource'
+  | 'calendar'
+  | 'folder'
+  | 'settings'

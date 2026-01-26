@@ -2,11 +2,13 @@ import React, {FC, ReactElement, useCallback, useEffect, useState} from 'react'
 import {useParams, useNavigate} from 'react-router-dom'
 import {HttpError, useOne, useTranslation} from '@refinedev/core'
 import type {IBasicCredentialLocaleBranding, Party} from '@sphereon/ssi-sdk.data-store-types'
+import {IdentityOrigin} from '@sphereon/ssi-sdk.data-store-types'
 import {OpenID4VCIClient} from '@sphereon/oid4vci-client'
 import {CredentialStatus} from '@sphereon/ui-components.core'
 import {oid4vciCredentialLocaleBrandingFrom} from '@sphereon/ssi-sdk.oid4vci-holder'
 import PageHeaderBar from '@components/bars/PageHeaderBar'
 import {RoleBadges} from '@components/badges'
+import CreateExternalIdentifierModal from '@components/modals/CreateExternalIdentifierModal'
 import {staticPropsWithSST} from '@/src/i18n/server'
 import {CredentialConfigurationSupported, CredentialConfigurationSupportedV1_0_15, CredentialsSupportedDisplay} from '@sphereon/oid4vci-common'
 import {getAgent, getAgentBaseUrl} from '@agent'
@@ -48,6 +50,9 @@ const ShowContactDetails: FC = (): ReactElement => {
   const [editDisplayName, setEditDisplayName] = useState('')
   const [editLegalName, setEditLegalName] = useState('')
   const [isSaving, setIsSaving] = useState(false)
+
+  // Modal state for creating external identifiers
+  const [isCreateExternalModalOpen, setIsCreateExternalModalOpen] = useState(false)
 
   const {
     isLoading,
@@ -515,79 +520,137 @@ const ShowContactDetails: FC = (): ReactElement => {
   const getIdentifiersContent = (): ReactElement => {
     const identities = party.identities ?? []
 
-    if (identities.length === 0) {
-      return (
-        <div className={style.emptyText}>{translate('contact_details_no_identifiers')}</div>
-      )
+    // Check if this is an internal (managed) or external identifier
+    const isInternalIdentity = (origin: IdentityOrigin | undefined): boolean => {
+      return origin === IdentityOrigin.INTERNAL
     }
 
-    // Check if a DID is managed locally (can be navigated to)
-    const isDIDNavigable = (correlationId: string | undefined): boolean => {
-      if (!correlationId) return false
-      return correlationId.startsWith('did:')
+    // Navigate to appropriate details page based on origin
+    const handleNavigateToIdentifier = (identity: typeof identities[0]) => {
+      const correlationId = identity.identifier?.correlationId
+      if (!correlationId) return
+
+      if (isInternalIdentity(identity.origin)) {
+        // Navigate to managed identifier details
+        navigate(`/key-management/identifiers/show/${encodeURIComponent(correlationId)}`)
+      } else {
+        // Navigate to external identifier details
+        // Format: partyId:correlationId
+        const externalId = `${id}:${correlationId}`
+        navigate(`/key-management/identifiers/external/show/${encodeURIComponent(externalId)}`)
+      }
     }
 
-    // Navigate to DID details
-    const handleNavigateToDID = (did: string) => {
-      navigate(`/key-management/identifiers/show/${encodeURIComponent(did)}`)
+    // Check if identifier can be navigated to (has correlation ID)
+    const canNavigate = (correlationId: string | undefined): boolean => {
+      return !!correlationId
+    }
+
+    const handleCreateExternalIdentifier = () => {
+      setIsCreateExternalModalOpen(true)
+    }
+
+    const handleExternalIdentifierSuccess = () => {
+      setIsCreateExternalModalOpen(false)
+      refetch()
     }
 
     return (
-      <div className={style.identifiersGrid}>
-        {identities.map((identity, index) => {
-          const alias = identity.alias || `${translate('contact_details_identifier')} ${index + 1}`
-          const isIssuer = identity.roles?.includes(CredentialRole.ISSUER)
-          const isVerifier = identity.roles?.includes(CredentialRole.VERIFIER)
-          const correlationId = identity.identifier?.correlationId
-          const canNavigate = isDIDNavigable(correlationId)
+      <div className={style.identifiersSection}>
+        {/* Header with action buttons */}
+        <div className={style.identifiersSectionHeader}>
+          <span className={style.identifiersSectionTitle}>
+            {translate('contact_details_identifiers_title', 'Identifiers')}
+            {identities.length > 0 && (
+              <span className={style.identifiersCount}>({identities.length})</span>
+            )}
+          </span>
+          <button
+            className={style.addIdentifierButton}
+            onClick={handleCreateExternalIdentifier}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            {translate('contact_details_add_external_identifier', 'Add External Identifier')}
+          </button>
+        </div>
 
-          return (
-            <div key={correlationId || index} className={style.identifierCard}>
-              <div className={style.identifierCardHeader}>
-                <div className={`${style.identifierCardAccent} ${isIssuer ? style.identifierCardAccentSuccess : isVerifier ? style.identifierCardAccentPrimary : style.identifierCardAccentWarning}`} />
-                <div className={style.identifierCardInfo}>
-                  <div className={style.identifierCardType}>{identity.identifier?.type || 'Identifier'}</div>
-                  <div className={style.identifierCardAlias}>{alias}</div>
-                </div>
-                {canNavigate && (
-                  <button
-                    className={style.viewDidButton}
-                    onClick={() => handleNavigateToDID(correlationId!)}
-                    title={translate('action_view_did_details', 'View DID Details') as string}
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                      <polyline points="15 3 21 3 21 9" />
-                      <line x1="10" y1="14" x2="21" y2="3" />
-                    </svg>
-                  </button>
-                )}
-              </div>
-              <div className={style.identifierCardBody}>
-                {correlationId && (
-                  <div className={style.identifierCardField}>
-                    <span className={style.identifierCardFieldLabel}>{translate('contact_details_identifier_value')}</span>
-                    {canNavigate ? (
+        {identities.length === 0 ? (
+          <div className={style.emptyText}>{translate('contact_details_no_identifiers')}</div>
+        ) : (
+          <div className={style.identifiersGrid}>
+            {identities.map((identity, index) => {
+              const alias = identity.alias || `${translate('contact_details_identifier')} ${index + 1}`
+              const isIssuer = identity.roles?.includes(CredentialRole.ISSUER)
+              const isVerifier = identity.roles?.includes(CredentialRole.VERIFIER)
+              const correlationId = identity.identifier?.correlationId
+              const isInternal = isInternalIdentity(identity.origin)
+              const navigable = canNavigate(correlationId)
+
+              return (
+                <div key={correlationId || index} className={style.identifierCard}>
+                  <div className={style.identifierCardHeader}>
+                    <div className={`${style.identifierCardAccent} ${isIssuer ? style.identifierCardAccentSuccess : isVerifier ? style.identifierCardAccentPrimary : style.identifierCardAccentWarning}`} />
+                    <div className={style.identifierCardInfo}>
+                      <div className={style.identifierCardTypeRow}>
+                        <span className={style.identifierCardType}>{identity.identifier?.type || 'Identifier'}</span>
+                        <span className={`${style.identifierOriginBadge} ${isInternal ? style.originInternal : style.originExternal}`}>
+                          {isInternal ? translate('identifier_origin_internal', 'Internal') : translate('identifier_origin_external', 'External')}
+                        </span>
+                      </div>
+                      <div className={style.identifierCardAlias}>{alias}</div>
+                    </div>
+                    {navigable && (
                       <button
-                        className={style.identifierCardFieldLink}
-                        onClick={() => handleNavigateToDID(correlationId)}
+                        className={style.viewDidButton}
+                        onClick={() => handleNavigateToIdentifier(identity)}
+                        title={translate('action_view_identifier_details', 'View Identifier Details') as string}
                       >
-                        {correlationId}
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                          <polyline points="15 3 21 3 21 9" />
+                          <line x1="10" y1="14" x2="21" y2="3" />
+                        </svg>
                       </button>
-                    ) : (
-                      <span className={style.identifierCardFieldValue}>{correlationId}</span>
                     )}
                   </div>
-                )}
-                {identity.roles && identity.roles.length > 0 && (
-                  <div className={style.identifierCardRoles}>
-                    <RoleBadges roles={identity.roles} size="small" />
+                  <div className={style.identifierCardBody}>
+                    {correlationId && (
+                      <div className={style.identifierCardField}>
+                        <span className={style.identifierCardFieldLabel}>{translate('contact_details_identifier_value')}</span>
+                        {navigable ? (
+                          <button
+                            className={style.identifierCardFieldLink}
+                            onClick={() => handleNavigateToIdentifier(identity)}
+                          >
+                            {correlationId}
+                          </button>
+                        ) : (
+                          <span className={style.identifierCardFieldValue}>{correlationId}</span>
+                        )}
+                      </div>
+                    )}
+                    {identity.roles && identity.roles.length > 0 && (
+                      <div className={style.identifierCardRoles}>
+                        <RoleBadges roles={identity.roles} size="small" />
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            </div>
-          )
-        })}
+                </div>
+              )
+            })}
+          </div>
+        )}
+
+        {/* Create External Identifier Modal */}
+        <CreateExternalIdentifierModal
+          isOpen={isCreateExternalModalOpen}
+          onClose={() => setIsCreateExternalModalOpen(false)}
+          onSuccess={handleExternalIdentifierSuccess}
+          preSelectedPartyId={id}
+        />
       </div>
     )
   }

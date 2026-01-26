@@ -1,0 +1,526 @@
+.container {
+  background-color: #F4F4FF;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.contentContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 48px;
+  padding: 31px 24px;
+}
+
+.outletContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex: 1;
+  max-width: 720px;
+}
+
+.errorContainer {
+  background: #FEE2E2;
+  border: 1px solid #FECACA;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.errorContainer strong {
+  color: #991B1B;
+  font-size: 14px;
+}
+
+.errorContainer span {
+  color: #DC2626;
+  font-size: 14px;
+}
+
+/* Loading */
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px;
+  gap: 16px;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #E5E7EB;
+  border-top-color: #7276F7;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingContainer span {
+  font-size: 14px;
+  color: #6B7280;
+}
+
+/* Form Card */
+.formCard {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+}
+
+.formCard h2 {
+  margin: 0 0 4px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #303030;
+}
+
+.stepDescription {
+  margin: 0 0 24px;
+  font-size: 15px;
+  color: #6B7280;
+}
+
+/* Form Groups */
+.formGroup {
+  margin-bottom: 20px;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #303030;
+}
+
+.formGroup input[type="text"],
+.formGroup input[type="number"],
+.formGroup input[type="date"],
+.formGroup input[type="time"],
+.formGroup textarea,
+.formGroup select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: inherit;
+  transition: border-color 0.15s ease;
+  box-sizing: border-box;
+}
+
+.formGroup input:focus,
+.formGroup textarea:focus,
+.formGroup select:focus {
+  outline: none;
+  border-color: #7C3AED;
+}
+
+.formGroup textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.helpText {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #9CA3AF;
+}
+
+/* Status badges */
+.statusBadge {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.statusActive {
+  background-color: rgba(34, 197, 94, 0.15);
+  color: #16A34A;
+}
+
+.statusInactive {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: #DC2626;
+}
+
+.capacityBadge {
+  font-size: 11px;
+  color: #8D9099;
+}
+
+/* Resources Search and List */
+.resourceSearchContainer {
+  margin-bottom: 16px;
+}
+
+.resourceSearch {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.15s ease;
+}
+
+.resourceSearch:focus {
+  outline: none;
+  border-color: #7276F7;
+}
+
+.noResourcesMessage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 40px;
+  color: #8D9099;
+  background: #FBFBFB;
+  border-radius: 8px;
+  border: 1px dashed #E5E7EB;
+}
+
+.noResourcesMessage svg {
+  margin-bottom: 16px;
+  color: #C4C5CA;
+}
+
+.noResourcesMessage p {
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #6B7280;
+}
+
+.noResourcesMessage span {
+  font-size: 13px;
+  color: #9CA3AF;
+}
+
+.resourcesList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.resourceItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.resourceItem:hover {
+  border-color: #7276F7;
+  background: rgba(114, 118, 247, 0.02);
+}
+
+.resourceItem input[type="checkbox"] {
+  margin-top: 2px;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.resourceItemInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.resourceItemName {
+  font-size: 15px;
+  font-weight: 500;
+  color: #303030;
+}
+
+.resourceItemDescription {
+  font-size: 13px;
+  color: #6B7280;
+}
+
+.resourceItemMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.selectionNote {
+  margin: 16px 0 0;
+  padding: 12px;
+  background: rgba(114, 118, 247, 0.1);
+  border-radius: 8px;
+  font-size: 13px;
+  color: #7276F7;
+}
+
+/* Inheritance Options */
+.inheritanceOption {
+  margin-bottom: 16px;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.radioLabel:hover {
+  border-color: #7276F7;
+}
+
+.radioLabel input[type="radio"] {
+  margin-top: 2px;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.radioContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.radioTitle {
+  font-size: 15px;
+  font-weight: 500;
+  color: #303030;
+}
+
+.radioDescription {
+  font-size: 13px;
+  color: #6B7280;
+}
+
+/* Schedule Sets List */
+.scheduleSetsList,
+.policiesList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+  padding-left: 30px;
+}
+
+.scheduleSetItem,
+.policyItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.scheduleSetItem:hover,
+.policyItem:hover {
+  border-color: #7276F7;
+}
+
+.scheduleSetItemSelected,
+.policyItemSelected {
+  border-color: #7276F7;
+  background: rgba(114, 118, 247, 0.05);
+}
+
+.scheduleSetItem input[type="radio"],
+.policyItem input[type="radio"] {
+  margin-top: 2px;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.scheduleSetInfo,
+.policyInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.scheduleSetName,
+.policyName {
+  font-size: 15px;
+  font-weight: 500;
+  color: #303030;
+}
+
+.scheduleSetDescription,
+.policyDescription {
+  font-size: 13px;
+  color: #6B7280;
+}
+
+.scheduleSetMeta,
+.policyMeta {
+  font-size: 12px;
+  color: #9CA3AF;
+}
+
+.noSetsMessage {
+  font-size: 14px;
+  color: #9CA3AF;
+  text-align: center;
+  padding: 24px;
+}
+
+/* Review Section */
+.reviewSection {
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.reviewSection:last-of-type {
+  border-bottom: none;
+  margin-bottom: 16px;
+}
+
+.reviewSection h3 {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #303030;
+}
+
+.reviewGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.reviewItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.reviewItem.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.reviewLabel {
+  font-size: 12px;
+  color: #9CA3AF;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.reviewValue {
+  font-size: 15px;
+  font-weight: 500;
+  color: #303030;
+}
+
+.reviewEmpty {
+  font-size: 14px;
+  color: #9CA3AF;
+  font-style: italic;
+}
+
+.reviewResourcesList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.reviewResourceItem {
+  padding: 10px 14px;
+  background: #F9FAFB;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #303030;
+}
+
+.reviewInherited {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #FBFBFB;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #6B7280;
+  border: 1px solid #E3E3E3;
+}
+
+.reviewInherited svg {
+  flex-shrink: 0;
+  color: #9CA3AF;
+}
+
+.reviewAssigned {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 16px;
+  background: rgba(114, 118, 247, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(114, 118, 247, 0.2);
+}
+
+/* Buttons Container */
+.buttonsContainer {
+  display: flex;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 1px solid #E5E7EB;
+  margin-top: 24px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .contentContainer {
+    flex-direction: column-reverse;
+    padding: 16px;
+  }
+
+  .outletContainer {
+    max-width: 100%;
+  }
+
+  .reviewGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .scheduleSetsList,
+  .policiesList {
+    padding-left: 0;
+  }
+}

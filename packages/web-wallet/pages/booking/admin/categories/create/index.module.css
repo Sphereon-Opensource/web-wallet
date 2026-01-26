@@ -1,0 +1,424 @@
+.container {
+  background-color: #F4F4FF;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.contentContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 48px;
+  padding: 31px 24px;
+}
+
+.outletContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex: 1;
+  max-width: 720px;
+}
+
+.errorContainer {
+  background: #FEE2E2;
+  border: 1px solid #FECACA;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.errorContainer strong {
+  color: #991B1B;
+  font-size: 14px;
+}
+
+.errorContainer span {
+  color: #DC2626;
+  font-size: 14px;
+}
+
+/* Form Card */
+.formCard {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+}
+
+.formCard h2 {
+  margin: 0 0 4px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #303030;
+}
+
+.formCard h3 {
+  margin: 24px 0 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #303030;
+}
+
+.stepDescription {
+  margin: 0 0 24px;
+  font-size: 15px;
+  color: #6B7280;
+}
+
+/* Form Groups */
+.formGroup {
+  margin-bottom: 20px;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #303030;
+}
+
+.formGroup input[type="text"],
+.formGroup input[type="number"],
+.formGroup textarea,
+.formGroup select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: inherit;
+  transition: border-color 0.15s ease;
+  box-sizing: border-box;
+}
+
+.formGroup input:focus,
+.formGroup textarea:focus,
+.formGroup select:focus {
+  outline: none;
+  border-color: #7C3AED;
+}
+
+.formGroup textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.helpText {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #9CA3AF;
+}
+
+/* Icon Grid */
+.iconGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.iconOption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 12px;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  color: #6B7280;
+}
+
+.iconOption:hover {
+  border-color: #7276F7;
+  color: #7276F7;
+}
+
+.iconOptionSelected {
+  border-color: #7276F7;
+  background: rgba(114, 118, 247, 0.05);
+  color: #7276F7;
+}
+
+.iconLabel {
+  font-size: 11px;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* Assignment Note */
+.assignmentNote {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 16px;
+  background: rgba(114, 118, 247, 0.05);
+  border-radius: 8px;
+  font-size: 13px;
+  color: #6B7280;
+  border: 1px solid rgba(114, 118, 247, 0.15);
+  margin-bottom: 20px;
+}
+
+.assignmentNote svg {
+  flex-shrink: 0;
+  color: #7276F7;
+  margin-top: 2px;
+}
+
+/* Selection List */
+.selectionList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.selectionCard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+  width: 100%;
+}
+
+.selectionCard:hover {
+  border-color: #7276F7;
+}
+
+.selectionCardSelected {
+  border-color: #7276F7;
+  background: rgba(114, 118, 247, 0.05);
+}
+
+.selectionIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(114, 118, 247, 0.1) 0%, rgba(124, 64, 232, 0.1) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7276F7;
+  flex-shrink: 0;
+}
+
+.selectionInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.selectionName {
+  font-size: 15px;
+  font-weight: 600;
+  color: #303030;
+}
+
+.selectionDescription {
+  font-size: 13px;
+  color: #6B7280;
+}
+
+.selectionCheck {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #7276F7;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Empty State */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  color: #8D9099;
+  background: #FBFBFB;
+  border-radius: 6px;
+  border: 1px dashed #E3E3E3;
+  text-align: center;
+}
+
+.emptyState svg {
+  margin-bottom: 16px;
+  color: #C4C5CA;
+}
+
+.emptyState p {
+  margin: 0;
+  font-size: 14px;
+  color: #6B7280;
+}
+
+.emptyNote {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #9CA3AF;
+}
+
+/* Review Section */
+.reviewSection {
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.reviewSection:last-of-type {
+  border-bottom: none;
+  margin-bottom: 16px;
+}
+
+.reviewSection h3 {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #303030;
+}
+
+.reviewGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.reviewItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.reviewItem.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.reviewLabel {
+  font-size: 12px;
+  color: #9CA3AF;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.reviewValue {
+  font-size: 15px;
+  font-weight: 500;
+  color: #303030;
+}
+
+.reviewIconPreview {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.reviewNone {
+  margin: 0;
+  padding: 16px;
+  background: #FBFBFB;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #6B7280;
+  text-align: center;
+}
+
+/* Review Assignment */
+.reviewAssignment {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: #FBFBFB;
+  border-radius: 8px;
+  border: 1px solid #E3E3E3;
+}
+
+.reviewAssignmentIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(114, 118, 247, 0.1) 0%, rgba(124, 64, 232, 0.1) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7276F7;
+  flex-shrink: 0;
+}
+
+.reviewAssignmentInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.reviewAssignmentName {
+  font-size: 15px;
+  font-weight: 600;
+  color: #303030;
+}
+
+.reviewAssignmentDescription {
+  font-size: 13px;
+  color: #6B7280;
+}
+
+/* Buttons Container */
+.buttonsContainer {
+  display: flex;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 1px solid #E5E7EB;
+  margin-top: 24px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .contentContainer {
+    flex-direction: column-reverse;
+    padding: 16px;
+  }
+
+  .outletContainer {
+    max-width: 100%;
+  }
+
+  .formRow {
+    grid-template-columns: 1fr;
+  }
+
+  .iconGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .reviewGrid {
+    grid-template-columns: 1fr;
+  }
+}

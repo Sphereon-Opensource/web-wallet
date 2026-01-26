@@ -1,0 +1,313 @@
+/**
+ * My Bookings Page Styles
+ * Uses ListPageHeader for consistent header/tabs pattern
+ */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background-color: #FBFBFB;
+  overflow: hidden;
+}
+
+.mainLayout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.contentArea {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+  min-width: 0;
+}
+
+.content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+/* Bookings List */
+.bookingsList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.bookingCard {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+}
+
+.bookingCard:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.bookingHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: #FAFAFA;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.bookingDate {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1F2937;
+}
+
+.bookingDate svg {
+  color: #7276F7;
+}
+
+.statusBadge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.statusConfirmed {
+  background: rgba(34, 197, 94, 0.15);
+  color: #16A34A;
+}
+
+.statusPending {
+  background: rgba(245, 158, 11, 0.15);
+  color: #D97706;
+}
+
+.statusCancelled {
+  background: rgba(107, 114, 128, 0.15);
+  color: #6B7280;
+}
+
+.statusCompleted {
+  background: linear-gradient(135deg, rgba(114, 118, 247, 0.1) 0%, rgba(184, 163, 247, 0.1) 100%);
+  color: #7276F7;
+}
+
+.bookingBody {
+  padding: 20px;
+}
+
+.bookingTitle {
+  margin: 0 0 12px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.resourceInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.resourceName {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: #6B7280;
+}
+
+.categoryBadge {
+  display: inline-block;
+  padding: 4px 10px;
+  background: linear-gradient(135deg, rgba(114, 118, 247, 0.1) 0%, rgba(184, 163, 247, 0.1) 100%);
+  color: #7276F7;
+  border-radius: 6px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.bookingMeta {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  color: #6B7280;
+}
+
+.metaItem svg {
+  color: #7276F7;
+}
+
+.bookingActions {
+  display: flex;
+  gap: 12px;
+  padding: 16px 20px;
+  border-top: 1px solid #E5E7EB;
+}
+
+.secondaryButton {
+  padding: 10px 18px;
+  background: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 10px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.secondaryButton:hover {
+  border-color: #7276F7;
+  color: #7276F7;
+}
+
+.dangerButton {
+  padding: 10px 18px;
+  background: white;
+  border: 1px solid #FECACA;
+  border-radius: 10px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #DC2626;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.dangerButton:hover {
+  background: #FEF2F2;
+}
+
+/* Loading State */
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 32px;
+  color: #6B7280;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #E5E7EB;
+  border-top-color: #7276F7;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Empty State */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 32px;
+  text-align: center;
+}
+
+.emptyStateIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  margin-bottom: 16px;
+  background-color: #F3F4F6;
+  border-radius: 50%;
+  color: #9CA3AF;
+}
+
+.emptyStateTitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1F2937;
+  margin-bottom: 8px;
+}
+
+.emptyStateDescription {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: #6B7280;
+  max-width: 300px;
+  margin-bottom: 20px;
+}
+
+.emptyStateButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #7276F7 0%, #7C40E8 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.emptyStateButton:hover {
+  opacity: 0.9;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .content {
+    padding: 16px;
+  }
+
+  .bookingHeader {
+    padding: 12px 16px;
+  }
+
+  .bookingBody {
+    padding: 16px;
+  }
+
+  .bookingActions {
+    flex-direction: column;
+    padding: 12px 16px;
+  }
+
+  .bookingTitle {
+    font-size: 16px;
+  }
+}

@@ -1,18 +1,21 @@
 import React, {useCallback, useMemo, useState} from 'react'
-import {HttpError, useDeleteMany, useList, useNavigation, useTranslate} from '@refinedev/core'
-import {PrimaryButton} from '@sphereon/ui-components.ssi-react'
+import {HttpError, useDeleteMany, useDelete, useList, useNavigation, useTranslate} from '@refinedev/core'
+import {PrimaryButton, SecondaryButton} from '@sphereon/ui-components.ssi-react'
 import {ButtonIcon} from '@sphereon/ui-components.core'
 import AppHeaderBar from '@components/bars/AppHeaderBar'
 import {ListPageHeader, TabItem} from '@components/tables'
 import ConfirmDeleteModal, {useConfirmDelete, useBulkDelete} from '@components/modals/ConfirmDeleteModal'
+import CreateExternalIdentifierModal from '@components/modals/CreateExternalIdentifierModal'
+import {RoleBadges} from '@components/badges'
 import {useListPageState} from '@/src/hooks/useListPageState'
 import {staticPropsWithSST} from '@/src/i18n/server'
-import {DataResource} from '@typings'
+import {DataResource, ExternalIdentifierItem} from '@typings'
 import {IIdentifier} from '@veramo/core'
 import {getDidMethodFromDID} from '@helpers/DID/DIDService'
 import style from './index.module.css'
 
-type SortField = 'type' | 'method' | 'alias' | 'value' | 'origin'
+type IdentifierTab = 'managed' | 'external'
+type SortField = 'type' | 'method' | 'alias' | 'value' | 'origin' | 'contact'
 type SortDirection = 'asc' | 'desc'
 
 interface IdentifierTableItem {
@@ -22,9 +25,13 @@ interface IdentifierTableItem {
   alias: string
   value: string
   origin: string
+  roles?: string[]
+  partyId?: string | null
+  partyName?: string | null
+  isExternal?: boolean
 }
 
-const mapIdentifierData = (identifierData?: IIdentifier[]): IdentifierTableItem[] => {
+const mapManagedIdentifierData = (identifierData?: IIdentifier[]): IdentifierTableItem[] => {
   if (!identifierData) {
     return []
   }
@@ -35,6 +42,25 @@ const mapIdentifierData = (identifierData?: IIdentifier[]): IdentifierTableItem[
     alias: identifier.alias || '',
     value: identifier.did,
     origin: 'Managed',
+    isExternal: false,
+  }))
+}
+
+const mapExternalIdentifierData = (identifierData?: ExternalIdentifierItem[]): IdentifierTableItem[] => {
+  if (!identifierData) {
+    return []
+  }
+  return identifierData.map(identifier => ({
+    id: identifier.id,
+    type: identifier.type,
+    method: identifier.method,
+    alias: identifier.alias || '',
+    value: identifier.value,
+    origin: identifier.origin,
+    roles: identifier.roles,
+    partyId: identifier.partyId,
+    partyName: identifier.partyName,
+    isExternal: true,
   }))
 }
 
@@ -42,8 +68,11 @@ const IdentifiersListPage: React.FC = () => {
   const translate = useTranslate()
   const {create, edit, show} = useNavigation()
   const {mutateAsync: deleteIdentifiers} = useDeleteMany<IIdentifier[], HttpError>()
+  const {mutateAsync: deleteExternalIdentifier} = useDelete<ExternalIdentifierItem, HttpError>()
 
+  const [activeTab, setActiveTab] = useState<IdentifierTab>('managed')
   const [selectedIdentifier, setSelectedIdentifier] = useState<IdentifierTableItem | null>(null)
+  const [isCreateExternalModalOpen, setIsCreateExternalModalOpen] = useState(false)
 
   // Use shared list page state hook for selection, sorting, and context menu
   const {
@@ -68,22 +97,43 @@ const IdentifiersListPage: React.FC = () => {
     getItemId: (item: IdentifierTableItem) => item.id,
   })
 
+  // Fetch managed identifiers
   const {
-    data: identifierData,
-    isError,
-    isLoading,
-    refetch,
+    data: managedIdentifierData,
+    isError: isManagedError,
+    isLoading: isManagedLoading,
+    refetch: refetchManaged,
   } = useList<IIdentifier, HttpError>({
     resource: DataResource.IDENTIFIERS,
   })
 
-  const identifiers: IdentifierTableItem[] = useMemo(() => {
-    return mapIdentifierData(identifierData?.data)
-  }, [identifierData?.data])
+  // Fetch external identifiers
+  const {
+    data: externalIdentifierData,
+    isError: isExternalError,
+    isLoading: isExternalLoading,
+    refetch: refetchExternal,
+  } = useList<ExternalIdentifierItem, HttpError>({
+    resource: DataResource.EXTERNAL_IDENTIFIERS,
+  })
+
+  const managedIdentifiers: IdentifierTableItem[] = useMemo(() => {
+    return mapManagedIdentifierData(managedIdentifierData?.data)
+  }, [managedIdentifierData?.data])
+
+  const externalIdentifiers: IdentifierTableItem[] = useMemo(() => {
+    return mapExternalIdentifierData(externalIdentifierData?.data)
+  }, [externalIdentifierData?.data])
+
+  // Current identifiers based on active tab
+  const currentIdentifiers = activeTab === 'managed' ? managedIdentifiers : externalIdentifiers
+  const isLoading = activeTab === 'managed' ? isManagedLoading : isExternalLoading
+  const isError = activeTab === 'managed' ? isManagedError : isExternalError
+  const refetch = activeTab === 'managed' ? refetchManaged : refetchExternal
 
   // Sort identifiers
   const sortedIdentifiers = useMemo(() => {
-    return [...identifiers].sort((a, b) => {
+    return [...currentIdentifiers].sort((a, b) => {
       let comparison = 0
       switch (sortField) {
         case 'type':
@@ -101,18 +151,28 @@ const IdentifiersListPage: React.FC = () => {
         case 'origin':
           comparison = a.origin.localeCompare(b.origin)
           break
+        case 'contact':
+          comparison = (a.partyName || '').localeCompare(b.partyName || '')
+          break
       }
       return sortDirection === 'asc' ? comparison : -comparison
     })
-  }, [identifiers, sortField, sortDirection])
+  }, [currentIdentifiers, sortField, sortDirection])
 
   // Delete confirmation hooks
   const singleDelete = useConfirmDelete({
     onConfirm: async (id: string) => {
-      await deleteIdentifiers({
-        resource: DataResource.IDENTIFIERS,
-        ids: [id],
-      })
+      if (activeTab === 'managed') {
+        await deleteIdentifiers({
+          resource: DataResource.IDENTIFIERS,
+          ids: [id],
+        })
+      } else {
+        await deleteExternalIdentifier({
+          resource: DataResource.EXTERNAL_IDENTIFIERS,
+          id,
+        })
+      }
       if (selectedIdentifier?.id === id) {
         setSelectedIdentifier(null)
       }
@@ -127,10 +187,20 @@ const IdentifiersListPage: React.FC = () => {
 
   const bulkDelete = useBulkDelete({
     onConfirm: async (ids: string[]) => {
-      await deleteIdentifiers({
-        resource: DataResource.IDENTIFIERS,
-        ids: ids,
-      })
+      if (activeTab === 'managed') {
+        await deleteIdentifiers({
+          resource: DataResource.IDENTIFIERS,
+          ids: ids,
+        })
+      } else {
+        // For external identifiers, delete one by one
+        for (const id of ids) {
+          await deleteExternalIdentifier({
+            resource: DataResource.EXTERNAL_IDENTIFIERS,
+            id,
+          })
+        }
+      }
       if (selectedIdentifier && ids.includes(selectedIdentifier.id)) {
         setSelectedIdentifier(null)
       }
@@ -144,14 +214,24 @@ const IdentifiersListPage: React.FC = () => {
     },
   })
 
-  // Handle create
-  const handleCreate = useCallback(async () => {
+  // Handle create managed identifier
+  const handleCreateManaged = useCallback(async () => {
     create(DataResource.IDENTIFIERS)
   }, [create])
+
+  // Handle create external identifier
+  const handleCreateExternal = useCallback(() => {
+    setIsCreateExternalModalOpen(true)
+  }, [])
 
   // Handle edit
   const handleEdit = useCallback(
     (identifier: IdentifierTableItem) => {
+      if (identifier.isExternal) {
+        // External identifiers currently don't have separate edit pages
+        // Could open edit modal here
+        return
+      }
       if (!identifier.value.startsWith('did:web')) {
         return
       }
@@ -163,7 +243,8 @@ const IdentifiersListPage: React.FC = () => {
   // Handle delete
   const handleDelete = useCallback(
     (identifier: IdentifierTableItem) => {
-      singleDelete.openModal(identifier.value, identifier.alias || identifier.method)
+      const deleteId = identifier.isExternal ? identifier.id : identifier.value
+      singleDelete.openModal(deleteId, identifier.alias || identifier.method)
     },
     [singleDelete],
   )
@@ -176,7 +257,19 @@ const IdentifiersListPage: React.FC = () => {
   // Handle show details
   const handleShowDetails = useCallback(
     (identifier: IdentifierTableItem) => {
-      show(DataResource.IDENTIFIERS, encodeURIComponent(identifier.value))
+      if (identifier.isExternal) {
+        show(DataResource.EXTERNAL_IDENTIFIERS, encodeURIComponent(identifier.id))
+      } else {
+        show(DataResource.IDENTIFIERS, encodeURIComponent(identifier.value))
+      }
+    },
+    [show],
+  )
+
+  // Handle navigate to contact
+  const handleNavigateToContact = useCallback(
+    (partyId: string) => {
+      show('CONTACTS', partyId)
     },
     [show],
   )
@@ -197,10 +290,28 @@ const IdentifiersListPage: React.FC = () => {
         case 'delete':
           handleDelete(identifier)
           break
+        case 'contact':
+          if (identifier.partyId) {
+            handleNavigateToContact(identifier.partyId)
+          }
+          break
       }
     },
-    [closeMenu, handleShowDetails, handleEdit, handleDelete],
+    [closeMenu, handleShowDetails, handleEdit, handleDelete, handleNavigateToContact],
   )
+
+  // Handle tab change
+  const handleTabChange = useCallback((tabId: string) => {
+    setActiveTab(tabId as IdentifierTab)
+    setSelectedIdentifier(null)
+    clearSelection()
+  }, [clearSelection])
+
+  // Handle external identifier created
+  const handleExternalIdentifierCreated = useCallback(() => {
+    setIsCreateExternalModalOpen(false)
+    void refetchExternal()
+  }, [refetchExternal])
 
   // Truncate DID for display
   const truncateDid = (did: string, maxLength: number = 35): string => {
@@ -212,9 +323,20 @@ const IdentifiersListPage: React.FC = () => {
   const headerTabs: TabItem[] = useMemo(() => {
     return [
       {
-        id: 'all',
-        label: translate('identifiers_tab_all', 'All Identifiers') as string,
-        count: identifiers.length,
+        id: 'managed',
+        label: translate('identifiers_tab_managed', 'Managed') as string,
+        count: managedIdentifiers.length,
+        icon: (
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
+        ),
+      },
+      {
+        id: 'external',
+        label: translate('identifiers_tab_external', 'External') as string,
+        count: externalIdentifiers.length,
         icon: (
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3" />
@@ -223,7 +345,7 @@ const IdentifiersListPage: React.FC = () => {
         ),
       },
     ]
-  }, [translate, identifiers.length])
+  }, [translate, managedIdentifiers.length, externalIdentifiers.length])
 
   // Render meatballs icon
   const renderMeatballsIcon = () => (
@@ -238,7 +360,8 @@ const IdentifiersListPage: React.FC = () => {
   const renderMenu = (identifier: IdentifierTableItem) => {
     if (openMenuId !== identifier.id || !menuPosition) return null
 
-    const canEdit = identifier.value.startsWith('did:web')
+    const canEdit = !identifier.isExternal && identifier.value.startsWith('did:web')
+    const hasContact = identifier.isExternal && identifier.partyId
 
     return (
       <>
@@ -252,6 +375,15 @@ const IdentifiersListPage: React.FC = () => {
             </svg>
             {translate('action_details_label', 'Details')}
           </button>
+          {hasContact && (
+            <button className={style.menuItem} onClick={e => handleMenuAction('contact', identifier, e)}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              {translate('action_view_contact', 'View Contact')}
+            </button>
+          )}
           {canEdit && (
             <button className={style.menuItem} onClick={e => handleMenuAction('edit', identifier, e)}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -273,28 +405,38 @@ const IdentifiersListPage: React.FC = () => {
     )
   }
 
-  // Render table
-  const renderTable = () => {
-    if (sortedIdentifiers.length === 0) {
-      return (
-        <div className={style.emptyState}>
-          <div className={style.emptyStateIcon}>
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3" />
-              <line x1="8" y1="12" x2="16" y2="12" />
-            </svg>
-          </div>
-          <div className={style.emptyStateTitle}>{translate('identifiers_empty_title', 'No Identifiers')}</div>
-          <div className={style.emptyStateDescription}>
-            {translate('identifiers_empty_description', 'Create your first identifier to get started.')}
-          </div>
-          <button className={style.emptyStateButton} onClick={handleCreate}>
-            {translate('identifiers_overview_action_add_identifier', 'Add Identifier')}
-          </button>
+  // Render empty state
+  const renderEmptyState = () => {
+    const isExternal = activeTab === 'external'
+    return (
+      <div className={style.emptyState}>
+        <div className={style.emptyStateIcon}>
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3" />
+            <line x1="8" y1="12" x2="16" y2="12" />
+          </svg>
         </div>
-      )
-    }
+        <div className={style.emptyStateTitle}>
+          {isExternal
+            ? translate('identifiers_external_empty_title', 'No External Identifiers')
+            : translate('identifiers_empty_title', 'No Identifiers')}
+        </div>
+        <div className={style.emptyStateDescription}>
+          {isExternal
+            ? translate('identifiers_external_empty_description', 'Add external identifiers from your contacts.')
+            : translate('identifiers_empty_description', 'Create your first identifier to get started.')}
+        </div>
+        <button className={style.emptyStateButton} onClick={isExternal ? handleCreateExternal : handleCreateManaged}>
+          {isExternal
+            ? translate('identifiers_action_add_external', 'Add External Identifier')
+            : translate('identifiers_overview_action_add_identifier', 'Add Identifier')}
+        </button>
+      </div>
+    )
+  }
 
+  // Render managed table
+  const renderManagedTable = () => {
     return (
       <div className={`${style.table} ${selectionCount > 0 ? style.tableWithSelections : ''}`}>
         <div className={style.tableHeader}>
@@ -336,12 +478,6 @@ const IdentifiersListPage: React.FC = () => {
             {translate('identifiers_overview_column_value_label', 'Value')}
             <SortIcon field="value" sortField={sortField} sortDirection={sortDirection} />
           </div>
-          <div
-            className={`${style.headerCell} ${style.cellOrigin} ${style.sortable} ${sortField === 'origin' ? style.headerCellSorted : ''}`}
-            onClick={() => handleSort('origin')}>
-            {translate('identifiers_overview_column_origin_label', 'Origin')}
-            <SortIcon field="origin" sortField={sortField} sortDirection={sortDirection} />
-          </div>
           <div className={`${style.headerCell} ${style.cellActions}`} />
         </div>
 
@@ -377,8 +513,132 @@ const IdentifiersListPage: React.FC = () => {
                 {truncateDid(identifier.value)}
               </span>
             </div>
+            <div className={`${style.cell} ${style.cellActions}`}>
+              <div className={style.menuContainer}>
+                <button
+                  type="button"
+                  className={style.meatballsButton}
+                  onClick={e => toggleMenu(identifier.id, e)}
+                  onMouseDown={e => e.stopPropagation()}
+                  aria-label="Open menu">
+                  {renderMeatballsIcon()}
+                </button>
+                {renderMenu(identifier)}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  // Render external table
+  const renderExternalTable = () => {
+    return (
+      <div className={`${style.table} ${selectionCount > 0 ? style.tableWithSelections : ''}`}>
+        <div className={style.tableHeader}>
+          <div className={style.checkboxCell}>
+            <input
+              type="checkbox"
+              className={style.checkbox}
+              checked={isAllSelected(sortedIdentifiers)}
+              ref={input => {
+                if (input) {
+                  input.indeterminate = isIndeterminate(sortedIdentifiers)
+                }
+              }}
+              onChange={e => handleSelectAllItems(sortedIdentifiers, e.target.checked)}
+              aria-label="Select all"
+            />
+          </div>
+          <div
+            className={`${style.headerCell} ${style.cellType} ${style.sortable} ${sortField === 'type' ? style.headerCellSorted : ''}`}
+            onClick={() => handleSort('type')}>
+            {translate('identifiers_overview_column_type_label', 'Type')}
+            <SortIcon field="type" sortField={sortField} sortDirection={sortDirection} />
+          </div>
+          <div
+            className={`${style.headerCell} ${style.cellMethod} ${style.sortable} ${sortField === 'method' ? style.headerCellSorted : ''}`}
+            onClick={() => handleSort('method')}>
+            {translate('identifiers_overview_column_method_label', 'Method')}
+            <SortIcon field="method" sortField={sortField} sortDirection={sortDirection} />
+          </div>
+          <div
+            className={`${style.headerCell} ${style.cellAlias} ${style.sortable} ${sortField === 'alias' ? style.headerCellSorted : ''}`}
+            onClick={() => handleSort('alias')}>
+            {translate('identifiers_overview_column_alias_label', 'Alias')}
+            <SortIcon field="alias" sortField={sortField} sortDirection={sortDirection} />
+          </div>
+          <div
+            className={`${style.headerCell} ${style.cellValueSmall} ${style.sortable} ${sortField === 'value' ? style.headerCellSorted : ''}`}
+            onClick={() => handleSort('value')}>
+            {translate('identifiers_overview_column_value_label', 'Value')}
+            <SortIcon field="value" sortField={sortField} sortDirection={sortDirection} />
+          </div>
+          <div
+            className={`${style.headerCell} ${style.cellContact} ${style.sortable} ${sortField === 'contact' ? style.headerCellSorted : ''}`}
+            onClick={() => handleSort('contact')}>
+            {translate('identifiers_overview_column_contact_label', 'Contact')}
+            <SortIcon field="contact" sortField={sortField} sortDirection={sortDirection} />
+          </div>
+          <div className={`${style.headerCell} ${style.cellOrigin}`}>
+            {translate('identifiers_overview_column_origin_label', 'Origin')}
+          </div>
+          <div className={`${style.headerCell} ${style.cellActions}`} />
+        </div>
+
+        {sortedIdentifiers.map(identifier => (
+          <div
+            key={identifier.id}
+            className={`${style.tableRow} ${selectedIdentifier?.id === identifier.id ? style.selected : ''}`}
+            onClick={() => setSelectedIdentifier(identifier)}
+            onDoubleClick={() => handleShowDetails(identifier)}
+            role="row"
+            tabIndex={0}>
+            <div className={style.checkboxCell}>
+              <input
+                type="checkbox"
+                checked={isSelected(identifier.id)}
+                onChange={() => {}}
+                onClick={e => toggleSelection(identifier.id, e)}
+                className={style.checkbox}
+                aria-label={`Select ${identifier.alias || identifier.value}`}
+              />
+            </div>
+            <div className={`${style.cell} ${style.cellType}`}>
+              <span className={style.typeBadge}>{identifier.type}</span>
+            </div>
+            <div className={`${style.cell} ${style.cellMethod}`}>
+              <span className={style.methodBadge}>{identifier.method}</span>
+            </div>
+            <div className={`${style.cell} ${style.cellAlias}`}>
+              <span className={style.aliasValue}>{identifier.alias || '-'}</span>
+            </div>
+            <div className={`${style.cell} ${style.cellValueSmall}`}>
+              <span className={style.didValue} title={identifier.value}>
+                {truncateDid(identifier.value, 25)}
+              </span>
+            </div>
+            <div className={`${style.cell} ${style.cellContact}`}>
+              {identifier.partyName ? (
+                <button
+                  className={style.contactLink}
+                  onClick={e => {
+                    e.stopPropagation()
+                    if (identifier.partyId) {
+                      handleNavigateToContact(identifier.partyId)
+                    }
+                  }}>
+                  {identifier.partyName}
+                </button>
+              ) : (
+                <span className={style.noContact}>-</span>
+              )}
+            </div>
             <div className={`${style.cell} ${style.cellOrigin}`}>
-              <span className={style.originBadge}>{identifier.origin}</span>
+              <span className={`${style.originBadge} ${identifier.origin === 'External' ? style.originExternal : style.originInternal}`}>
+                {identifier.origin}
+              </span>
             </div>
             <div className={`${style.cell} ${style.cellActions}`}>
               <div className={style.menuContainer}>
@@ -399,11 +659,20 @@ const IdentifiersListPage: React.FC = () => {
     )
   }
 
+  // Render table based on active tab
+  const renderTable = () => {
+    if (sortedIdentifiers.length === 0) {
+      return renderEmptyState()
+    }
+    return activeTab === 'managed' ? renderManagedTable() : renderExternalTable()
+  }
+
   // Render detail panel
   const renderDetailPanel = () => {
     if (!selectedIdentifier) return null
 
-    const canEdit = selectedIdentifier.value.startsWith('did:web')
+    const canEdit = !selectedIdentifier.isExternal && selectedIdentifier.value.startsWith('did:web')
+    const isExternal = selectedIdentifier.isExternal
 
     return (
       <div className={style.detailPanel}>
@@ -459,9 +728,45 @@ const IdentifiersListPage: React.FC = () => {
             </div>
           </section>
 
+          {/* Contact Section (for external identifiers) */}
+          {isExternal && selectedIdentifier.partyName && (
+            <section className={style.contactSection}>
+              <div className={style.contactSectionHeader}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                <span>{translate('identifiers_detail_contact', 'Associated Contact')}</span>
+              </div>
+              <button
+                className={style.contactCard}
+                onClick={() => selectedIdentifier.partyId && handleNavigateToContact(selectedIdentifier.partyId)}>
+                <div className={style.contactAvatar}>{selectedIdentifier.partyName[0].toUpperCase()}</div>
+                <span className={style.contactName}>{selectedIdentifier.partyName}</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                  <polyline points="15 3 21 3 21 9" />
+                  <line x1="10" y1="14" x2="21" y2="3" />
+                </svg>
+              </button>
+            </section>
+          )}
+
+          {/* Roles Section (for external identifiers) */}
+          {isExternal && selectedIdentifier.roles && selectedIdentifier.roles.length > 0 && (
+            <section className={style.rolesSection}>
+              <div className={style.rolesSectionTitle}>{translate('identifiers_detail_roles', 'Roles')}</div>
+              <RoleBadges roles={selectedIdentifier.roles as any} size="small" />
+            </section>
+          )}
+
           {/* DID Value Section */}
           <section className={style.didSection}>
-            <div className={style.didTitle}>{translate('identifiers_detail_did', 'DID Value')}</div>
+            <div className={style.didTitle}>
+              {selectedIdentifier.type === 'URL'
+                ? translate('identifiers_detail_url', 'URL Value')
+                : translate('identifiers_detail_did', 'DID Value')}
+            </div>
             <div className={style.didFullValue}>{selectedIdentifier.value}</div>
             <button
               className={style.copyButton}
@@ -472,7 +777,7 @@ const IdentifiersListPage: React.FC = () => {
                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
               </svg>
-              {translate('action_copy', 'Copy DID')}
+              {translate('action_copy', 'Copy')}
             </button>
           </section>
 
@@ -498,6 +803,26 @@ const IdentifiersListPage: React.FC = () => {
           </button>
         </div>
       </div>
+    )
+  }
+
+  // Render action buttons based on active tab
+  const renderActions = () => {
+    if (activeTab === 'external') {
+      return (
+        <PrimaryButton
+          caption={translate('identifiers_action_add_external', 'Add External Identifier')}
+          icon={ButtonIcon.ADD}
+          onClick={async () => handleCreateExternal()}
+        />
+      )
+    }
+    return (
+      <PrimaryButton
+        caption={translate('identifiers_overview_action_add_identifier', 'Add Identifier')}
+        icon={ButtonIcon.ADD}
+        onClick={handleCreateManaged}
+      />
     )
   }
 
@@ -544,19 +869,13 @@ const IdentifiersListPage: React.FC = () => {
           {/* Header with tabs and selection overlay */}
           <ListPageHeader
             tabs={headerTabs}
-            activeTab="all"
-            onTabChange={() => {}}
+            activeTab={activeTab}
+            onTabChange={handleTabChange}
             selectionCount={selectionCount}
             onClearSelection={clearSelection}
             onDeleteSelected={handleDeleteSelected}
             selectionLabel={{singular: 'identifier', plural: 'identifiers'}}
-            actions={
-              <PrimaryButton
-                caption={translate('identifiers_overview_action_add_identifier', 'Add Identifier')}
-                icon={ButtonIcon.ADD}
-                onClick={handleCreate}
-              />
-            }
+            actions={renderActions()}
           />
 
           {/* Table */}
@@ -589,6 +908,13 @@ const IdentifiersListPage: React.FC = () => {
         isLoading={bulkDelete.isLoading}
         cancelText={translate('action_cancel', 'Cancel')}
         confirmText={translate('action_delete', 'Delete')}
+      />
+
+      {/* Create External Identifier Modal */}
+      <CreateExternalIdentifierModal
+        isOpen={isCreateExternalModalOpen}
+        onClose={() => setIsCreateExternalModalOpen(false)}
+        onSuccess={handleExternalIdentifierCreated}
       />
     </div>
   )

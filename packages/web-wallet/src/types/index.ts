@@ -1,5 +1,6 @@
 export * from './agent'
 export * from './asset'
+export * from './booking'
 export * from './component'
 export * from './correlation'
 export * from './credential'

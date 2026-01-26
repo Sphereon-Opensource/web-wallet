@@ -1,5 +1,6 @@
 export enum MainRoute {
   ASSETS = '/assets',
+  BOOKING = '/booking',
   CONTACTS = '/contacts',
   CREDENTIALS = '/credentials',
   DOCUMENTS = '/documents',
@@ -106,4 +107,26 @@ export enum InboxRoute {
   // Dynamic inbox routes: /inbox/:inboxName/:folderName/:id
   SUB_INBOX_NAME = ':inboxName',
   SUB_FOLDER_NAME = ':folderName',
+}
+
+export enum BookingRoute {
+  RESOURCES = 'resources',
+  MY_BOOKINGS = 'my-bookings',
+  CREATE = 'create',
+  ADMIN = 'admin',
+}
+
+export enum BookingCreateRoute {
+  RESOURCE = 'resource',
+  TIME = 'time',
+  VERIFICATION = 'verification',
+  CONFIRMATION = 'confirmation',
+}
+
+export enum BookingAdminRoute {
+  RESOURCES = 'resources',
+  CATEGORIES = 'categories',
+  POLICIES = 'policies',
+  SCHEDULES = 'schedules',
+  GROUPS = 'groups',
 }

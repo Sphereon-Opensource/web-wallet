@@ -2,6 +2,31 @@
     padding: 24px 24px 12px 24px;
     display: flex;
     flex-direction: row;
+    align-items: center;
+    gap: 12px;
+}
+
+.backButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 8px;
+    background: rgba(114, 118, 247, 0.1);
+    color: #7276F7;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.backButton:hover {
+    background: rgba(114, 118, 247, 0.2);
+    transform: translateX(-2px);
+}
+
+.backButton:active {
+    transform: translateX(0);
 }
 
 .titleCaption {

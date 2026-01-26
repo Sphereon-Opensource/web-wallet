@@ -602,6 +602,84 @@
     text-decoration-color: #7276F7;
 }
 
+/* Identifiers Section */
+.identifiersSection {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.identifiersSectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.identifiersSectionTitle {
+    font-size: 16px;
+    font-weight: 600;
+    color: #303030;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.identifiersCount {
+    font-size: 14px;
+    font-weight: 400;
+    color: #8D9099;
+}
+
+.addIdentifierButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #FFFFFF;
+    background: linear-gradient(135deg, #7276F7 0%, #7C40E8 100%);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: opacity 0.2s ease, box-shadow 0.2s ease;
+}
+
+.addIdentifierButton:hover {
+    opacity: 0.9;
+    box-shadow: 0 2px 8px rgba(114, 118, 247, 0.3);
+}
+
+.identifierCardTypeRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.identifierOriginBadge {
+    display: inline-flex;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.originInternal {
+    background-color: rgba(114, 118, 247, 0.15);
+    color: #7276F7;
+    border: 1px solid rgba(114, 118, 247, 0.3);
+}
+
+.originExternal {
+    background-color: rgba(245, 166, 35, 0.15);
+    color: #F5A623;
+    border: 1px solid rgba(245, 166, 35, 0.3);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .container {

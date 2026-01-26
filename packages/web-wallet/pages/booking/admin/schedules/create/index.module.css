@@ -1,0 +1,687 @@
+.container {
+  background-color: #F4F4FF;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.contentContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 48px;
+  padding: 31px 24px;
+}
+
+.outletContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex: 1;
+  max-width: 720px;
+}
+
+.errorContainer {
+  background: #FEE2E2;
+  border: 1px solid #FECACA;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.errorContainer strong {
+  color: #991B1B;
+  font-size: 14px;
+}
+
+.errorContainer span {
+  color: #DC2626;
+  font-size: 14px;
+}
+
+/* Form Card */
+.formCard {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+}
+
+.formCard h2 {
+  margin: 0 0 4px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #303030;
+}
+
+.stepDescription {
+  margin: 0 0 24px;
+  font-size: 15px;
+  color: #6B7280;
+}
+
+/* Form Groups */
+.formGroup {
+  margin-bottom: 20px;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #303030;
+}
+
+.formGroup input[type="text"],
+.formGroup input[type="number"],
+.formGroup input[type="date"],
+.formGroup input[type="time"],
+.formGroup textarea,
+.formGroup select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: inherit;
+  transition: border-color 0.15s ease;
+  box-sizing: border-box;
+}
+
+.formGroup input:focus,
+.formGroup textarea:focus,
+.formGroup select:focus {
+  outline: none;
+  border-color: #7C3AED;
+}
+
+.formGroup textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* Time Range Styles */
+.timeRangeHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.timeRangeHeader label {
+  margin-bottom: 0 !important;
+}
+
+.clearTimeButton {
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #7276F7;
+  background: rgba(114, 118, 247, 0.1);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.clearTimeButton:hover {
+  background: rgba(114, 118, 247, 0.2);
+}
+
+.timeInputWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.timeInputWrapper input[type="time"] {
+  width: 100%;
+}
+
+.timeLabel {
+  font-size: 12px;
+  color: #9CA3AF;
+  text-align: center;
+}
+
+.timeRow {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.timeSeparator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #6B7280;
+  padding-top: 10px;
+}
+
+.allDayIndicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: rgba(16, 185, 129, 0.1);
+  color: #059669;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-top: 8px;
+}
+
+.allDayIndicator::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: #10B981;
+  border-radius: 50%;
+}
+
+.helpText {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #9CA3AF;
+}
+
+/* Field Group with label */
+.fieldGroup {
+  margin-bottom: 20px;
+}
+
+.fieldLabel {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #303030;
+}
+
+.checkboxLabel {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  margin-bottom: 4px !important;
+}
+
+.checkboxLabel input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+/* Days of Week Grid */
+.daysOfWeekGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.dayCheckbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border: 1px solid #E5E7EB;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  background: white;
+  user-select: none;
+  height: 32px;
+  width: 140px;
+  box-sizing: border-box;
+}
+
+.dayCheckbox:hover {
+  border-color: #7276F7;
+}
+
+.dayCheckbox:has(input:checked) {
+  border-color: #7276F7;
+  background: rgba(114, 118, 247, 0.08);
+}
+
+.dayCheckbox input[type="checkbox"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
+  margin: 0;
+  margin-right: 4px;
+  padding: 0;
+  border: 1.5px solid #9CA3AF;
+  border-radius: 3px;
+  background: white;
+  cursor: pointer;
+  position: relative;
+  vertical-align: middle;
+  display: inline-block;
+}
+
+.dayCheckbox input[type="checkbox"]:checked {
+  background: #7276F7;
+  border-color: #7276F7;
+}
+
+.dayCheckbox input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 5px;
+  height: 9px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.dayCheckbox span {
+  font-size: 13px;
+  color: #303030;
+  line-height: 16px;
+  vertical-align: middle;
+}
+
+/* Closed Option */
+.closedOption {
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px solid #E5E7EB;
+}
+
+.closedCheckbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.closedCheckbox input[type="checkbox"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
+  margin: 0;
+  padding: 0;
+  border: 1.5px solid #9CA3AF;
+  border-radius: 3px;
+  background: white;
+  cursor: pointer;
+  position: relative;
+  vertical-align: middle;
+}
+
+.closedCheckbox input[type="checkbox"]:checked {
+  background: #EF4444;
+  border-color: #EF4444;
+}
+
+.closedCheckbox input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 5px;
+  height: 9px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.closedCheckbox span {
+  font-size: 13px;
+  color: #6B7280;
+  line-height: 16px;
+}
+
+.quickSelectButtons {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.quickSelectButton {
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #6B7280;
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.quickSelectButton:hover {
+  background: #E5E7EB;
+  color: #374151;
+}
+
+/* Rules List */
+.rulesList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.ruleItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #F9FAFB;
+  border-radius: 8px;
+  border: 1px solid #E5E7EB;
+}
+
+.ruleItemClosed {
+  background: #FEF2F2;
+  border-color: #FECACA;
+}
+
+.ruleDescription {
+  font-size: 14px;
+  color: #303030;
+}
+
+.removeRuleButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #9CA3AF;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.removeRuleButton:hover {
+  background: #FEE2E2;
+  color: #DC2626;
+}
+
+/* Add Rule Form */
+.addRuleForm {
+  background: #F9FAFB;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border: 1px solid #E5E7EB;
+}
+
+.addRuleForm h3 {
+  margin: 0 0 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #303030;
+}
+
+.addRuleActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #E5E7EB;
+}
+
+.cancelButton {
+  padding: 10px 20px;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  background: white;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6B7280;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.cancelButton:hover {
+  border-color: #9CA3AF;
+  color: #374151;
+}
+
+.addButton {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #7276F7 0%, #7C40E8 100%);
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.addButton:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.addButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.addRuleButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px;
+  border: 2px dashed #E5E7EB;
+  border-radius: 8px;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6B7280;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.addRuleButton:hover {
+  border-color: #7276F7;
+  color: #7276F7;
+}
+
+.noRulesHint {
+  margin: 16px 0 0;
+  font-size: 13px;
+  color: #9CA3AF;
+  text-align: center;
+}
+
+/* Included Sets */
+.noSetsMessage {
+  font-size: 14px;
+  color: #9CA3AF;
+  text-align: center;
+  padding: 24px;
+}
+
+.includedSetsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.includedSetItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.includedSetItem:hover {
+  border-color: #7276F7;
+}
+
+.includedSetItem input[type="checkbox"] {
+  margin-top: 2px;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.includedSetInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.includedSetName {
+  font-size: 15px;
+  font-weight: 500;
+  color: #303030;
+}
+
+.includedSetDescription {
+  font-size: 13px;
+  color: #6B7280;
+}
+
+.includedSetMeta {
+  font-size: 12px;
+  color: #9CA3AF;
+}
+
+.includeNote {
+  margin: 16px 0 0;
+  padding: 12px;
+  background: rgba(114, 118, 247, 0.1);
+  border-radius: 8px;
+  font-size: 13px;
+  color: #7276F7;
+}
+
+/* Review Section */
+.reviewSection {
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.reviewSection:last-of-type {
+  border-bottom: none;
+  margin-bottom: 16px;
+}
+
+.reviewSection h3 {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #303030;
+}
+
+.reviewGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.reviewItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.reviewItem.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.reviewLabel {
+  font-size: 12px;
+  color: #9CA3AF;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.reviewValue {
+  font-size: 15px;
+  font-weight: 500;
+  color: #303030;
+}
+
+.reviewEmpty {
+  font-size: 14px;
+  color: #9CA3AF;
+  font-style: italic;
+}
+
+.reviewRulesList,
+.reviewIncludesList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.reviewRuleItem,
+.reviewIncludeItem {
+  padding: 10px 14px;
+  background: #F9FAFB;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #303030;
+}
+
+/* Buttons Container */
+.buttonsContainer {
+  display: flex;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 1px solid #E5E7EB;
+  margin-top: 24px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .contentContainer {
+    flex-direction: column-reverse;
+    padding: 16px;
+  }
+
+  .outletContainer {
+    max-width: 100%;
+  }
+
+  .formRow {
+    grid-template-columns: 1fr;
+  }
+
+  .reviewGrid {
+    grid-template-columns: 1fr;
+  }
+}

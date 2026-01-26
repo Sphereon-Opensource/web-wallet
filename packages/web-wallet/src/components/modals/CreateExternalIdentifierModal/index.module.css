@@ -1,0 +1,354 @@
+/**
+ * CreateExternalIdentifierModal Styles
+ */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  padding: 24px;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  background-color: #F5F5F5;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.title {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.closeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  color: #6B7280;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.closeButton:hover {
+  background-color: #E5E7EB;
+  color: #1F2937;
+}
+
+.closeButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Body */
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+/* Form Group */
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.required {
+  color: #DC2626;
+  font-weight: 400;
+}
+
+.optional {
+  font-size: 12px;
+  font-weight: 400;
+  color: #9CA3AF;
+}
+
+/* Type Toggle */
+.typeToggle {
+  display: flex;
+  gap: 0;
+  background-color: #F3F4F6;
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.typeButton {
+  flex: 1;
+  padding: 10px 16px;
+  background-color: transparent;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6B7280;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.typeButton:hover {
+  color: #374151;
+}
+
+.typeButtonActive {
+  background-color: white;
+  color: #7276F7;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Input & Select */
+.input,
+.select {
+  padding: 12px 14px;
+  background-color: white;
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: #1F2937;
+  transition: all 0.15s;
+}
+
+.input::placeholder {
+  color: #9CA3AF;
+}
+
+.input:focus,
+.select:focus {
+  outline: none;
+  border-color: #7276F7;
+  box-shadow: 0 0 0 3px rgba(114, 118, 247, 0.1);
+}
+
+.select {
+  cursor: pointer;
+}
+
+/* Pre-selected Contact Display */
+.preSelectedContact {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background-color: #F3F4F6;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: #374151;
+}
+
+.preSelectedContact svg {
+  color: #7276F7;
+  flex-shrink: 0;
+}
+
+/* Roles Container */
+.rolesContainer {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.roleCheckbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.roleCheckbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #7276F7;
+  cursor: pointer;
+}
+
+.roleLabel {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 16px;
+}
+
+.roleLabel.issuer {
+  background-color: #DBEAFE;
+  color: #1D4ED8;
+}
+
+.roleLabel.verifier {
+  background-color: #D1FAE5;
+  color: #047857;
+}
+
+.roleLabel.holder {
+  background-color: #FEF3C7;
+  color: #92400E;
+}
+
+/* Error Message */
+.errorMessage {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background-color: #FEF2F2;
+  border: 1px solid #FECACA;
+  border-radius: 8px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: #DC2626;
+}
+
+.errorMessage svg {
+  flex-shrink: 0;
+}
+
+/* Footer */
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  background-color: #F9FAFB;
+  border-top: 1px solid #E5E7EB;
+}
+
+.cancelButton {
+  padding: 10px 20px;
+  background-color: white;
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.cancelButton:hover {
+  background-color: #F9FAFB;
+  border-color: #9CA3AF;
+}
+
+.cancelButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.submitButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 24px;
+  background: linear-gradient(135deg, #7276F7 0%, #7C40E8 100%);
+  border: none;
+  border-radius: 8px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  cursor: pointer;
+  transition: all 0.15s;
+  min-width: 100px;
+}
+
+.submitButton:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.submitButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Spinner */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .overlay {
+    padding: 16px;
+  }
+
+  .modal {
+    max-height: 95vh;
+  }
+
+  .header {
+    padding: 16px 20px;
+  }
+
+  .body {
+    padding: 20px;
+  }
+
+  .footer {
+    padding: 12px 20px;
+  }
+
+  .rolesContainer {
+    flex-direction: column;
+    gap: 12px;
+  }
+}

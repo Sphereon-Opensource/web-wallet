@@ -205,7 +205,7 @@ export const FormGroup: FC<FormGroupProps> = ({
 // FormInput - Text/number/date input
 // ============================================
 
-export type FormInputType = 'text' | 'number' | 'date' | 'email' | 'tel' | 'url' | 'password'
+export type FormInputType = 'text' | 'number' | 'date' | 'time' | 'email' | 'tel' | 'url' | 'password'
 
 export interface FormInputProps {
   /** Input type */
@@ -255,8 +255,8 @@ export const FormInput: FC<FormInputProps> = ({
     onChange?.(e.target.value)
   }
 
-  // For date inputs, always shrink the label since native date picker has its own placeholder
-  const isDateType = type === 'date'
+  // For date/time inputs, always shrink the label since native pickers have their own placeholder
+  const isDateOrTimeType = type === 'date' || type === 'time'
 
   return (
     <TextField
@@ -283,7 +283,7 @@ export const FormInput: FC<FormInputProps> = ({
           ) : undefined,
         },
         inputLabel: {
-          shrink: isDateType ? true : undefined,
+          shrink: isDateOrTimeType ? true : undefined,
         },
       }}
       sx={{

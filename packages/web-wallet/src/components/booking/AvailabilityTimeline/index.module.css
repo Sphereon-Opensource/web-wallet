@@ -1,0 +1,342 @@
+/**
+ * AvailabilityTimeline Component Styles
+ * Reusable timeline showing schedule availability and bookings
+ */
+
+.container {
+  background-color: white;
+  border-radius: 12px;
+  border: 1px solid #E3E3E3;
+  overflow: hidden;
+}
+
+/* Header with title and view toggle */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #E3E3E3;
+}
+
+.title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #303030;
+  margin: 0;
+}
+
+.viewToggle {
+  display: flex;
+  border: 1px solid #E3E3E3;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.viewToggleBtn {
+  padding: 6px 14px;
+  background-color: white;
+  border: none;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #6B7280;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.viewToggleBtn:hover {
+  background-color: #EFEFEF;
+}
+
+.viewToggleBtn.active {
+  background-color: #7276F7;
+  color: white;
+}
+
+/* Navigation */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  background-color: #F5F5F5;
+  border-bottom: 1px solid #E3E3E3;
+}
+
+.navBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: white;
+  border: 1px solid #E3E3E3;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #6B7280;
+  transition: all 0.15s;
+}
+
+.navBtn:hover:not(:disabled) {
+  background-color: #EFEFEF;
+  color: #303030;
+}
+
+.navBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.navDate {
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #303030;
+}
+
+.todayBtn {
+  padding: 6px 12px;
+  background: white;
+  border: 1px solid #E3E3E3;
+  border-radius: 6px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #6B7280;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.todayBtn:hover {
+  background-color: #EFEFEF;
+  color: #303030;
+}
+
+/* Timeline Container */
+.timelineContainer {
+  padding: 0 20px 20px;
+  overflow-x: auto;
+}
+
+.timeline {
+  min-width: 800px;
+}
+
+.timelineHours {
+  display: flex;
+  border-bottom: 1px solid #E3E3E3;
+  padding: 12px 0;
+  margin-left: 60px;
+}
+
+.hourLabel {
+  flex: 1;
+  min-width: 60px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  color: #9CA3AF;
+  font-weight: 500;
+}
+
+.timelineDays {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 12px;
+}
+
+.timelineDay {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+}
+
+.dayLabel {
+  width: 48px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #6B7280;
+  text-align: center;
+  flex-shrink: 0;
+  line-height: 1.3;
+}
+
+.dayLabel.today {
+  color: #7276F7;
+  font-weight: 600;
+}
+
+.daySlots {
+  display: flex;
+  flex: 1;
+  height: 44px;
+  background-color: #F5F5F5;
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Slots */
+.slot {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 4px;
+}
+
+.slotAvailable {
+  background-color: #D1FAE5;
+  border: 1px solid #A7F3D0;
+  color: #059669;
+}
+
+.slotAvailable:hover {
+  background-color: #A7F3D0;
+  transform: scaleY(1.05);
+}
+
+.slotBooked {
+  background-color: #E5E5E5;
+  border: 1px solid #D4D4D4;
+  color: #9CA3AF;
+  cursor: not-allowed;
+}
+
+/* Admin view: booked slots have more info */
+.slotBookedAdmin {
+  background-color: #FEE2E2;
+  border: 1px solid #FECACA;
+  color: #DC2626;
+  cursor: default;
+}
+
+.slotMyBooking {
+  background-color: #DBEAFE;
+  border: 1px solid #93C5FD;
+  color: #1D4ED8;
+  cursor: pointer;
+}
+
+.slotMyBooking:hover {
+  background-color: #BFDBFE;
+}
+
+.slotSelected {
+  background-color: #7276F7;
+  border-color: #5558C9;
+  color: white;
+  box-shadow: 0 2px 8px rgba(114, 118, 247, 0.3);
+}
+
+/* Legend */
+.legend {
+  display: flex;
+  gap: 20px;
+  padding: 16px 20px;
+  border-top: 1px solid #E3E3E3;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  color: #6B7280;
+}
+
+.legendDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+.legendDotAvailable {
+  background-color: #D1FAE5;
+  border: 1px solid #A7F3D0;
+}
+
+.legendDotBooked {
+  background-color: #E5E5E5;
+  border: 1px solid #D4D4D4;
+}
+
+.legendDotBookedAdmin {
+  background-color: #FEE2E2;
+  border: 1px solid #FECACA;
+}
+
+.legendDotMyBooking {
+  background-color: #DBEAFE;
+  border: 1px solid #93C5FD;
+}
+
+/* Loading State */
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 32px;
+  gap: 16px;
+  flex: 1;
+  color: #8D9099;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #E5E7EB;
+  border-top-color: #7276F7;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Compact mode for embedding */
+.compact .header {
+  padding: 12px 16px;
+}
+
+.compact .nav {
+  padding: 8px 16px;
+}
+
+.compact .timelineContainer {
+  padding: 0 16px 16px;
+}
+
+.compact .legend {
+  padding: 12px 16px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .nav {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}

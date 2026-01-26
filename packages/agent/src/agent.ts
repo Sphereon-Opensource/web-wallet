@@ -140,8 +140,10 @@ import { EInvoiceApiServer } from './api/einvoiceApiServer'
 import { CredentialDesignApiServer } from './api/credentialDesignApiServer'
 import { FormsApiServer } from './api/formsApiServer'
 import { UtilityApiServer } from './api/utilityApiServer'
+import { BookingVerificationApiServer } from './api/bookingVerificationApiServer'
 import { processVerifiedPresentation } from './utils/inboxVerificationHandler'
 import { hasInboxContext } from './utils/inboxCredentialHandler'
+import { hasBookingVerificationContext, completeBookingVerification } from './utils/bookingVerificationHandler'
 
 const cliMode: boolean = process.env.RUN_MODE === 'cli'
 
@@ -408,8 +410,9 @@ if (!cliMode) {
     }
 
     // Add middleware to intercept successful OID4VP verifications for inbox credential linking
+    // and booking verification completion.
     // This runs BEFORE the SDK's verification endpoint and wraps the response to detect success
-    if (IS_INBOX_ENABLED) {
+    {
       const basePath = process.env.OID4VP_AGENT_BASE_PATH ?? ''
       expressSupport.express.use(`${basePath}/siop/queries/:queryId/auth-responses/:correlationId`, (req, res, next) => {
         if (req.method !== 'POST') {
@@ -418,12 +421,21 @@ if (!cliMode) {
 
         const { correlationId, queryId } = req.params
 
-        // Only intercept if there's inbox context for this correlation
-        if (!hasInboxContext(correlationId)) {
+        // Check if this is an inbox or booking verification flow
+        const isInboxFlow = IS_INBOX_ENABLED && hasInboxContext(correlationId)
+        const isBookingFlow = hasBookingVerificationContext(correlationId)
+
+        // Only intercept if there's relevant context for this correlation
+        if (!isInboxFlow && !isBookingFlow) {
           return next()
         }
 
-        console.log(`[Inbox] Intercepting auth-response for correlation ${correlationId}`)
+        if (isInboxFlow) {
+          console.log(`[Inbox] Intercepting auth-response for correlation ${correlationId}`)
+        }
+        if (isBookingFlow) {
+          console.log(`[BookingVerification] Intercepting auth-response for correlation ${correlationId}`)
+        }
 
         // Track if we've already triggered processing (to avoid double processing)
         let processed = false
@@ -433,16 +445,30 @@ if (!cliMode) {
           const statusCode = res.statusCode || 200
           if (statusCode >= 200 && statusCode < 300) {
             processed = true
-            console.log(`[Inbox] Successful verification detected for ${correlationId}, processing credentials`)
 
-            // Process the verified presentation asynchronously
-            setImmediate(async () => {
-              try {
-                await processVerifiedPresentation(agent, correlationId, queryId)
-              } catch (error) {
-                console.error(`[Inbox] Error processing verified presentation:`, error)
-              }
-            })
+            // Process inbox credentials asynchronously
+            if (isInboxFlow) {
+              console.log(`[Inbox] Successful verification detected for ${correlationId}, processing credentials`)
+              setImmediate(async () => {
+                try {
+                  await processVerifiedPresentation(agent, correlationId, queryId)
+                } catch (error) {
+                  console.error(`[Inbox] Error processing verified presentation:`, error)
+                }
+              })
+            }
+
+            // Mark booking verification as complete
+            if (isBookingFlow) {
+              console.log(`[BookingVerification] Successful verification detected for ${correlationId}`)
+              completeBookingVerification(correlationId, true)
+            }
+          } else {
+            // Handle failed verification for booking flow
+            if (isBookingFlow) {
+              console.log(`[BookingVerification] Failed verification for ${correlationId}`)
+              completeBookingVerification(correlationId, false, `Verification failed with status ${statusCode}`)
+            }
           }
         }
 
@@ -464,7 +490,7 @@ if (!cliMode) {
 
         next()
       })
-      console.log('[Inbox] OID4VP verification interceptor registered')
+      console.log('[OID4VP] Verification interceptor registered for inbox and booking flows')
     }
 
     const opts: ISIOPv2RPRestAPIOpts = {
@@ -631,6 +657,13 @@ if (!cliMode) {
     new CredentialDesignApiServer({ agent, expressSupport })
     new FormsApiServer({ agent, expressSupport })
     new UtilityApiServer({ agent, expressSupport, dbConnection })
+  }
+
+  /**
+   * Enable the Booking Verification API for resource booking credential verification
+   */
+  if (expressSupport && IS_OID4VP_ENABLED) {
+    new BookingVerificationApiServer({ agent, expressSupport })
   }
 
   /**

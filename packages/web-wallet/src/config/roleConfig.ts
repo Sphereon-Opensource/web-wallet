@@ -1,7 +1,74 @@
-import {RoleData} from '@typings'
+import {ExtendedRoleType, RoleData} from '@typings'
 import {RoleType} from '@sphereon/ui-components.core'
 
 export const roleConfig: Array<RoleData> = [
+  {
+    role: ExtendedRoleType.BOOKER,
+    navigation: [
+      {
+        type: 'separator',
+      },
+      {
+        type: 'group',
+        label: 'Bookings',
+        items: [
+          {
+            type: 'item',
+            label: 'Browse Resources',
+            icon: 'resource',
+            path: '/booking/resources',
+          },
+          {
+            type: 'item',
+            label: 'My Bookings',
+            icon: 'calendar',
+            path: '/booking/my-bookings',
+          },
+        ],
+      },
+      {
+        type: 'group',
+        label: 'Administration',
+        items: [
+          {
+            type: 'item',
+            label: 'Resources',
+            icon: 'resource',
+            path: '/booking/admin/resources',
+            adminOnly: true,
+          },
+          {
+            type: 'item',
+            label: 'Groups',
+            icon: 'folder',
+            path: '/booking/admin/groups',
+            adminOnly: true,
+          },
+          {
+            type: 'item',
+            label: 'Categories',
+            icon: 'folder',
+            path: '/booking/admin/categories',
+            adminOnly: true,
+          },
+          {
+            type: 'item',
+            label: 'Schedules',
+            icon: 'calendar',
+            path: '/booking/admin/schedules',
+            adminOnly: true,
+          },
+          {
+            type: 'item',
+            label: 'Policies',
+            icon: 'settings',
+            path: '/booking/admin/policies',
+            adminOnly: true,
+          },
+        ],
+      },
+    ],
+  },
   {
     role: RoleType.HOLDER,
     navigation: [

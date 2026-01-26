@@ -1,4 +1,5 @@
 import {RoleType} from '@sphereon/ui-components.core'
+import {ExtendedRoleType} from '@typings'
 
 /**
  * OIDC Role Mapping Configuration
@@ -11,6 +12,7 @@ import {RoleType} from '@sphereon/ui-components.core'
  * - NEXT_PUBLIC_OIDC_ROLES_ISSUER: comma-separated role names that map to ISSUER
  * - NEXT_PUBLIC_OIDC_ROLES_VERIFIER: comma-separated role names that map to RELYING_PARTY (Verifier)
  * - NEXT_PUBLIC_OIDC_ROLES_ADMIN: comma-separated role names that map to ADMIN
+ * - NEXT_PUBLIC_OIDC_ROLES_BOOKER: comma-separated role names that map to BOOKER
  * - NEXT_PUBLIC_OIDC_ALLOW_ALL_WHEN_NO_ROLES: "true" to allow all roles when token has no roles (default: true)
  */
 
@@ -19,6 +21,7 @@ const DEFAULT_HOLDER_ROLES = ['holder', 'wallet_holder', 'wallet-holder']
 const DEFAULT_ISSUER_ROLES = ['issuer', 'credential_issuer', 'credential-issuer']
 const DEFAULT_VERIFIER_ROLES = ['verifier', 'relying_party', 'relying-party', 'rp']
 const DEFAULT_ADMIN_ROLES = ['admin', 'wallet_admin', 'wallet-admin', 'administrator']
+const DEFAULT_BOOKER_ROLES = ['booker', 'booking', 'resource_booker', 'resource-booker']
 
 /**
  * Parses comma-separated environment variable into array
@@ -60,6 +63,13 @@ export const getAdminRoleNames = (): string[] => {
 }
 
 /**
+ * Get OIDC role names that map to BOOKER
+ */
+export const getBookerRoleNames = (): string[] => {
+  return parseEnvRoles(process.env.NEXT_PUBLIC_OIDC_ROLES_BOOKER, DEFAULT_BOOKER_ROLES)
+}
+
+/**
  * Check if all roles should be allowed when token has no roles (backward compatibility)
  */
 export const shouldAllowAllWhenNoRoles = (): boolean => {
@@ -73,18 +83,22 @@ export const shouldAllowAllWhenNoRoles = (): boolean => {
  * Maps an array of OIDC role strings to application RoleType values
  *
  * @param oidcRoles - Array of role strings from OIDC token
- * @returns Array of unique RoleType values the user is authorized for
+ * @returns Array of unique ExtendedRoleType values the user is authorized for
  */
-export const mapOidcRolesToAppRoles = (oidcRoles: string[]): RoleType[] => {
-  const appRoles: Set<RoleType> = new Set()
+export const mapOidcRolesToAppRoles = (oidcRoles: string[]): ExtendedRoleType[] => {
+  const appRoles: Set<ExtendedRoleType> = new Set()
   const normalizedRoles = oidcRoles.map(r => r.toLowerCase())
 
   const holderRoles = getHolderRoleNames()
   const issuerRoles = getIssuerRoleNames()
   const verifierRoles = getVerifierRoleNames()
   const adminRoles = getAdminRoleNames()
+  const bookerRoles = getBookerRoleNames()
 
   for (const role of normalizedRoles) {
+    if (bookerRoles.includes(role)) {
+      appRoles.add(ExtendedRoleType.BOOKER)
+    }
     if (holderRoles.includes(role)) {
       appRoles.add(RoleType.HOLDER)
     }
@@ -103,8 +117,8 @@ export const mapOidcRolesToAppRoles = (oidcRoles: string[]): RoleType[] => {
 }
 
 /**
- * Get all RoleType values (used when allowing all roles as fallback)
+ * Get all ExtendedRoleType values (used when allowing all roles as fallback)
  */
-export const getAllRoleTypes = (): RoleType[] => {
-  return [RoleType.HOLDER, RoleType.ISSUER, RoleType.RELYING_PARTY, RoleType.ADMIN]
+export const getAllRoleTypes = (): ExtendedRoleType[] => {
+  return [ExtendedRoleType.BOOKER, RoleType.HOLDER, RoleType.ISSUER, RoleType.RELYING_PARTY, RoleType.ADMIN]
 }

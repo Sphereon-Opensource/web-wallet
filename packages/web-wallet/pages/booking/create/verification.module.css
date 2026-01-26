@@ -1,0 +1,404 @@
+.container {
+  background-color: #F4F4FF;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.contentContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+  padding: 31px 24px;
+  align-items: flex-start;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.outletContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+  width: 100%;
+  max-width: 700px;
+}
+
+.buttonsContainer {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+  padding-top: 16px;
+  margin-top: 8px;
+}
+
+/* Step Header */
+.stepHeader {
+  margin-bottom: 8px;
+}
+
+.stepHeaderTitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #303030;
+  margin: 0 0 4px;
+}
+
+.stepHeaderSubtitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  color: #6B7280;
+  margin: 0;
+}
+
+/* Verification Card */
+.verificationCard {
+  background-color: white;
+  border-radius: 12px;
+  border: 1px solid #E3E3E3;
+  padding: 24px;
+}
+
+.verificationContent {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+/* QR Section */
+.qrSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.qrCode {
+  width: 200px;
+  height: 200px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #E3E3E3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qrCodeWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.qrPlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #C4C5CA;
+}
+
+.qrLabel {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  color: #6B7280;
+  text-align: center;
+}
+
+/* Or Divider */
+.orDivider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.orLine {
+  flex: 1;
+  height: 1px;
+  background-color: #E3E3E3;
+}
+
+.orText {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  color: #9CA3AF;
+}
+
+/* Deeplink Button */
+.deeplinkBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 16px;
+  background-color: white;
+  border: 1px solid #7276F7;
+  border-radius: 8px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #7276F7;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.deeplinkBtn:hover {
+  background-color: rgba(114, 118, 247, 0.1);
+}
+
+/* Verification Info */
+.verificationInfo {
+  flex: 1;
+}
+
+.verificationTitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #303030;
+  margin: 0 0 8px;
+}
+
+.verificationDesc {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: #6B7280;
+  margin: 0 0 16px;
+  line-height: 1.5;
+}
+
+/* Requirement List */
+.requirementList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.credentialCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background-color: #FBFBFB;
+  border-radius: 8px;
+  border: 1px solid #E3E3E3;
+}
+
+.credentialMiniCard {
+  width: 60px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.credentialInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.credentialName {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #303030;
+}
+
+.credentialType {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  color: #9CA3AF;
+}
+
+.credentialBadge {
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: #7276F7;
+  background-color: rgba(114, 118, 247, 0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+/* Status Section */
+.statusSection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background-color: white;
+  border-radius: 8px;
+  border: 1px solid #E3E3E3;
+}
+
+.statusSpinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #E5E5E5;
+  border-top-color: #7276F7;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+.statusText {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: #6B7280;
+}
+
+.statusSuccess {
+  background-color: rgba(0, 194, 73, 0.1);
+  border-color: #00C249;
+}
+
+.statusSuccess .statusText {
+  color: #00C249;
+}
+
+.successIcon {
+  width: 24px;
+  height: 24px;
+  color: #00C249;
+  flex-shrink: 0;
+}
+
+.statusError {
+  background-color: rgba(215, 69, 0, 0.1);
+  border-color: #D74500;
+  flex-wrap: wrap;
+}
+
+.statusError .statusText {
+  color: #D74500;
+  flex: 1;
+}
+
+.errorIcon {
+  width: 24px;
+  height: 24px;
+  color: #D74500;
+  flex-shrink: 0;
+}
+
+.retryButton {
+  padding: 8px 16px;
+  background-color: #D74500;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.retryButton:hover {
+  background-color: #C13F00;
+}
+
+/* Skip Button */
+.skipButton {
+  padding: 12px 24px;
+  background-color: transparent;
+  border: none;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #9CA3AF;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.skipButton:hover {
+  color: #6B7280;
+}
+
+/* Loading & Error States */
+.loadingState,
+.errorState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 64px 32px;
+  text-align: center;
+}
+
+.loadingSpinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #E5E5E5;
+  border-top-color: #7276F7;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 16px;
+}
+
+.loadingState p {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: #6B7280;
+}
+
+.errorState h3 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #303030;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .contentContainer {
+    flex-direction: column-reverse;
+    padding: 24px 16px;
+  }
+
+  .outletContainer {
+    max-width: none;
+  }
+
+  .verificationContent {
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .qrSection {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .contentContainer {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .verificationCard {
+    padding: 16px;
+  }
+
+  .buttonsContainer {
+    flex-direction: column;
+  }
+}

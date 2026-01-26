@@ -2,14 +2,14 @@ import React, {createContext, useContext, useState, FC, ReactNode, useMemo, useC
 import {useSession} from 'next-auth/react'
 import {RoleType} from '@sphereon/ui-components.core'
 import {CredentialRole} from '@sphereon/ssi-sdk.credential-store'
-import {RoleData} from '@/src/types'
+import {ExtendedRoleType, RoleData} from '@/src/types'
 import roleConfig from '../config/roleConfig'
 import {mapOidcRolesToAppRoles, shouldAllowAllWhenNoRoles, getAllRoleTypes} from '../config/oidcRoleMapping'
 
 /**
- * Maps UI RoleType to CredentialRole for filtering credentials
+ * Maps UI ExtendedRoleType to CredentialRole for filtering credentials
  */
-export const roleTypeToCredentialRole = (roleType: RoleType): CredentialRole => {
+export const roleTypeToCredentialRole = (roleType: ExtendedRoleType): CredentialRole => {
   switch (roleType) {
     case RoleType.HOLDER:
       return CredentialRole.HOLDER
@@ -19,6 +19,9 @@ export const roleTypeToCredentialRole = (roleType: RoleType): CredentialRole => 
       return CredentialRole.VERIFIER
     case RoleType.ADMIN:
       // Admin doesn't have credentials, default to HOLDER
+      return CredentialRole.HOLDER
+    case ExtendedRoleType.BOOKER:
+      // Booker doesn't have credentials, default to HOLDER
       return CredentialRole.HOLDER
     default:
       return CredentialRole.HOLDER
@@ -33,11 +36,11 @@ interface RoleContextType {
   /** The credential role derived from currentRole */
   credentialRole: CredentialRole
   /** Roles the user is authorized to use based on OIDC claims */
-  authorizedRoles: RoleType[]
+  authorizedRoles: ExtendedRoleType[]
   /** All role configurations available to the user */
   availableRoleConfigs: RoleData[]
   /** Check if user has a specific role */
-  hasRole: (role: RoleType) => boolean
+  hasRole: (role: ExtendedRoleType) => boolean
   /** Whether OIDC roles were found in the token */
   hasOidcRoles: boolean
 }
@@ -111,7 +114,7 @@ export const RoleProvider: FC<RoleProviderProps> = ({children}) => {
   const credentialRole = roleTypeToCredentialRole(currentRole.role)
 
   const hasRole = useCallback(
-    (role: RoleType): boolean => {
+    (role: ExtendedRoleType): boolean => {
       return authorizedRoles.includes(role)
     },
     [authorizedRoles],

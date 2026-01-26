@@ -1,0 +1,335 @@
+/**
+ * Browse Resources Page Styles
+ * Uses ListPageHeader for consistent header/tabs pattern
+ */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background-color: #FBFBFB;
+  overflow: hidden;
+}
+
+.mainLayout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.contentArea {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+  min-width: 0;
+}
+
+.content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+/* Search Container - in header actions */
+.searchContainer {
+  position: relative;
+  min-width: 280px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9CA3AF;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 10px 14px 10px 40px;
+  border: 1px solid #E5E7EB;
+  border-radius: 10px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  background: white;
+  transition: border-color 0.15s ease;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #7276F7;
+}
+
+.searchInput::placeholder {
+  color: #9CA3AF;
+}
+
+/* Resources Grid */
+.resourcesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.resourceCard {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.resourceCard:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  transform: translateY(-4px);
+}
+
+.resourceImage {
+  position: relative;
+  height: 160px;
+  background: linear-gradient(135deg, #E0F2FE 0%, #E0E7FF 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.resourceCard:nth-child(2n) .resourceImage {
+  background: linear-gradient(135deg, #FCE7F3 0%, #FEE2E2 100%);
+}
+
+.resourceCard:nth-child(3n) .resourceImage {
+  background: linear-gradient(135deg, #D1FAE5 0%, #CFFAFE 100%);
+}
+
+.resourceCard:nth-child(5n) .resourceImage {
+  background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+}
+
+.iconBox {
+  width: 64px;
+  height: 64px;
+  background: white;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.iconBox svg {
+  color: #7276F7;
+}
+
+.resourceCard:nth-child(2n) .iconBox svg {
+  color: #EC4899;
+}
+
+.resourceCard:nth-child(3n) .iconBox svg {
+  color: #10B981;
+}
+
+.resourceCard:nth-child(5n) .iconBox svg {
+  color: #F59E0B;
+}
+
+
+.statusBadge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.statusAvailable {
+  background: rgba(34, 197, 94, 0.15);
+  color: #16A34A;
+}
+
+.statusMaintenance {
+  background: rgba(245, 158, 11, 0.15);
+  color: #D97706;
+}
+
+.statusRetired {
+  background: rgba(107, 114, 128, 0.15);
+  color: #6B7280;
+}
+
+.resourceContent {
+  padding: 20px;
+}
+
+.categoryBadge {
+  display: inline-block;
+  padding: 4px 10px;
+  background: linear-gradient(135deg, rgba(114, 118, 247, 0.1) 0%, rgba(184, 163, 247, 0.1) 100%);
+  color: #7276F7;
+  border-radius: 6px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.resourceName {
+  margin: 0 0 8px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.resourceDescription {
+  margin: 0 0 16px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: #6B7280;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.resourceMeta {
+  display: flex;
+  gap: 16px;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  color: #6B7280;
+}
+
+.metaItem svg {
+  color: #7276F7;
+}
+
+.verificationBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: linear-gradient(135deg, rgba(114, 118, 247, 0.1) 0%, rgba(184, 163, 247, 0.1) 100%);
+  color: #7276F7;
+  border-radius: 6px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+
+/* Loading State */
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 32px;
+  color: #6B7280;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #E5E7EB;
+  border-top-color: #7276F7;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Empty State */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 32px;
+  text-align: center;
+}
+
+.emptyStateIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  margin-bottom: 16px;
+  background-color: #F3F4F6;
+  border-radius: 50%;
+  color: #9CA3AF;
+}
+
+.emptyStateTitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1F2937;
+  margin-bottom: 8px;
+}
+
+.emptyStateDescription {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: #6B7280;
+  max-width: 300px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .searchContainer {
+    min-width: 220px;
+  }
+}
+
+@media (max-width: 768px) {
+  .content {
+    padding: 16px;
+  }
+
+  .resourcesGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .searchContainer {
+    min-width: 180px;
+  }
+}
+
+@media (max-width: 480px) {
+  .resourceImage {
+    height: 140px;
+  }
+
+  .resourceContent {
+    padding: 16px;
+  }
+
+  .resourceName {
+    font-size: 16px;
+  }
+}

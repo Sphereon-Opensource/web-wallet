@@ -1,16 +1,18 @@
-import React, {CSSProperties, FC, Fragment, ReactElement, ReactNode} from 'react'
+import React, {CSSProperties, FC, Fragment, ReactElement, ReactNode, useMemo} from 'react'
 import {useTranslate} from '@refinedev/core'
 import {Listbox, RoleIconView} from '@sphereon/ui-components.ssi-react'
 import {RoleType} from '@sphereon/ui-components.core'
 import SideNavigationItem from './SideNavigationItem'
 import SideNavigationGroup from './SideNavigationGroup'
-import {MenuEntry, MenuGroup, MenuItem, MenuSeparator, RoleData} from '@typings'
+import {ExtendedRoleType, MenuEntry, MenuGroup, MenuItem, MenuSeparator, RoleData} from '@typings'
 import {useRole} from '@/src/contexts/RoleContext'
 import styles from './index.module.css'
 
-// Custom role display names (Relying Party -> Verifier)
-const getRoleDisplayName = (role: RoleType): string => {
+// Custom role display names (Relying Party -> Verifier, BOOKER -> Booking)
+const getRoleDisplayName = (role: ExtendedRoleType): string => {
   switch (role) {
+    case ExtendedRoleType.BOOKER:
+      return 'Booking'
     case RoleType.HOLDER:
       return 'Holder'
     case RoleType.ISSUER:
@@ -49,9 +51,17 @@ const LaptopIcon: FC<{color: string}> = ({color}) => (
   </svg>
 )
 
+const CalendarIcon: FC<{color: string}> = ({color}) => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+    <path d="M19 4H18V2H16V4H8V2H6V4H5C3.89 4 3.01 4.9 3.01 6L3 20C3 21.1 3.89 22 5 22H19C20.1 22 21 21.1 21 20V6C21 4.9 20.1 4 19 4ZM19 20H5V9H19V20ZM7 11H12V16H7V11Z" fill={color}/>
+  </svg>
+)
+
 // Get role icon element (similar to original RoleViewItem)
-const getRoleIconElement = (role: RoleType): ReactElement => {
+const getRoleIconElement = (role: ExtendedRoleType): ReactElement => {
   switch (role) {
+    case ExtendedRoleType.BOOKER:
+      return <RoleIconView icon={<CalendarIcon color="var(--color-grey-50)" />} backgroundColor="var(--color-booker)" />
     case RoleType.HOLDER:
       return <RoleIconView icon={<ManIcon color="var(--color-grey-50)" />} backgroundColor="var(--color-holder)" />
     case RoleType.ISSUER:
@@ -65,8 +75,8 @@ const getRoleIconElement = (role: RoleType): ReactElement => {
   }
 }
 
-// Custom RoleViewItem component with Verifier name
-const CustomRoleViewItem: FC<{role: RoleType; accountName?: string}> = ({role, accountName}) => {
+// Custom RoleViewItem component with custom display names (Verifier, Booking)
+const CustomRoleViewItem: FC<{role: ExtendedRoleType; accountName?: string}> = ({role, accountName}) => {
   return (
     <div className={styles.roleViewItem}>
       {getRoleIconElement(role)}
@@ -98,9 +108,34 @@ export const menuGroupFrom = (item: MenuGroup, allMenuItems: MenuItem[]): ReactE
 const SideNavigationBar: FC<Props> = (props: Props): ReactElement => {
   const {style} = props
   const translate = useTranslate()
-  const {currentRole, setCurrentRole, availableRoleConfigs} = useRole()
+  const {currentRole, setCurrentRole, availableRoleConfigs, hasRole} = useRole()
+  const isAdmin = hasRole(RoleType.ADMIN)
 
   const onChangeRole = async (role: RoleData) => setCurrentRole(role)
+
+  // Filter navigation items based on adminOnly flag
+  const filteredNavigation = useMemo(() => {
+    return currentRole.navigation
+      .map((entry): MenuEntry | null => {
+        if (entry.type === 'group') {
+          // Filter items within the group
+          const filteredItems = entry.items.filter(item => !item.adminOnly || isAdmin)
+          // If no items remain after filtering, exclude the group entirely
+          if (filteredItems.length === 0) {
+            return null
+          }
+          return {...entry, items: filteredItems}
+        }
+        if (entry.type === 'item') {
+          // Filter top-level items
+          if (entry.adminOnly && !isAdmin) {
+            return null
+          }
+        }
+        return entry
+      })
+      .filter((entry): entry is MenuEntry => entry !== null)
+  }, [currentRole.navigation, isAdmin])
 
   const groupMenuBlocks = (items: MenuEntry[]) => {
     const blocks: MenuEntry[][] = []
@@ -172,7 +207,7 @@ const SideNavigationBar: FC<Props> = (props: Props): ReactElement => {
           menuTitle={translate('roles_selection_label')}
         />
       </div>
-      {menuFrom(currentRole.navigation)}
+      {menuFrom(filteredNavigation)}
     </nav>
   )
 }

@@ -12,14 +12,17 @@ import SideNavigationBar from '@components/bars/SideNavigationBar'
 import AppRouter from '../src/router/AppRouter'
 import {BrowserRouter, useLocation} from 'react-router-dom'
 import {RoleProvider} from '@/src/contexts/RoleContext'
+import {TenantProvider} from '@/src/contexts/TenantContext'
 import clsx from 'clsx'
 import {getAuthProvider} from '@helpers/AuthProvider'
-import {ContactRoute, CredentialDesignerRoute, DataProvider, DataResource, KeyManagementRoute, MainRoute} from '@typings'
+import {BookingDataResource, BookingRoute, ContactRoute, CredentialDesignerRoute, DataProvider, DataResource, KeyManagementRoute, MainRoute} from '@typings'
 import {keysDataProvider} from '@/src/dataProviders/keysDataProvider'
 import {identifiersDataProvider} from '@/src/dataProviders/identifiersDataProvider'
+import {externalIdentifiersDataProvider} from '@/src/dataProviders/externalIdentifiersDataProvider'
 import {presentationDefinitionDataProvider} from '@/src/dataProviders/presentationDefinitionDataProvider'
 import {credentialDataProvider} from '@/src/dataProviders/credentialDataProvider'
 import {credentialDesignDataProvider} from '@/src/dataProviders/credentialDesignDataProvider'
+import {bookingDataProvider} from '@/src/dataProviders/bookingDataProvider'
 import '../src/styles/global.css'
 import styles from './App.module.css'
 import '../app/constants'
@@ -104,6 +107,12 @@ const _app = (props: React.PropsWithChildren<unknown>) => {
       meta: {dataProviderName: DataProvider.IDENTIFIERS},
     },
     {
+      name: DataResource.EXTERNAL_IDENTIFIERS,
+      list: `${MainRoute.KEY_MANAGEMENT}/${KeyManagementRoute.IDENTIFIERS}`,
+      show: `${MainRoute.KEY_MANAGEMENT}/${KeyManagementRoute.IDENTIFIERS}/external/${MainRoute.SUB_SHOW}/${MainRoute.SUB_ID}`,
+      meta: {dataProviderName: DataProvider.EXTERNAL_IDENTIFIERS},
+    },
+    {
       name: DataResource.KEYS,
       list: `${MainRoute.KEY_MANAGEMENT}/${KeyManagementRoute.KEYS}`,
       show: `${MainRoute.KEY_MANAGEMENT}/${KeyManagementRoute.KEYS}/${MainRoute.SUB_SHOW}/${MainRoute.SUB_ID}`,
@@ -124,6 +133,70 @@ const _app = (props: React.PropsWithChildren<unknown>) => {
       edit: `${MainRoute.CREDENTIALS}/${MainRoute.DESIGNS}/${MainRoute.SUB_EDIT}/${MainRoute.SUB_ID}`,
       meta: {dataProviderName: DataProvider.CREDENTIAL_DESIGNS},
     },
+    // Booking resources
+    {
+      name: BookingDataResource.RESOURCES,
+      list: `${MainRoute.BOOKING}/${BookingRoute.RESOURCES}`,
+      show: `${MainRoute.BOOKING}/admin/resources/${MainRoute.SUB_ID}`,
+      create: `${MainRoute.BOOKING}/admin/resources/create`,
+      meta: {dataProviderName: DataProvider.BOOKING},
+    },
+    {
+      name: BookingDataResource.CATEGORIES,
+      list: `${MainRoute.BOOKING}/admin/categories`,
+      show: `${MainRoute.BOOKING}/admin/categories/${MainRoute.SUB_ID}`,
+      create: `${MainRoute.BOOKING}/admin/categories/create`,
+      meta: {dataProviderName: DataProvider.BOOKING},
+    },
+    {
+      name: BookingDataResource.BOOKINGS,
+      list: `${MainRoute.BOOKING}/${BookingRoute.MY_BOOKINGS}`,
+      meta: {dataProviderName: DataProvider.BOOKING},
+    },
+    {
+      name: BookingDataResource.POLICIES,
+      list: `${MainRoute.BOOKING}/admin/policies`,
+      show: `${MainRoute.BOOKING}/admin/policies/${MainRoute.SUB_ID}`,
+      create: `${MainRoute.BOOKING}/admin/policies/create`,
+      meta: {dataProviderName: DataProvider.BOOKING},
+    },
+    {
+      name: BookingDataResource.SCHEDULES,
+      list: `${MainRoute.BOOKING}/admin/schedules`,
+      show: `${MainRoute.BOOKING}/admin/schedules/${MainRoute.SUB_ID}`,
+      create: `${MainRoute.BOOKING}/admin/schedules/create`,
+      meta: {dataProviderName: DataProvider.BOOKING},
+    },
+    {
+      name: BookingDataResource.REQUIREMENTS,
+      meta: {dataProviderName: DataProvider.BOOKING},
+    },
+    // Groups - bundles of resources
+    {
+      name: BookingDataResource.GROUPS,
+      list: `${MainRoute.BOOKING}/admin/groups`,
+      show: `${MainRoute.BOOKING}/admin/groups/${MainRoute.SUB_ID}`,
+      create: `${MainRoute.BOOKING}/admin/groups/create`,
+      meta: {dataProviderName: DataProvider.BOOKING},
+    },
+    // Schedule Sets - composite schedules
+    {
+      name: BookingDataResource.SCHEDULE_SETS,
+      list: `${MainRoute.BOOKING}/admin/schedules`,
+      show: `${MainRoute.BOOKING}/admin/schedules/${MainRoute.SUB_ID}`,
+      create: `${MainRoute.BOOKING}/admin/schedules/create`,
+      meta: {dataProviderName: DataProvider.BOOKING},
+    },
+    // Schedule Set Assignments
+    {
+      name: BookingDataResource.SCHEDULE_SET_ASSIGNMENTS,
+      meta: {dataProviderName: DataProvider.BOOKING},
+    },
+    // Policy Assignments
+    {
+      name: BookingDataResource.POLICY_ASSIGNMENTS,
+      meta: {dataProviderName: DataProvider.BOOKING},
+    },
   ]
 
   const dataProviders = {
@@ -131,8 +204,10 @@ const _app = (props: React.PropsWithChildren<unknown>) => {
     [DataProvider.CREDENTIALS]: credentialDataProvider(),
     [DataProvider.KEYS]: keysDataProvider(),
     [DataProvider.IDENTIFIERS]: identifiersDataProvider(),
+    [DataProvider.EXTERNAL_IDENTIFIERS]: externalIdentifiersDataProvider(),
     [DataProvider.QUERIES]: presentationDefinitionDataProvider(),
     [DataProvider.CREDENTIAL_DESIGNS]: credentialDesignDataProvider(),
+    [DataProvider.BOOKING]: bookingDataProvider(),
   }
 
   return (
@@ -149,9 +224,11 @@ const _app = (props: React.PropsWithChildren<unknown>) => {
           warnWhenUnsavedChanges: true,
           projectId: 'eufd47-35LeGm-U738uV',
         }}>
-        <RoleProvider>
-          <AppLayout title={t('top_navigation_header_title')} />
-        </RoleProvider>
+        <TenantProvider>
+          <RoleProvider>
+            <AppLayout title={t('top_navigation_header_title')} />
+          </RoleProvider>
+        </TenantProvider>
       </Refine>
       {/*   <DevtoolsPanel />
       </DevtoolsProvider>*/}
