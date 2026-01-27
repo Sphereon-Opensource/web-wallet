@@ -144,28 +144,32 @@ export async function fetchInboxes(): Promise<Inbox[]> {
         }
 
         const folders: InboxFolder[] = backendFolders.map((folder) => {
-          // Look up service type from DID document by matching folder name to service ID
+          // Look up service from DID document by matching folder name to service ID
           const matchingService = didServices.find((svc) => {
             // Service ID in DID doc may be full URI (did:web:...#peppol) or just the fragment (peppol)
             const svcId = svc.id || ''
             const fragment = svcId.includes('#') ? svcId.split('#').pop() : svcId
             return fragment === folder.name
-          })
+          }) as {id?: string; type?: string; subType?: string} | undefined
 
-          // Determine service type from DID document or infer from folder name
-          let serviceType: 'einv-direct' | 'einv-peppol' | 'einv-ppf-fr' = 'einv-direct'
-          if (matchingService?.type) {
-            const svcType = matchingService.type
-            if (svcType === 'einv-peppol' || svcType.includes('peppol')) {
-              serviceType = 'einv-peppol'
-            } else if (svcType === 'einv-ppf-fr' || svcType.includes('ppf')) {
-              serviceType = 'einv-ppf-fr'
-            } else if (svcType === 'einv-direct' || svcType.includes('direct')) {
-              serviceType = 'einv-direct'
+          // Determine service type (subType) from DID document or infer from folder name
+          // New format: type="eInvoice", subType="Direct"|"Peppol"|"PPF-FR"
+          let serviceType: 'Direct' | 'Peppol' | 'PPF-FR' = 'Direct'
+          if (matchingService?.type === 'eInvoice' && matchingService.subType) {
+            // New format with subType
+            const subType = matchingService.subType
+            if (subType === 'Peppol') {
+              serviceType = 'Peppol'
+            } else if (subType === 'PPF-FR') {
+              serviceType = 'PPF-FR'
+            } else {
+              serviceType = 'Direct'
             }
           } else if (folder.name.toLowerCase().includes('peppol')) {
             // Fallback: infer from folder name
-            serviceType = 'einv-peppol'
+            serviceType = 'Peppol'
+          } else if (folder.name.toLowerCase().includes('ppf')) {
+            serviceType = 'PPF-FR'
           }
 
           return {

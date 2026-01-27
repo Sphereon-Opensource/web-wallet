@@ -47,10 +47,12 @@ export const FolderIcon: FC<IconProps> = ({size = 16, color = 'currentColor', cl
 
 export const getFolderIcon = (serviceType?: InboxServiceType): ReactElement => {
   switch (serviceType) {
-    case 'einv-direct':
+    case 'Direct':
       return <DirectInboxIcon />
-    case 'einv-peppol':
+    case 'Peppol':
       return <PeppolIcon />
+    case 'PPF-FR':
+      return <FolderIcon /> // TODO: Add PPF-FR specific icon
     default:
       return <FolderIcon />
   }

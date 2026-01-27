@@ -5,15 +5,19 @@ import {IIdentifier, TKeyType} from '@veramo/core'
 import {CredentialRole} from '@sphereon/ssi-types'
 import {DIDResolutionResult} from 'did-resolver'
 import {FormView, JSONFormState, PrimaryButton} from '@sphereon/ui-components.ssi-react'
+import {JsonSchema} from '@jsonforms/core'
 import {ButtonIcon} from '@sphereon/ui-components.core'
 import PageHeaderBar from '@components/bars/PageHeaderBar'
 import {staticPropsWithSST} from '@/src/i18n/server'
 import {getAgent, resolver, getAgentBaseUrl} from '@agent'
 import {getDidMethodFromDID} from '@helpers/DID/DIDService'
 import {DataResource, EInvoiceServiceData} from '@typings'
-import {isEInvoicingServiceType, getEInvoicingDefaults, generateInboxEndpoint, EInvServiceType, EINV_SERVICE_TYPES} from '@/src/constants/eInvoicingDefaults'
-import addServiceEndpointSchema from '@/src/schemas/data/addServiceEndpointSchema.json' assert {type: 'json'}
+import {isEInvoicingServiceType, isEInvoicingSubType, getEInvoicingDefaults, generateInboxEndpoint, EInvSubType, EINV_SUB_TYPES, EINV_SERVICE_TYPE, EInvoiceDataItem} from '@/src/constants/eInvoicingDefaults'
+import addServiceEndpointSchemaJson from '@/src/schemas/data/addServiceEndpointSchema.json' assert {type: 'json'}
 import addServiceEndpointUISchema from '@/src/schemas/ui/addServiceEndpointUISchema.json' assert {type: 'json'}
+
+// Cast JSON schema to JsonSchema type to satisfy TypeScript's strict type checking
+const addServiceEndpointSchema = addServiceEndpointSchemaJson as unknown as JsonSchema
 import style from './index.module.css'
 
 // eInvoice DCQL Query Definition - created on first eInvoicing endpoint if not already present
@@ -62,9 +66,10 @@ interface KeyDisplayItem {
 interface ServiceDisplayItem {
   id: string
   type: string
+  subType?: string
   serviceEndpoint: string
   description?: string
-  einvoice?: any
+  eInvoice?: EInvoiceDataItem[] // New format: capital I, array
 }
 
 const ShowIdentifierDetails: FC = (): ReactElement => {
@@ -224,17 +229,30 @@ const ShowIdentifierDetails: FC = (): ReactElement => {
 
   const services: ServiceDisplayItem[] = useMemo(() => {
     if (!identifier?.services) return []
-    return identifier.services.map(service => ({
-      id: service.id,
-      type: service.type,
-      serviceEndpoint: typeof service.serviceEndpoint === 'string'
-        ? service.serviceEndpoint
-        : Array.isArray(service.serviceEndpoint)
-          ? service.serviceEndpoint.join(', ')
-          : JSON.stringify(service.serviceEndpoint),
-      description: (service as any).description,
-      einvoice: (service as any).einvoice,
-    }))
+    return identifier.services.map(service => {
+      const svc = service as any
+      // Get eInvoice data - support both new format (eInvoice array) and old format (einvoice object)
+      let eInvoiceData: EInvoiceDataItem[] | undefined
+      if (svc.eInvoice && Array.isArray(svc.eInvoice)) {
+        eInvoiceData = svc.eInvoice
+      } else if (svc.einvoice) {
+        // Convert old format to new
+        eInvoiceData = [svc.einvoice]
+      }
+
+      return {
+        id: service.id,
+        type: service.type,
+        subType: svc.subType,
+        serviceEndpoint: typeof service.serviceEndpoint === 'string'
+          ? service.serviceEndpoint
+          : Array.isArray(service.serviceEndpoint)
+            ? service.serviceEndpoint.join(', ')
+            : JSON.stringify(service.serviceEndpoint),
+        description: svc.description,
+        eInvoice: eInvoiceData,
+      }
+    })
   }, [identifier?.services])
 
   /**
@@ -267,38 +285,25 @@ const ShowIdentifierDetails: FC = (): ReactElement => {
   /**
    * Build the eInvoice data object for eInvoicing services
    */
-  const buildEInvoiceData = useCallback((data: Record<string, unknown>, serviceType: EInvServiceType): EInvoiceServiceData | null => {
-    const defaults = getEInvoicingDefaults(serviceType)
+  const buildEInvoiceDataItem = useCallback((data: Record<string, unknown>, subType: EInvSubType): EInvoiceDataItem | null => {
+    const defaults = getEInvoicingDefaults(subType)
     if (!defaults) {
       return null
     }
 
-    const serviceId = data.id as string
-    const inboxName = (data.inboxName as string) || 'einvoices'
-    const folderName = (data.folderName as string) || serviceId.replace(/^#/, '')
-
-    const baseUrl = getServiceEndpointBaseUrl()
-    const endpoint = generateInboxEndpoint(baseUrl, inboxName, folderName)
-
-    const baseData: EInvoiceServiceData = {
-      vct: defaults.vct,
+    const baseData: EInvoiceDataItem = {
       entityName: data.entityName as string,
       country: data.country as string,
       documentIdentifiers: [...defaults.documentIdentifiers],
       processIdentifiers: [...defaults.processIdentifiers],
       transportType: defaults.transportType,
-      inboxName,
-      folderName,
     }
 
-    switch (serviceType) {
-      case EINV_SERVICE_TYPES.DIRECT:
-        return {
-          ...baseData,
-          endpoint,
-        }
+    switch (subType) {
+      case EINV_SUB_TYPES.DIRECT:
+        return baseData
 
-      case EINV_SERVICE_TYPES.PEPPOL:
+      case EINV_SUB_TYPES.PEPPOL:
         return {
           ...baseData,
           peppolParticipantId: data.peppolParticipantId as string,
@@ -306,7 +311,7 @@ const ShowIdentifierDetails: FC = (): ReactElement => {
           ...(data.peppolAs4Endpoint ? {peppolAs4Endpoint: data.peppolAs4Endpoint as string} : {}),
         }
 
-      case EINV_SERVICE_TYPES.PPF_FR:
+      case EINV_SUB_TYPES.PPF_FR:
         const recipientIdsStr = data.ppfRecipientIds as string
         const ppfRecipientIds = recipientIdsStr
           ? recipientIdsStr
@@ -459,18 +464,31 @@ const ShowIdentifierDetails: FC = (): ReactElement => {
       }
 
       let service: any
+      let internalData: EInvoiceServiceData | undefined
 
       if (isEInvoicingServiceType(serviceType)) {
-        const defaults = getEInvoicingDefaults(serviceType)
-        const einvoiceData = buildEInvoiceData(data, serviceType)
+        const subType = data.subType as EInvSubType
+        if (!isEInvoicingSubType(subType)) {
+          console.error('Invalid eInvoicing subType:', subType)
+          return
+        }
+
+        const defaults = getEInvoicingDefaults(subType)
+        const eInvoiceDataItem = buildEInvoiceDataItem(data, subType)
         const endpointUrl = getEInvoicingEndpointUrl(data)
+
+        // Build internal data for inbox configuration
+        const inboxName = (data.inboxName as string) || 'einvoices'
+        const folderName = (data.folderName as string) || serviceId.replace(/^#/, '')
+        internalData = eInvoiceDataItem ? {...eInvoiceDataItem, inboxName, folderName} : undefined
 
         service = {
           id: serviceId.startsWith('#') ? serviceId : `#${serviceId}`,
-          type: serviceType,
+          type: EINV_SERVICE_TYPE, // Always "eInvoice"
           serviceEndpoint: endpointUrl,
           description: defaults?.description,
-          einvoice: einvoiceData || undefined,
+          subType: subType, // "Direct", "Peppol", "PPF-FR"
+          eInvoice: eInvoiceDataItem ? [eInvoiceDataItem] : undefined, // Capital I, array
         }
       } else {
         service = {
@@ -480,23 +498,36 @@ const ShowIdentifierDetails: FC = (): ReactElement => {
         }
       }
 
+      // Build service data for DID document
+      const serviceData: Record<string, unknown> = {
+        id: service.id,
+        type: service.type,
+        serviceEndpoint: service.serviceEndpoint,
+        description: service.description,
+      }
+
+      // Add eInvoice-specific fields for the DID document
+      if (service.type === EINV_SERVICE_TYPE) {
+        if (service.subType) {
+          serviceData.subType = service.subType
+        }
+        if (service.eInvoice) {
+          serviceData.eInvoice = service.eInvoice
+        }
+      }
+
       await getAgent().didManagerAddService({
         did: identifier.did,
-        service: {
-          id: service.id,
-          type: service.type,
-          serviceEndpoint: service.serviceEndpoint,
-          description: service.description,
-        },
+        service: serviceData as any,
       })
 
-      // Store eInvoice metadata separately (Veramo doesn't persist custom properties)
-      if (service.einvoice) {
+      // Store internal eInvoice metadata separately (Veramo doesn't persist custom properties)
+      if (internalData) {
         try {
           await getAgent().updateServiceMetadata({
             serviceId: service.id,
             did: identifier.did,
-            metadata: {einvoice: service.einvoice},
+            metadata: {eInvoice: internalData}, // Capital I
           })
           console.log(`Updated metadata for service ${service.id}`)
         } catch (metadataError) {
@@ -505,8 +536,8 @@ const ShowIdentifierDetails: FC = (): ReactElement => {
 
         // Ensure inbox and folder exist for eInvoicing services
         const agentBaseUrl = getAgentBaseUrl()
-        const inboxName = service.einvoice.inboxName || 'einvoices'
-        const folderName = service.einvoice.folderName || service.id.replace(/^#/, '')
+        const inboxName = internalData.inboxName || 'einvoices'
+        const folderName = internalData.folderName || service.id.split('#').pop() || service.id
 
         try {
           // Create inbox (will get 409 if it already exists)
@@ -540,7 +571,7 @@ const ShowIdentifierDetails: FC = (): ReactElement => {
       console.error('Failed to add service:', error)
       alert(translate('identifier_details_add_service_error', 'Failed to add service endpoint') as string)
     }
-  }, [identifier, isEditable, serviceFormData, refetch, translate, ensureEInvoiceDcqlDefinition, buildEInvoiceData, getEInvoicingEndpointUrl])
+  }, [identifier, isEditable, serviceFormData, refetch, translate, ensureEInvoiceDcqlDefinition, buildEInvoiceDataItem, getEInvoicingEndpointUrl])
 
   // Navigate to edit page
   const handleEdit = useCallback(() => {
@@ -576,17 +607,20 @@ const ShowIdentifierDetails: FC = (): ReactElement => {
   }
 
   // Get service type label
-  const getServiceTypeLabel = (type: string): string => {
-    switch (type) {
-      case EINV_SERVICE_TYPES.DIRECT:
-        return 'eInvoicing - Direct'
-      case EINV_SERVICE_TYPES.PEPPOL:
-        return 'eInvoicing - PEPPOL'
-      case EINV_SERVICE_TYPES.PPF_FR:
-        return 'eInvoicing - France PPF'
-      default:
-        return type
+  const getServiceTypeLabel = (service: {type: string; subType?: string}): string => {
+    if (service.type === EINV_SERVICE_TYPE && service.subType) {
+      switch (service.subType) {
+        case EINV_SUB_TYPES.DIRECT:
+          return 'eInvoice - Direct'
+        case EINV_SUB_TYPES.PEPPOL:
+          return 'eInvoice - Peppol'
+        case EINV_SUB_TYPES.PPF_FR:
+          return 'eInvoice - France PPF'
+        default:
+          return `eInvoice - ${service.subType}`
+      }
     }
+    return service.type
   }
 
   // Build tabs array
@@ -878,7 +912,7 @@ const ShowIdentifierDetails: FC = (): ReactElement => {
                 <div className={style.itemCardHeader}>
                   <div className={`${style.itemCardAccent} ${isEInvoicingServiceType(service.type) ? style.itemCardAccentSuccess : ''}`} />
                   <div className={style.itemCardInfo}>
-                    <div className={style.itemCardType}>{getServiceTypeLabel(service.type)}</div>
+                    <div className={style.itemCardType}>{getServiceTypeLabel(service)}</div>
                     <div className={style.itemCardTitle}>{service.id}</div>
                   </div>
                   <div className={style.itemCardActions}>
@@ -911,10 +945,10 @@ const ShowIdentifierDetails: FC = (): ReactElement => {
                     <span className={style.itemCardFieldLabel}>{translate('identifier_details_endpoint', 'Endpoint')}</span>
                     <span className={style.itemCardFieldValue}>{service.serviceEndpoint}</span>
                   </div>
-                  {service.einvoice && (
+                  {service.eInvoice && service.eInvoice.length > 0 && (
                     <div className={style.itemCardField}>
                       <span className={style.itemCardFieldLabel}>{translate('identifier_details_entity_name', 'Entity Name')}</span>
-                      <span className={style.itemCardFieldValue}>{service.einvoice.entityName || '-'}</span>
+                      <span className={style.itemCardFieldValue}>{service.eInvoice[0].entityName || '-'}</span>
                     </div>
                   )}
                 </div>
@@ -1141,7 +1175,7 @@ const ShowIdentifierDetails: FC = (): ReactElement => {
                 <div className={`${style.modalAccent} ${isEInvoicingServiceType(selectedServiceDetail.type) ? style.modalAccentSuccess : ''}`} />
                 <div>
                   <div className={style.modalTitle}>{selectedServiceDetail.id}</div>
-                  <div className={style.modalSubtitle}>{getServiceTypeLabel(selectedServiceDetail.type)}</div>
+                  <div className={style.modalSubtitle}>{getServiceTypeLabel(selectedServiceDetail)}</div>
                 </div>
               </div>
               <button className={style.modalClose} onClick={() => setSelectedServiceDetail(null)}>
@@ -1174,103 +1208,88 @@ const ShowIdentifierDetails: FC = (): ReactElement => {
                 )}
               </div>
 
-              {selectedServiceDetail.einvoice && (
-                <div className={style.modalSection}>
-                  <div className={style.modalSectionTitle}>{translate('identifier_details_einvoice_config', 'eInvoicing Configuration')}</div>
-                  {selectedServiceDetail.einvoice.entityName && (
-                    <div className={style.modalField}>
-                      <span className={style.modalFieldLabel}>{translate('identifier_details_entity_name', 'Entity Name')}</span>
-                      <span className={style.modalFieldValue}>{selectedServiceDetail.einvoice.entityName}</span>
-                    </div>
-                  )}
-                  {selectedServiceDetail.einvoice.country && (
-                    <div className={style.modalField}>
-                      <span className={style.modalFieldLabel}>{translate('identifier_details_country', 'Country')}</span>
-                      <span className={style.modalFieldValue}>{selectedServiceDetail.einvoice.country}</span>
-                    </div>
-                  )}
-                  {selectedServiceDetail.einvoice.vct && (
-                    <div className={style.modalField}>
-                      <span className={style.modalFieldLabel}>{translate('identifier_details_vct', 'Verifiable Credential Type')}</span>
-                      <span className={style.modalFieldValue}>{selectedServiceDetail.einvoice.vct}</span>
-                    </div>
-                  )}
-                  {selectedServiceDetail.einvoice.inboxName && (
-                    <div className={style.modalField}>
-                      <span className={style.modalFieldLabel}>{translate('identifier_details_inbox_name', 'Inbox Name')}</span>
-                      <span className={style.modalFieldValue}>{selectedServiceDetail.einvoice.inboxName}</span>
-                    </div>
-                  )}
-                  {selectedServiceDetail.einvoice.folderName && (
-                    <div className={style.modalField}>
-                      <span className={style.modalFieldLabel}>{translate('identifier_details_folder_name', 'Folder Name')}</span>
-                      <span className={style.modalFieldValue}>{selectedServiceDetail.einvoice.folderName}</span>
-                    </div>
-                  )}
-                  {selectedServiceDetail.einvoice.transportType && (
-                    <div className={style.modalField}>
-                      <span className={style.modalFieldLabel}>{translate('identifier_details_transport_type', 'Transport Type')}</span>
-                      <span className={style.modalFieldValue}>{selectedServiceDetail.einvoice.transportType}</span>
-                    </div>
-                  )}
-                  {selectedServiceDetail.einvoice.documentIdentifiers && selectedServiceDetail.einvoice.documentIdentifiers.length > 0 && (
-                    <div className={style.modalField}>
-                      <span className={style.modalFieldLabel}>{translate('identifier_details_document_identifiers', 'Document Identifiers')}</span>
-                      <span className={style.modalFieldValue}>{selectedServiceDetail.einvoice.documentIdentifiers.join(', ')}</span>
-                    </div>
-                  )}
-                  {selectedServiceDetail.einvoice.processIdentifiers && selectedServiceDetail.einvoice.processIdentifiers.length > 0 && (
-                    <div className={style.modalField}>
-                      <span className={style.modalFieldLabel}>{translate('identifier_details_process_identifiers', 'Process Identifiers')}</span>
-                      <span className={style.modalFieldValue}>{selectedServiceDetail.einvoice.processIdentifiers.join(', ')}</span>
-                    </div>
-                  )}
-                  {/* PEPPOL-specific fields */}
-                  {selectedServiceDetail.einvoice.peppolParticipantId && (
-                    <div className={style.modalField}>
-                      <span className={style.modalFieldLabel}>{translate('identifier_details_peppol_participant_id', 'PEPPOL Participant ID')}</span>
-                      <span className={style.modalFieldValue}>{selectedServiceDetail.einvoice.peppolParticipantId}</span>
-                    </div>
-                  )}
-                  {selectedServiceDetail.einvoice.peppolSmpUrl && (
-                    <div className={style.modalField}>
-                      <span className={style.modalFieldLabel}>{translate('identifier_details_peppol_smp_url', 'PEPPOL SMP URL')}</span>
-                      <span className={style.modalFieldValue}>{selectedServiceDetail.einvoice.peppolSmpUrl}</span>
-                    </div>
-                  )}
-                  {selectedServiceDetail.einvoice.peppolAs4Endpoint && (
-                    <div className={style.modalField}>
-                      <span className={style.modalFieldLabel}>{translate('identifier_details_peppol_as4_endpoint', 'PEPPOL AS4 Endpoint')}</span>
-                      <span className={style.modalFieldValue}>{selectedServiceDetail.einvoice.peppolAs4Endpoint}</span>
-                    </div>
-                  )}
-                  {/* PPF France-specific fields */}
-                  {selectedServiceDetail.einvoice.ppfPlatformId && (
-                    <div className={style.modalField}>
-                      <span className={style.modalFieldLabel}>{translate('identifier_details_ppf_platform_id', 'PPF Platform ID')}</span>
-                      <span className={style.modalFieldValue}>{selectedServiceDetail.einvoice.ppfPlatformId}</span>
-                    </div>
-                  )}
-                  {selectedServiceDetail.einvoice.ppfRecipientIds && selectedServiceDetail.einvoice.ppfRecipientIds.length > 0 && (
-                    <div className={style.modalField}>
-                      <span className={style.modalFieldLabel}>{translate('identifier_details_ppf_recipient_ids', 'PPF Recipient IDs')}</span>
-                      <span className={style.modalFieldValue}>{selectedServiceDetail.einvoice.ppfRecipientIds.join(', ')}</span>
-                    </div>
-                  )}
-                  {selectedServiceDetail.einvoice.ppfMode && (
-                    <div className={style.modalField}>
-                      <span className={style.modalFieldLabel}>{translate('identifier_details_ppf_mode', 'PPF Mode')}</span>
-                      <span className={style.modalFieldValue}>{selectedServiceDetail.einvoice.ppfMode}</span>
-                    </div>
-                  )}
-                  {selectedServiceDetail.einvoice.ppfApiEndpoint && (
-                    <div className={style.modalField}>
-                      <span className={style.modalFieldLabel}>{translate('identifier_details_ppf_api_endpoint', 'PPF API Endpoint')}</span>
-                      <span className={style.modalFieldValue}>{selectedServiceDetail.einvoice.ppfApiEndpoint}</span>
-                    </div>
-                  )}
-                </div>
-              )}
+              {selectedServiceDetail.eInvoice && selectedServiceDetail.eInvoice.length > 0 && (() => {
+                const eInvoiceItem = selectedServiceDetail.eInvoice![0]
+                return (
+                  <div className={style.modalSection}>
+                    <div className={style.modalSectionTitle}>{translate('identifier_details_einvoice_config', 'eInvoicing Configuration')}</div>
+                    {eInvoiceItem.entityName && (
+                      <div className={style.modalField}>
+                        <span className={style.modalFieldLabel}>{translate('identifier_details_entity_name', 'Entity Name')}</span>
+                        <span className={style.modalFieldValue}>{eInvoiceItem.entityName}</span>
+                      </div>
+                    )}
+                    {eInvoiceItem.country && (
+                      <div className={style.modalField}>
+                        <span className={style.modalFieldLabel}>{translate('identifier_details_country', 'Country')}</span>
+                        <span className={style.modalFieldValue}>{eInvoiceItem.country}</span>
+                      </div>
+                    )}
+                    {eInvoiceItem.transportType && (
+                      <div className={style.modalField}>
+                        <span className={style.modalFieldLabel}>{translate('identifier_details_transport_type', 'Transport Type')}</span>
+                        <span className={style.modalFieldValue}>{eInvoiceItem.transportType}</span>
+                      </div>
+                    )}
+                    {eInvoiceItem.documentIdentifiers && eInvoiceItem.documentIdentifiers.length > 0 && (
+                      <div className={style.modalField}>
+                        <span className={style.modalFieldLabel}>{translate('identifier_details_document_identifiers', 'Document Identifiers')}</span>
+                        <span className={style.modalFieldValue}>{eInvoiceItem.documentIdentifiers.join(', ')}</span>
+                      </div>
+                    )}
+                    {eInvoiceItem.processIdentifiers && eInvoiceItem.processIdentifiers.length > 0 && (
+                      <div className={style.modalField}>
+                        <span className={style.modalFieldLabel}>{translate('identifier_details_process_identifiers', 'Process Identifiers')}</span>
+                        <span className={style.modalFieldValue}>{eInvoiceItem.processIdentifiers.join(', ')}</span>
+                      </div>
+                    )}
+                    {/* PEPPOL-specific fields */}
+                    {eInvoiceItem.peppolParticipantId && (
+                      <div className={style.modalField}>
+                        <span className={style.modalFieldLabel}>{translate('identifier_details_peppol_participant_id', 'PEPPOL Participant ID')}</span>
+                        <span className={style.modalFieldValue}>{eInvoiceItem.peppolParticipantId}</span>
+                      </div>
+                    )}
+                    {eInvoiceItem.peppolSmpUrl && (
+                      <div className={style.modalField}>
+                        <span className={style.modalFieldLabel}>{translate('identifier_details_peppol_smp_url', 'PEPPOL SMP URL')}</span>
+                        <span className={style.modalFieldValue}>{eInvoiceItem.peppolSmpUrl}</span>
+                      </div>
+                    )}
+                    {eInvoiceItem.peppolAs4Endpoint && (
+                      <div className={style.modalField}>
+                        <span className={style.modalFieldLabel}>{translate('identifier_details_peppol_as4_endpoint', 'PEPPOL AS4 Endpoint')}</span>
+                        <span className={style.modalFieldValue}>{eInvoiceItem.peppolAs4Endpoint}</span>
+                      </div>
+                    )}
+                    {/* PPF France-specific fields */}
+                    {eInvoiceItem.ppfPlatformId && (
+                      <div className={style.modalField}>
+                        <span className={style.modalFieldLabel}>{translate('identifier_details_ppf_platform_id', 'PPF Platform ID')}</span>
+                        <span className={style.modalFieldValue}>{eInvoiceItem.ppfPlatformId}</span>
+                      </div>
+                    )}
+                    {eInvoiceItem.ppfRecipientIds && (
+                      <div className={style.modalField}>
+                        <span className={style.modalFieldLabel}>{translate('identifier_details_ppf_recipient_ids', 'PPF Recipient IDs')}</span>
+                        <span className={style.modalFieldValue}>{eInvoiceItem.ppfRecipientIds}</span>
+                      </div>
+                    )}
+                    {eInvoiceItem.ppfMode && (
+                      <div className={style.modalField}>
+                        <span className={style.modalFieldLabel}>{translate('identifier_details_ppf_mode', 'PPF Mode')}</span>
+                        <span className={style.modalFieldValue}>{eInvoiceItem.ppfMode}</span>
+                      </div>
+                    )}
+                    {eInvoiceItem.ppfApiEndpoint && (
+                      <div className={style.modalField}>
+                        <span className={style.modalFieldLabel}>{translate('identifier_details_ppf_api_endpoint', 'PPF API Endpoint')}</span>
+                        <span className={style.modalFieldValue}>{eInvoiceItem.ppfApiEndpoint}</span>
+                      </div>
+                    )}
+                  </div>
+                )
+              })()}
             </div>
             <div className={style.modalFooter}>
               <button className={style.modalCloseButton} onClick={() => setSelectedServiceDetail(null)}>

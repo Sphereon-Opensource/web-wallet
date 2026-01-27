@@ -2,19 +2,25 @@ import React, {FC, ReactElement} from 'react'
 import {useTranslate} from '@refinedev/core'
 import {ButtonIcon} from '@sphereon/ui-components.core'
 import {FormView, PrimaryButton} from '@sphereon/ui-components.ssi-react'
-import addServiceEndpointSchema from '../../../../src/schemas/data/addServiceEndpointSchema.json' assert {type: 'json'}
+import {JsonSchema} from '@jsonforms/core'
+import addServiceEndpointSchemaJson from '../../../../src/schemas/data/addServiceEndpointSchema.json' assert {type: 'json'}
 import addServiceEndpointUISchema from '../../../../src/schemas/ui/addServiceEndpointUISchema.json' assert {type: 'json'}
+
+// Cast JSON schema to JsonSchema type to satisfy TypeScript's strict type checking
+const addServiceEndpointSchema = addServiceEndpointSchemaJson as unknown as JsonSchema
 import SelectionField from '@components/fields/SelectionField'
 import {useIdentifierCreateOutletContext} from '@typings/machine/identifiers/create'
 import {useIdentifiersEditContext} from '@typings/machine/identifiers/edit'
 import style from './index.module.css'
-import {IdentifierServiceEndpoint, EInvoiceServiceData} from '@typings'
+import {IdentifierServiceEndpoint, EInvoiceServiceData, EInvoiceDataItem} from '@typings'
 import {
-  EINV_SERVICE_TYPES,
+  EINV_SERVICE_TYPE,
+  EINV_SUB_TYPES,
   isEInvoicingServiceType,
+  isEInvoicingSubType,
   getEInvoicingDefaults,
   generateInboxEndpoint,
-  EInvServiceType,
+  EInvSubType,
 } from '../../../constants/eInvoicingDefaults'
 import {getAgent, getAgentBaseUrl} from '@agent'
 
@@ -122,45 +128,27 @@ const CreateIdentifierAddServiceEndpointContent: FC<Props> = ({mode}): ReactElem
   }
 
   /**
-   * Build the eInvoice data object for eInvoicing services
+   * Build the eInvoice data item for the eInvoice array in the service endpoint
    */
-  const buildEInvoiceData = (data: Record<string, unknown>, serviceType: EInvServiceType): EInvoiceServiceData | null => {
-    const defaults = getEInvoicingDefaults(serviceType)
+  const buildEInvoiceDataItem = (data: Record<string, unknown>, subType: EInvSubType): EInvoiceDataItem | null => {
+    const defaults = getEInvoicingDefaults(subType)
     if (!defaults) {
       return null
     }
 
-    // Get inbox and folder names with defaults
-    // inboxName defaults to "einvoices"
-    // folderName defaults to serviceId (strip # prefix if present)
-    const serviceId = data.id as string
-    const inboxName = (data.inboxName as string) || 'einvoices'
-    const folderName = (data.folderName as string) || serviceId.replace(/^#/, '')
-
-    // Use the DID's web hostname for the endpoint URL (this is the public URL that others will call)
-    const baseUrl = getServiceEndpointBaseUrl()
-    const endpoint = generateInboxEndpoint(baseUrl, inboxName, folderName)
-
-    const baseData: EInvoiceServiceData = {
-      vct: defaults.vct,
+    const baseData: EInvoiceDataItem = {
       entityName: data.entityName as string,
       country: data.country as string,
       documentIdentifiers: [...defaults.documentIdentifiers],
       processIdentifiers: [...defaults.processIdentifiers],
       transportType: defaults.transportType,
-      // Internal inbox configuration (not exposed in DID document)
-      inboxName,
-      folderName,
     }
 
-    switch (serviceType) {
-      case EINV_SERVICE_TYPES.DIRECT:
-        return {
-          ...baseData,
-          endpoint,
-        }
+    switch (subType) {
+      case EINV_SUB_TYPES.DIRECT:
+        return baseData
 
-      case EINV_SERVICE_TYPES.PEPPOL:
+      case EINV_SUB_TYPES.PEPPOL:
         return {
           ...baseData,
           peppolParticipantId: data.peppolParticipantId as string,
@@ -168,7 +156,7 @@ const CreateIdentifierAddServiceEndpointContent: FC<Props> = ({mode}): ReactElem
           ...(data.peppolAs4Endpoint ? {peppolAs4Endpoint: data.peppolAs4Endpoint as string} : {}),
         }
 
-      case EINV_SERVICE_TYPES.PPF_FR:
+      case EINV_SUB_TYPES.PPF_FR:
         // Parse comma-separated recipient IDs into an array
         const recipientIdsStr = data.ppfRecipientIds as string
         const ppfRecipientIds = recipientIdsStr
@@ -188,6 +176,27 @@ const CreateIdentifierAddServiceEndpointContent: FC<Props> = ({mode}): ReactElem
 
       default:
         return null
+    }
+  }
+
+  /**
+   * Build the internal eInvoice service data (includes inbox configuration)
+   */
+  const buildInternalServiceData = (data: Record<string, unknown>, subType: EInvSubType): EInvoiceServiceData | null => {
+    const dataItem = buildEInvoiceDataItem(data, subType)
+    if (!dataItem) {
+      return null
+    }
+
+    // Get inbox and folder names with defaults
+    const serviceId = data.id as string
+    const inboxName = (data.inboxName as string) || 'einvoices'
+    const folderName = (data.folderName as string) || serviceId.replace(/^#/, '')
+
+    return {
+      ...dataItem,
+      inboxName,
+      folderName,
     }
   }
 
@@ -249,25 +258,32 @@ const CreateIdentifierAddServiceEndpointContent: FC<Props> = ({mode}): ReactElem
     const data = serviceEndpointData.data
     const serviceType = data.type as string
 
-    // If this is an eInvoicing service type, ensure the DCQL definition exists
-    if (isEInvoicingServiceType(serviceType)) {
-      await ensureEInvoiceDcqlDefinition()
-    }
-
     let newServiceEndpoint: IdentifierServiceEndpoint
 
-    // Check if this is an eInvoicing service type
+    // Check if this is an eInvoicing service type (type === "eInvoice")
     if (isEInvoicingServiceType(serviceType)) {
-      const defaults = getEInvoicingDefaults(serviceType)
-      const einvoiceData = buildEInvoiceData(data, serviceType)
+      const subType = data.subType as EInvSubType
+      if (!isEInvoicingSubType(subType)) {
+        console.error('Invalid eInvoicing subType:', subType)
+        return
+      }
+
+      // Ensure the DCQL definition exists
+      await ensureEInvoiceDcqlDefinition()
+
+      const defaults = getEInvoicingDefaults(subType)
+      const eInvoiceDataItem = buildEInvoiceDataItem(data, subType)
+      const internalData = buildInternalServiceData(data, subType)
       const endpointUrl = getEInvoicingEndpointUrl(data)
 
       newServiceEndpoint = {
         id: data.id as string,
-        type: serviceType,
+        type: EINV_SERVICE_TYPE, // Always "eInvoice"
         serviceEndpoint: endpointUrl,
         description: defaults?.description,
-        einvoice: einvoiceData || undefined,
+        subType: subType, // "Direct", "Peppol", "PPF-FR"
+        eInvoice: eInvoiceDataItem ? [eInvoiceDataItem] : undefined, // Capital I, array
+        _internal: internalData || undefined, // For inbox creation
       }
     } else {
       // Use the standard serviceEndpoint value
@@ -279,7 +295,6 @@ const CreateIdentifierAddServiceEndpointContent: FC<Props> = ({mode}): ReactElem
     }
 
     onSetServiceEndpoints(prevServiceEndpoints => [...prevServiceEndpoints, newServiceEndpoint])
-    // TODO WALL-245 fix
 
     // Reset form by triggering change with empty data
     await onServiceEndpointChange({data: undefined, errors: []})
@@ -288,7 +303,7 @@ const CreateIdentifierAddServiceEndpointContent: FC<Props> = ({mode}): ReactElem
 
   const formatServiceEndpointValue = (serviceEndpoint: IdentifierServiceEndpoint) => {
     // For eInvoicing, show the endpoint URL
-    if (serviceEndpoint.einvoice) {
+    if (serviceEndpoint.eInvoice) {
       return serviceEndpoint.serviceEndpoint
     }
 
@@ -299,18 +314,21 @@ const CreateIdentifierAddServiceEndpointContent: FC<Props> = ({mode}): ReactElem
       .join(', ')}]`
   }
 
-  const getServiceEndpointTypeLabel = (type: string): string => {
-    // Provide user-friendly labels for eInvoicing types
-    switch (type) {
-      case EINV_SERVICE_TYPES.DIRECT:
-        return 'eInvoicing - Direct'
-      case EINV_SERVICE_TYPES.PEPPOL:
-        return 'eInvoicing - PEPPOL'
-      case EINV_SERVICE_TYPES.PPF_FR:
-        return 'eInvoicing - France PPF'
-      default:
-        return type
+  const getServiceEndpointTypeLabel = (serviceEndpoint: IdentifierServiceEndpoint): string => {
+    // For eInvoicing services, show type with subType
+    if (serviceEndpoint.type === EINV_SERVICE_TYPE && serviceEndpoint.subType) {
+      switch (serviceEndpoint.subType) {
+        case EINV_SUB_TYPES.DIRECT:
+          return 'eInvoice - Direct'
+        case EINV_SUB_TYPES.PEPPOL:
+          return 'eInvoice - Peppol'
+        case EINV_SUB_TYPES.PPF_FR:
+          return 'eInvoice - France PPF'
+        default:
+          return `eInvoice - ${serviceEndpoint.subType}`
+      }
     }
+    return serviceEndpoint.type
   }
 
   const getServiceEndpointsElements = (): Array<ReactElement> => {
@@ -322,7 +340,7 @@ const CreateIdentifierAddServiceEndpointContent: FC<Props> = ({mode}): ReactElem
       const details = [
         {
           title: translate('create_identifier_service_endpoints_card_service_endpoint_type_label'),
-          value: getServiceEndpointTypeLabel(serviceEndpoint.type),
+          value: getServiceEndpointTypeLabel(serviceEndpoint),
         },
         {
           title: translate('create_identifier_service_endpoints_card_service_endpoint_label'),
@@ -338,20 +356,23 @@ const CreateIdentifierAddServiceEndpointContent: FC<Props> = ({mode}): ReactElem
         })
       }
 
-      // Add eInvoicing-specific details if applicable
-      if (serviceEndpoint.einvoice) {
+      // Add eInvoicing-specific details if applicable (from eInvoice array)
+      if (serviceEndpoint.eInvoice && serviceEndpoint.eInvoice.length > 0) {
+        const eInvoiceData = serviceEndpoint.eInvoice[0]
         details.push({
           title: translate('create_identifier_service_endpoints_entity_name_label') || 'Entity Name',
-          value: serviceEndpoint.einvoice.entityName,
+          value: eInvoiceData.entityName,
         })
         details.push({
           title: translate('create_identifier_service_endpoints_country_label') || 'Country',
-          value: serviceEndpoint.einvoice.country,
+          value: eInvoiceData.country,
         })
-        details.push({
-          title: translate('create_identifier_service_endpoints_vct_label') || 'VCT',
-          value: serviceEndpoint.einvoice.vct,
-        })
+        if (serviceEndpoint.subType) {
+          details.push({
+            title: translate('create_identifier_service_endpoints_subtype_label') || 'SubType',
+            value: serviceEndpoint.subType,
+          })
+        }
       }
 
       return <SelectionField key={`${serviceEndpoint.id}-${index}`} value={serviceEndpoint.id} details={details} onRemove={onRemove} />

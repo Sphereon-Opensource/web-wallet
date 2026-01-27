@@ -68,6 +68,7 @@ import {
 import { VcApiServer } from '@sphereon/ssi-sdk.w3c-vc-api'
 import { DidWebServer, UniResolverApiServer } from '@sphereon/ssi-sdk.uni-resolver-registrar-api'
 import { DID_PREFIX, DIDMethods, TAgentTypes } from './types'
+import { createDidDocumentEnricherMiddleware } from './middleware/didDocumentEnricher'
 import { StatuslistManagementApiServer } from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
 import { ContactManagerApiServer } from '@sphereon/ssi-sdk.contact-manager-rest-api'
 import { ContactManager } from '@sphereon/ssi-sdk.contact-manager'
@@ -367,6 +368,15 @@ if (!cliMode) {
  * Build a common express REST API configuration first, used by the exposed Routers/Services below
  */
 const expressSupport = expressBuilder().build({ startListening: false })
+
+/**
+ * Add middleware to enrich DID documents with service metadata.
+ * This ensures eInvoice properties (subType, eInvoice array) are included
+ * in the served DID documents.
+ */
+if (IS_INBOX_ENABLED) {
+  expressSupport.express.use(createDidDocumentEnricherMiddleware(dbConnection))
+}
 
 /**
  * Authentication and authorization settings

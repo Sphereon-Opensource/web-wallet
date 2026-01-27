@@ -76,12 +76,25 @@ export async function getDefaultDID(): Promise<string | undefined> {
       )
     }
 
-    const id: IIdentifier | undefined = ids.find((value: IIdentifier) => value.did !== 'did:web:localhost') // FIXME how to select which credential when there are multiple?
+    // Prefer DIDs that have keys (can be used for signing) and are not localhost
+    const idWithKeys: IIdentifier | undefined = ids.find(
+      (value: IIdentifier) => value.did !== 'did:web:localhost' && value.keys && value.keys.length > 0
+    )
+
+    if (idWithKeys) {
+      console.log(`[DID] Selected default DID with ${idWithKeys.keys.length} key(s): ${idWithKeys.did}`)
+      return idWithKeys.did
+    }
+
+    // Fallback to any non-localhost DID (may not have keys for signing)
+    const id: IIdentifier | undefined = ids.find((value: IIdentifier) => value.did !== 'did:web:localhost')
     if (id === undefined) {
       return Promise.reject(
         Error('Could not find a suitable default did identifier. (did:web:localhost is not suitable because RSA keys are not supported)'),
       )
     }
+
+    console.warn(`[DID] Warning: Selected DID ${id.did} has no keys - signing operations may fail`)
     return id.did
   })
 }
@@ -180,7 +193,7 @@ export async function getOrCreateDIDWebFromEnv(): Promise<IIdentifierConfigResul
  * This enables the DID to receive eInvoices via the inbox endpoint.
  *
  * Services added:
- * - urn:org:fides:einv-direct:1 - Direct eInvoicing capability
+ * - type: "eInvoice", subType: "Direct" - Direct eInvoicing capability
  */
 export async function addEInvoicingServicesToDID(did: string, baseUrl?: string): Promise<void> {
   const identifier = await getIdentifier(did)
@@ -192,9 +205,9 @@ export async function addEInvoicingServicesToDID(did: string, baseUrl?: string):
   // Determine the base URL for the inbox endpoint
   const inboxBaseUrl = baseUrl || process.env.OID4VP_AGENT_BASE_URI || `http://localhost:${process.env.PORT ?? 5000}`
 
-  // Check if eInvoicing service already exists
+  // Check if eInvoicing service already exists (check both old and new formats)
   const existingService = identifier.services?.find(
-    (s) => s.type === 'urn:org:fides:einv-direct:1' || s.type === 'EInvoiceInbox'
+    (s) => s.type === 'eInvoice' || s.type === 'urn:org:fides:einv-direct:1' || s.type === 'einv-direct' || s.type === 'EInvoiceInbox'
   )
 
   if (existingService) {
@@ -202,18 +215,24 @@ export async function addEInvoicingServicesToDID(did: string, baseUrl?: string):
     return
   }
 
-  // Add the Direct eInvoicing capability service
+  // Add the Direct eInvoicing capability service using new format
   try {
     await agent.didManagerAddService({
       did,
       service: {
         id: `${did}#einvoice-direct`,
-        type: 'urn:org:fides:einv-direct:1',
-        serviceEndpoint: {
-          endpoint: `${inboxBaseUrl}/inbox/invoices/direct-inbox`,
-          vct: ['urn:org:fides:einvoice:1'],
-        },
-      },
+        type: 'eInvoice',
+        serviceEndpoint: `${inboxBaseUrl}/inbox/invoices/direct-inbox`,
+        // Additional properties stored in metadata by Veramo
+        subType: 'Direct',
+        eInvoice: [{
+          entityName: 'Default',
+          country: 'NL',
+          documentIdentifiers: ['urn:oasis:names:specification:ubl:schema:xsd:Invoice-2'],
+          processIdentifiers: ['urn:fdc:peppol.eu:2017:poacc:billing:01:1.0'],
+          transportType: 'HTTP',
+        }],
+      } as any,
     })
     console.log(`[eInvoice] Added Direct eInvoicing service to DID ${did}`)
   } catch (error: any) {

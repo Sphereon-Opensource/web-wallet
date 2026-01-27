@@ -4,6 +4,7 @@ import { CreateInboxAndEInvoice1736780400000 } from './postgres/1736780400000-Cr
 import { CleanupWorkflowTables1736780300000 } from './postgres/1736780300000-CleanupWorkflowTables'
 import { FixUpdateCredentialDesignFunction1737700000000 } from './postgres/1737700000000-FixUpdateCredentialDesignFunction'
 import { SeedCredentialIssuanceWizard1764000000000 } from './postgres/1764000000000-SeedCredentialIssuanceWizard'
+import { MigrateEInvoiceServiceFormat1738000000000 } from './postgres/1738000000000-MigrateEInvoiceServiceFormat'
 import { DB_TYPE, IS_WALLET_ENABLED, IS_INBOX_ENABLED } from '../../environment-vars'
 
 if (!DB_TYPE.includes('postgres')) {
@@ -18,7 +19,8 @@ if (!DB_TYPE.includes('postgres')) {
 export const IssuerMigrations = [CreateWebWallet1700163641000, CleanupWorkflowTables1736780300000, AddCredentialDesignBranding1763717017000, FixUpdateCredentialDesignFunction1737700000000, SeedCredentialIssuanceWizard1764000000000]
 
 // Inbox migrations - run when inbox is enabled
-export const InboxMigrations = IS_INBOX_ENABLED ? [CreateInboxAndEInvoice1736780400000] : []
+// MigrateEInvoiceServiceFormat migrates old service types (einv-direct, etc.) to new format (type: eInvoice, subType: Direct)
+export const InboxMigrations = IS_INBOX_ENABLED ? [CreateInboxAndEInvoice1736780400000, MigrateEInvoiceServiceFormat1738000000000] : []
 
 // Legacy export for backwards compatibility
 export const WorkflowMigrations = IS_WALLET_ENABLED ? IssuerMigrations : IssuerMigrations

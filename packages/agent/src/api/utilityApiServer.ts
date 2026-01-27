@@ -7,6 +7,7 @@
  * - Credential references (credentials associated with assets)
  *
  * Endpoints:
+ * - GET /api/config - Get comprehensive agent configuration (public URL, paths, features)
  * - GET /api/config/service-endpoint-base-url - Get the base URL for service endpoints
  * - POST /api/party-relationships - Create party relationship
  * - GET /api/party-relationships - List relationships for a party
@@ -23,7 +24,19 @@ import { ExpressSupport } from '@sphereon/ssi-express-support'
 import { DataSource } from 'typeorm'
 import { v4 as uuidv4 } from 'uuid'
 import { TAgentTypes } from '../types'
-import { EXTERNAL_HOSTNAME, EXTERNAL_PORT, AGENT_BASE_URI } from '../environment-vars'
+import {
+  COMPUTED_PUBLIC_BASE_URL,
+  VC_API_BASE_PATH,
+  DID_API_BASE_PATH,
+  ASSET_PUBLIC_BASE_PATH,
+  IS_INBOX_ENABLED,
+  IS_OID4VCI_ENABLED,
+  IS_OID4VP_ENABLED,
+  IS_VC_API_ENABLED,
+  EXTERNAL_HOSTNAME,
+  EXTERNAL_PORT,
+  AGENT_BASE_URI,
+} from '../environment-vars'
 
 export interface UtilityApiServerOptions {
   agent: TAgent<TAgentTypes>
@@ -60,6 +73,7 @@ export class UtilityApiServer {
 
   private setupRoutes(): void {
     // Configuration
+    this.router.get('/config', this.getConfig.bind(this))
     this.router.get('/config/service-endpoint-base-url', this.getServiceEndpointBaseUrl.bind(this))
 
     // Party Relationships
@@ -75,6 +89,41 @@ export class UtilityApiServer {
   }
 
   // ===== Configuration =====
+
+  /**
+   * GET /api/config
+   *
+   * Returns comprehensive configuration for the agent, including public base URL,
+   * API paths, and feature flags. This is the single source of truth for clients
+   * to determine how to communicate with the agent.
+   *
+   * Response:
+   * - publicBaseUrl: The public-facing base URL for this agent
+   * - paths: Object with API path prefixes (vcApi, didApi, oid4vci, oid4vp, assets)
+   * - features: Object with feature flags (inbox, oid4vci, oid4vp, vcApi)
+   */
+  private async getConfig(_req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      res.json({
+        publicBaseUrl: COMPUTED_PUBLIC_BASE_URL,
+        paths: {
+          vcApi: VC_API_BASE_PATH,
+          didApi: DID_API_BASE_PATH,
+          oid4vci: '/oid4vci',
+          oid4vp: '/oid4vp',
+          assets: ASSET_PUBLIC_BASE_PATH,
+        },
+        features: {
+          inbox: IS_INBOX_ENABLED,
+          oid4vci: IS_OID4VCI_ENABLED,
+          oid4vp: IS_OID4VP_ENABLED,
+          vcApi: IS_VC_API_ENABLED,
+        },
+      })
+    } catch (error) {
+      next(error)
+    }
+  }
 
   /**
    * GET /api/config/service-endpoint-base-url

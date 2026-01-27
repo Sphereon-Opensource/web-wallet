@@ -4,14 +4,22 @@
     "type": {
       "type": "string",
       "oneOf": [
-        {"const": "einv-direct", "title": "eInvoicing - Direct"},
-        {"const": "einv-peppol", "title": "eInvoicing - PEPPOL"},
-        {"const": "einv-ppf-fr", "title": "eInvoicing - France PPF"},
+        {"const": "eInvoice", "title": "eInvoicing"},
         {"const": "linkedDomains", "title": "Linked domains"},
         {"const": "didCommMessaging", "title": "DIDComm messaging"},
         {"const": "credentialRegistry", "title": "Credential registry"},
         {"const": "openID4VCI", "title": "OpenID for verifiable credential issuance"},
         {"const": "openID4VP", "title": "OpenID for verifiable presentation"}
+      ]
+    },
+    "subType": {
+      "type": "string",
+      "title": "eInvoicing Network",
+      "description": "The eInvoicing network type",
+      "oneOf": [
+        {"const": "Direct", "title": "Direct (HTTP)"},
+        {"const": "Peppol", "title": "Peppol"},
+        {"const": "PPF-FR", "title": "France PPF"}
       ]
     },
     "id": {
@@ -101,21 +109,22 @@
     {
       "if": {
         "properties": {
-          "type": {"enum": ["einv-direct", "einv-peppol", "einv-ppf-fr"]}
+          "type": {"const": "eInvoice"}
         },
         "required": ["type"]
       },
       "then": {
-        "required": ["entityName", "country"]
+        "required": ["subType", "entityName", "country"]
       },
       "else": {}
     },
     {
       "if": {
         "properties": {
-          "type": {"const": "einv-peppol"}
+          "type": {"const": "eInvoice"},
+          "subType": {"const": "Peppol"}
         },
-        "required": ["type"]
+        "required": ["type", "subType"]
       },
       "then": {
         "required": ["peppolParticipantId"]
@@ -125,9 +134,10 @@
     {
       "if": {
         "properties": {
-          "type": {"const": "einv-ppf-fr"}
+          "type": {"const": "eInvoice"},
+          "subType": {"const": "PPF-FR"}
         },
-        "required": ["type"]
+        "required": ["type", "subType"]
       },
       "then": {
         "required": ["ppfPlatformId", "ppfRecipientIds", "ppfMode"]

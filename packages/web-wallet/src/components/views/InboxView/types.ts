@@ -26,8 +26,8 @@ export interface InboxEvidence {
 // Status type for inbox items
 export type InboxItemStatus = 'pending' | 'verified' | 'invalid'
 
-// Service type for inbox folders
-export type InboxServiceType = 'einv-direct' | 'einv-peppol' | 'einv-ppf-fr'
+// Service type for inbox folders (matches eInvoice subType values)
+export type InboxServiceType = 'Direct' | 'Peppol' | 'PPF-FR'
 
 // Inbox folder configuration
 export interface InboxFolder {
@@ -89,14 +89,14 @@ export const STATUS_TABS: StatusTabConfig[] = [
   {status: 'all', labelKey: 'einvoice_inbox_status_all', defaultLabel: 'All'},
 ]
 
-// Helper to get channel type label from serviceType
+// Helper to get channel type label from serviceType (subType)
 export const getChannelTypeLabel = (serviceType?: InboxServiceType): string | null => {
   switch (serviceType) {
-    case 'einv-direct':
+    case 'Direct':
       return 'Direct'
-    case 'einv-peppol':
+    case 'Peppol':
       return 'PEPPOL'
-    case 'einv-ppf-fr':
+    case 'PPF-FR':
       return 'PPF-FR'
     default:
       return null

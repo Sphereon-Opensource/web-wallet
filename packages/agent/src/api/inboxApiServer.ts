@@ -287,13 +287,9 @@ export class InboxApiServer extends BaseApiServer {
         clientIdPrefix: parsedClientIdPrefix,
       })
 
-      // Format receiver's client_id with prefix
-      const receiverClientId = `decentralized_identifier:${inbox.did}`
-
-      this.created(res, {
-        request_uri: requestUri,
-        client_id: receiverClientId,
-      })
+      // Return the OID4VP URI directly as plain text (as per Universal OID4VP spec)
+      // The requestUri already contains the full openid4vp:// URI
+      res.status(201).type('text/plain').send(requestUri)
     } catch (error: any) {
       console.error('[Inbox] Error initiating OID4VP flow:', error)
       next(error)

@@ -156,7 +156,7 @@ const EInvoiceReviewContent: FC = (): ReactElement => {
               <div className={style.deliveryRow}>
                 <span className={style.deliveryLabel}>{translate('einvoice_delivery_method_label', 'Delivery Method')}</span>
                 <div className={style.deliveryValue}>
-                  <span className={style.endpointBadge}>{getServiceTypeLabel(selectedEndpoint.serviceType as any)}</span>
+                  <span className={style.endpointBadge}>{getServiceTypeLabel(selectedEndpoint.subType as any)}</span>
                   {selectedEndpoint.entityName && <span className={style.endpointEntity}>{selectedEndpoint.entityName}</span>}
                   <span className={style.endpointUrl}>{getEndpointUrl(selectedEndpoint.serviceEndpoint as string | Record<string, unknown>)}</span>
                 </div>

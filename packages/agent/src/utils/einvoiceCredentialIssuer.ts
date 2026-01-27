@@ -199,14 +199,28 @@ export async function issueEInvoiceCredential(
   // Build credential subject
   const credentialSubject = buildCredentialSubject(invoiceData, subjectDid)
 
+  // Determine the holder's verification method for cnf.kid
+  // In this flow, the issuer is also the holder (we issue and present the credential)
+  // cnf.kid should reference the issuer's verification method for key binding
+  let holderKid: string | undefined
+  if (issuer.keys && issuer.keys.length > 0) {
+    const firstKey = issuer.keys[0]
+    // If kid already contains the DID, use it directly; otherwise construct the full verification method ID
+    holderKid = firstKey.kid.includes(issuer.did) ? firstKey.kid : `${issuer.did}#${firstKey.kid}`
+  }
+
   // Create the credential payload for SD-JWT
   // SD-JWT uses flat claims with vct instead of nested credentialSubject
-  // Note: 'sub' claim is important for holder binding - it identifies the credential holder (recipient)
+  // Note: 'sub' identifies the credential subject (recipient/buyer), NOT the holder
+  // The holder (who presents the credential) is the issuer in this eInvoice flow
   const credentialPayload: Record<string, unknown> = {
     vct: 'urn:org:fides:einvoice:1',
     iss: issuer.did,
     sub: subjectDid,
     iat: Math.floor(Date.now() / 1000),
+    // cnf.kid provides key binding - references the holder's verification method
+    // This allows the holder to prove they can present this credential
+    ...(holderKid && { cnf: { kid: holderKid } }),
     ...credentialSubject,
     ...additionalClaims,
   }

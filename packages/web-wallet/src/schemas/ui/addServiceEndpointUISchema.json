@@ -30,6 +30,20 @@
     },
     {
       "type": "Control",
+      "label": "eInvoicing Network *",
+      "scope": "#/properties/subType",
+      "rule": {
+        "effect": "SHOW",
+        "condition": {
+          "scope": "#/properties/type",
+          "schema": {
+            "const": "eInvoice"
+          }
+        }
+      }
+    },
+    {
+      "type": "Control",
       "label": "Entity Name *",
       "scope": "#/properties/entityName",
       "rule": {
@@ -37,7 +51,7 @@
         "condition": {
           "scope": "#/properties/type",
           "schema": {
-            "enum": ["einv-direct", "einv-peppol", "einv-ppf-fr"]
+            "const": "eInvoice"
           }
         }
       }
@@ -55,7 +69,7 @@
         "condition": {
           "scope": "#/properties/type",
           "schema": {
-            "enum": ["einv-direct", "einv-peppol", "einv-ppf-fr"]
+            "const": "eInvoice"
           }
         }
       }
@@ -73,7 +87,7 @@
         "condition": {
           "scope": "#/properties/type",
           "schema": {
-            "enum": ["einv-direct", "einv-peppol", "einv-ppf-fr"]
+            "const": "eInvoice"
           }
         }
       }
@@ -91,7 +105,7 @@
         "condition": {
           "scope": "#/properties/type",
           "schema": {
-            "enum": ["einv-direct", "einv-peppol", "einv-ppf-fr"]
+            "const": "eInvoice"
           }
         }
       }
@@ -106,9 +120,9 @@
       "rule": {
         "effect": "SHOW",
         "condition": {
-          "scope": "#/properties/type",
+          "scope": "#/properties/subType",
           "schema": {
-            "const": "einv-peppol"
+            "const": "Peppol"
           }
         }
       }
@@ -120,9 +134,9 @@
       "rule": {
         "effect": "SHOW",
         "condition": {
-          "scope": "#/properties/type",
+          "scope": "#/properties/subType",
           "schema": {
-            "const": "einv-peppol"
+            "const": "Peppol"
           }
         }
       }
@@ -134,9 +148,9 @@
       "rule": {
         "effect": "SHOW",
         "condition": {
-          "scope": "#/properties/type",
+          "scope": "#/properties/subType",
           "schema": {
-            "const": "einv-peppol"
+            "const": "Peppol"
           }
         }
       }
@@ -151,9 +165,9 @@
       "rule": {
         "effect": "SHOW",
         "condition": {
-          "scope": "#/properties/type",
+          "scope": "#/properties/subType",
           "schema": {
-            "const": "einv-ppf-fr"
+            "const": "PPF-FR"
           }
         }
       }
@@ -168,9 +182,9 @@
       "rule": {
         "effect": "SHOW",
         "condition": {
-          "scope": "#/properties/type",
+          "scope": "#/properties/subType",
           "schema": {
-            "const": "einv-ppf-fr"
+            "const": "PPF-FR"
           }
         }
       }
@@ -182,9 +196,9 @@
       "rule": {
         "effect": "SHOW",
         "condition": {
-          "scope": "#/properties/type",
+          "scope": "#/properties/subType",
           "schema": {
-            "const": "einv-ppf-fr"
+            "const": "PPF-FR"
           }
         }
       }
@@ -196,9 +210,9 @@
       "rule": {
         "effect": "SHOW",
         "condition": {
-          "scope": "#/properties/type",
+          "scope": "#/properties/subType",
           "schema": {
-            "const": "einv-ppf-fr"
+            "const": "PPF-FR"
           }
         }
       }

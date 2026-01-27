@@ -29,6 +29,7 @@ import '../app/constants'
 // initialize i18n
 import '../src/i18n/client'
 import {envManager, getEnv} from '@/src/services/env'
+import {agentConfig} from '@/src/services/agentConfig'
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   noLayout?: boolean
@@ -52,7 +53,8 @@ const _app = (props: React.PropsWithChildren<unknown>) => {
   useEffect(() => {
     const loadEnvironment = async () => {
       try {
-        await envManager.load()
+        // Load both env and agent config in parallel
+        await Promise.all([envManager.load(), agentConfig.load()])
         setEnvLoaded(true)
       } catch (err) {
         console.error('Failed to load environment:', err)

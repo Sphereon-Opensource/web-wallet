@@ -130,6 +130,33 @@ export const updateOid4vciMetadata = async (
   }
 }
 
+/**
+ * Get the list of credential configuration IDs that are available in the OID4VCI issuer metadata.
+ * This can be used to filter dropdowns to only show credentials that can actually be issued.
+ */
+export const getAvailableCredentialConfigurationIds = async (): Promise<string[]> => {
+  const issuerCorrelationId = getIssuerCorrelationId()
+  if (!issuerCorrelationId) {
+    console.warn('BROWSER_PUBLIC_ISSUER_CORRELATION_ID not set, cannot filter credential configurations')
+    return []
+  }
+
+  try {
+    const metadata = await getAgent().oid4vciStoreGetMetadata({
+      metadataType: 'issuer',
+      correlationId: issuerCorrelationId,
+    })
+
+    if (metadata?.credential_configurations_supported) {
+      return Object.keys(metadata.credential_configurations_supported)
+    }
+  } catch (e) {
+    console.warn('Failed to get OID4VCI issuer metadata for filtering:', e)
+  }
+
+  return []
+}
+
 export const removeCredentialConfigurationFromOid4vciMetadata = async (identifier: string): Promise<void> => {
   const issuerCorrelationId = getIssuerCorrelationId()
   if (!issuerCorrelationId) {

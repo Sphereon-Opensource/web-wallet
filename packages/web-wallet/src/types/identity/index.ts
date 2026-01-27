@@ -77,20 +77,13 @@ export type Tao = {
   url: string
 }
 
-// eInvoicing service data structure
-export type EInvoiceServiceData = {
-  vct: string
+// eInvoice data item stored in the eInvoice array of a service endpoint
+export type EInvoiceDataItem = {
   entityName: string
   country: string
   documentIdentifiers: string[]
   processIdentifiers: string[]
   transportType: string
-  // Internal inbox configuration (not exposed in DID document)
-  // These are stored in ServiceMetadata and used to create inbox/folder structure
-  inboxName?: string // defaults to "einvoices"
-  folderName?: string // defaults to service ID (without # prefix)
-  // Direct-specific
-  endpoint?: string
   // PEPPOL-specific
   peppolParticipantId?: string
   peppolSmpUrl?: string
@@ -102,13 +95,23 @@ export type EInvoiceServiceData = {
   ppfApiEndpoint?: string
 }
 
+// Internal eInvoice service data used during creation (includes inbox config)
+export type EInvoiceServiceData = EInvoiceDataItem & {
+  // Internal inbox configuration (not exposed in DID document)
+  inboxName?: string // defaults to "einvoices"
+  folderName?: string // defaults to service ID (without # prefix)
+}
+
 export type IdentifierServiceEndpoint = {
   id: string
-  type: string
+  type: string // "eInvoice" for eInvoicing services
   serviceEndpoint: string
   description?: string
-  // eInvoicing-specific data (optional)
-  einvoice?: EInvoiceServiceData
+  // eInvoicing-specific fields (only present when type is "eInvoice")
+  subType?: string // "Direct", "Peppol", "PPF-FR"
+  eInvoice?: EInvoiceDataItem[] // Capital I, array format
+  // Internal data for service creation (not stored in DID document)
+  _internal?: EInvoiceServiceData
 }
 
 export type IdentifierKey = {

@@ -19,7 +19,7 @@ import {
 import {DID_PREFIX} from '@sphereon/ssi-sdk-ext.did-utils'
 import {getAgent, getAgentContext, getAgentBaseUrl} from '@agent'
 import {IdentifierKey, IdentifierServiceEndpoint, KeyManagementIdentifier, KeyManagementSystem} from '@typings'
-import {isEInvoicingServiceType} from '@/src/constants/eInvoicingDefaults'
+import {isEInvoicingServiceType, EINV_SERVICE_TYPE} from '@/src/constants/eInvoicingDefaults'
 import {IIdentifier} from '@veramo/core'
 import type {EbsiAccessTokenOpts, EbsiEnvironment} from '@sphereon/ssi-sdk.ebsi-support'
 import {generateEbsiMethodSpecificId} from '@sphereon/ssi-sdk.ebsi-support'
@@ -166,11 +166,11 @@ const updateIdentifierKeys = async (did: string, currentKeys: any[], newKeys: Id
  * Creates the inbox (if it doesn't exist) and the folder within it.
  */
 const ensureInboxAndFolder = async (did: string, service: IdentifierServiceEndpoint): Promise<void> => {
-  if (!service.einvoice) return
-
+  // Use _internal data for inbox configuration, or fall back to defaults
+  const internalData = service._internal
   const agentBaseUrl = getAgentBaseUrl()
-  const inboxName = service.einvoice.inboxName || 'einvoices'
-  const folderName = service.einvoice.folderName || service.id.replace(/^#/, '')
+  const inboxName = internalData?.inboxName || 'einvoices'
+  const folderName = internalData?.folderName || service.id.split('#').pop() || service.id
 
   console.log(`[IdentifiersDataProvider] Ensuring inbox '${inboxName}' and folder '${folderName}' exist for DID ${did}`)
 
@@ -233,23 +233,38 @@ const replaceServices = async (did: string, currentServices: any[], newServices:
     console.log('updateVars.services', newServices)
     for (const service of newServices) {
       console.log(`didManagerAddService Service ID: ${service.id}`)
+
+      // Build the service object for DID document
+      // For eInvoice services, include subType and eInvoice array
+      const serviceData: Record<string, unknown> = {
+        id: service.id,
+        type: service.type,
+        serviceEndpoint: service.serviceEndpoint,
+        description: service.description,
+      }
+
+      // Add eInvoice-specific fields for the DID document
+      if (service.type === EINV_SERVICE_TYPE) {
+        if (service.subType) {
+          serviceData.subType = service.subType
+        }
+        if (service.eInvoice) {
+          serviceData.eInvoice = service.eInvoice
+        }
+      }
+
       await getAgent().didManagerAddService({
         did,
-        service: {
-          id: service.id,
-          type: service.type,
-          serviceEndpoint: service.serviceEndpoint,
-          description: service.description,
-        },
+        service: serviceData as any,
       })
 
-      // Update metadata for services with eInvoice data
-      if (service.einvoice) {
+      // Update metadata for services with internal eInvoice data
+      if (service._internal) {
         try {
           await getAgent().updateServiceMetadata({
             serviceId: service.id,
             did,
-            metadata: {einvoice: service.einvoice},
+            metadata: {eInvoice: service._internal}, // Capital I
           })
           console.log(`Updated metadata for service ${service.id}`)
         } catch (metadataError) {
@@ -292,7 +307,7 @@ export const identifiersDataProvider = (): DataProvider => ({
       return Promise.reject(Error(`Identifier with id ${id} not found`))
     }
 
-    // Enrich services with metadata (including einvoice data)
+    // Enrich services with metadata (including eInvoice data)
     const enrichedServices = await Promise.all(
       (identity.services || []).map(async (service) => {
         try {
@@ -300,8 +315,9 @@ export const identifiersDataProvider = (): DataProvider => ({
             serviceId: service.id,
             did: identity.did,
           })
-          if (metadata) {
-            return {...service, ...metadata}
+          if (metadata && metadata.eInvoice) {
+            // Store internal metadata for later use
+            return {...service, _internal: metadata.eInvoice}
           }
         } catch (error) {
           console.warn(`Failed to get metadata for service ${service.id}:`, error)
@@ -452,12 +468,12 @@ export const identifiersDataProvider = (): DataProvider => ({
     // Veramo's didManagerCreate doesn't persist custom metadata, so we need to update it separately
     if (variables.services) {
       for (const service of variables.services) {
-        if (service.einvoice) {
+        if (service._internal) {
           try {
             await getAgent().updateServiceMetadata({
               serviceId: service.id,
               did: identifier.did,
-              metadata: {einvoice: service.einvoice},
+              metadata: {eInvoice: service._internal}, // Capital I
             })
             console.log(`Updated metadata for service ${service.id}`)
           } catch (metadataError) {

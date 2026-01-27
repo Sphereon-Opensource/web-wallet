@@ -5,9 +5,8 @@
  * to find eInvoicing service endpoints.
  */
 
-import {resolver} from '@agent'
 import {getAgentBaseUrl} from '@agent/environment'
-import {EINV_SERVICE_TYPES, EInvServiceType, isEInvoicingServiceType} from '@/src/constants/eInvoicingDefaults'
+import {EINV_SERVICE_TYPE, EINV_SUB_TYPES, EInvSubType, isEInvoicingServiceType, isEInvoicingSubType} from '@/src/constants/eInvoicingDefaults'
 
 /**
  * Contact party information from the contact manager
@@ -28,14 +27,13 @@ export interface ContactParty {
  */
 export interface EInvoicingEndpoint {
   id: string
-  serviceType: EInvServiceType
+  subType: EInvSubType
   serviceEndpoint: string
   description?: string
   entityName?: string
   country?: string
-  // Additional metadata
+  // Additional metadata from eInvoice array
   metadata?: {
-    vct?: string
     documentIdentifiers?: string[]
     processIdentifiers?: string[]
     transportType?: string
@@ -65,16 +63,16 @@ export interface ResolvedRecipient {
 /**
  * Service label mapping for display
  */
-export const getServiceTypeLabel = (serviceType: EInvServiceType): string => {
-  switch (serviceType) {
-    case EINV_SERVICE_TYPES.DIRECT:
+export const getServiceTypeLabel = (subType: EInvSubType): string => {
+  switch (subType) {
+    case EINV_SUB_TYPES.DIRECT:
       return 'Direct'
-    case EINV_SERVICE_TYPES.PEPPOL:
-      return 'PEPPOL'
-    case EINV_SERVICE_TYPES.PPF_FR:
+    case EINV_SUB_TYPES.PEPPOL:
+      return 'Peppol'
+    case EINV_SUB_TYPES.PPF_FR:
       return 'France PPF'
     default:
-      return 'Unknown'
+      return subType
   }
 }
 
@@ -169,8 +167,17 @@ export async function fetchContacts(): Promise<ContactParty[]> {
  */
 export async function resolveEInvoicingEndpoints(did: string): Promise<EInvoicingEndpoint[]> {
   try {
-    // Resolve the DID document
-    const resolutionResult = await resolver.resolve(did)
+    // Resolve the DID document via the agent backend REST API (avoids CORS issues for external DIDs)
+    const agentBaseUrl = getAgentBaseUrl()
+    const encodedDid = encodeURIComponent(did)
+    const response = await fetch(`${agentBaseUrl}/did/identifiers/${encodedDid}`)
+
+    if (!response.ok) {
+      console.warn('[RecipientService] Failed to resolve DID:', did, response.status)
+      return []
+    }
+
+    const resolutionResult = await response.json()
 
     if (!resolutionResult.didDocument) {
       console.warn('[RecipientService] No DID document found for:', did)
@@ -186,50 +193,59 @@ export async function resolveEInvoicingEndpoints(did: string): Promise<EInvoicin
     for (const service of services) {
       const serviceType = service.type
 
-      // Check if it's an eInvoicing service type
-      if (isEInvoicingServiceType(serviceType)) {
-        // Extract service endpoint (can be string or array)
-        let serviceEndpoint: string
-        if (typeof service.serviceEndpoint === 'string') {
-          serviceEndpoint = service.serviceEndpoint
-        } else if (Array.isArray(service.serviceEndpoint) && service.serviceEndpoint.length > 0) {
-          serviceEndpoint = service.serviceEndpoint[0]
-        } else if (typeof service.serviceEndpoint === 'object' && service.serviceEndpoint !== null) {
-          // Handle object format (could have url or uri property)
-          const ep = service.serviceEndpoint as any
-          serviceEndpoint = ep.url || ep.uri || ep.endpoint || ''
-          if (!serviceEndpoint) {
-            continue // Skip if no valid endpoint URL found
-          }
-        } else {
-          continue // Skip if no valid endpoint
-        }
-
-        // Extract einvoice metadata if available
-        const einvoiceData = (service as any).einvoice || {}
-
-        endpoints.push({
-          id: service.id,
-          serviceType: serviceType as EInvServiceType,
-          serviceEndpoint,
-          description: (service as any).description || einvoiceData.description,
-          entityName: einvoiceData.entityName,
-          country: einvoiceData.country,
-          metadata: {
-            vct: einvoiceData.vct,
-            documentIdentifiers: einvoiceData.documentIdentifiers,
-            processIdentifiers: einvoiceData.processIdentifiers,
-            transportType: einvoiceData.transportType,
-            peppolParticipantId: einvoiceData.peppolParticipantId,
-            peppolSmpUrl: einvoiceData.peppolSmpUrl,
-            peppolAs4Endpoint: einvoiceData.peppolAs4Endpoint,
-            ppfPlatformId: einvoiceData.ppfPlatformId,
-            ppfRecipientIds: einvoiceData.ppfRecipientIds,
-            ppfMode: einvoiceData.ppfMode,
-            ppfApiEndpoint: einvoiceData.ppfApiEndpoint,
-          },
-        })
+      // Check if it's an eInvoicing service (type === "eInvoice")
+      if (!isEInvoicingServiceType(serviceType)) {
+        continue
       }
+
+      // Get the subType
+      const subType = (service as any).subType as string
+      if (!subType || !isEInvoicingSubType(subType)) {
+        console.warn('[RecipientService] Service missing valid subType:', service.id)
+        continue
+      }
+
+      // Extract service endpoint (can be string or array)
+      let serviceEndpoint: string
+      if (typeof service.serviceEndpoint === 'string') {
+        serviceEndpoint = service.serviceEndpoint
+      } else if (Array.isArray(service.serviceEndpoint) && service.serviceEndpoint.length > 0) {
+        serviceEndpoint = service.serviceEndpoint[0]
+      } else if (typeof service.serviceEndpoint === 'object' && service.serviceEndpoint !== null) {
+        // Handle object format (could have url or uri property)
+        const ep = service.serviceEndpoint as any
+        serviceEndpoint = ep.url || ep.uri || ep.endpoint || ''
+        if (!serviceEndpoint) {
+          continue // Skip if no valid endpoint URL found
+        }
+      } else {
+        continue // Skip if no valid endpoint
+      }
+
+      // Extract eInvoice metadata from the eInvoice array (capital I)
+      const eInvoiceArray = (service as any).eInvoice as Array<Record<string, unknown>> | undefined
+      const eInvoiceData = eInvoiceArray && eInvoiceArray.length > 0 ? eInvoiceArray[0] : {}
+
+      endpoints.push({
+        id: service.id,
+        subType: subType as EInvSubType,
+        serviceEndpoint,
+        description: (service as any).description,
+        entityName: eInvoiceData.entityName as string | undefined,
+        country: eInvoiceData.country as string | undefined,
+        metadata: {
+          documentIdentifiers: eInvoiceData.documentIdentifiers as string[] | undefined,
+          processIdentifiers: eInvoiceData.processIdentifiers as string[] | undefined,
+          transportType: eInvoiceData.transportType as string | undefined,
+          peppolParticipantId: eInvoiceData.peppolParticipantId as string | undefined,
+          peppolSmpUrl: eInvoiceData.peppolSmpUrl as string | undefined,
+          peppolAs4Endpoint: eInvoiceData.peppolAs4Endpoint as string | undefined,
+          ppfPlatformId: eInvoiceData.ppfPlatformId as string | undefined,
+          ppfRecipientIds: eInvoiceData.ppfRecipientIds as string[] | undefined,
+          ppfMode: eInvoiceData.ppfMode as string | undefined,
+          ppfApiEndpoint: eInvoiceData.ppfApiEndpoint as string | undefined,
+        },
+      })
     }
 
     return endpoints

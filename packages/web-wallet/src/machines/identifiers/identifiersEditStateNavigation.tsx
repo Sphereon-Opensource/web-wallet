@@ -19,7 +19,7 @@ import {IdentifiersEditContext} from '@typings/machine/identifiers/edit'
 import {CoreActions, JsonFormsCore} from '@jsonforms/core'
 import {IIdentifier, ManagedKeyInfo, TKeyType} from '@veramo/core'
 import addKeySchema from '../../../src/schemas/data/addKeySchema.json' assert {type: 'json'}
-import {isEInvoicingServiceType, getEInvoicingDefaults, EInvServiceType} from '../../constants/eInvoicingDefaults'
+import {isEInvoicingServiceType, isEInvoicingSubType, getEInvoicingDefaults, EInvSubType, EINV_SUB_TYPES, EINV_SERVICE_TYPE, EInvoiceDataItem} from '../../constants/eInvoicingDefaults'
 
 // Supported key types - adjust based on your requirements
 const SUPPORTED_KEY_TYPES: TKeyType[] = ['Ed25519', 'Secp256k1', 'Secp256r1', 'X25519', 'RSA']
@@ -290,30 +290,46 @@ export const IdentifiersEditContextProvider = (props: {children: React.ReactNode
             endpointValue = String(service.serviceEndpoint)
           }
 
-          // Check if this is an eInvoicing service type and reconstruct the einvoice metadata
+          // Check if this is an eInvoicing service type (type === "eInvoice")
           const serviceType = service.type
           if (isEInvoicingServiceType(serviceType)) {
-            const defaults = getEInvoicingDefaults(serviceType as EInvServiceType)
-            if (defaults) {
-              // Reconstruct einvoice data from defaults - entityName and country are not stored in DID document
-              // so we use placeholder values that indicate they need to be re-entered if editing
-              const einvoiceData: EInvoiceServiceData = {
-                vct: defaults.vct,
-                entityName: service.description?.replace(/^.*for\s+/i, '').replace(/\s+via.*$/i, '') || 'Unknown',
-                country: 'Unknown',
-                documentIdentifiers: [...defaults.documentIdentifiers],
-                processIdentifiers: [...defaults.processIdentifiers],
-                transportType: defaults.transportType,
+            // Get subType from service
+            const subType = (service as any).subType as EInvSubType | undefined
+            // Get eInvoice data from the service (capital I, array format)
+            const eInvoiceArray = (service as any).eInvoice as EInvoiceDataItem[] | undefined
+            const eInvoiceData = eInvoiceArray && eInvoiceArray.length > 0 ? eInvoiceArray[0] : undefined
+
+            if (subType && isEInvoicingSubType(subType)) {
+              const defaults = getEInvoicingDefaults(subType)
+              const folderName = service.id.split('#').pop() || service.id
+
+              // Build internal data for editing
+              const internalData: EInvoiceServiceData = {
+                entityName: eInvoiceData?.entityName || 'Unknown',
+                country: eInvoiceData?.country || 'Unknown',
+                documentIdentifiers: eInvoiceData?.documentIdentifiers || (defaults ? [...defaults.documentIdentifiers] : []),
+                processIdentifiers: eInvoiceData?.processIdentifiers || (defaults ? [...defaults.processIdentifiers] : []),
+                transportType: eInvoiceData?.transportType || defaults?.transportType || 'HTTP',
                 inboxName: 'einvoices',
-                folderName: service.id.replace(/^#/, ''),
+                folderName,
+                // Copy network-specific fields if present
+                ...(eInvoiceData?.peppolParticipantId ? {peppolParticipantId: eInvoiceData.peppolParticipantId} : {}),
+                ...(eInvoiceData?.peppolSmpUrl ? {peppolSmpUrl: eInvoiceData.peppolSmpUrl} : {}),
+                ...(eInvoiceData?.peppolAs4Endpoint ? {peppolAs4Endpoint: eInvoiceData.peppolAs4Endpoint} : {}),
+                ...(eInvoiceData?.ppfPlatformId ? {ppfPlatformId: eInvoiceData.ppfPlatformId} : {}),
+                ...(eInvoiceData?.ppfRecipientIds ? {ppfRecipientIds: eInvoiceData.ppfRecipientIds} : {}),
+                ...(eInvoiceData?.ppfMode ? {ppfMode: eInvoiceData.ppfMode} : {}),
+                ...(eInvoiceData?.ppfApiEndpoint ? {ppfApiEndpoint: eInvoiceData.ppfApiEndpoint} : {}),
               }
 
               return {
                 id: service.id,
-                type: serviceType,
+                type: EINV_SERVICE_TYPE,
                 serviceEndpoint: endpointValue,
-                description: defaults.description,
-                einvoice: einvoiceData,
+                description: defaults?.description,
+                subType: subType,
+                eInvoice: eInvoiceData ? [eInvoiceData] : undefined,
+                _internal: internalData,
               }
             }
           }

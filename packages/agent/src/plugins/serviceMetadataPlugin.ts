@@ -2,25 +2,34 @@ import { DataSource } from 'typeorm'
 import { IAgentPlugin, IPluginMethodMap } from '@veramo/core'
 
 /**
+ * eInvoice internal metadata (used for inbox configuration)
+ */
+export interface EInvoiceMetadata {
+  entityName: string
+  country: string
+  documentIdentifiers: string[]
+  processIdentifiers: string[]
+  transportType: string
+  // Internal inbox configuration
+  inboxName?: string
+  folderName?: string
+  // PEPPOL-specific
+  peppolParticipantId?: string
+  peppolSmpUrl?: string
+  peppolAs4Endpoint?: string
+  // PPF-FR-specific
+  ppfPlatformId?: string
+  ppfRecipientIds?: string[]
+  ppfMode?: 'pdp' | 'direct' | 'via-pdp'
+  ppfApiEndpoint?: string
+}
+
+/**
  * Service metadata structure for eInvoicing services
+ * Note: Uses capital I in "eInvoice" to match the DID document format
  */
 export interface ServiceMetadata {
-  einvoice?: {
-    vct: string
-    entityName: string
-    country: string
-    documentIdentifiers: string[]
-    processIdentifiers: string[]
-    transportType: string
-    endpoint?: string
-    peppolParticipantId?: string
-    peppolSmpUrl?: string
-    peppolAs4Endpoint?: string
-    ppfPlatformId?: string
-    ppfRecipientIds?: string[]
-    ppfMode?: 'pdp' | 'direct' | 'via-pdp'
-    ppfApiEndpoint?: string
-  }
+  eInvoice?: EInvoiceMetadata // Capital I
   [key: string]: unknown
 }
 

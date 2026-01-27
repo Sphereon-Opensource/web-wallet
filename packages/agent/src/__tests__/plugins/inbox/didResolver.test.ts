@@ -57,6 +57,80 @@ describe('findInboxServiceEndpoint', () => {
       })
     })
 
+    it('should find service with new format (type: eInvoice, subType: Direct)', () => {
+      const didDocument = {
+        id: 'did:web:example.com',
+        service: [
+          {
+            id: '#einvoice-direct',
+            type: 'eInvoice',
+            subType: 'Direct',
+            serviceEndpoint: 'https://example.com/inbox',
+            eInvoice: [{
+              entityName: 'Test Corp',
+              country: 'NL',
+            }],
+          },
+        ],
+      }
+
+      const result = findInboxServiceEndpoint(didDocument, 'eInvoice')
+      expect(result).toEqual({
+        inboxUrl: 'https://example.com/inbox',
+        vct: undefined,
+      })
+    })
+
+    it('should find service with new format (type: eInvoice, subType: Peppol)', () => {
+      const didDocument = {
+        id: 'did:web:example.com',
+        service: [
+          {
+            id: '#einvoice-peppol',
+            type: 'eInvoice',
+            subType: 'Peppol',
+            serviceEndpoint: 'https://example.com/as4',
+            eInvoice: [{
+              entityName: 'Test Corp',
+              country: 'NL',
+              peppolParticipantId: 'iso6523-actorid-upis::0106:123456789',
+            }],
+          },
+        ],
+      }
+
+      const result = findInboxServiceEndpoint(didDocument, 'eInvoice')
+      expect(result).toEqual({
+        inboxUrl: 'https://example.com/as4',
+        vct: undefined,
+      })
+    })
+
+    it('should find service with new format (type: eInvoice, subType: PPF-FR)', () => {
+      const didDocument = {
+        id: 'did:web:example.com',
+        service: [
+          {
+            id: '#einvoice-ppf',
+            type: 'eInvoice',
+            subType: 'PPF-FR',
+            serviceEndpoint: 'https://example.com/ppf',
+            eInvoice: [{
+              entityName: 'Test Corp',
+              country: 'FR',
+              ppfPlatformId: 'fr-ppf:pdp:provider-123',
+            }],
+          },
+        ],
+      }
+
+      const result = findInboxServiceEndpoint(didDocument, 'eInvoice')
+      expect(result).toEqual({
+        inboxUrl: 'https://example.com/ppf',
+        vct: undefined,
+      })
+    })
+
     it('should find service with mapped short name (einv-direct)', () => {
       const didDocument = {
         id: 'did:web:example.com',

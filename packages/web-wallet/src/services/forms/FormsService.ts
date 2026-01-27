@@ -11,6 +11,7 @@ import {
 } from '@typings'
 import {MetaDataKeysDTO, MetaDataKeysEntity, MetaDataSetDTO, MetaDataSetEntity, MetaDataValuesEntity, ValueType} from '@typings/metadata'
 import {CredentialFormSelectionType} from '@sphereon/ui-components.ssi-react'
+import {getAvailableCredentialConfigurationIds} from '@/src/services/credentials/credentialDesignService'
 
 const getApiUrl = () => `${getAgentBaseUrl()}/api`
 
@@ -70,12 +71,25 @@ export class FormsService {
   }
 
   // TODO This function seems a bit specific for this service, but for now I do not have a better place to stash it
-  public getCredentialFormSelectionTypes(formDefinition: FormDefinitionDTO, formStepNr: number): Array<CredentialFormSelectionType> {
+  public async getCredentialFormSelectionTypes(
+    formDefinition: FormDefinitionDTO,
+    formStepNr: number,
+    filterByOid4vciMetadata: boolean = true,
+  ): Promise<Array<CredentialFormSelectionType>> {
     const schemaDefinitions = this.selectSchemaDefinitions(formDefinition, formStepNr)
-
     const uiSchemas = schemaDefinitions.filter(schema => schema.schemaType === SchemaType.UI_Form)
 
-    return uiSchemas.map(uiSchema => {
+    // Get available credential configuration IDs from OID4VCI issuer metadata
+    let availableConfigIds: string[] = []
+    if (filterByOid4vciMetadata) {
+      try {
+        availableConfigIds = await getAvailableCredentialConfigurationIds()
+      } catch (e) {
+        console.warn('Failed to get available credential configuration IDs, showing all:', e)
+      }
+    }
+
+    const allTypes = uiSchemas.map(uiSchema => {
       // Find corresponding Data schema using correlationId
       const dataSchema = schemaDefinitions.find(schema => schema.schemaType === SchemaType.Data && schema.correlationId === uiSchema.correlationId)
       if (!dataSchema) {
@@ -114,6 +128,16 @@ export class FormsService {
         credentialType: credentialTypes,
       }
     })
+
+    // Filter to only show credential types that exist in OID4VCI issuer metadata
+    if (filterByOid4vciMetadata && availableConfigIds.length > 0) {
+      return allTypes.filter(type => {
+        // Check if the label (credential config ID) exists in the available configs
+        return availableConfigIds.includes(type.label)
+      })
+    }
+
+    return allTypes
   }
 
   private processFormStep(formStep: any): FormStepDTO {

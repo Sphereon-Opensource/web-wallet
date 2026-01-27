@@ -70,9 +70,40 @@ export const INTERNAL_PORT = env('PORT', ENV_VAR_PREFIX) ? Number.parseInt(env('
 export const EXTERNAL_HOSTNAME = env('EXTERNAL_HOSTNAME', ENV_VAR_PREFIX) ?? 'localhost'
 export const EXTERNAL_PORT = env('EXTERNAL_PORT', ENV_VAR_PREFIX) ? Number.parseInt(env('EXTERNAL_PORT', ENV_VAR_PREFIX)!) : 443
 
+// PUBLIC_BASE_URL is the single source of truth for all public-facing URLs
+// Example: https://wallet.example.com or http://localhost:5010
+export const PUBLIC_BASE_URL = env('PUBLIC_BASE_URL', ENV_VAR_PREFIX)
+
+// Computed public base URL with fallback chain for backward compatibility
+function computePublicBaseUrl(): string {
+  // 1. Explicit PUBLIC_BASE_URL takes priority
+  if (PUBLIC_BASE_URL) {
+    return PUBLIC_BASE_URL.replace(/\/$/, '')
+  }
+
+  // 2. Fallback to AGENT_BASE_URI if explicitly set
+  const agentBaseUri = env('AGENT_BASE_URI', ENV_VAR_PREFIX)
+  if (agentBaseUri) {
+    return agentBaseUri
+  }
+
+  // 3. Construct from EXTERNAL_HOSTNAME/PORT if hostname is not localhost
+  if (EXTERNAL_HOSTNAME && EXTERNAL_HOSTNAME !== 'localhost') {
+    const protocol = EXTERNAL_PORT === 443 ? 'https' : 'http'
+    const portSuffix =
+      (protocol === 'https' && EXTERNAL_PORT === 443) || (protocol === 'http' && EXTERNAL_PORT === 80) ? '' : `:${EXTERNAL_PORT}`
+    return `${protocol}://${EXTERNAL_HOSTNAME}${portSuffix}`
+  }
+
+  // 4. Final fallback: internal address (local dev only)
+  return `http://${INTERNAL_HOSTNAME_OR_IP}:${INTERNAL_PORT}`
+}
+
+export const COMPUTED_PUBLIC_BASE_URL = computePublicBaseUrl()
+
 // Base URI for agent (without path suffix) - used for public asset URLs, etc.
-// Defaults to internal for local dev; set AGENT_BASE_URI explicitly for production (e.g., https://example.com)
-export const AGENT_BASE_URI = env('AGENT_BASE_URI', ENV_VAR_PREFIX) ?? `http://${INTERNAL_HOSTNAME_OR_IP}:${INTERNAL_PORT}`
+// Defaults to COMPUTED_PUBLIC_BASE_URL; set AGENT_BASE_URI explicitly for production (e.g., https://example.com)
+export const AGENT_BASE_URI = env('AGENT_BASE_URI', ENV_VAR_PREFIX) ?? COMPUTED_PUBLIC_BASE_URL
 export const DEFAULT_X5C = env('DEFAULT_X5C', ENV_VAR_PREFIX)?.split(/[, ]/)
 export const DEFAULT_MODE = env('DEFAULT_MODE', ENV_VAR_PREFIX) ?? 'did' //did, jwk or x5c
 export const DEFAULT_DID = env('DEFAULT_DID', ENV_VAR_PREFIX)
@@ -84,7 +115,7 @@ export const IS_OID4VP_ENABLED = toBoolean(process.env.OID4VP_ENABLED, true)
 export const IS_LINKED_VP_ENABLED = toBoolean(process.env.IS_LINKED_VP_ENABLED, false)
 
 export const IS_OID4VCI_ENABLED = toBoolean(process.env.OID4VCI_ENABLED, true)
-export const OID4VCI_API_BASE_URL = env('OID4VCI_API_BASE_URL', ENV_VAR_PREFIX) ?? `${INTERNAL_HOSTNAME_OR_IP}:${INTERNAL_PORT}/oid4vci`
+export const OID4VCI_API_BASE_URL = env('OID4VCI_API_BASE_URL', ENV_VAR_PREFIX) ?? `${COMPUTED_PUBLIC_BASE_URL}/oid4vci`
 export const OID4VCI_ISSUER_OPTIONS_PATH = `${CONF_PATH}/oid4vci_options`
 export const OID4VCI_ISSUER_METADATA_PATH = `${CONF_PATH}/oid4vci_metadata`
 

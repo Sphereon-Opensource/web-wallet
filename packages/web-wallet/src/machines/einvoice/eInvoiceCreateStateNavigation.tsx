@@ -81,7 +81,7 @@ export interface EInvoiceEvidenceFile {
  */
 export interface EInvoicingEndpoint {
   id: string
-  serviceType: string
+  subType: string // "Direct", "Peppol", "PPF-FR"
   serviceEndpoint: string
   description?: string
   entityName?: string
@@ -256,7 +256,7 @@ export const EInvoiceCreateContextProvider = (props: any): JSX.Element => {
                 const resolvedEndpoints = await resolveEInvoicingEndpoints(draft.recipientDid)
                 const mappedEndpoints = resolvedEndpoints.map((ep) => ({
                   id: ep.id,
-                  serviceType: ep.serviceType,
+                  subType: ep.subType,
                   serviceEndpoint: ep.serviceEndpoint,
                   description: ep.description,
                   entityName: ep.entityName,
@@ -296,7 +296,7 @@ export const EInvoiceCreateContextProvider = (props: any): JSX.Element => {
                 organizationName: draft.recipientName,
                 endpoints: [{
                   id: draft.recipientEndpointId!,
-                  serviceType: draft.recipientEndpointType!,
+                  subType: draft.recipientEndpointType!,
                   serviceEndpoint: draft.recipientEndpoint,
                 }],
                 selectedEndpointId: draft.recipientEndpointId,
@@ -653,7 +653,7 @@ export const EInvoiceCreateContextProvider = (props: any): JSX.Element => {
         recipientDid: recipient.did,
         recipientName: recipient.name || recipient.organizationName,
         recipientEndpointId: recipient.selectedEndpointId,
-        recipientEndpointType: selectedEndpoint?.serviceType,
+        recipientEndpointType: selectedEndpoint?.subType,
         recipientEndpoint: endpointUrl,
         evidenceFiles: uploadedEvidenceFiles,
         hasUblSource: !!ublFile || evidenceFiles.some((f) => f.evidenceType === 'UBLInvoice'),
@@ -797,7 +797,7 @@ export const EInvoiceCreateContextProvider = (props: any): JSX.Element => {
         recipientDid: recipient.did,
         recipientName: recipient.name || recipient.organizationName,
         recipientEndpointId: recipient.selectedEndpointId,
-        recipientEndpointType: selectedEndpoint?.serviceType,
+        recipientEndpointType: selectedEndpoint?.subType,
         recipientEndpoint: endpointUrl,
         evidenceFiles: uploadedEvidenceFiles,
         hasUblSource: !!ublFile || evidenceFiles.some((f) => f.evidenceType === 'UBLInvoice'),

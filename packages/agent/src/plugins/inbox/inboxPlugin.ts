@@ -546,14 +546,39 @@ export class InboxPlugin implements IAgentPlugin {
         }
       }
 
-      const result = await response.json()
+      // Step 4: Parse response - handle both plain text (openid4vp://...) and JSON formats
+      const responseText = await response.text()
+      let requestUri: string
+      let recipientClientId: string | undefined
+      let correlationId: string | undefined
 
-      // Step 4: Return the result for continuing the OID4VP flow
+      // Check if response is a direct openid4vp:// URI (plain text format per Universal OID4VP spec)
+      if (responseText.trim().startsWith('openid4vp://') || responseText.trim().startsWith('openid4vp:')) {
+        requestUri = responseText.trim()
+        console.log(`[Inbox] Received plain text OID4VP URI from inbox`)
+      } else {
+        // Try to parse as JSON (legacy format)
+        try {
+          const result = JSON.parse(responseText)
+          requestUri = result.request_uri
+          recipientClientId = result.client_id
+          correlationId = result.correlation_id
+          console.log(`[Inbox] Received JSON response from inbox`)
+        } catch {
+          return {
+            success: false,
+            error: `Invalid response from inbox endpoint: ${responseText.substring(0, 100)}`,
+            inboxEndpoint: inboxUrl,
+          }
+        }
+      }
+
+      // Return the result for continuing the OID4VP flow
       return {
         success: true,
-        requestUri: result.request_uri,
-        recipientClientId: result.client_id,
-        correlationId: result.correlation_id,
+        requestUri,
+        recipientClientId,
+        correlationId,
         inboxEndpoint: inboxUrl,
       }
     } catch (error: unknown) {

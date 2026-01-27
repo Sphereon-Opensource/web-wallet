@@ -5,19 +5,11 @@
 import { ExternalServiceError } from '../../shared/error'
 import type { EInvoiceServiceEndpoint } from '../types'
 
-/** FIDES eInvoicing capability service types */
-const FIDES_SERVICE_TYPES = [
-  'urn:org:fides:einv-direct:1',
-  'urn:org:fides:einv-peppol:1',
-  'urn:org:fides:einv-ppf-fr:1',
-]
+/** The service type for eInvoicing services */
+const EINV_SERVICE_TYPE = 'eInvoice'
 
-/** Service type mapping from short names to FIDES URNs */
-const SERVICE_TYPE_MAPPING: Record<string, string> = {
-  'einv-direct': 'urn:org:fides:einv-direct:1',
-  'einv-peppol': 'urn:org:fides:einv-peppol:1',
-  'einv-ppf-fr': 'urn:org:fides:einv-ppf-fr:1',
-}
+/** Valid eInvoicing subTypes */
+const EINV_SUB_TYPES = ['Direct', 'Peppol', 'PPF-FR']
 
 /**
  * Resolve a DID to get the DID document.
@@ -70,37 +62,38 @@ export async function resolveRecipientDid(did: string, throwOnError = false): Pr
 /**
  * Find the inbox service endpoint in a DID document.
  *
- * Looks for services with type matching:
- * - The serviceType parameter (default: 'EInvoiceInbox')
- * - FIDES eInvoicing capability types
- * - Types containing 'inbox' or 'einvoice'
+ * Looks for services with:
+ * - type: "eInvoice"
+ * - Optionally filters by subType if serviceType is specified
  *
  * @param didDocument - The DID document to search
- * @param serviceType - The service type to look for
+ * @param serviceType - Optional subType to filter by (e.g., 'Direct', 'Peppol', 'PPF-FR')
  * @returns The eInvoice service endpoint or null if not found
  */
 export function findInboxServiceEndpoint(
   didDocument: Record<string, unknown>,
-  serviceType: string
+  serviceType?: string
 ): EInvoiceServiceEndpoint | null {
   const services = didDocument.service
   if (!services || !Array.isArray(services)) {
     return null
   }
 
-  const mappedServiceType = SERVICE_TYPE_MAPPING[serviceType] || serviceType
-
-  // Look for a service matching the type
+  // Look for a service with type "eInvoice"
   const service = services.find((s: Record<string, unknown>) => {
     const types = Array.isArray(s.type) ? s.type : [s.type]
-    return types.some(
-      (t: string) =>
-        t === serviceType ||
-        t === mappedServiceType ||
-        FIDES_SERVICE_TYPES.includes(t) ||
-        t.toLowerCase().includes('inbox') ||
-        t.toLowerCase().includes('einvoice')
-    )
+    const isEInvoiceType = types.some((t: string) => t === EINV_SERVICE_TYPE)
+
+    if (!isEInvoiceType) {
+      return false
+    }
+
+    // If a specific subType is requested, check for it
+    if (serviceType && EINV_SUB_TYPES.includes(serviceType)) {
+      return s.subType === serviceType
+    }
+
+    return true
   })
 
   if (!service) {
@@ -122,14 +115,14 @@ export function findInboxServiceEndpoint(
     return null
   }
 
-  // Extract einvoice metadata from service level (not from serviceEndpoint)
-  // According to FIDES schemas, einvoice properties are siblings of serviceEndpoint
-  const einvoiceData = (service as Record<string, unknown>).einvoice as Record<string, unknown> | undefined
+  // Extract eInvoice metadata from service level (capital I, array format)
+  const eInvoiceData = (service as Record<string, unknown>).eInvoice as Array<Record<string, unknown>> | undefined
 
   // Note: folder is NOT extracted from DID document - it's internal metadata
   // The serviceEndpoint URL is the only externally-visible endpoint
   return {
     inboxUrl,
-    vct: einvoiceData?.vct as string[] | undefined,
+    // vct could be extracted from the eInvoice array if needed
+    vct: undefined,
   }
 }
