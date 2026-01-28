@@ -53,8 +53,9 @@ const _app = (props: React.PropsWithChildren<unknown>) => {
   useEffect(() => {
     const loadEnvironment = async () => {
       try {
-        // Load both env and agent config in parallel
-        await Promise.all([envManager.load(), agentConfig.load()])
+        // Load env first, then agent config (which depends on env values)
+        await envManager.load()
+        await agentConfig.load()
         setEnvLoaded(true)
       } catch (err) {
         console.error('Failed to load environment:', err)

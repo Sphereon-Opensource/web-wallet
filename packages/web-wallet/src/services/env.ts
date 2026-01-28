@@ -26,6 +26,7 @@ class EnvManager {
 
         this.env = await res.json()
         this.loaded = true
+        console.log('[EnvManager] Loaded env, BROWSER_PUBLIC_AGENT_BASE_URL =', this.env['BROWSER_PUBLIC_AGENT_BASE_URL'])
       } catch (error) {
         console.error('Failed to load environment variables:', error)
         throw error

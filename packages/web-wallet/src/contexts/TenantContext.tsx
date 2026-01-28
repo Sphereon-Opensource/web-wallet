@@ -1,11 +1,12 @@
 import React, {createContext, useContext, FC, ReactNode, useMemo, useEffect} from 'react'
 import {useSession} from 'next-auth/react'
+import {getEnv} from '@services/env'
 
 /**
  * Default tenant ID used when no tenant is found in OIDC claims.
  * This should be overridden in .env.local for production.
  */
-const DEFAULT_TENANT_ID = process.env.NEXT_PUBLIC_DEFAULT_TENANT_ID || '00000000-0000-0000-0000-000000000001'
+const getDefaultTenantId = () => getEnv('BROWSER_PUBLIC_DEFAULT_TENANT_ID') || '00000000-0000-0000-0000-000000000001'
 
 /**
  * Environment variable names that may contain the tenant ID in OIDC claims.
@@ -116,7 +117,7 @@ export const TenantProvider: FC<TenantProviderProps> = ({children}) => {
       (session?.user as any)?.id
 
     return {
-      tenantId: tenantIdFromClaims || DEFAULT_TENANT_ID,
+      tenantId: tenantIdFromClaims || getDefaultTenantId(),
       userId: userIdFromClaims,
       hasTenantClaim: !!tenantIdFromClaims,
       isAuthenticated,

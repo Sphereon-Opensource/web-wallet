@@ -1,14 +1,14 @@
 import {getEnv, getEnvInt} from '@/src/services/env'
 import {agentConfig} from '@/src/services/agentConfig'
 
-// Use agentConfig as the source of truth, with env var fallback during initial load
+// Use agentConfig as the source of truth for agent-related URLs
 export const getAgentBaseUrl = () => agentConfig.getPublicBaseUrl()
-export const getVcApiBasePath = () => agentConfig.getConfig()?.paths.vcApi ?? getEnv('BROWSER_PUBLIC_VC_API_BASE_PATH') ?? '/vc'
+export const getVcApiBasePath = () => agentConfig.getPath('vcApi')
 export const getVcApiBaseUrl = () => `${getAgentBaseUrl()}${getVcApiBasePath()}`
 export const getVcApiGetCredentialUrl = () => `${getVcApiBaseUrl()}/credentials`
 export const getVcApiCredentialIssueUrl = () => `${getVcApiGetCredentialUrl()}/issue`
 export const getVcApiUrl = () => getEnv('BROWSER_PUBLIC_OID4VCI_API_URL') ?? `${getAgentBaseUrl()}${agentConfig.getPath('oid4vci')}`
-export const getDidApiBasePath = () => agentConfig.getConfig()?.paths.didApi ?? getEnv('BROWSER_PUBLIC_DID_API_BASE_PATH') ?? '/did'
+export const getDidApiBasePath = () => agentConfig.getPath('didApi')
 export const getDidApiBaseUrl = () => `${getAgentBaseUrl()}${getDidApiBasePath()}`
 export const getDidApiCreateDidUrl = () => `${getDidApiBaseUrl()}/identifiers`
 export const getDidApiDeactivateUrl = () => `${getDidApiBaseUrl()}/deactivate`
