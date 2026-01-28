@@ -12,47 +12,18 @@ import SelectionField from '@components/fields/SelectionField'
 import {useIdentifierCreateOutletContext} from '@typings/machine/identifiers/create'
 import {useIdentifiersEditContext} from '@typings/machine/identifiers/edit'
 import style from './index.module.css'
-import {IdentifierServiceEndpoint, EInvoiceServiceData, EInvoiceDataItem} from '@typings'
+import {IdentifierServiceEndpoint} from '@typings'
 import {
   EINV_SERVICE_TYPE,
   EINV_SUB_TYPES,
   isEInvoicingServiceType,
-  isEInvoicingSubType,
-  getEInvoicingDefaults,
-  generateInboxEndpoint,
   EInvSubType,
 } from '../../../constants/eInvoicingDefaults'
-import {getAgent, getAgentBaseUrl} from '@agent'
-
-// eInvoice DCQL Query Definition - created on first eInvoicing endpoint if not already present
-// Uses 'einvoice' (lowercase) to match the config file definition
-// Claims match the actual credential format from einvoiceCredentialIssuer.ts
-const EINVOICE_DCQL_QUERY = {
-  queryId: 'einvoice',
-  name: 'eInvoice Credential',
-  defaultPurpose: 'We need to verify your eInvoice credential for processing electronic invoices.',
-  query: {
-    credentials: [
-      {
-        id: 'einvoice-credential',
-        format: 'dc+sd-jwt',
-        require_cryptographic_holder_binding: false,
-        multiple: false,
-        meta: {
-          vct_values: ['urn:org:fides:einvoice:1'],
-        },
-        claims: [
-          {path: ['invoice_id']},
-          {path: ['invoice_date']},
-          {path: ['currency_code']},
-          {path: ['payable_amount']},
-          {path: ['seller_name']},
-          {path: ['buyer_name']},
-        ],
-      },
-    ],
-  },
-}
+import {getAgentBaseUrl} from '@agent'
+import {
+  buildServiceEndpoint,
+  ensureEInvoiceDcqlDefinition,
+} from '@/src/services/identifierServiceManager'
 
 type Props = {
   mode: 'create' | 'edit'
@@ -127,129 +98,6 @@ const CreateIdentifierAddServiceEndpointContent: FC<Props> = ({mode}): ReactElem
     onSetServiceEndpoints(prevServiceEndpoints => prevServiceEndpoints.filter(serviceEndpoint => serviceEndpoint.id !== id))
   }
 
-  /**
-   * Build the eInvoice data item for the eInvoice array in the service endpoint
-   */
-  const buildEInvoiceDataItem = (data: Record<string, unknown>, subType: EInvSubType): EInvoiceDataItem | null => {
-    const defaults = getEInvoicingDefaults(subType)
-    if (!defaults) {
-      return null
-    }
-
-    const baseData: EInvoiceDataItem = {
-      entityName: data.entityName as string,
-      country: data.country as string,
-      documentIdentifiers: [...defaults.documentIdentifiers],
-      processIdentifiers: [...defaults.processIdentifiers],
-      transportType: defaults.transportType,
-    }
-
-    switch (subType) {
-      case EINV_SUB_TYPES.DIRECT:
-        return baseData
-
-      case EINV_SUB_TYPES.PEPPOL:
-        return {
-          ...baseData,
-          peppolParticipantId: data.peppolParticipantId as string,
-          ...(data.peppolSmpUrl ? {peppolSmpUrl: data.peppolSmpUrl as string} : {}),
-          ...(data.peppolAs4Endpoint ? {peppolAs4Endpoint: data.peppolAs4Endpoint as string} : {}),
-        }
-
-      case EINV_SUB_TYPES.PPF_FR:
-        // Parse comma-separated recipient IDs into an array
-        const recipientIdsStr = data.ppfRecipientIds as string
-        const ppfRecipientIds = recipientIdsStr
-          ? recipientIdsStr
-              .split(',')
-              .map(id => id.trim())
-              .filter(id => id.length > 0)
-          : []
-
-        return {
-          ...baseData,
-          ppfPlatformId: data.ppfPlatformId as string,
-          ppfRecipientIds,
-          ppfMode: data.ppfMode as 'pdp' | 'direct' | 'via-pdp',
-          ...(data.ppfApiEndpoint ? {ppfApiEndpoint: data.ppfApiEndpoint as string} : {}),
-        }
-
-      default:
-        return null
-    }
-  }
-
-  /**
-   * Build the internal eInvoice service data (includes inbox configuration)
-   */
-  const buildInternalServiceData = (data: Record<string, unknown>, subType: EInvSubType): EInvoiceServiceData | null => {
-    const dataItem = buildEInvoiceDataItem(data, subType)
-    if (!dataItem) {
-      return null
-    }
-
-    // Get inbox and folder names with defaults
-    const serviceId = data.id as string
-    const inboxName = (data.inboxName as string) || 'einvoices'
-    const folderName = (data.folderName as string) || serviceId.replace(/^#/, '')
-
-    return {
-      ...dataItem,
-      inboxName,
-      folderName,
-    }
-  }
-
-  /**
-   * Get the service endpoint URL for eInvoicing services.
-   * Uses the DID's web hostname to construct the public URL.
-   */
-  const getEInvoicingEndpointUrl = (data: Record<string, unknown>): string => {
-    const baseUrl = getServiceEndpointBaseUrl()
-    const serviceId = data.id as string
-    const inboxName = (data.inboxName as string) || 'einvoices'
-    const folderName = (data.folderName as string) || serviceId.replace(/^#/, '')
-    return generateInboxEndpoint(baseUrl, inboxName, folderName)
-  }
-
-  /**
-   * Ensure the eInvoice DCQL definition exists in the RP manager persistence.
-   * Only creates it if it doesn't already exist.
-   */
-  /**
-   * Ensure the eInvoice DCQL definition exists in the RP manager persistence.
-   * Only creates it if it doesn't already exist.
-   */
-  const ensureEInvoiceDcqlDefinition = async (): Promise<void> => {
-    try {
-      const agent = getAgent()
-      // Check if the eInvoice definition already exists
-      const existingDefinitions = await agent.pdmGetDefinitions({
-        filter: [{queryId: EINVOICE_DCQL_QUERY.queryId}],
-      })
-
-      if (existingDefinitions.length === 0) {
-        // Create the eInvoice DCQL definition
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        await agent.pdmPersistDefinition({
-          definitionItem: {
-            queryId: EINVOICE_DCQL_QUERY.queryId,
-            version: '1',
-            name: EINVOICE_DCQL_QUERY.name,
-            purpose: EINVOICE_DCQL_QUERY.defaultPurpose,
-            query: EINVOICE_DCQL_QUERY.query as any,
-          },
-        })
-        console.log('Created eInvoice DCQL definition')
-      } else {
-        console.log('eInvoice DCQL definition already exists')
-      }
-    } catch (error) {
-      console.error('Failed to ensure eInvoice DCQL definition:', error)
-      // Don't block service endpoint creation if DCQL setup fails
-    }
-  }
-
   const onAddServiceEndpoint = async (): Promise<void> => {
     if (!serviceEndpointData?.data) {
       return
@@ -258,33 +106,15 @@ const CreateIdentifierAddServiceEndpointContent: FC<Props> = ({mode}): ReactElem
     const data = serviceEndpointData.data
     const serviceType = data.type as string
 
-    let newServiceEndpoint: IdentifierServiceEndpoint
-
-    // Check if this is an eInvoicing service type (type === "eInvoice")
-    if (isEInvoicingServiceType(serviceType)) {
-      const subType = data.subType as EInvSubType
-      if (!isEInvoicingSubType(subType)) {
-        console.error('Invalid eInvoicing subType:', subType)
-        return
+    try {
+      // For eInvoicing services, ensure DCQL definition exists
+      if (isEInvoicingServiceType(serviceType)) {
+        await ensureEInvoiceDcqlDefinition()
       }
 
-      // Ensure the DCQL definition exists
-      await ensureEInvoiceDcqlDefinition()
+      // Use unified service manager to build the service endpoint
+      const newServiceEndpoint = buildServiceEndpoint(data, getServiceEndpointBaseUrl())
 
-      const defaults = getEInvoicingDefaults(subType)
-      const eInvoiceDataItem = buildEInvoiceDataItem(data, subType)
-      const internalData = buildInternalServiceData(data, subType)
-      const endpointUrl = getEInvoicingEndpointUrl(data)
-
-      newServiceEndpoint = {
-        id: data.id as string,
-        type: EINV_SERVICE_TYPE, // Always "eInvoice"
-        serviceEndpoint: endpointUrl,
-        description: defaults?.description,
-        subType: subType, // "Direct", "Peppol", "PPF-FR"
-        eInvoice: eInvoiceDataItem ? [eInvoiceDataItem] : undefined, // Capital I, array
-        _internal: internalData || undefined, // For inbox creation
-      }
       console.log('[CreateIdentifierAddServiceEndpointContent] Created service endpoint:', {
         id: newServiceEndpoint.id,
         type: newServiceEndpoint.type,
@@ -292,20 +122,15 @@ const CreateIdentifierAddServiceEndpointContent: FC<Props> = ({mode}): ReactElem
         hasEInvoice: !!newServiceEndpoint.eInvoice,
         hasInternal: !!newServiceEndpoint._internal,
       })
-    } else {
-      // Use the standard serviceEndpoint value
-      newServiceEndpoint = {
-        id: data.id as string,
-        type: serviceType,
-        serviceEndpoint: data.serviceEndpoint as string,
-      }
+
+      onSetServiceEndpoints(prevServiceEndpoints => [...prevServiceEndpoints, newServiceEndpoint])
+
+      // Reset form by triggering change with empty data
+      await onServiceEndpointChange({data: undefined, errors: []})
+      setFormKey(prev => prev + 1)
+    } catch (error) {
+      console.error('[CreateIdentifierAddServiceEndpointContent] Failed to create service endpoint:', error)
     }
-
-    onSetServiceEndpoints(prevServiceEndpoints => [...prevServiceEndpoints, newServiceEndpoint])
-
-    // Reset form by triggering change with empty data
-    await onServiceEndpointChange({data: undefined, errors: []})
-    setFormKey(prev => prev + 1)
   }
 
   const formatServiceEndpointValue = (serviceEndpoint: IdentifierServiceEndpoint) => {

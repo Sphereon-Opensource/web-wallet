@@ -20,6 +20,7 @@ import {DID_PREFIX} from '@sphereon/ssi-sdk-ext.did-utils'
 import {getAgent, getAgentContext, getAgentBaseUrl} from '@agent'
 import {IdentifierKey, IdentifierServiceEndpoint, KeyManagementIdentifier, KeyManagementSystem} from '@typings'
 import {isEInvoicingServiceType, EINV_SERVICE_TYPE} from '@/src/constants/eInvoicingDefaults'
+import { replaceServicesOnDid, saveServiceMetadata, ensureInboxAndFolder } from '@/src/services/identifierServiceManager'
 import {IIdentifier} from '@veramo/core'
 import type {EbsiAccessTokenOpts, EbsiEnvironment} from '@sphereon/ssi-sdk.ebsi-support'
 import {generateEbsiMethodSpecificId} from '@sphereon/ssi-sdk.ebsi-support'
@@ -162,144 +163,13 @@ const updateIdentifierKeys = async (did: string, currentKeys: any[], newKeys: Id
 }
 
 /**
- * Ensure inbox and folder exist for an eInvoicing service endpoint.
- * Creates the inbox (if it doesn't exist) and the folder within it.
+ * Replace all services on a DID.
+ * Delegates to the unified identifierServiceManager for consistent behavior.
  */
-const ensureInboxAndFolder = async (did: string, service: IdentifierServiceEndpoint): Promise<void> => {
-  // Use _internal data for inbox configuration, or fall back to defaults
-  const internalData = service._internal
-  const agentBaseUrl = getAgentBaseUrl()
-  const inboxName = internalData?.inboxName || 'einvoices'
-  const folderName = internalData?.folderName || service.id.split('#').pop() || service.id
-
-  console.log(`[IdentifiersDataProvider] Ensuring inbox '${inboxName}' and folder '${folderName}' exist for DID ${did}`)
-
-  try {
-    // Try to create inbox (will get 409 if it already exists)
-    const createInboxResponse = await fetch(`${agentBaseUrl}/inbox`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({name: inboxName, did, description: `eInvoicing inbox for ${did}`}),
-    })
-
-    if (createInboxResponse.ok) {
-      console.log(`[IdentifiersDataProvider] Created inbox '${inboxName}'`)
-    } else if (createInboxResponse.status === 409) {
-      console.log(`[IdentifiersDataProvider] Inbox '${inboxName}' already exists`)
-    } else {
-      const error = await createInboxResponse.text()
-      console.warn(`[IdentifiersDataProvider] Failed to create inbox: ${error}`)
-    }
-
-    // Try to create folder (will get 409 if it already exists)
-    // Use 'einvoice' (lowercase) as the DCQL query ID - this matches the config file definition
-    const createFolderResponse = await fetch(`${agentBaseUrl}/inbox/${inboxName}/folders`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        name: folderName,
-        dcqlQueryId: 'einvoice',
-        description: `eInvoicing folder for service ${service.id}`,
-      }),
-    })
-
-    if (createFolderResponse.ok) {
-      console.log(`[IdentifiersDataProvider] Created folder '${folderName}' in inbox '${inboxName}'`)
-    } else if (createFolderResponse.status === 409) {
-      console.log(`[IdentifiersDataProvider] Folder '${folderName}' already exists in inbox '${inboxName}'`)
-    } else {
-      const error = await createFolderResponse.text()
-      console.warn(`[IdentifiersDataProvider] Failed to create folder: ${error}`)
-    }
-  } catch (error) {
-    console.error(`[IdentifiersDataProvider] Error ensuring inbox/folder:`, error)
-    // Don't fail the service endpoint creation if inbox setup fails
-  }
-}
-
 const replaceServices = async (did: string, currentServices: any[], newServices: IdentifierServiceEndpoint[]): Promise<void> => {
-  console.log('[REPLACE_SERVICES_v2] ===== ENTERING replaceServices =====')
-  console.log('[REPLACE_SERVICES_v2] DID:', did)
-  console.log('[REPLACE_SERVICES_v2] Current services count:', currentServices?.length || 0)
-  console.log('[REPLACE_SERVICES_v2] New services count:', newServices?.length || 0)
-  console.log('[REPLACE_SERVICES_v2] New services:', JSON.stringify(newServices, null, 2))
-  try {
-    // Remove all existing services
-    if (currentServices && currentServices.length > 0) {
-      for (const service of currentServices) {
-        await getAgent().didManagerRemoveService({
-          did,
-          id: service.id,
-        })
-      }
-    }
-
-    // Add new services
-    console.log('updateVars.services', newServices)
-    for (const service of newServices) {
-      console.log(`didManagerAddService Service ID: ${service.id}`)
-
-      // Build the service object for DID document
-      // For eInvoice services, include subType and eInvoice array
-      const serviceData: Record<string, unknown> = {
-        id: service.id,
-        type: service.type,
-        serviceEndpoint: service.serviceEndpoint,
-        description: service.description,
-      }
-
-      // Add eInvoice-specific fields for the DID document
-      if (service.type === EINV_SERVICE_TYPE) {
-        if (service.subType) {
-          serviceData.subType = service.subType
-        }
-        if (service.eInvoice) {
-          serviceData.eInvoice = service.eInvoice
-        }
-      }
-
-      await getAgent().didManagerAddService({
-        did,
-        service: serviceData as any,
-      })
-
-      // Update metadata for services with internal eInvoice data or subType
-      console.log(`[updateServices] Processing service:`, {
-        id: service.id,
-        type: service.type,
-        subType: service.subType,
-        hasInternal: !!service._internal,
-        serviceKeys: Object.keys(service),
-      })
-      if (service._internal || service.subType) {
-        try {
-          const metadata: Record<string, unknown> = {}
-          if (service._internal) {
-            metadata.eInvoice = service._internal
-          }
-          if (service.subType) {
-            metadata.subType = service.subType
-          }
-          console.log(`[updateServices] Saving metadata for ${service.id}:`, metadata)
-          await getAgent().updateServiceMetadata({
-            serviceId: service.id,
-            did,
-            metadata,
-          })
-          console.log(`Updated metadata for service ${service.id}`)
-        } catch (metadataError) {
-          console.warn(`Failed to update metadata for service ${service.id}:`, metadataError)
-        }
-      }
-
-      // For eInvoicing services, ensure the inbox and folder exist
-      if (isEInvoicingServiceType(service.type)) {
-        await ensureInboxAndFolder(did, service)
-      }
-    }
-  } catch (error) {
-    console.error('Error updating services:', error)
-    return Promise.reject(Error(`Failed to update services: ${error}`))
+  const success = await replaceServicesOnDid(did, currentServices, newServices)
+  if (!success) {
+    throw new Error('Failed to replace services')
   }
 }
 
@@ -496,36 +366,11 @@ export const identifiersDataProvider = (): DataProvider => ({
 
     // Update metadata for services with eInvoice data/subType and ensure inbox/folder exist
     // Veramo's didManagerCreate doesn't persist custom metadata, so we need to update it separately
+    // Uses unified identifierServiceManager for consistent behavior
     if (variables.services) {
       for (const service of variables.services) {
-        console.log(`[identifiersDataProvider.create] Processing service:`, {
-          id: service.id,
-          type: service.type,
-          subType: service.subType,
-          hasInternal: !!service._internal,
-          serviceKeys: Object.keys(service),
-        })
-        if (service._internal || service.subType) {
-          try {
-            const metadata: Record<string, unknown> = {}
-            if (service._internal) {
-              metadata.eInvoice = service._internal
-            }
-            if (service.subType) {
-              metadata.subType = service.subType
-            }
-            console.log(`[identifiersDataProvider.create] Saving metadata for ${service.id}:`, metadata)
-            await getAgent().updateServiceMetadata({
-              serviceId: service.id,
-              did: identifier.did,
-              metadata,
-            })
-            console.log(`Updated metadata for service ${service.id}`)
-          } catch (metadataError) {
-            console.warn(`Failed to update metadata for service ${service.id}:`, metadataError)
-            // Don't fail the entire operation if metadata update fails
-          }
-        }
+        // Save metadata (eInvoice and subType)
+        await saveServiceMetadata(identifier.did, service.id, service)
 
         // For eInvoicing services, ensure the inbox and folder exist
         if (isEInvoicingServiceType(service.type)) {
@@ -581,8 +426,6 @@ export const identifiersDataProvider = (): DataProvider => ({
 
       // Update services if provided
       if (updateVars.services) {
-        console.log('[UPDATE_v2] ===== Calling replaceServices =====')
-        console.log('[UPDATE_v2] Services passed:', JSON.stringify(updateVars.services.map(s => ({id: s.id, type: s.type, subType: s.subType})), null, 2))
         await replaceServices(identifier.did, identifier.services || [], updateVars.services)
       }
 

@@ -395,9 +395,6 @@ export const IdentifiersEditContextProvider = (props: {children: React.ReactNode
       return Promise.reject(Error('No identifier ID provided'))
     }
 
-    console.log('[ONSAVE_v2] ===== onSave called =====')
-    console.log('[ONSAVE_v2] serviceEndpoints:', JSON.stringify(serviceEndpoints.map(s => ({id: s.id, type: s.type, subType: s.subType})), null, 2))
-
     const onError = (error: any): void => {
       throw new Error(`Unable to update identifier. Error: ${error}`)
     }
