@@ -14,12 +14,14 @@ import { DataSource } from 'typeorm'
  */
 export function createDidDocumentEnricherMiddleware(dbConnection: Promise<DataSource>) {
   return async (req: Request, res: Response, next: NextFunction) => {
+    console.log('[DIDEnricher] Middleware hit for:', req.path)
     // Store original json method
     const originalJson = res.json.bind(res)
 
     // Override json method to intercept DID document responses
     // Use type assertion since we handle async responses internally
     res.json = function(body: any): Response {
+      console.log('[DIDEnricher] res.json called, body keys:', body ? Object.keys(body) : 'null')
       // Check if this looks like a DID document response
       if (body && body.didDocument && body.didDocument.service && Array.isArray(body.didDocument.service)) {
         // Enrich services with metadata asynchronously
@@ -64,6 +66,7 @@ async function enrichServicesWithMetadata(services: any[], dbConnection: Promise
 
   try {
     const db = await dbConnection
+    const dbType = db.driver.options.type
 
     // Get all service IDs
     const serviceIds = services.map(s => {
@@ -76,24 +79,42 @@ async function enrichServicesWithMetadata(services: any[], dbConnection: Promise
       return services
     }
 
-    // Query metadata for all services
     // Service IDs in DB include the fragment prefix (#)
-    const placeholders = serviceIds.map((_, i) => `$${i + 1}`).join(', ')
     const fragmentIds = serviceIds.map(id => `#${id}`)
 
-    const result = await db.query(
-      `SELECT id, metadata FROM service WHERE id IN (${placeholders}) OR id IN (${serviceIds.map((_, i) => `$${i + 1 + serviceIds.length}`).join(', ')})`,
-      [...fragmentIds, ...serviceIds]
-    )
+    // Query metadata for all services
+    // Build query with correct placeholder syntax for database type
+    let result: any[]
+    if (dbType === 'postgres') {
+      const placeholders = fragmentIds.map((_, i) => `$${i + 1}`).join(', ')
+      const placeholders2 = serviceIds.map((_, i) => `$${i + 1 + fragmentIds.length}`).join(', ')
+      result = await db.query(
+        `SELECT id, metadata FROM service WHERE id IN (${placeholders}) OR id IN (${placeholders2})`,
+        [...fragmentIds, ...serviceIds]
+      )
+    } else {
+      // SQLite uses ? placeholders
+      const placeholders = fragmentIds.map(() => '?').join(', ')
+      const placeholders2 = serviceIds.map(() => '?').join(', ')
+      result = await db.query(
+        `SELECT "id", "metadata" FROM "service" WHERE "id" IN (${placeholders}) OR "id" IN (${placeholders2})`,
+        [...fragmentIds, ...serviceIds]
+      )
+    }
+
+    console.log('[DIDEnricher] Looking for service IDs:', { fragmentIds, serviceIds })
+    console.log('[DIDEnricher] Query result rows:', result.length)
 
     // Build a map of service ID -> metadata
     const metadataMap = new Map<string, any>()
     for (const row of result) {
+      console.log('[DIDEnricher] Row:', { id: row.id, hasMetadata: !!row.metadata, metadata: row.metadata })
       if (row.metadata) {
         const metadata = typeof row.metadata === 'string' ? JSON.parse(row.metadata) : row.metadata
         // Store with fragment ID (without #) for easier lookup
         const key = row.id.startsWith('#') ? row.id.substring(1) : row.id
         metadataMap.set(key, metadata)
+        console.log('[DIDEnricher] Added to map:', { key, metadata })
       }
     }
 
