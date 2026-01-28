@@ -19,13 +19,14 @@ import {
   TimeSlot,
   UsagePolicy,
 } from '@typings'
+import {getEnv} from '@services/env'
 
 // ============================================
 // VDX API CONFIGURATION
 // ============================================
 
 // VDX Resource Manager API URL - defaults to localhost:8080
-const VDX_API_URL = process.env.NEXT_PUBLIC_VDX_API_URL || 'http://localhost:8080/api/resources/v1'
+const getVdxApiUrl = () => getEnv('BROWSER_PUBLIC_VDX_API_URL') || 'http://localhost:8080/api/resources/v1'
 
 /**
  * Get the access token from session storage.
@@ -944,7 +945,7 @@ export const bookingDataProvider = (): DataProvider => ({
     }
 
     const resourcePath = getResourcePath(resource)
-    const url = new URL(`${VDX_API_URL}/${resourcePath}`)
+    const url = new URL(`${getVdxApiUrl()}/${resourcePath}`)
 
     // VDX uses page (0-indexed) and size for pagination
     if (pagination) {
@@ -1010,7 +1011,7 @@ export const bookingDataProvider = (): DataProvider => ({
 
     const resourcePath = getResourcePath(resource)
 
-    const response = await fetch(`${VDX_API_URL}/${resourcePath}/${id}`, {
+    const response = await fetch(`${getVdxApiUrl()}/${resourcePath}/${id}`, {
       credentials: 'include',
       headers: getHeaders(),
     })
@@ -1048,12 +1049,12 @@ export const bookingDataProvider = (): DataProvider => ({
     const requestBody = transformToVdxFormat(resource, variables)
 
     console.log('[BookingDataProvider] POST request:', {
-      url: `${VDX_API_URL}/${resourcePath}`,
+      url: `${getVdxApiUrl()}/${resourcePath}`,
       variables: JSON.parse(JSON.stringify(variables)),
       requestBody: JSON.parse(JSON.stringify(requestBody)),
     })
 
-    const response = await fetch(`${VDX_API_URL}/${resourcePath}`, {
+    const response = await fetch(`${getVdxApiUrl()}/${resourcePath}`, {
       method: 'POST',
       credentials: 'include',
       headers: getHeaders(true),
@@ -1099,13 +1100,13 @@ export const bookingDataProvider = (): DataProvider => ({
     const requestBody = transformToVdxFormat(resource, variables)
 
     console.log('[BookingDataProvider] PATCH request:', {
-      url: `${VDX_API_URL}/${resourcePath}/${id}`,
+      url: `${getVdxApiUrl()}/${resourcePath}/${id}`,
       variables: JSON.parse(JSON.stringify(variables)), // Deep copy for logging
       requestBody: JSON.parse(JSON.stringify(requestBody)), // Deep copy for logging
     })
 
     // VDX uses PATCH for partial updates
-    const response = await fetch(`${VDX_API_URL}/${resourcePath}/${id}`, {
+    const response = await fetch(`${getVdxApiUrl()}/${resourcePath}/${id}`, {
       method: 'PATCH',
       credentials: 'include',
       headers: getHeaders(true),
@@ -1142,7 +1143,7 @@ export const bookingDataProvider = (): DataProvider => ({
 
     const resourcePath = getResourcePath(resource)
 
-    const response = await fetch(`${VDX_API_URL}/${resourcePath}/${id}`, {
+    const response = await fetch(`${getVdxApiUrl()}/${resourcePath}/${id}`, {
       method: 'DELETE',
       credentials: 'include',
       headers: getHeaders(),
@@ -1168,7 +1169,7 @@ export const bookingDataProvider = (): DataProvider => ({
     // Delete each item individually
     await Promise.all(
       ids.map(id =>
-        fetch(`${VDX_API_URL}/${resourcePath}/${id}`, {
+        fetch(`${getVdxApiUrl()}/${resourcePath}/${id}`, {
           method: 'DELETE',
           credentials: 'include',
           headers: getHeaders(),
@@ -1182,7 +1183,7 @@ export const bookingDataProvider = (): DataProvider => ({
   },
 
   getApiUrl: (): string => {
-    return VDX_API_URL
+    return getVdxApiUrl()
   },
 })
 
@@ -1201,7 +1202,7 @@ async function handleNestedResourceList(resource: string, filters?: any[]): Prom
 
   if (!resourceId) {
     // No resourceId filter - fetch all resources and combine their nested items
-    const allResourcesResponse = await fetch(`${VDX_API_URL}/resources?page=0&size=1000`, {
+    const allResourcesResponse = await fetch(`${getVdxApiUrl()}/resources?page=0&size=1000`, {
       credentials: 'include',
       headers: getHeaders(),
     })
@@ -1239,7 +1240,7 @@ async function handleNestedResourceList(resource: string, filters?: any[]): Prom
   }
 
   // Fetch the parent resource by ID
-  const response = await fetch(`${VDX_API_URL}/resources/${resourceId}`, {
+  const response = await fetch(`${getVdxApiUrl()}/resources/${resourceId}`, {
     credentials: 'include',
     headers: getHeaders(),
   })
@@ -1288,7 +1289,7 @@ async function handleNestedResourceCreate(resource: string, variables: any): Pro
   }
 
   // Fetch current resource
-  const getResponse = await fetch(`${VDX_API_URL}/resources/${resourceId}`, {
+  const getResponse = await fetch(`${getVdxApiUrl()}/resources/${resourceId}`, {
     credentials: 'include',
     headers: getHeaders(),
   })
@@ -1314,7 +1315,7 @@ async function handleNestedResourceCreate(resource: string, variables: any): Pro
   }
 
   // PATCH the parent resource
-  const patchResponse = await fetch(`${VDX_API_URL}/resources/${resourceId}`, {
+  const patchResponse = await fetch(`${getVdxApiUrl()}/resources/${resourceId}`, {
     method: 'PATCH',
     credentials: 'include',
     headers: getHeaders(true),
@@ -1340,7 +1341,7 @@ async function handleNestedResourceUpdate(resource: string, id: string, variable
   }
 
   // Fetch current resource
-  const getResponse = await fetch(`${VDX_API_URL}/resources/${resourceId}`, {
+  const getResponse = await fetch(`${getVdxApiUrl()}/resources/${resourceId}`, {
     credentials: 'include',
     headers: getHeaders(),
   })
@@ -1381,7 +1382,7 @@ async function handleNestedResourceUpdate(resource: string, id: string, variable
   }
 
   // PATCH the parent resource
-  const patchResponse = await fetch(`${VDX_API_URL}/resources/${resourceId}`, {
+  const patchResponse = await fetch(`${getVdxApiUrl()}/resources/${resourceId}`, {
     method: 'PATCH',
     credentials: 'include',
     headers: getHeaders(true),
@@ -1698,7 +1699,7 @@ export const bookingService = {
     if (categoryId) params.set('categoryId', categoryId)
     params.set('includeDefault', 'true')
 
-    const response = await fetch(`${VDX_API_URL}/schedule-sets/assignments/resolve?${params.toString()}`, {
+    const response = await fetch(`${getVdxApiUrl()}/schedule-sets/assignments/resolve?${params.toString()}`, {
       credentials: 'include',
       headers: getHeaders(),
     })
@@ -1779,7 +1780,7 @@ export const bookingService = {
     if (categoryId) params.set('categoryId', categoryId)
     params.set('includeDefault', 'true')
 
-    const response = await fetch(`${VDX_API_URL}/policies/assignments/resolve?${params.toString()}`, {
+    const response = await fetch(`${getVdxApiUrl()}/policies/assignments/resolve?${params.toString()}`, {
       credentials: 'include',
       headers: getHeaders(),
     })
@@ -1840,7 +1841,7 @@ export const bookingService = {
     }
 
     // VDX API call
-    const response = await fetch(`${VDX_API_URL}/schedule-sets/${scheduleSetId}/flatten`, {
+    const response = await fetch(`${getVdxApiUrl()}/schedule-sets/${scheduleSetId}/flatten`, {
       credentials: 'include',
       headers: getHeaders(),
     })
@@ -1871,7 +1872,7 @@ export const bookingService = {
 
     // Try to use VDX availability endpoint first
     try {
-      const availabilityResponse = await fetch(`${VDX_API_URL}/resources/${resourceId}/availability?date=${date}`, {
+      const availabilityResponse = await fetch(`${getVdxApiUrl()}/resources/${resourceId}/availability?date=${date}`, {
         credentials: 'include',
         headers: getHeaders(),
       })
@@ -1903,15 +1904,15 @@ export const bookingService = {
 
     // Fallback: Calculate slots locally from resource schedules and existing bookings
     const [resourceResponse, bookingsResponse, policiesResponse] = await Promise.all([
-      fetch(`${VDX_API_URL}/resources/${resourceId}`, {
+      fetch(`${getVdxApiUrl()}/resources/${resourceId}`, {
         credentials: 'include',
         headers: getHeaders(),
       }),
-      fetch(`${VDX_API_URL}/bookings?resourceId=${resourceId}&startDate=${date}&endDate=${date}`, {
+      fetch(`${getVdxApiUrl()}/bookings?resourceId=${resourceId}&startDate=${date}&endDate=${date}`, {
         credentials: 'include',
         headers: getHeaders(),
       }),
-      fetch(`${VDX_API_URL}/policies/usage?isDefault=true&page=0&size=1`, {
+      fetch(`${getVdxApiUrl()}/policies/usage?isDefault=true&page=0&size=1`, {
         credentials: 'include',
         headers: getHeaders(),
       }),
@@ -1955,7 +1956,7 @@ export const bookingService = {
         }
         params.set('includeDefault', 'true')
 
-        const scheduleResponse = await fetch(`${VDX_API_URL}/schedule-sets/assignments/resolve?${params.toString()}`, {
+        const scheduleResponse = await fetch(`${getVdxApiUrl()}/schedule-sets/assignments/resolve?${params.toString()}`, {
           credentials: 'include',
           headers: getHeaders(),
         })
@@ -1974,7 +1975,7 @@ export const bookingService = {
         } else {
           // Fallback: Try to fetch schedule set assignments directly
           const assignmentsResponse = await fetch(
-            `${VDX_API_URL}/schedule-sets/assignments?resourceId=${resourceId}`,
+            `${getVdxApiUrl()}/schedule-sets/assignments?resourceId=${resourceId}`,
             {credentials: 'include', headers: getHeaders()},
           )
 
@@ -1985,7 +1986,7 @@ export const bookingService = {
             // For each assignment, fetch the schedule set with rules
             for (const assignment of assignments) {
               if (assignment.scheduleSetId) {
-                const setResponse = await fetch(`${VDX_API_URL}/schedule-sets/${assignment.scheduleSetId}`, {
+                const setResponse = await fetch(`${getVdxApiUrl()}/schedule-sets/${assignment.scheduleSetId}`, {
                   credentials: 'include',
                   headers: getHeaders(),
                 })
@@ -2038,7 +2039,7 @@ export const bookingService = {
 
     // Verification goes through the web-wallet agent, not VDX
     // TODO: Update when agent verification endpoints are implemented
-    const agentBaseUrl = process.env.NEXT_PUBLIC_AGENT_BASE_URL || 'http://localhost:5010'
+    const agentBaseUrl = getEnv('BROWSER_PUBLIC_AGENT_BASE_URL') || 'http://localhost:5010'
     const response = await fetch(`${agentBaseUrl}/api/booking/verification/start`, {
       method: 'POST',
       credentials: 'include',
@@ -2076,7 +2077,7 @@ export const bookingService = {
     }
 
     // Verification goes through the web-wallet agent, not VDX
-    const agentBaseUrl = process.env.NEXT_PUBLIC_AGENT_BASE_URL || 'http://localhost:5010'
+    const agentBaseUrl = getEnv('BROWSER_PUBLIC_AGENT_BASE_URL') || 'http://localhost:5010'
     const response = await fetch(`${agentBaseUrl}/api/booking/verification/${verificationId}/status`, {
       credentials: 'include',
       headers: {
@@ -2098,7 +2099,7 @@ export const bookingService = {
       return
     }
 
-    const response = await fetch(`${VDX_API_URL}/bookings/${bookingId}/cancel`, {
+    const response = await fetch(`${getVdxApiUrl()}/bookings/${bookingId}/cancel`, {
       method: 'POST',
       credentials: 'include',
       headers: getHeaders(),

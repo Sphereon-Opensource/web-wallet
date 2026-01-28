@@ -1,5 +1,6 @@
 import {RoleType} from '@sphereon/ui-components.core'
 import {ExtendedRoleType} from '@typings'
+import { getEnv } from '../services/env'
 
 /**
  * OIDC Role Mapping Configuration
@@ -8,12 +9,12 @@ import {ExtendedRoleType} from '@typings'
  * to application RoleType enum values.
  *
  * Environment variables can override default mappings:
- * - NEXT_PUBLIC_OIDC_ROLES_HOLDER: comma-separated role names that map to HOLDER
- * - NEXT_PUBLIC_OIDC_ROLES_ISSUER: comma-separated role names that map to ISSUER
- * - NEXT_PUBLIC_OIDC_ROLES_VERIFIER: comma-separated role names that map to RELYING_PARTY (Verifier)
- * - NEXT_PUBLIC_OIDC_ROLES_ADMIN: comma-separated role names that map to ADMIN
- * - NEXT_PUBLIC_OIDC_ROLES_BOOKER: comma-separated role names that map to BOOKER
- * - NEXT_PUBLIC_OIDC_ALLOW_ALL_WHEN_NO_ROLES: "true" to allow all roles when token has no roles (default: true)
+ * - BROWSER_PUBLIC_OIDC_ROLES_HOLDER: comma-separated role names that map to HOLDER
+ * - BROWSER_PUBLIC_OIDC_ROLES_ISSUER: comma-separated role names that map to ISSUER
+ * - BROWSER_PUBLIC_OIDC_ROLES_VERIFIER: comma-separated role names that map to RELYING_PARTY (Verifier)
+ * - BROWSER_PUBLIC_OIDC_ROLES_ADMIN: comma-separated role names that map to ADMIN
+ * - BROWSER_PUBLIC_OIDC_ROLES_BOOKER: comma-separated role names that map to BOOKER
+ * - BROWSER_PUBLIC_OIDC_ALLOW_ALL_WHEN_NO_ROLES: "true" to allow all roles when token has no roles (default: true)
  */
 
 // Default OIDC role names that map to each app role
@@ -38,42 +39,42 @@ const parseEnvRoles = (envValue: string | undefined, defaults: string[]): string
  * Get OIDC role names that map to HOLDER
  */
 export const getHolderRoleNames = (): string[] => {
-  return parseEnvRoles(process.env.NEXT_PUBLIC_OIDC_ROLES_HOLDER, DEFAULT_HOLDER_ROLES)
+  return parseEnvRoles(getEnv('BROWSER_PUBLIC_OIDC_ROLES_HOLDER'), DEFAULT_HOLDER_ROLES)
 }
 
 /**
  * Get OIDC role names that map to ISSUER
  */
 export const getIssuerRoleNames = (): string[] => {
-  return parseEnvRoles(process.env.NEXT_PUBLIC_OIDC_ROLES_ISSUER, DEFAULT_ISSUER_ROLES)
+  return parseEnvRoles(getEnv('BROWSER_PUBLIC_OIDC_ROLES_ISSUER'), DEFAULT_ISSUER_ROLES)
 }
 
 /**
  * Get OIDC role names that map to VERIFIER (RELYING_PARTY)
  */
 export const getVerifierRoleNames = (): string[] => {
-  return parseEnvRoles(process.env.NEXT_PUBLIC_OIDC_ROLES_VERIFIER, DEFAULT_VERIFIER_ROLES)
+  return parseEnvRoles(getEnv('BROWSER_PUBLIC_OIDC_ROLES_VERIFIER'), DEFAULT_VERIFIER_ROLES)
 }
 
 /**
  * Get OIDC role names that map to ADMIN
  */
 export const getAdminRoleNames = (): string[] => {
-  return parseEnvRoles(process.env.NEXT_PUBLIC_OIDC_ROLES_ADMIN, DEFAULT_ADMIN_ROLES)
+  return parseEnvRoles(getEnv('BROWSER_PUBLIC_OIDC_ROLES_ADMIN'), DEFAULT_ADMIN_ROLES)
 }
 
 /**
  * Get OIDC role names that map to BOOKER
  */
 export const getBookerRoleNames = (): string[] => {
-  return parseEnvRoles(process.env.NEXT_PUBLIC_OIDC_ROLES_BOOKER, DEFAULT_BOOKER_ROLES)
+  return parseEnvRoles(getEnv('BROWSER_PUBLIC_OIDC_ROLES_BOOKER'), DEFAULT_BOOKER_ROLES)
 }
 
 /**
  * Check if all roles should be allowed when token has no roles (backward compatibility)
  */
 export const shouldAllowAllWhenNoRoles = (): boolean => {
-  const envValue = process.env.NEXT_PUBLIC_OIDC_ALLOW_ALL_WHEN_NO_ROLES
+  const envValue = getEnv('BROWSER_PUBLIC_OIDC_ALLOW_ALL_WHEN_NO_ROLES')
   // Default to true for backward compatibility
   if (envValue === undefined || envValue === '') return true
   return envValue.toLowerCase() === 'true'

@@ -7,6 +7,8 @@
  * in the frontend.
  */
 
+import {envManager, getEnv} from '@services/env'
+
 export interface AgentConfig {
   publicBaseUrl: string
   paths: {
@@ -31,10 +33,16 @@ class AgentConfigManager {
   /**
    * Load agent configuration from the backend.
    * Results are cached for subsequent calls.
+   * Ensures environment is loaded first.
    */
   async load(): Promise<AgentConfig> {
     if (this.config) return this.config
     if (this.loadPromise) return this.loadPromise
+
+    // Ensure env is loaded before we try to read BROWSER_PUBLIC_AGENT_BASE_URL
+    if (!envManager.isLoaded()) {
+      await envManager.load()
+    }
 
     this.loadPromise = this.fetchConfig()
     this.config = await this.loadPromise
@@ -43,7 +51,7 @@ class AgentConfigManager {
 
   private async fetchConfig(): Promise<AgentConfig> {
     // Bootstrap URL is needed to contact the agent initially
-    const bootstrapUrl = process.env.BROWSER_PUBLIC_AGENT_BASE_URL ?? 'http://localhost:5010'
+    const bootstrapUrl = getEnv('BROWSER_PUBLIC_AGENT_BASE_URL') ?? 'http://localhost:5010'
     try {
       const res = await fetch(`${bootstrapUrl}/api/config`)
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
@@ -76,7 +84,7 @@ class AgentConfigManager {
    * Falls back to env var if config not yet loaded.
    */
   getPublicBaseUrl(): string {
-    return this.config?.publicBaseUrl ?? process.env.BROWSER_PUBLIC_AGENT_BASE_URL ?? 'http://localhost:5010'
+    return this.config?.publicBaseUrl ?? getEnv('BROWSER_PUBLIC_AGENT_BASE_URL') ?? 'http://localhost:5010'
   }
 
   /**
