@@ -185,7 +185,6 @@ const addLinkListeners = (linkHandlers: LinkHandlers, context: IAgentContext<any
 export const getAgent = (): TAgent<TAgentTypes> => {
   if (!_agent) {
     const baseUrl = getAgentBaseUrl()
-    console.log('[Agent] Creating agent with baseUrl:', baseUrl)
     _agent = createAgentInstance()
     _agentContext = {..._agent.context, agent: _agent}
     addLinkListeners(linkHandlers, _agentContext)

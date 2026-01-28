@@ -53,8 +53,7 @@ const _app = (props: React.PropsWithChildren<unknown>) => {
   useEffect(() => {
     const loadEnvironment = async () => {
       try {
-        // Load env first, then agent config (which depends on env values)
-        await envManager.load()
+        // agent config will load env as well
         await agentConfig.load()
         setEnvLoaded(true)
       } catch (err) {
