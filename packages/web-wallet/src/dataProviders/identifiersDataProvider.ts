@@ -218,6 +218,11 @@ const ensureInboxAndFolder = async (did: string, service: IdentifierServiceEndpo
 }
 
 const replaceServices = async (did: string, currentServices: any[], newServices: IdentifierServiceEndpoint[]): Promise<void> => {
+  console.log('[REPLACE_SERVICES_v2] ===== ENTERING replaceServices =====')
+  console.log('[REPLACE_SERVICES_v2] DID:', did)
+  console.log('[REPLACE_SERVICES_v2] Current services count:', currentServices?.length || 0)
+  console.log('[REPLACE_SERVICES_v2] New services count:', newServices?.length || 0)
+  console.log('[REPLACE_SERVICES_v2] New services:', JSON.stringify(newServices, null, 2))
   try {
     // Remove all existing services
     if (currentServices && currentServices.length > 0) {
@@ -258,13 +263,28 @@ const replaceServices = async (did: string, currentServices: any[], newServices:
         service: serviceData as any,
       })
 
-      // Update metadata for services with internal eInvoice data
-      if (service._internal) {
+      // Update metadata for services with internal eInvoice data or subType
+      console.log(`[updateServices] Processing service:`, {
+        id: service.id,
+        type: service.type,
+        subType: service.subType,
+        hasInternal: !!service._internal,
+        serviceKeys: Object.keys(service),
+      })
+      if (service._internal || service.subType) {
         try {
+          const metadata: Record<string, unknown> = {}
+          if (service._internal) {
+            metadata.eInvoice = service._internal
+          }
+          if (service.subType) {
+            metadata.subType = service.subType
+          }
+          console.log(`[updateServices] Saving metadata for ${service.id}:`, metadata)
           await getAgent().updateServiceMetadata({
             serviceId: service.id,
             did,
-            metadata: {eInvoice: service._internal}, // Capital I
+            metadata,
           })
           console.log(`Updated metadata for service ${service.id}`)
         } catch (metadataError) {
@@ -307,7 +327,7 @@ export const identifiersDataProvider = (): DataProvider => ({
       return Promise.reject(Error(`Identifier with id ${id} not found`))
     }
 
-    // Enrich services with metadata (including eInvoice data)
+    // Enrich services with metadata (including eInvoice data and subType)
     const enrichedServices = await Promise.all(
       (identity.services || []).map(async (service) => {
         try {
@@ -315,9 +335,19 @@ export const identifiersDataProvider = (): DataProvider => ({
             serviceId: service.id,
             did: identity.did,
           })
-          if (metadata && metadata.eInvoice) {
+          if (metadata) {
+            const enriched: Record<string, unknown> = {...service}
             // Store internal metadata for later use
-            return {...service, _internal: metadata.eInvoice}
+            if (metadata.eInvoice) {
+              enriched._internal = metadata.eInvoice
+              // Also set the eInvoice array for display
+              enriched.eInvoice = Array.isArray(metadata.eInvoice) ? metadata.eInvoice : [metadata.eInvoice]
+            }
+            // Restore subType from metadata
+            if (metadata.subType) {
+              enriched.subType = metadata.subType
+            }
+            return enriched
           }
         } catch (error) {
           console.warn(`Failed to get metadata for service ${service.id}:`, error)
@@ -326,7 +356,7 @@ export const identifiersDataProvider = (): DataProvider => ({
       })
     )
 
-    const enrichedIdentity = {...identity, services: enrichedServices}
+    const enrichedIdentity = {...identity, services: enrichedServices as any}
     const result: IdentifierRecord = {...enrichedIdentity, id: enrichedIdentity.did}
     return {data: asIdentifierData<TData>(result)}
   },
@@ -464,16 +494,31 @@ export const identifiersDataProvider = (): DataProvider => ({
       )
     }
 
-    // Update metadata for services with eInvoice data and ensure inbox/folder exist
+    // Update metadata for services with eInvoice data/subType and ensure inbox/folder exist
     // Veramo's didManagerCreate doesn't persist custom metadata, so we need to update it separately
     if (variables.services) {
       for (const service of variables.services) {
-        if (service._internal) {
+        console.log(`[identifiersDataProvider.create] Processing service:`, {
+          id: service.id,
+          type: service.type,
+          subType: service.subType,
+          hasInternal: !!service._internal,
+          serviceKeys: Object.keys(service),
+        })
+        if (service._internal || service.subType) {
           try {
+            const metadata: Record<string, unknown> = {}
+            if (service._internal) {
+              metadata.eInvoice = service._internal
+            }
+            if (service.subType) {
+              metadata.subType = service.subType
+            }
+            console.log(`[identifiersDataProvider.create] Saving metadata for ${service.id}:`, metadata)
             await getAgent().updateServiceMetadata({
               serviceId: service.id,
               did: identifier.did,
-              metadata: {eInvoice: service._internal}, // Capital I
+              metadata,
             })
             console.log(`Updated metadata for service ${service.id}`)
           } catch (metadataError) {
@@ -536,6 +581,8 @@ export const identifiersDataProvider = (): DataProvider => ({
 
       // Update services if provided
       if (updateVars.services) {
+        console.log('[UPDATE_v2] ===== Calling replaceServices =====')
+        console.log('[UPDATE_v2] Services passed:', JSON.stringify(updateVars.services.map(s => ({id: s.id, type: s.type, subType: s.subType})), null, 2))
         await replaceServices(identifier.did, identifier.services || [], updateVars.services)
       }
 

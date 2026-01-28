@@ -285,6 +285,13 @@ const CreateIdentifierAddServiceEndpointContent: FC<Props> = ({mode}): ReactElem
         eInvoice: eInvoiceDataItem ? [eInvoiceDataItem] : undefined, // Capital I, array
         _internal: internalData || undefined, // For inbox creation
       }
+      console.log('[CreateIdentifierAddServiceEndpointContent] Created service endpoint:', {
+        id: newServiceEndpoint.id,
+        type: newServiceEndpoint.type,
+        subType: newServiceEndpoint.subType,
+        hasEInvoice: !!newServiceEndpoint.eInvoice,
+        hasInternal: !!newServiceEndpoint._internal,
+      })
     } else {
       // Use the standard serviceEndpoint value
       newServiceEndpoint = {

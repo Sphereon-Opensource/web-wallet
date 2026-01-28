@@ -522,14 +522,21 @@ const ShowIdentifierDetails: FC = (): ReactElement => {
       })
 
       // Store internal eInvoice metadata separately (Veramo doesn't persist custom properties)
-      if (internalData) {
+      if (internalData || service.subType) {
         try {
+          const metadata: Record<string, unknown> = {}
+          if (internalData) {
+            metadata.eInvoice = internalData // Capital I
+          }
+          if (service.subType) {
+            metadata.subType = service.subType
+          }
           await getAgent().updateServiceMetadata({
             serviceId: service.id,
             did: identifier.did,
-            metadata: {eInvoice: internalData}, // Capital I
+            metadata,
           })
-          console.log(`Updated metadata for service ${service.id}`)
+          console.log(`Updated metadata for service ${service.id}`, {subType: service.subType, hasEInvoice: !!internalData})
         } catch (metadataError) {
           console.warn(`Failed to update metadata for service ${service.id}:`, metadataError)
         }
