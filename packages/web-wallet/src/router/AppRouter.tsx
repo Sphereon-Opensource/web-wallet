@@ -110,6 +110,7 @@ import AdminCategoryCreatePage from '../../pages/booking/admin/categories/create
 import AdminPoliciesPage from '../../pages/booking/admin/policies'
 import AdminPolicyDetailPage from '../../pages/booking/admin/policies/[id]'
 import AdminPolicyCreatePage from '../../pages/booking/admin/policies/create'
+import AdminPolicyEditPage from '../../pages/booking/admin/policies/[id]/edit'
 import AdminSchedulesPage from '../../pages/booking/admin/schedules'
 import AdminScheduleDetailPage from '../../pages/booking/admin/schedules/[id]'
 import AdminScheduleCreatePage from '../../pages/booking/admin/schedules/create'
@@ -460,6 +461,14 @@ const AppRouter: React.FC = () => {
                   element={
                     <AdminOnly>
                       <AdminPolicyDetailPage />
+                    </AdminOnly>
+                  }
+                />
+                <Route
+                  path=":id/edit"
+                  element={
+                    <AdminOnly>
+                      <AdminPolicyEditPage />
                     </AdminOnly>
                   }
                 />

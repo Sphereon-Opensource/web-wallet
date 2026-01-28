@@ -132,3 +132,4 @@ export type MenuIcon =
   | 'calendar'
   | 'folder'
   | 'settings'
+  | 'team'

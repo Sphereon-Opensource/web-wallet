@@ -6,6 +6,7 @@ import PageHeaderBar from '@components/bars/PageHeaderBar'
 import {Outlet} from 'react-router-dom'
 import {useCredentialsCreateMachine} from '@machines/credentials/credentialCreateStateNavigation'
 import CredentialOfferModal, {QRValueResult} from '@components/modals/CredentialOfferModal'
+import {CredentialPreviewItem} from '@components/views/CredentialExchangeView'
 import {createCredentialPayloadWithSchema, qrValueGenerator} from '@/src/services/credentials/CredentialService'
 import {staticPropsWithSST} from '@/src/i18n/server'
 
@@ -64,6 +65,18 @@ const CredentialsCreatePage: FC = () => {
     )
   }
 
+  // Build credential preview for the modal
+  const credentialPreviewItems: CredentialPreviewItem[] = credentialType
+    ? [
+        {
+          id: Array.isArray(credentialType.credentialType) ? credentialType.credentialType[0] : credentialType.credentialType,
+          name: Array.isArray(credentialType.credentialType) ? credentialType.credentialType[0] : credentialType.credentialType,
+          type: 'Verifiable Credential',
+          backgroundColor: '#7276F7',
+        },
+      ]
+    : []
+
   return (
     <div className={style.container}>
       {showCredentialOfferModal && (
@@ -73,6 +86,7 @@ const CredentialsCreatePage: FC = () => {
           onClose={onCloseCredentialOfferModal}
           onSubmitQr={onSubmitQr}
           onSubmitUrl={onSubmitUrl}
+          credentials={credentialPreviewItems}
         />
       )}
       <PageHeaderBar path={translate('issue_credential_path_label')} />

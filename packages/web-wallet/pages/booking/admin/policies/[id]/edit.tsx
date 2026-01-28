@@ -1,10 +1,10 @@
-import React, {FC, ReactElement, useState} from 'react'
-import {useCreate, useTranslate} from '@refinedev/core'
-import {useNavigate} from 'react-router-dom'
+import React, {FC, ReactElement, useState, useEffect} from 'react'
+import {useOne, useUpdate, useTranslate} from '@refinedev/core'
+import {useNavigate, useParams} from 'react-router-dom'
 import {PrimaryButton, ProgressStepIndicator, SecondaryButton} from '@sphereon/ui-components.ssi-react'
 import PageHeaderBar from '@components/bars/PageHeaderBar'
-import {BookingDataResource} from '@typings'
-import style from './index.module.css'
+import {BookingDataResource, UsagePolicy} from '@typings'
+import style from '../create/index.module.css'
 
 interface FormData {
   name: string
@@ -26,9 +26,10 @@ interface FormData {
   setAsDefault: boolean
 }
 
-const PolicyCreatePage: FC = (): ReactElement => {
+const PolicyEditPage: FC = (): ReactElement => {
   const navigate = useNavigate()
   const translate = useTranslate()
+  const {id} = useParams<{id: string}>()
   const [step, setStep] = useState(1)
   const [error, setError] = useState<string | null>(null)
   const [formData, setFormData] = useState<FormData>({
@@ -47,14 +48,44 @@ const PolicyCreatePage: FC = (): ReactElement => {
     setAsDefault: false,
   })
 
-  const {mutate: createPolicy, isLoading: isCreating} = useCreate()
+  // Fetch existing policy
+  const {data: policyData, isLoading: isLoadingPolicy} = useOne<UsagePolicy>({
+    resource: BookingDataResource.POLICIES,
+    id: id as string,
+    queryOptions: {enabled: !!id},
+  })
+
+  const {mutate: updatePolicy, isLoading: isUpdating} = useUpdate()
+
+  // Pre-fill form when policy data loads
+  useEffect(() => {
+    if (policyData?.data) {
+      const policy = policyData.data
+      setFormData({
+        name: policy.name || '',
+        description: policy.description || '',
+        slotDurationMinutes: policy.slotDurationMinutes || 30,
+        minDurationMinutes: policy.minDurationMinutes || null,
+        maxDurationMinutes: policy.maxDurationMinutes || null,
+        bufferAfterMinutes: policy.bufferAfterMinutes || null,
+        maxAdvanceBookingDays: policy.maxAdvanceBookingDays || null,
+        minAdvanceBookingHours: policy.minAdvanceBookingHours || null,
+        maxConcurrentBookings: policy.maxConcurrentBookings || null,
+        requiresApproval: policy.requiresApproval || false,
+        allowRecurring: policy.allowRecurring ?? true,
+        allowSameDayBooking: policy.allowSameDayBooking ?? true,
+        setAsDefault: policy.isDefault || false,
+      })
+    }
+  }, [policyData])
 
   const handleSubmit = () => {
     setError(null)
 
-    createPolicy(
+    updatePolicy(
       {
         resource: BookingDataResource.POLICIES,
+        id: id as string,
         values: {
           name: formData.name,
           description: formData.description || undefined,
@@ -73,10 +104,10 @@ const PolicyCreatePage: FC = (): ReactElement => {
       },
       {
         onSuccess: () => {
-          navigate('/booking/admin/policies')
+          navigate(`/booking/admin/policies/${id}`)
         },
         onError: (err) => {
-          setError(err.message || 'Failed to create policy')
+          setError(err.message || 'Failed to update policy')
         },
       },
     )
@@ -110,20 +141,35 @@ const PolicyCreatePage: FC = (): ReactElement => {
     if (step > 1) {
       setStep(step - 1)
     } else {
-      navigate('/booking/admin/policies')
+      navigate(`/booking/admin/policies/${id}`)
     }
   }
 
   const getButtonCaption = (): string => {
     if (step === maxSteps) {
-      return isCreating ? 'Creating...' : 'Create Policy'
+      return isUpdating ? 'Saving...' : 'Save Changes'
     }
     return translate('action_proceed_label', 'Next')
   }
 
+  if (isLoadingPolicy) {
+    return (
+      <div className={style.container}>
+        <PageHeaderBar path="Booking / Admin / Policies / Edit" />
+        <div className={style.contentContainer}>
+          <div className={style.outletContainer}>
+            <div className={style.formCard}>
+              <p>Loading policy...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className={style.container}>
-      <PageHeaderBar path="Booking / Admin / Policies / Create" />
+      <PageHeaderBar path="Booking / Admin / Policies / Edit" />
       <div className={style.contentContainer}>
         <div className={style.outletContainer}>
           {error && (
@@ -138,7 +184,7 @@ const PolicyCreatePage: FC = (): ReactElement => {
             {step === 1 && (
               <>
                 <h2>Basic Information</h2>
-                <p className={style.stepDescription}>Enter the name and description for this booking policy.</p>
+                <p className={style.stepDescription}>Edit the name and description for this booking policy.</p>
 
                 <div className={style.formGroup}>
                   <label>Policy Name *</label>
@@ -335,8 +381,8 @@ const PolicyCreatePage: FC = (): ReactElement => {
             {/* Step 4: Initial Assignment */}
             {step === 4 && (
               <>
-                <h2>Initial Assignment</h2>
-                <p className={style.stepDescription}>Choose how this policy should be initially assigned.</p>
+                <h2>Default Setting</h2>
+                <p className={style.stepDescription}>Choose whether this policy should be the system default.</p>
 
                 <div className={style.assignmentOptions}>
                   <div className={style.assignmentOption}>
@@ -348,10 +394,9 @@ const PolicyCreatePage: FC = (): ReactElement => {
                         onChange={() => setFormData({...formData, setAsDefault: false})}
                       />
                       <div className={style.radioContent}>
-                        <span className={style.radioTitle}>Don't set as default</span>
+                        <span className={style.radioTitle}>Not a default policy</span>
                         <span className={style.radioDescription}>
-                          Create this policy without making it the default.
-                          You can assign it to categories, groups, or resources later.
+                          This policy must be explicitly assigned to categories, groups, or resources.
                         </span>
                       </div>
                     </label>
@@ -374,25 +419,14 @@ const PolicyCreatePage: FC = (): ReactElement => {
                     </label>
                   </div>
                 </div>
-
-                <div className={style.assignmentNote}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="12" cy="12" r="10" />
-                    <line x1="12" y1="16" x2="12" y2="12" />
-                    <line x1="12" y1="8" x2="12.01" y2="8" />
-                  </svg>
-                  <span>
-                    After creating the policy, you can assign it to specific categories, groups, or resources from their respective detail pages.
-                  </span>
-                </div>
               </>
             )}
 
             {/* Step 5: Review */}
             {step === 5 && (
               <>
-                <h2>Review & Create</h2>
-                <p className={style.stepDescription}>Review the policy details before creating.</p>
+                <h2>Review Changes</h2>
+                <p className={style.stepDescription}>Review the policy details before saving.</p>
 
                 <div className={style.reviewSection}>
                   <h3>Basic Information</h3>
@@ -509,7 +543,7 @@ const PolicyCreatePage: FC = (): ReactElement => {
                           <line x1="6" y1="6" x2="18" y2="18" />
                         </svg>
                       )}
-                      <span>Set as Default</span>
+                      <span>System Default</span>
                     </div>
                   </div>
                 </div>
@@ -522,13 +556,13 @@ const PolicyCreatePage: FC = (): ReactElement => {
                 style={{width: 109}}
                 caption={step > 1 ? translate('action_back_label', 'Back') : translate('action_cancel_label', 'Cancel')}
                 onClick={async () => onBack()}
-                disabled={isCreating}
+                disabled={isUpdating}
               />
               <PrimaryButton
                 style={{width: 180, marginLeft: 'auto'}}
                 caption={getButtonCaption()}
                 onClick={async () => onNext()}
-                disabled={!canProceed || isCreating}
+                disabled={!canProceed || isUpdating}
               />
             </div>
           </div>
@@ -548,12 +582,12 @@ const PolicyCreatePage: FC = (): ReactElement => {
               description: 'Limits and flags',
             },
             {
-              title: 'Assignment',
-              description: 'Initial assignment',
+              title: 'Default Setting',
+              description: 'System default',
             },
             {
               title: 'Review',
-              description: 'Review and create',
+              description: 'Review and save',
             },
           ]}
           activeStep={step}
@@ -563,4 +597,4 @@ const PolicyCreatePage: FC = (): ReactElement => {
   )
 }
 
-export default PolicyCreatePage
+export default PolicyEditPage

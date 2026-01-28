@@ -81,9 +81,9 @@ export const RoleProvider: FC<RoleProviderProps> = ({children}) => {
     }
   }, [session?.oidcRoles])
 
-  // Filter roleConfig to only include authorized roles
+  // Filter roleConfig to only include authorized roles and exclude disabled roles
   const availableRoleConfigs = useMemo(() => {
-    return roleConfig.filter(config => authorizedRoles.includes(config.role))
+    return roleConfig.filter(config => authorizedRoles.includes(config.role) && !config.isDisabled)
   }, [authorizedRoles])
 
   // Initialize currentRole to first available role config

@@ -1,10 +1,11 @@
 import React, {FC, ReactElement, useState, useMemo} from 'react'
 import {useCreate, useList} from '@refinedev/core'
-import {useRouter} from 'next/router'
+import {useNavigate} from 'react-router-dom'
 import {PrimaryButton, ProgressStepIndicator, SecondaryButton} from '@sphereon/ui-components.ssi-react'
 import PageHeaderBar from '@components/bars/PageHeaderBar'
 import {
   BookingDataResource,
+  DataProvider,
   DataResource,
   ResourceCategory,
   ResourceGroup,
@@ -59,7 +60,7 @@ const TIMEZONE_OPTIONS = [
 ]
 
 const AdminResourceCreatePage: FC = (): ReactElement => {
-  const router = useRouter()
+  const navigate = useNavigate()
   const [step, setStep] = useState(1)
   const [error, setError] = useState<string | null>(null)
   const [formData, setFormData] = useState<FormData>({
@@ -101,6 +102,7 @@ const AdminResourceCreatePage: FC = (): ReactElement => {
   const {data: dcqlQueriesData} = useList<DcqlQueryItem>({
     resource: DataResource.QUERIES,
     pagination: {pageSize: 100},
+    meta: {dataProviderName: DataProvider.QUERIES},
   })
 
   const {mutate: createResource, isLoading: isCreating} = useCreate()
@@ -154,7 +156,7 @@ const AdminResourceCreatePage: FC = (): ReactElement => {
     if (step > 1) {
       setStep(step - 1)
     } else {
-      router.push('/booking/admin/resources')
+      navigate('/booking/admin/resources')
     }
   }
 
@@ -185,42 +187,69 @@ const AdminResourceCreatePage: FC = (): ReactElement => {
           status: 'ACTIVE',
           requirements,
         },
+        meta: {dataProviderName: DataProvider.BOOKING},
       },
       {
         onSuccess: (data) => {
-          const resourceId = data?.data?.id
+          console.log('[Create Resource] Success response:', data)
+          // Extract resource ID - try multiple paths for robustness
+          const resourceId = data?.data?.id || data?.data?.partyId || (data as any)?.id
+
           if (!resourceId) {
-            router.push('/booking/admin/resources')
+            console.error('[Create Resource] No resource ID in response:', data)
+            // Navigate to list as fallback
+            navigate('/booking/admin/resources')
             return
           }
 
-          // Create schedule assignment if overriding
+          console.log('[Create Resource] Resource ID:', resourceId)
+
+          // Create schedule assignment if overriding (fire and forget)
           if (!formData.useInheritedSchedule && formData.scheduleSetId) {
-            createScheduleAssignment({
-              resource: BookingDataResource.SCHEDULE_SET_ASSIGNMENTS,
-              values: {
-                scheduleSetId: formData.scheduleSetId,
-                resourceId: resourceId,
-                priority: 1,
+            createScheduleAssignment(
+              {
+                resource: BookingDataResource.SCHEDULE_SET_ASSIGNMENTS,
+                values: {
+                  scheduleSetId: formData.scheduleSetId,
+                  resourceId: resourceId,
+                  priority: 1,
+                },
+                meta: {dataProviderName: DataProvider.BOOKING},
               },
-            })
+              {
+                onError: (err) => {
+                  console.error('[Create Resource] Failed to create schedule assignment:', err)
+                },
+              },
+            )
           }
 
-          // Create policy assignment if overriding
+          // Create policy assignment if overriding (fire and forget)
           if (!formData.useInheritedPolicy && formData.policyId) {
-            createPolicyAssignment({
-              resource: BookingDataResource.POLICY_ASSIGNMENTS,
-              values: {
-                policyId: formData.policyId,
-                resourceId: resourceId,
-                priority: 1,
+            createPolicyAssignment(
+              {
+                resource: BookingDataResource.POLICY_ASSIGNMENTS,
+                values: {
+                  policyId: formData.policyId,
+                  resourceId: resourceId,
+                  priority: 1,
+                },
+                meta: {dataProviderName: DataProvider.BOOKING},
               },
-            })
+              {
+                onError: (err) => {
+                  console.error('[Create Resource] Failed to create policy assignment:', err)
+                },
+              },
+            )
           }
 
-          router.push(`/booking/admin/resources/${resourceId}`)
+          // Navigate to the resource detail page
+          console.log('[Create Resource] Navigating to:', `/booking/admin/resources/${resourceId}`)
+          navigate(`/booking/admin/resources/${resourceId}`)
         },
         onError: (err) => {
+          console.error('[Create Resource] Failed to create resource:', err)
           setError(err.message || 'Failed to create resource')
         },
       },
@@ -500,67 +529,84 @@ const AdminResourceCreatePage: FC = (): ReactElement => {
     </>
   )
 
-  const renderStep5 = () => (
-    <>
-      <h2>Verification Requirements</h2>
-      <p className={style.stepDescription}>Configure credential verification for bookings.</p>
+  const renderStep5 = () => {
+    const hasQueries = dcqlQueries.length > 0
 
-      <div className={style.flagsSection}>
-        <div className={style.flagOption}>
-          <label className={style.flagLabel}>
-            <input
-              type="checkbox"
-              checked={formData.requiresVerification}
-              onChange={e => setFormData({...formData, requiresVerification: e.target.checked, dcqlQueryId: ''})}
-            />
-            <div className={style.flagContent}>
-              <span className={style.flagTitle}>Require Credential Verification (OID4VP)</span>
-              <span className={style.flagDescription}>
-                Users will need to present a verifiable credential to complete their booking
+    return (
+      <>
+        <h2>Verification Requirements</h2>
+        <p className={style.stepDescription}>Configure credential verification for bookings.</p>
+
+        {!hasQueries && (
+          <div className={style.warningBox}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+              <line x1="12" y1="9" x2="12" y2="13" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+            <div className={style.warningBoxContent}>
+              <span className={style.warningBoxTitle}>No DCQL queries available</span>
+              <span className={style.warningBoxText}>
+                To enable credential verification, you first need to create a DCQL query in Query Management.
+                This defines which credentials users must present.
               </span>
             </div>
-          </label>
-        </div>
-      </div>
+          </div>
+        )}
 
-      {formData.requiresVerification && (
-        <div className={style.formGroup}>
-          <label>Verification Query (DCQL) *</label>
-          <select
-            value={formData.dcqlQueryId}
-            onChange={e => setFormData({...formData, dcqlQueryId: e.target.value})}
-          >
-            <option value="">Select a query...</option>
-            {dcqlQueries.map(query => (
-              <option key={query.id} value={query.id}>
-                {query.name || query.queryId || query.id}
-                {query.purpose && ` - ${query.purpose}`}
-              </option>
-            ))}
-          </select>
-          <span className={style.helpText}>
-            Select the DCQL query that defines which credentials users must present
-          </span>
-          {dcqlQueries.length === 0 && (
-            <span className={style.warningText}>
-              No DCQL queries found. Create one in Query Management first.
+        <div className={style.flagsSection}>
+          <div className={style.flagOption}>
+            <label className={`${style.flagLabel} ${!hasQueries ? style.flagLabelDisabled : ''}`}>
+              <input
+                type="checkbox"
+                checked={formData.requiresVerification}
+                onChange={e => setFormData({...formData, requiresVerification: e.target.checked, dcqlQueryId: ''})}
+                disabled={!hasQueries}
+              />
+              <div className={style.flagContent}>
+                <span className={style.flagTitle}>Require Credential Verification (OID4VP)</span>
+                <span className={style.flagDescription}>
+                  Users will need to present a verifiable credential to complete their booking
+                </span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        {formData.requiresVerification && hasQueries && (
+          <div className={style.formGroup}>
+            <label>Verification Query (DCQL) *</label>
+            <select
+              value={formData.dcqlQueryId}
+              onChange={e => setFormData({...formData, dcqlQueryId: e.target.value})}
+            >
+              <option value="">Select a query...</option>
+              {dcqlQueries.map(query => (
+                <option key={query.id} value={query.id}>
+                  {query.name || query.queryId || query.id}
+                  {query.purpose && ` - ${query.purpose}`}
+                </option>
+              ))}
+            </select>
+            <span className={style.helpText}>
+              Select the DCQL query that defines which credentials users must present
             </span>
-          )}
-        </div>
-      )}
+          </div>
+        )}
 
-      {!formData.requiresVerification && (
-        <div className={style.infoNote}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <circle cx="12" cy="12" r="10" />
-            <line x1="12" y1="16" x2="12" y2="12" />
-            <line x1="12" y1="8" x2="12.01" y2="8" />
-          </svg>
-          <span>You can always add verification requirements later by editing the resource.</span>
-        </div>
-      )}
-    </>
-  )
+        {!formData.requiresVerification && hasQueries && (
+          <div className={style.infoNote}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="16" x2="12" y2="12" />
+              <line x1="12" y1="8" x2="12.01" y2="8" />
+            </svg>
+            <span>You can always add verification requirements later by editing the resource.</span>
+          </div>
+        )}
+      </>
+    )
+  }
 
   const renderStep6 = () => (
     <>

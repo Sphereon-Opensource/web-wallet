@@ -37,6 +37,8 @@ interface FormData {
   // Step 5: Requirements
   requiresVerification: boolean
   dcqlQueryId: string
+  // Track original requirement ID for updates
+  originalRequirementId: string | null
 }
 
 const STEPS = [
@@ -85,6 +87,7 @@ const AdminResourceEditPage: FC = (): ReactElement => {
     policyId: null,
     requiresVerification: false,
     dcqlQueryId: '',
+    originalRequirementId: null,
   })
 
   // Track original assignments to know if we need to create/update/delete
@@ -180,6 +183,7 @@ const AdminResourceEditPage: FC = (): ReactElement => {
         policyId: existingPolicyAssignment?.policyId || null,
         requiresVerification: (resource.requirements?.length ?? 0) > 0,
         dcqlQueryId: resource.requirements?.[0]?.dcqlQuery || '',
+        originalRequirementId: resource.requirements?.[0]?.id || null,
       })
 
       setOriginalScheduleAssignmentId(existingScheduleAssignment?.id || null)
@@ -236,15 +240,19 @@ const AdminResourceEditPage: FC = (): ReactElement => {
   const handleSubmit = async () => {
     setError(null)
 
-    // Build requirements array
+    // Build requirements array - include id if updating existing requirement
     const requirements = formData.requiresVerification && formData.dcqlQueryId
       ? [{
+          ...(formData.originalRequirementId ? {id: formData.originalRequirementId} : {}),
+          resourceId: id,
           isMandatory: true,
           description: selectedDcqlQuery?.name || 'Credential verification required',
           dcqlQuery: formData.dcqlQueryId,
           displayOrder: 1,
         }]
       : []
+
+    console.log('[Resource Edit] Submitting with requirements:', requirements)
 
     // Update the resource
     updateResource(
@@ -650,67 +658,90 @@ const AdminResourceEditPage: FC = (): ReactElement => {
     </>
   )
 
-  const renderStep5 = () => (
-    <>
-      <h2>Verification Requirements</h2>
-      <p className={style.stepDescription}>Configure credential verification for bookings.</p>
+  const renderStep5 = () => {
+    const hasQueries = dcqlQueries.length > 0
 
-      <div className={style.flagsSection}>
-        <div className={style.flagOption}>
-          <label className={style.flagLabel}>
-            <input
-              type="checkbox"
-              checked={formData.requiresVerification}
-              onChange={e => setFormData({...formData, requiresVerification: e.target.checked, dcqlQueryId: ''})}
-            />
-            <div className={style.flagContent}>
-              <span className={style.flagTitle}>Require Credential Verification (OID4VP)</span>
-              <span className={style.flagDescription}>
-                Users will need to present a verifiable credential to complete their booking
+    return (
+      <>
+        <h2>Verification Requirements</h2>
+        <p className={style.stepDescription}>Configure credential verification for bookings.</p>
+
+        {!hasQueries && (
+          <div className={style.warningBox}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+              <line x1="12" y1="9" x2="12" y2="13" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+            <div className={style.warningBoxContent}>
+              <span className={style.warningBoxTitle}>No DCQL queries available</span>
+              <span className={style.warningBoxText}>
+                To enable credential verification, you first need to create a DCQL query in Query Management.
+                This defines which credentials users must present.
               </span>
             </div>
-          </label>
-        </div>
-      </div>
+          </div>
+        )}
 
-      {formData.requiresVerification && (
-        <div className={style.formGroup}>
-          <label>Verification Query (DCQL) *</label>
-          <select
-            value={formData.dcqlQueryId}
-            onChange={e => setFormData({...formData, dcqlQueryId: e.target.value})}
-          >
-            <option value="">Select a query...</option>
-            {dcqlQueries.map(query => (
-              <option key={query.id} value={query.id}>
-                {query.name || query.queryId || query.id}
-                {query.purpose && ` - ${query.purpose}`}
-              </option>
-            ))}
-          </select>
-          <span className={style.helpText}>
-            Select the DCQL query that defines which credentials users must present
-          </span>
-          {dcqlQueries.length === 0 && (
-            <span className={style.warningText}>
-              No DCQL queries found. Create one in Query Management first.
+        <div className={style.flagsSection}>
+          <div className={style.flagOption}>
+            <label className={`${style.flagLabel} ${!hasQueries ? style.flagLabelDisabled : ''}`}>
+              <input
+                type="checkbox"
+                checked={formData.requiresVerification}
+                onChange={e => setFormData({
+                  ...formData,
+                  requiresVerification: e.target.checked,
+                  dcqlQueryId: e.target.checked ? formData.dcqlQueryId : '',
+                  // Clear requirement ID if disabling verification (will create new requirement if re-enabled)
+                  originalRequirementId: e.target.checked ? formData.originalRequirementId : null,
+                })}
+                disabled={!hasQueries}
+              />
+              <div className={style.flagContent}>
+                <span className={style.flagTitle}>Require Credential Verification (OID4VP)</span>
+                <span className={style.flagDescription}>
+                  Users will need to present a verifiable credential to complete their booking
+                </span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        {formData.requiresVerification && hasQueries && (
+          <div className={style.formGroup}>
+            <label>Verification Query (DCQL) *</label>
+            <select
+              value={formData.dcqlQueryId}
+              onChange={e => setFormData({...formData, dcqlQueryId: e.target.value})}
+            >
+              <option value="">Select a query...</option>
+              {dcqlQueries.map(query => (
+                <option key={query.id} value={query.id}>
+                  {query.name || query.queryId || query.id}
+                  {query.purpose && ` - ${query.purpose}`}
+                </option>
+              ))}
+            </select>
+            <span className={style.helpText}>
+              Select the DCQL query that defines which credentials users must present
             </span>
-          )}
-        </div>
-      )}
+          </div>
+        )}
 
-      {!formData.requiresVerification && (
-        <div className={style.infoNote}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <circle cx="12" cy="12" r="10" />
-            <line x1="12" y1="16" x2="12" y2="12" />
-            <line x1="12" y1="8" x2="12.01" y2="8" />
-          </svg>
-          <span>You can always add verification requirements later by editing the resource.</span>
-        </div>
-      )}
-    </>
-  )
+        {!formData.requiresVerification && hasQueries && (
+          <div className={style.infoNote}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="16" x2="12" y2="12" />
+              <line x1="12" y1="8" x2="12.01" y2="8" />
+            </svg>
+            <span>You can always add verification requirements later by editing the resource.</span>
+          </div>
+        )}
+      </>
+    )
+  }
 
   const renderStep6 = () => (
     <>

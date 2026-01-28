@@ -409,6 +409,28 @@ const PolicyDetailPage: FC = (): ReactElement => {
               </span>
             </div>
           </div>
+          <div className={`${style.flagItem} ${policy.allowSameDayBooking ? style.flagEnabled : style.flagDisabled}`}>
+            <div className={style.flagIcon}>
+              {policy.allowSameDayBooking ? (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M9 11l3 3L22 4" />
+                  <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
+                </svg>
+              ) : (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                </svg>
+              )}
+            </div>
+            <div className={style.flagContent}>
+              <span className={style.flagLabel}>Same Day Booking</span>
+              <span className={style.flagDescription}>
+                {policy.allowSameDayBooking
+                  ? 'Users can book for the same day'
+                  : 'Bookings must be made at least one day in advance'}
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </div>

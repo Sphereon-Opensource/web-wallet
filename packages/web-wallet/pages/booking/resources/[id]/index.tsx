@@ -208,7 +208,7 @@ const BookingResourceDetailPage: FC = (): ReactElement => {
     }
     // Check usagePolicies array on resource (from VDX join table)
     if (resource?.usagePolicies && resource.usagePolicies.length > 0) {
-      const firstPolicy = resource.usagePolicies[0]?.policy
+      const firstPolicy = resource.usagePolicies[0]?.usagePolicy
       if (firstPolicy) {
         console.log('[Booking] Using resource usagePolicies[0]:', firstPolicy)
         return firstPolicy
@@ -403,9 +403,12 @@ const BookingResourceDetailPage: FC = (): ReactElement => {
     return Math.round((last.endTime.getTime() - first.startTime.getTime()) / (1000 * 60))
   }, [])
 
-  // Format date for API
+  // Format date for API (using local date components to avoid timezone issues)
   const formatDateForApi = (date: Date): string => {
-    return date.toISOString().split('T')[0]
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
   }
 
   // Load availability for selected date range

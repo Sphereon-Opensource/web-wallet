@@ -1,4 +1,4 @@
-import { BookingVerificationApiServer } from '../api/bookingVerificationApiServer'
+import { BookingVerificationApiServer, BookingVerificationContext } from '../api/bookingVerificationApiServer'
 
 /**
  * Checks if a correlation ID has booking verification context stored.
@@ -43,6 +43,6 @@ export function completeBookingVerification(
  * @param correlationId - The correlation ID to look up
  * @returns The stored context, or undefined if not found
  */
-export function getBookingVerificationContext(correlationId: string) {
+export function getBookingVerificationContext(correlationId: string): BookingVerificationContext | undefined {
   return BookingVerificationApiServer.getVerificationContext(correlationId)
 }

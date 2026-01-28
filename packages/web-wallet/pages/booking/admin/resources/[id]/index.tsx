@@ -1,5 +1,5 @@
 import React, {FC, ReactElement, useState, useEffect, useCallback} from 'react'
-import {useRouter} from 'next/router'
+import {useNavigate, useParams} from 'react-router-dom'
 import {useOne, useList, useDelete} from '@refinedev/core'
 import {PrimaryButton, SecondaryButton} from '@sphereon/ui-components.ssi-react'
 import PageHeaderBar from '@components/bars/PageHeaderBar'
@@ -27,8 +27,8 @@ enum ResourceTab {
 }
 
 const ResourceDetailPage: FC = (): ReactElement => {
-  const router = useRouter()
-  const {id} = router.query
+  const navigate = useNavigate()
+  const {id} = useParams<{id: string}>()
   const [activeTab, setActiveTab] = useState<ResourceTab>(ResourceTab.OVERVIEW)
 
   const {mutate: deleteResource} = useDelete()
@@ -238,7 +238,7 @@ const ResourceDetailPage: FC = (): ReactElement => {
           },
           {
             onSuccess: () => {
-              router.push('/booking/admin/resources')
+              navigate('/booking/admin/resources')
               resolve()
             },
             onError: (err) => reject(err),
@@ -248,16 +248,16 @@ const ResourceDetailPage: FC = (): ReactElement => {
     },
   })
 
-  const handleEdit = () => {
-    router.push(`/booking/admin/resources/edit/${id}`)
+  const handleEdit = async () => {
+    navigate(`/booking/admin/resources/edit/${id}`)
   }
 
   const handleDelete = () => {
     deleteModal.openModal(id as string, resource?.name || 'Resource')
   }
 
-  const handleClose = () => {
-    router.push('/booking/admin/resources')
+  const handleClose = async () => {
+    navigate('/booking/admin/resources')
   }
 
   const formatDate = (dateString: string) => {
@@ -345,7 +345,7 @@ const ResourceDetailPage: FC = (): ReactElement => {
         />
         <div className={style.errorContainer}>
           <p>Resource not found or an error occurred.</p>
-          <SecondaryButton caption="Back to Resources" onClick={async () => { await router.push('/booking/admin/resources') }} />
+          <SecondaryButton caption="Back to Resources" onClick={async () => navigate('/booking/admin/resources')} />
         </div>
       </div>
     )
@@ -553,7 +553,7 @@ const ResourceDetailPage: FC = (): ReactElement => {
       <div className={style.tabActions}>
         <button
           className={style.manageButton}
-          onClick={() => router.push(`/booking/admin/resources/edit/${id}?step=3`)}
+          onClick={() => navigate(`/booking/admin/resources/edit/${id}?step=3`)}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
@@ -764,7 +764,7 @@ const ResourceDetailPage: FC = (): ReactElement => {
         <div className={style.tabActions}>
           <button
             className={style.manageButton}
-            onClick={() => router.push(`/booking/admin/resources/edit/${id}?step=4`)}
+            onClick={() => navigate(`/booking/admin/resources/edit/${id}?step=4`)}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
@@ -850,8 +850,8 @@ const ResourceDetailPage: FC = (): ReactElement => {
                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
               </svg>
             </button>
-            <SecondaryButton caption="Edit" onClick={async () => handleEdit()} />
-            <PrimaryButton caption="Close" onClick={async () => handleClose()} />
+            <SecondaryButton caption="Edit" onClick={handleEdit} />
+            <PrimaryButton caption="Close" onClick={handleClose} />
           </div>
         </div>
 

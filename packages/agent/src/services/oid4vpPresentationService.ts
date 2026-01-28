@@ -216,7 +216,7 @@ export async function completeOid4vpPresentation(
       console.log(`${prefix} Sending OID4VP response...`)
       console.log(`${prefix}   - Holder DID: ${holderDid}`)
       console.log(`${prefix}   - Verifier client_id: ${authorizationRequestData.clientId}`)
-      console.log(`${prefix}   - Response URI: ${authorizationRequestData.responseURI}`)
+      console.log(`${prefix}   - Response URI: ${authorizationRequestData.uri}`)
 
       const response = await agent.siopSendResponse({
         didAuthConfig,

@@ -1,0 +1,462 @@
+/* CredentialExchangeView - Reusable QR/URL display component */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 12px;
+  border: 1px solid #E3E3E3;
+}
+
+/* Credential Preview Section */
+.credentialPreview {
+  padding: 16px 24px;
+  border-bottom: 1px solid #E3E3E3;
+}
+
+.credentialPreviewTitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #6B7280;
+  margin: 0 0 12px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.credentialPreviewList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.credentialPreviewItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background-color: #f9fafb;
+  border-radius: 10px;
+  border: 1px solid #E3E3E3;
+}
+
+.credentialMiniCard {
+  width: 75px;
+  height: 50px;
+  flex-shrink: 0;
+}
+
+.credentialPreviewInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.credentialPreviewName {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #303030;
+}
+
+.credentialPreviewType {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  color: #6B7280;
+}
+
+.mandatoryBadge {
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: #7276F7;
+  background-color: rgba(114, 118, 247, 0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+/* Subtitle */
+.subtitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: #6B7280;
+  margin: 0;
+  padding: 16px 24px 0 24px;
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* Tab Navigation */
+.tabsContainer {
+  display: flex;
+  gap: 4px;
+  padding: 12px 24px 0 24px;
+}
+
+.tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background-color: transparent;
+  border: none;
+  border-radius: 10px 10px 0 0;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6B7280;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.tab:hover {
+  color: #303030;
+  background-color: #f9fafb;
+}
+
+.tabActive {
+  color: #7276F7;
+  background-color: rgba(114, 118, 247, 0.1);
+}
+
+.tabActive::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #7276F7;
+  border-radius: 2px 2px 0 0;
+}
+
+.tabIcon {
+  width: 18px;
+  height: 18px;
+}
+
+/* Content Divider */
+.contentDivider {
+  height: 1px;
+  background-color: #E3E3E3;
+  margin: 0 24px;
+}
+
+/* Content Area */
+.content {
+  padding: 24px;
+  min-height: 320px;
+}
+
+/* QR Code Display */
+.qrContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 0;
+}
+
+.qrCodeWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.qrInstructions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.qrInstructionsTitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: #303030;
+  margin: 0;
+}
+
+.qrInstructionsText {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  color: #6B7280;
+  margin: 0;
+  max-width: 300px;
+  line-height: 1.5;
+}
+
+/* Loading State */
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 60px 20px;
+}
+
+.loadingSpinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #E5E5E5;
+  border-top-color: #7276F7;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.loadingText {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: #6B7280;
+}
+
+/* URL Input Section */
+.urlContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 0;
+}
+
+.urlInputWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.urlLabel {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #303030;
+}
+
+.urlInput {
+  width: 100%;
+  padding: 12px 16px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background-color: white;
+  color: #303030;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+}
+
+.urlInput:focus {
+  outline: none;
+  border-color: #7276F7;
+  box-shadow: 0 0 0 3px rgba(114, 118, 247, 0.1);
+}
+
+.urlInput::placeholder {
+  color: #9ca3af;
+}
+
+.urlHint {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  color: #6B7280;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Generated URL Display */
+.generatedUrlSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.generatedUrlLabel {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #6B7280;
+}
+
+.generatedUrlBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+}
+
+.generatedUrl {
+  flex: 1;
+  font-size: 12px;
+  color: #6B7280;
+  word-break: break-all;
+  font-family: 'Monaco', 'Menlo', monospace;
+}
+
+.copyButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  background-color: white;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #6B7280;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.copyButton:hover {
+  background-color: #f3f4f6;
+  color: #303030;
+}
+
+.copyButtonSuccess {
+  background-color: rgba(0, 194, 73, 0.1);
+  border-color: #00C249;
+  color: #00C249;
+}
+
+/* Status Section */
+.statusSection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 24px;
+  background-color: white;
+  border-top: 1px solid #E3E3E3;
+}
+
+.statusSpinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #E5E5E5;
+  border-top-color: #7276F7;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+.statusText {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: #6B7280;
+  flex: 1;
+}
+
+.statusLoading,
+.statusPending {
+  /* Default styling, spinner visible */
+}
+
+.statusVerified {
+  background-color: rgba(0, 194, 73, 0.1);
+  border-top-color: #00C249;
+}
+
+.statusVerified .statusText {
+  color: #00C249;
+}
+
+.statusFailed,
+.statusExpired {
+  background-color: rgba(215, 69, 0, 0.1);
+  border-top-color: #D74500;
+  flex-wrap: wrap;
+}
+
+.statusFailed .statusText,
+.statusExpired .statusText {
+  color: #D74500;
+}
+
+.statusIcon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.statusIconSuccess {
+  color: #00C249;
+}
+
+.statusIconError {
+  color: #D74500;
+}
+
+.retryButton {
+  padding: 8px 16px;
+  background-color: #D74500;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.retryButton:hover {
+  background-color: #C13F00;
+}
+
+/* Animations */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .container {
+    border-radius: 8px;
+  }
+
+  .credentialPreview {
+    padding: 12px 16px;
+  }
+
+  .subtitle {
+    padding: 12px 16px 0 16px;
+  }
+
+  .tabsContainer {
+    padding: 12px 16px 0 16px;
+  }
+
+  .contentDivider {
+    margin: 0 16px;
+  }
+
+  .content {
+    padding: 16px;
+    min-height: 280px;
+  }
+
+  .tab {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+
+  .statusSection {
+    flex-wrap: wrap;
+    padding: 12px 16px;
+  }
+}

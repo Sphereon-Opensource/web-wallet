@@ -380,6 +380,55 @@
   color: #6B7280;
 }
 
+.flagLabelDisabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: #F9FAFB;
+}
+
+.flagLabelDisabled:hover {
+  border-color: #E5E7EB;
+}
+
+.flagLabelDisabled input[type="checkbox"] {
+  cursor: not-allowed;
+}
+
+/* Warning Box */
+.warningBox {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  background-color: #FEF3C7;
+  border: 1px solid #F59E0B;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.warningBox svg {
+  flex-shrink: 0;
+  color: #D97706;
+}
+
+.warningBoxContent {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.warningBoxTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #92400E;
+}
+
+.warningBoxText {
+  font-size: 13px;
+  color: #B45309;
+  line-height: 1.5;
+}
+
 /* Image Preview */
 .imagePreview {
   margin-top: 12px;

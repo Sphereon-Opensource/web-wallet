@@ -25,7 +25,7 @@ import {ManagedKeyInfo, TKeyType} from '@veramo/core'
 import {getEnv} from '@/src/services/env'
 
 // Supported key types - adjust based on your requirements
-const SUPPORTED_KEY_TYPES: TKeyType[] = ['Ed25519', 'Secp256k1', 'Secp256r1', 'X25519', 'RSA']
+const SUPPORTED_KEY_TYPES = ['Ed25519', 'Secp256k1', 'Secp256r1', 'X25519', 'RSA'] as TKeyType[]
 
 const createIdentifierNavigationListener = async (step: number, navigate: any): Promise<void> => {
   switch (step) {

@@ -4,6 +4,7 @@ import {RoleType} from '@sphereon/ui-components.core'
 export const roleConfig: Array<RoleData> = [
   {
     role: ExtendedRoleType.BOOKER,
+    isDisabled: true, // Temporarily disabled - set to false to enable
     navigation: [
       {
         type: 'separator',
@@ -40,7 +41,7 @@ export const roleConfig: Array<RoleData> = [
           {
             type: 'item',
             label: 'Groups',
-            icon: 'folder',
+            icon: 'team',
             path: '/booking/admin/groups',
             adminOnly: true,
           },

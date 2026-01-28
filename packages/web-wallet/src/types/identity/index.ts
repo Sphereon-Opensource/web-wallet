@@ -371,7 +371,7 @@ export const KEYIdentifierCapabilities: IdentifierCapability = {
       },
       {
         label: 'RSA',
-        keyType: 'RSA',
+        keyType: 'RSA' as TKeyType,
         vmRelationShips: ['capabilityDelegation', 'capabilityInvocation', 'assertionMethod', 'authentication', 'keyAgreement', 'verificationMethod'],
         minKeys: 0,
         maxKeys: 1,
@@ -449,7 +449,7 @@ export const JWKIdentifierCapabilities: IdentifierCapability = {
       },
       {
         label: 'RSA',
-        keyType: 'RSA',
+        keyType: 'RSA' as TKeyType,
         vmRelationShips: ['capabilityDelegation', 'capabilityInvocation', 'assertionMethod', 'authentication', 'keyAgreement', 'verificationMethod'],
         minKeys: 0,
         maxKeys: 1,
@@ -521,7 +521,7 @@ export const EBSIIdentifierCapabilities: IdentifierCapability = {
       },
       {
         label: 'RSA',
-        keyType: 'RSA',
+        keyType: 'RSA' as TKeyType,
         vmRelationShips: ['capabilityDelegation', 'capabilityInvocation', 'assertionMethod', 'authentication', 'keyAgreement', 'verificationMethod'],
         readonly: false,
         allowed: {
@@ -575,7 +575,7 @@ export const EBSIIdentifierCapabilities: IdentifierCapability = {
       },
       {
         label: 'RSA',
-        keyType: 'RSA',
+        keyType: 'RSA' as TKeyType,
         vmRelationShips: ['assertionMethod', 'authentication', 'keyAgreement', 'verificationMethod'],
         readonly: false,
         allowed: {
@@ -641,7 +641,7 @@ export const WEBIdentifierCapabilities: IdentifierCapability = {
       },
       {
         label: 'RSA',
-        keyType: 'RSA',
+        keyType: 'RSA' as TKeyType,
         vmRelationShips: ['capabilityDelegation', 'capabilityInvocation', 'assertionMethod', 'authentication', 'keyAgreement', 'verificationMethod'],
         readonly: false,
         allowed: {
@@ -695,7 +695,7 @@ export const WEBIdentifierCapabilities: IdentifierCapability = {
       },
       {
         label: 'RSA',
-        keyType: 'RSA',
+        keyType: 'RSA' as TKeyType,
         vmRelationShips: ['capabilityDelegation', 'capabilityInvocation', 'assertionMethod', 'authentication', 'keyAgreement', 'verificationMethod'],
         readonly: false,
         allowed: {

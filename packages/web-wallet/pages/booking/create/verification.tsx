@@ -1,16 +1,14 @@
 import React, {FC, ReactElement, useCallback, useEffect, useState} from 'react'
 import {useNavigate, useSearchParams} from 'react-router-dom'
 import {useOne} from '@refinedev/core'
-import {CredentialMiniCardView, ProgressStepIndicator, PrimaryButton, SecondaryButton} from '@sphereon/ui-components.ssi-react'
+import {ProgressStepIndicator, PrimaryButton, SecondaryButton} from '@sphereon/ui-components.ssi-react'
 import {CreateElementArgs, QRType, URIData, ValueResult} from '@sphereon/ssi-sdk.qr-code-generator'
-import {RotateLoader} from 'react-spinners'
 import PageHeaderBar from '@components/bars/PageHeaderBar'
+import {CredentialExchangeView, CredentialExchangeStatus, CredentialPreviewItem} from '@components/views/CredentialExchangeView'
 import {BookingDataResource, BookingResource} from '@typings'
 import {bookingService} from '@/src/dataProviders/bookingDataProvider'
 import {getAgent} from '@/src/agent'
 import styles from './verification.module.css'
-
-type VerificationStatus = 'idle' | 'loading' | 'pending' | 'verified' | 'failed' | 'expired'
 
 const BookingVerificationPage: FC = (): ReactElement => {
   const navigate = useNavigate()
@@ -23,7 +21,7 @@ const BookingVerificationPage: FC = (): ReactElement => {
   const startTime = searchParams.get('startTime') || ''
   const endTime = searchParams.get('endTime') || ''
 
-  const [verificationStatus, setVerificationStatus] = useState<VerificationStatus>('idle')
+  const [verificationStatus, setVerificationStatus] = useState<CredentialExchangeStatus>('idle')
   const [qrUri, setQrUri] = useState<string | null>(null)
   const [deeplink, setDeeplink] = useState<string | null>(null)
   const [verificationId, setVerificationId] = useState<string | null>(null)
@@ -166,8 +164,10 @@ const BookingVerificationPage: FC = (): ReactElement => {
     }
   }, [resource, resourceId, slotId, date, title, startTime, endTime, navigate])
 
-  const handleOpenInWallet = () => {
-    if (deeplink) {
+  const handleOpenInWallet = (url: string) => {
+    if (url) {
+      window.location.href = url
+    } else if (deeplink) {
       window.location.href = deeplink
     }
   }
@@ -195,11 +195,11 @@ const BookingVerificationPage: FC = (): ReactElement => {
     navigate(`/booking/create/confirmation?${params.toString()}`)
   }
 
-  const handleBack = () => {
+  const handleBack = async () => {
     navigate(`/booking/resources/${resourceId}`)
   }
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     const params = new URLSearchParams({
       resourceId: resourceId!,
       slotId: slotId!,
@@ -227,6 +227,35 @@ const BookingVerificationPage: FC = (): ReactElement => {
     return 'Selected time slot'
   }
 
+  // Build credential preview items from requirements
+  const credentialPreviewItems: CredentialPreviewItem[] =
+    resource?.requirements?.map(req => ({
+      id: req.id,
+      name: req.description || 'Credential',
+      type: 'Verifiable Credential',
+      backgroundColor: '#7276F7',
+      isMandatory: req.isMandatory,
+    })) || []
+
+  // Build status message
+  const getStatusMessage = (): string => {
+    if (error) return error
+    switch (verificationStatus) {
+      case 'loading':
+        return 'Preparing verification request...'
+      case 'pending':
+        return 'Waiting for verification... Please scan the QR code with your wallet.'
+      case 'verified':
+        return 'Verification successful! Redirecting to confirmation...'
+      case 'failed':
+        return 'Verification failed.'
+      case 'expired':
+        return 'Verification expired.'
+      default:
+        return ''
+    }
+  }
+
   if (resourceLoading) {
     return (
       <div className={styles.container}>
@@ -245,11 +274,14 @@ const BookingVerificationPage: FC = (): ReactElement => {
         <PageHeaderBar path="Booking / Not Found" />
         <div className={styles.errorState}>
           <h3>Resource not found</h3>
-          <PrimaryButton caption="Browse Resources" onClick={() => navigate('/booking/resources')} />
+          <PrimaryButton caption="Browse Resources" onClick={async () => navigate('/booking/resources')} />
         </div>
       </div>
     )
   }
+
+  // Show CredentialExchangeView for all active states
+  const showExchangeView = verificationStatus !== 'idle'
 
   return (
     <div className={styles.container}>
@@ -265,114 +297,21 @@ const BookingVerificationPage: FC = (): ReactElement => {
             </p>
           </div>
 
-          {/* Verification Card */}
-          {(verificationStatus === 'loading' || verificationStatus === 'pending') && (
-            <div className={styles.verificationCard}>
-              <div className={styles.verificationContent}>
-                {/* QR Section */}
-                <div className={styles.qrSection}>
-                  {verificationStatus === 'loading' ? (
-                    <div className={styles.qrCode}>
-                      <div className={styles.loadingSpinner} />
-                    </div>
-                  ) : (
-                    <>
-                      <div className={styles.qrCode}>
-                        {qrCodeElement ? (
-                          <div className={styles.qrCodeWrapper}>{qrCodeElement}</div>
-                        ) : qrUri ? (
-                          <div className={styles.qrPlaceholder}>
-                            <RotateLoader size={12} color={'#7276F7'} />
-                          </div>
-                        ) : (
-                          <div className={styles.qrPlaceholder}>
-                            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                            </svg>
-                          </div>
-                        )}
-                      </div>
-                      <span className={styles.qrLabel}>Scan with your wallet app</span>
-
-                      {/* Deeplink button below QR code */}
-                      <div className={styles.orDivider}>
-                        <span className={styles.orLine}></span>
-                        <span className={styles.orText}>or</span>
-                        <span className={styles.orLine}></span>
-                      </div>
-                      <button className={styles.deeplinkBtn} onClick={handleOpenInWallet}>
-                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
-                          <path d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                        </svg>
-                        Open in Wallet App
-                      </button>
-                    </>
-                  )}
-                </div>
-
-                {/* Verification Info */}
-                <div className={styles.verificationInfo}>
-                  <h3 className={styles.verificationTitle}>Required Credentials</h3>
-                  <p className={styles.verificationDesc}>Scan the QR code or open your wallet to verify.</p>
-
-                  {/* Requirement List (Credential Minicards) */}
-                  <div className={styles.requirementList}>
-                    {resource.requirements?.map(req => (
-                      <div key={req.id} className={styles.credentialCard}>
-                        <div className={styles.credentialMiniCard}>
-                          <CredentialMiniCardView backgroundColor="#7276F7" />
-                        </div>
-                        <div className={styles.credentialInfo}>
-                          <span className={styles.credentialName}>{req.description || 'Credential'}</span>
-                          <span className={styles.credentialType}>Verifiable Credential</span>
-                        </div>
-                        {req.isMandatory && <span className={styles.credentialBadge}>Required</span>}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Status Section */}
-          {verificationStatus === 'loading' && (
-            <div className={styles.statusSection}>
-              <div className={styles.statusSpinner} />
-              <span className={styles.statusText}>Preparing verification request...</span>
-            </div>
-          )}
-
-          {verificationStatus === 'pending' && (
-            <div className={styles.statusSection}>
-              <div className={styles.statusSpinner} />
-              <span className={styles.statusText}>Waiting for verification... Please scan the QR code with your wallet.</span>
-            </div>
-          )}
-
-          {verificationStatus === 'verified' && (
-            <div className={`${styles.statusSection} ${styles.statusSuccess}`}>
-              <svg className={styles.successIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
-                <circle cx="12" cy="12" r="10" />
-                <path d="M9 12l2 2 4-4" />
-              </svg>
-              <span className={styles.statusText}>Verification successful! Redirecting to confirmation...</span>
-            </div>
-          )}
-
-          {(verificationStatus === 'failed' || verificationStatus === 'expired') && (
-            <div className={`${styles.statusSection} ${styles.statusError}`}>
-              <svg className={styles.errorIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
-                <circle cx="12" cy="12" r="10" />
-                <path d="M15 9l-6 6M9 9l6 6" />
-              </svg>
-              <span className={styles.statusText}>
-                {verificationStatus === 'expired' ? 'Verification expired.' : 'Verification failed.'} {error}
-              </span>
-              <button className={styles.retryButton} onClick={handleRetry}>
-                Try Again
-              </button>
-            </div>
+          {/* Credential Exchange View */}
+          {showExchangeView && (
+            <CredentialExchangeView
+              mode="verification"
+              qrUri={qrUri || ''}
+              deeplink={deeplink || undefined}
+              showUrlTab={true}
+              qrElement={qrCodeElement}
+              qrLoading={verificationStatus === 'loading' || !qrCodeElement}
+              credentials={credentialPreviewItems}
+              status={verificationStatus}
+              statusMessage={getStatusMessage()}
+              onOpenInWallet={handleOpenInWallet}
+              onRetry={handleRetry}
+            />
           )}
 
           {/* Button Row */}

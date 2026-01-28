@@ -25,6 +25,10 @@ const config: Config.InitialOptions = {
       },
     ],
   },
+  // Transform ESM modules from @sphereon packages
+  transformIgnorePatterns: [
+    '/node_modules/(?!(@sphereon)/)',
+  ],
   testMatch: ['**/__tests__/**/*.(spec|test).+(ts|tsx|js)'],
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
 }

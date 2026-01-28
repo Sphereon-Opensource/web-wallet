@@ -22,7 +22,7 @@ import addKeySchema from '../../../src/schemas/data/addKeySchema.json' assert {t
 import {isEInvoicingServiceType, isEInvoicingSubType, getEInvoicingDefaults, EInvSubType, EINV_SUB_TYPES, EINV_SERVICE_TYPE, EInvoiceDataItem} from '../../constants/eInvoicingDefaults'
 
 // Supported key types - adjust based on your requirements
-const SUPPORTED_KEY_TYPES: TKeyType[] = ['Ed25519', 'Secp256k1', 'Secp256r1', 'X25519', 'RSA']
+const SUPPORTED_KEY_TYPES = ['Ed25519', 'Secp256k1', 'Secp256r1', 'X25519', 'RSA'] as TKeyType[]
 
 const editIdentifierNavigationListener = async (step: number, navigate: any): Promise<void> => {
   switch (step) {

@@ -42,13 +42,20 @@ export function expressBuilder(opts?: {
     existingExpress: opts?.server?.existingExpress,
     listenCallback: opts?.server?.listenCallback,
   }
+  // Configure CORS origins - support credentials with specific origins
+  const corsOrigins = process.env.CORS_ALLOWED_ORIGINS
+    ? process.env.CORS_ALLOWED_ORIGINS.split(',').map(o => o.trim())
+    : ['http://localhost:3001', 'http://localhost:3000', 'http://127.0.0.1:3001', 'http://127.0.0.1:3000']
+
   const builder = ExpressBuilder.fromServerOpts({ ...serverOpts, envVarPrefix })
     .withMorganLogging({ format: 'dev' })
     .withCorsConfigurer(
       new ExpressCorsConfigurer({
         existingExpress: opts?.server?.existingExpress,
         envVarPrefix,
-      }).allowOrigin('*'),
+      })
+        .allowOrigin(corsOrigins)
+        .allowCredentials(true),
     )
     .withPassportAuth(usePassport, opts?.auth?.authentication?.initializeOptions)
 

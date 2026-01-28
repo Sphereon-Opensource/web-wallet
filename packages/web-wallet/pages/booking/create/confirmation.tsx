@@ -130,15 +130,15 @@ const BookingConfirmationPage: FC = (): ReactElement => {
     )
   }
 
-  const handleViewBookings = () => {
+  const handleViewBookings = async () => {
     navigate('/booking/my-bookings')
   }
 
-  const handleBookAnother = () => {
+  const handleBookAnother = async () => {
     navigate('/booking/resources')
   }
 
-  const handleBack = () => {
+  const handleBack = async () => {
     if (resource?.requirements && resource.requirements.length > 0) {
       navigate(-1)
     } else {
@@ -164,7 +164,7 @@ const BookingConfirmationPage: FC = (): ReactElement => {
         <PageHeaderBar path="Booking / Not Found" />
         <div className={styles.errorState}>
           <h3>Resource not found</h3>
-          <PrimaryButton caption="Browse Resources" onClick={() => navigate('/booking/resources')} />
+          <PrimaryButton caption="Browse Resources" onClick={async () => navigate('/booking/resources')} />
         </div>
       </div>
     )

@@ -7,7 +7,7 @@ const BOOKING_VERIFICATION_API_BASE_PATH = process.env.BOOKING_VERIFICATION_API_
 /**
  * Context stored during verification flow
  */
-interface BookingVerificationContext {
+export interface BookingVerificationContext {
   resourceId: string
   bookingId?: string
   requirementIds?: string[]
@@ -142,8 +142,8 @@ export class BookingVerificationApiServer extends BaseApiServer {
       const correlationId = uuidv4()
 
       // Determine base URI for OID4VP endpoints
+      // Note: OID4VP_AGENT_BASE_URI should already include the path prefix (e.g., /oid4vp)
       const baseUri = process.env.OID4VP_AGENT_BASE_URI ?? `http://localhost:${process.env.PORT ?? 5010}`
-      const agentBasePath = process.env.OID4VP_AGENT_BASE_PATH ?? ''
 
       // Create the auth request URI using the existing SIOP infrastructure
       let requestUri: string
@@ -151,9 +151,9 @@ export class BookingVerificationApiServer extends BaseApiServer {
         requestUri = await this.agent.siopCreateAuthRequestURI({
           correlationId,
           queryId,
-          requestByReferenceURI: `${baseUri}${agentBasePath}/siop/queries/${queryId}/auth-requests/${correlationId}`,
+          requestByReferenceURI: `${baseUri}/siop/queries/${queryId}/auth-requests/${correlationId}`,
           responseURIType: 'response_uri',
-          responseURI: `${baseUri}${agentBasePath}/siop/queries/${queryId}/auth-responses/${correlationId}`,
+          responseURI: `${baseUri}/siop/queries/${queryId}/auth-responses/${correlationId}`,
         })
       } catch (error: any) {
         console.error('[BookingVerification] Failed to create auth request:', error)
@@ -194,7 +194,7 @@ export class BookingVerificationApiServer extends BaseApiServer {
       // Build deeplink for mobile wallet apps
       const walletScheme = process.env.WALLET_DEEPLINK_SCHEME || 'sphereon-wallet'
       const deeplink = `${walletScheme}://openid4vp?request_uri=${encodeURIComponent(
-        `${baseUri}${agentBasePath}/siop/queries/${queryId}/auth-requests/${correlationId}`
+        `${baseUri}/siop/queries/${queryId}/auth-requests/${correlationId}`
       )}`
 
       this.created(res, {
@@ -253,22 +253,25 @@ export class BookingVerificationApiServer extends BaseApiServer {
         })
 
         // Map SIOP auth state to our status
+        // AuthorizationRequestStateStatus values:
+        // - 'authorization_request_created' - request created, waiting for wallet
+        // - 'authorization_request_retrieved' - wallet picked up request
+        // - 'error' - error occurred
+        // Note: VERIFIED status comes from completedVerifications store (checked above),
+        // which gets updated when completeBookingVerification is called from VP response handler
         let status: 'PENDING' | 'VERIFIED' | 'FAILED' = 'PENDING'
-        let verifiedAt: string | undefined
 
-        if (authStatus.state === 'verified' || authStatus.state === 'complete') {
-          status = 'VERIFIED'
-          verifiedAt = new Date().toISOString()
-          BookingVerificationApiServer.completeVerification(correlationId, 'VERIFIED')
-        } else if (authStatus.state === 'error' || authStatus.state === 'failed') {
+        const authState = authStatus?.status
+        if (authState === 'error') {
           status = 'FAILED'
-          BookingVerificationApiServer.completeVerification(correlationId, 'FAILED', authStatus.error)
+          const errorMessage = authStatus?.error?.message || 'Verification failed'
+          BookingVerificationApiServer.completeVerification(correlationId, 'FAILED', errorMessage)
         }
+        // For 'authorization_request_created' and 'authorization_request_retrieved', stay PENDING
 
         this.success(res, {
           verificationId: correlationId,
           status,
-          verifiedAt,
         })
       } catch (e: any) {
         // If we can't get auth status, return pending

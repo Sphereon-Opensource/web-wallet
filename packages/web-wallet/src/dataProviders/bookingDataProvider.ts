@@ -1047,6 +1047,12 @@ export const bookingDataProvider = (): DataProvider => ({
     // Transform variables to VDX format
     const requestBody = transformToVdxFormat(resource, variables)
 
+    console.log('[BookingDataProvider] POST request:', {
+      url: `${VDX_API_URL}/${resourcePath}`,
+      variables: JSON.parse(JSON.stringify(variables)),
+      requestBody: JSON.parse(JSON.stringify(requestBody)),
+    })
+
     const response = await fetch(`${VDX_API_URL}/${resourcePath}`, {
       method: 'POST',
       credentials: 'include',
@@ -1054,12 +1060,18 @@ export const bookingDataProvider = (): DataProvider => ({
       body: JSON.stringify(requestBody),
     })
 
+    const responseText = await response.text()
+    console.log('[BookingDataProvider] POST response:', {
+      status: response.status,
+      ok: response.ok,
+      body: responseText,
+    })
+
     if (!response.ok) {
-      const errorText = await response.text()
-      throw new Error(`Failed to create ${resource}: ${errorText}`)
+      throw new Error(`Failed to create ${resource}: ${responseText}`)
     }
 
-    const data = await response.json()
+    const data = responseText ? JSON.parse(responseText) : {}
     const transformedData = transformResponse(resource, data)
 
     return {data: transformedData as TData}
@@ -1086,6 +1098,12 @@ export const bookingDataProvider = (): DataProvider => ({
     // Transform variables to VDX format
     const requestBody = transformToVdxFormat(resource, variables)
 
+    console.log('[BookingDataProvider] PATCH request:', {
+      url: `${VDX_API_URL}/${resourcePath}/${id}`,
+      variables: JSON.parse(JSON.stringify(variables)), // Deep copy for logging
+      requestBody: JSON.parse(JSON.stringify(requestBody)), // Deep copy for logging
+    })
+
     // VDX uses PATCH for partial updates
     const response = await fetch(`${VDX_API_URL}/${resourcePath}/${id}`, {
       method: 'PATCH',
@@ -1094,12 +1112,18 @@ export const bookingDataProvider = (): DataProvider => ({
       body: JSON.stringify(requestBody),
     })
 
+    const responseText = await response.text()
+    console.log('[BookingDataProvider] PATCH response:', {
+      status: response.status,
+      ok: response.ok,
+      body: responseText,
+    })
+
     if (!response.ok) {
-      const errorText = await response.text()
-      throw new Error(`Failed to update ${resource}/${id}: ${errorText}`)
+      throw new Error(`Failed to update ${resource}/${id}: ${responseText}`)
     }
 
-    const data = await response.json()
+    const data = responseText ? JSON.parse(responseText) : {}
     const transformedData = transformResponse(resource, data)
 
     return {data: transformedData as TData}
@@ -1467,15 +1491,24 @@ const transformToVdxFormat = (resource: string, data: any): any => {
         displayOrder: data.displayOrder,
       }
     case BookingDataResource.POLICIES:
+      // Map frontend field names to VDX field names
       return {
         name: data.name,
         description: data.description,
-        concurrencyLimit: data.concurrencyLimit,
-        slotIntervalMinutes: data.slotIntervalMinutes,
-        minBookingDurationMinutes: data.minBookingDurationMinutes,
-        maxBookingDurationMinutes: data.maxBookingDurationMinutes,
+        // Map frontend slotDurationMinutes -> VDX slotIntervalMinutes
+        slotIntervalMinutes: data.slotDurationMinutes ?? data.slotIntervalMinutes,
+        // Map frontend minDurationMinutes -> VDX minBookingDurationMinutes
+        minBookingDurationMinutes: data.minDurationMinutes ?? data.minBookingDurationMinutes,
+        // Map frontend maxDurationMinutes -> VDX maxBookingDurationMinutes
+        maxBookingDurationMinutes: data.maxDurationMinutes ?? data.maxBookingDurationMinutes,
         bufferAfterMinutes: data.bufferAfterMinutes,
         maxAdvanceBookingDays: data.maxAdvanceBookingDays,
+        // Map frontend minAdvanceBookingHours -> VDX minAdvanceBookingHours
+        minAdvanceBookingHours: data.minAdvanceBookingHours,
+        // Map frontend maxConcurrentBookings -> VDX concurrencyLimit
+        concurrencyLimit: data.maxConcurrentBookings ?? data.concurrencyLimit,
+        requiresApproval: data.requiresApproval,
+        allowRecurring: data.allowRecurring,
         allowSameDayBooking: data.allowSameDayBooking,
         isDefault: data.isDefault,
       }
@@ -2098,6 +2131,17 @@ function parseTimeToMinutes(timeStr: string): number {
 }
 
 /**
+ * Parses a date string "YYYY-MM-DD" as local time (not UTC).
+ * new Date("YYYY-MM-DD") parses as UTC midnight, which can shift the day
+ * when converted to local time in timezones ahead of UTC.
+ * This function parses as local midnight to avoid timezone issues.
+ */
+function parseDateAsLocal(dateStr: string): Date {
+  const parts = dateStr.split('-').map(Number)
+  return new Date(parts[0], parts[1] - 1, parts[2])
+}
+
+/**
  * Checks if a schedule rule applies to a given date
  */
 function ruleAppliesToDate(rule: any, date: Date, dateStr: string): boolean {
@@ -2240,10 +2284,22 @@ function subtractClosedFromOpen(openWindows: TimeWindow[], closedWindows: TimeWi
  */
 function generateSlotsFromSchedules(resourceId: string, dateStr: string, rules: any[]): TimeSlot[] {
   const slots: TimeSlot[] = []
-  const date = new Date(dateStr)
+  const date = parseDateAsLocal(dateStr)
+  const dayOfWeek = date.getDay() === 0 ? 7 : date.getDay() // Convert Sunday from 0 to 7 (ISO 8601)
 
   // Find all rules that apply to this date
   const applicableRules = rules.filter(rule => ruleAppliesToDate(rule, date, dateStr))
+
+  // Fallback to default schedule if no rules defined (all 7 days 9-17)
+  if (applicableRules.length === 0 && rules.length === 0) {
+    // Default schedule: all days 09:00-17:00 (includes weekends)
+    applicableRules.push({
+      dayOfWeek,
+      startTime: '09:00',
+      endTime: '17:00',
+      isClosed: false,
+    })
+  }
 
   if (applicableRules.length === 0) {
     return [] // No rules for this day
@@ -2325,23 +2381,21 @@ function generateSlotsFromSchedulesWithConflicts(
   policy?: UsagePolicy,
 ): TimeSlot[] {
   const slots: TimeSlot[] = []
-  const date = new Date(dateStr)
+  const date = parseDateAsLocal(dateStr)
   const dayOfWeek = date.getDay() || 7 // Convert Sunday (0) to 7 for ISO 8601
 
   // Find all rules that apply to this date
   const applicableRules = rules.filter(rule => ruleAppliesToDate(rule, date, dateStr))
 
-  // Fallback to default schedule if no rules defined (weekdays 9-17)
+  // Fallback to default schedule if no rules defined (all 7 days 9-17)
   if (applicableRules.length === 0 && rules.length === 0) {
-    // Default schedule: weekdays 9:00-17:00
-    if (dayOfWeek >= 1 && dayOfWeek <= 5) {
-      applicableRules.push({
-        dayOfWeek,
-        startTime: '09:00',
-        endTime: '17:00',
-        isClosed: false,
-      })
-    }
+    // Default schedule: all days 09:00-17:00 (includes weekends)
+    applicableRules.push({
+      dayOfWeek,
+      startTime: '09:00',
+      endTime: '17:00',
+      isClosed: false,
+    })
   }
 
   if (applicableRules.length === 0) {
@@ -2422,4 +2476,14 @@ function generateSlotsFromSchedulesWithConflicts(
   }
 
   return slots
+}
+
+// Export internal functions for testing
+export const __testing__ = {
+  transformPolicy,
+  transformResource,
+  transformRequirement,
+  transformToVdxFormat,
+  generateSlotsFromSchedules,
+  generateSlotsFromSchedulesWithConflicts,
 }
