@@ -150,17 +150,17 @@ export async function fetchInboxes(): Promise<Inbox[]> {
             const svcId = svc.id || ''
             const fragment = svcId.includes('#') ? svcId.split('#').pop() : svcId
             return fragment === folder.name
-          }) as {id?: string; type?: string; subType?: string} | undefined
+          }) as {id?: string; type?: string; eInvoiceMethod?: string} | undefined
 
-          // Determine service type (subType) from DID document or infer from folder name
-          // New format: type="eInvoice", subType="Direct"|"Peppol"|"PPF-FR"
+          // Determine service type (eInvoiceMethod) from DID document or infer from folder name
+          // New format: type="eInvoice", eInvoiceMethod="Direct"|"Peppol"|"PPF-FR"
           let serviceType: 'Direct' | 'Peppol' | 'PPF-FR' = 'Direct'
-          if (matchingService?.type === 'eInvoice' && matchingService.subType) {
-            // New format with subType
-            const subType = matchingService.subType
-            if (subType === 'Peppol') {
+          if (matchingService?.type === 'eInvoice' && matchingService.eInvoiceMethod) {
+            // New format with eInvoiceMethod
+            const eInvoiceMethod = matchingService.eInvoiceMethod
+            if (eInvoiceMethod === 'Peppol') {
               serviceType = 'Peppol'
-            } else if (subType === 'PPF-FR') {
+            } else if (eInvoiceMethod === 'PPF-FR') {
               serviceType = 'PPF-FR'
             } else {
               serviceType = 'Direct'

@@ -19,7 +19,7 @@ import {IdentifiersEditContext} from '@typings/machine/identifiers/edit'
 import {CoreActions, JsonFormsCore} from '@jsonforms/core'
 import {IIdentifier, ManagedKeyInfo, TKeyType} from '@veramo/core'
 import addKeySchema from '../../../src/schemas/data/addKeySchema.json' assert {type: 'json'}
-import {isEInvoicingServiceType, isEInvoicingSubType, getEInvoicingDefaults, EInvSubType, EINV_SUB_TYPES, EINV_SERVICE_TYPE, EInvoiceDataItem} from '../../constants/eInvoicingDefaults'
+import {isEInvoicingServiceType, isEInvoicingMethod, getEInvoicingDefaults, EInvoiceMethodType, EINVOICE_METHODS, EINV_SERVICE_TYPE, EInvoiceDataItem} from '../../constants/eInvoicingDefaults'
 
 // Supported key types - adjust based on your requirements
 const SUPPORTED_KEY_TYPES = ['Ed25519', 'Secp256k1', 'Secp256r1', 'X25519', 'RSA'] as TKeyType[]
@@ -293,14 +293,14 @@ export const IdentifiersEditContextProvider = (props: {children: React.ReactNode
           // Check if this is an eInvoicing service type (type === "eInvoice")
           const serviceType = service.type
           if (isEInvoicingServiceType(serviceType)) {
-            // Get subType from service
-            const subType = (service as any).subType as EInvSubType | undefined
+            // Get eInvoiceMethod from service
+            const eInvoiceMethod = (service as any).eInvoiceMethod as EInvoiceMethodType | undefined
             // Get eInvoice data from the service (capital I, array format)
             const eInvoiceArray = (service as any).eInvoice as EInvoiceDataItem[] | undefined
             const eInvoiceData = eInvoiceArray && eInvoiceArray.length > 0 ? eInvoiceArray[0] : undefined
 
-            if (subType && isEInvoicingSubType(subType)) {
-              const defaults = getEInvoicingDefaults(subType)
+            if (eInvoiceMethod && isEInvoicingMethod(eInvoiceMethod)) {
+              const defaults = getEInvoicingDefaults(eInvoiceMethod)
               const folderName = service.id.split('#').pop() || service.id
 
               // Build internal data for editing
@@ -327,7 +327,7 @@ export const IdentifiersEditContextProvider = (props: {children: React.ReactNode
                 type: EINV_SERVICE_TYPE,
                 serviceEndpoint: endpointValue,
                 description: defaults?.description,
-                subType: subType,
+                eInvoiceMethod: eInvoiceMethod,
                 eInvoice: eInvoiceData ? [eInvoiceData] : undefined,
                 _internal: internalData,
               }

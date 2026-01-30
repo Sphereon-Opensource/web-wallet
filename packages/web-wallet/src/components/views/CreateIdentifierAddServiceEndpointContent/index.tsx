@@ -15,9 +15,9 @@ import style from './index.module.css'
 import {IdentifierServiceEndpoint} from '@typings'
 import {
   EINV_SERVICE_TYPE,
-  EINV_SUB_TYPES,
+  EINVOICE_METHODS,
   isEInvoicingServiceType,
-  EInvSubType,
+  EInvoiceMethodType,
 } from '../../../constants/eInvoicingDefaults'
 import {getAgentBaseUrl} from '@agent'
 import {
@@ -118,7 +118,7 @@ const CreateIdentifierAddServiceEndpointContent: FC<Props> = ({mode}): ReactElem
       console.log('[CreateIdentifierAddServiceEndpointContent] Created service endpoint:', {
         id: newServiceEndpoint.id,
         type: newServiceEndpoint.type,
-        subType: newServiceEndpoint.subType,
+        eInvoiceMethod: newServiceEndpoint.eInvoiceMethod,
         hasEInvoice: !!newServiceEndpoint.eInvoice,
         hasInternal: !!newServiceEndpoint._internal,
       })
@@ -147,17 +147,17 @@ const CreateIdentifierAddServiceEndpointContent: FC<Props> = ({mode}): ReactElem
   }
 
   const getServiceEndpointTypeLabel = (serviceEndpoint: IdentifierServiceEndpoint): string => {
-    // For eInvoicing services, show type with subType
-    if (serviceEndpoint.type === EINV_SERVICE_TYPE && serviceEndpoint.subType) {
-      switch (serviceEndpoint.subType) {
-        case EINV_SUB_TYPES.DIRECT:
+    // For eInvoicing services, show type with eInvoiceMethod
+    if (serviceEndpoint.type === EINV_SERVICE_TYPE && serviceEndpoint.eInvoiceMethod) {
+      switch (serviceEndpoint.eInvoiceMethod) {
+        case EINVOICE_METHODS.DIRECT:
           return 'eInvoice - Direct'
-        case EINV_SUB_TYPES.PEPPOL:
+        case EINVOICE_METHODS.PEPPOL:
           return 'eInvoice - Peppol'
-        case EINV_SUB_TYPES.PPF_FR:
+        case EINVOICE_METHODS.PPF_FR:
           return 'eInvoice - France PPF'
         default:
-          return `eInvoice - ${serviceEndpoint.subType}`
+          return `eInvoice - ${serviceEndpoint.eInvoiceMethod}`
       }
     }
     return serviceEndpoint.type
@@ -199,10 +199,10 @@ const CreateIdentifierAddServiceEndpointContent: FC<Props> = ({mode}): ReactElem
           title: translate('create_identifier_service_endpoints_country_label') || 'Country',
           value: eInvoiceData.country,
         })
-        if (serviceEndpoint.subType) {
+        if (serviceEndpoint.eInvoiceMethod) {
           details.push({
-            title: translate('create_identifier_service_endpoints_subtype_label') || 'SubType',
-            value: serviceEndpoint.subType,
+            title: translate('create_identifier_service_endpoints_einvoicemethod_label') || 'E-Invoice Method',
+            value: serviceEndpoint.eInvoiceMethod,
           })
         }
       }

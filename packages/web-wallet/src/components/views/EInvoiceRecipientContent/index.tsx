@@ -95,7 +95,7 @@ const EInvoiceRecipientContent: FC = (): ReactElement => {
           contactId: contact.id,
           endpoints: resolved.endpoints.map((ep) => ({
             id: ep.id,
-            subType: ep.subType,
+            eInvoiceMethod: ep.eInvoiceMethod,
             serviceEndpoint: ep.serviceEndpoint,
             description: ep.description,
             entityName: ep.entityName,
@@ -185,7 +185,7 @@ const EInvoiceRecipientContent: FC = (): ReactElement => {
                 onClick={() => onSelectEndpoint(endpoint.id)}
                 type="button">
                 <div className={style.endpointHeader}>
-                  <div className={style.endpointTypeBadge}>{getServiceTypeLabel(endpoint.subType as any)}</div>
+                  <div className={style.endpointTypeBadge}>{getServiceTypeLabel(endpoint.eInvoiceMethod as any)}</div>
                   {isSelected && (
                     <div className={style.selectedBadge}>
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

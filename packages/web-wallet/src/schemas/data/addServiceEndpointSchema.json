@@ -12,7 +12,7 @@
         {"const": "openID4VP", "title": "OpenID for verifiable presentation"}
       ]
     },
-    "subType": {
+    "eInvoiceMethod": {
       "type": "string",
       "title": "eInvoicing Network",
       "description": "The eInvoicing network type",
@@ -114,7 +114,7 @@
         "required": ["type"]
       },
       "then": {
-        "required": ["subType", "entityName", "country"]
+        "required": ["eInvoiceMethod", "entityName", "country"]
       },
       "else": {}
     },
@@ -122,9 +122,9 @@
       "if": {
         "properties": {
           "type": {"const": "eInvoice"},
-          "subType": {"const": "Peppol"}
+          "eInvoiceMethod": {"const": "Peppol"}
         },
-        "required": ["type", "subType"]
+        "required": ["type", "eInvoiceMethod"]
       },
       "then": {
         "required": ["peppolParticipantId"]
@@ -135,9 +135,9 @@
       "if": {
         "properties": {
           "type": {"const": "eInvoice"},
-          "subType": {"const": "PPF-FR"}
+          "eInvoiceMethod": {"const": "PPF-FR"}
         },
-        "required": ["type", "subType"]
+        "required": ["type", "eInvoiceMethod"]
       },
       "then": {
         "required": ["ppfPlatformId", "ppfRecipientIds", "ppfMode"]

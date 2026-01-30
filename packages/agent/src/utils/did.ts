@@ -193,7 +193,7 @@ export async function getOrCreateDIDWebFromEnv(): Promise<IIdentifierConfigResul
  * This enables the DID to receive eInvoices via the inbox endpoint.
  *
  * Services added:
- * - type: "eInvoice", subType: "Direct" - Direct eInvoicing capability
+ * - type: "eInvoice", eInvoiceMethod: "Direct" - Direct eInvoicing capability
  */
 export async function addEInvoicingServicesToDID(did: string, baseUrl?: string): Promise<void> {
   const identifier = await getIdentifier(did)
@@ -224,7 +224,7 @@ export async function addEInvoicingServicesToDID(did: string, baseUrl?: string):
         type: 'eInvoice',
         serviceEndpoint: `${inboxBaseUrl}/inbox/invoices/direct-inbox`,
         // Additional properties stored in metadata by Veramo
-        subType: 'Direct',
+        eInvoiceMethod: 'Direct',
         eInvoice: [{
           entityName: 'Default',
           country: 'NL',

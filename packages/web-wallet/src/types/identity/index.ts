@@ -108,7 +108,7 @@ export type IdentifierServiceEndpoint = {
   serviceEndpoint: string
   description?: string
   // eInvoicing-specific fields (only present when type is "eInvoice")
-  subType?: string // "Direct", "Peppol", "PPF-FR"
+  eInvoiceMethod?: string // "Direct", "Peppol", "PPF-FR"
   eInvoice?: EInvoiceDataItem[] // Capital I, array format
   // Internal data for service creation (not stored in DID document)
   _internal?: EInvoiceServiceData

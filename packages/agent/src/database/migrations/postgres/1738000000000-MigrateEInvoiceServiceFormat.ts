@@ -9,19 +9,19 @@ import { MigrationInterface, QueryRunner } from 'typeorm'
  *
  * New format:
  * - type: "eInvoice" (always)
- * - metadata: { subType: "Direct"|"Peppol"|"PPF-FR", eInvoice: [ { ... } ] } (capital I, array)
+ * - metadata: { eInvoiceMethod: "Direct"|"Peppol"|"PPF-FR", eInvoice: [ { ... } ] } (capital I, array)
  *
  * This migration:
  * 1. Identifies services with old eInvoice type patterns
- * 2. Maps old types to new subType values
+ * 2. Maps old types to new eInvoiceMethod values
  * 3. Updates type to "eInvoice"
- * 4. Adds subType to metadata
+ * 4. Adds eInvoiceMethod to metadata
  * 5. Renames einvoice to eInvoice and converts to array format
  */
 export class MigrateEInvoiceServiceFormat1738000000000 implements MigrationInterface {
   name = 'MigrateEInvoiceServiceFormat1738000000000'
 
-  // Map old type values to new subType values
+  // Map old type values to new eInvoiceMethod values
   private readonly typeMapping: Record<string, string> = {
     // Legacy type values
     'einv-direct': 'Direct',
@@ -60,15 +60,15 @@ export class MigrateEInvoiceServiceFormat1738000000000 implements MigrationInter
 
     for (const service of services) {
       const oldType = service.type
-      let subType = 'Direct' // Default to Direct
+      let eInvoiceMethod = 'Direct' // Default to Direct
 
-      // Determine subType from old type
+      // Determine eInvoiceMethod from old type
       if (this.typeMapping[oldType]) {
-        subType = this.typeMapping[oldType]
+        eInvoiceMethod = this.typeMapping[oldType]
       } else if (oldType.toLowerCase().includes('peppol')) {
-        subType = 'Peppol'
+        eInvoiceMethod = 'Peppol'
       } else if (oldType.toLowerCase().includes('ppf')) {
-        subType = 'PPF-FR'
+        eInvoiceMethod = 'PPF-FR'
       }
 
       // Parse existing metadata
@@ -81,8 +81,8 @@ export class MigrateEInvoiceServiceFormat1738000000000 implements MigrationInter
         }
       }
 
-      // Add subType to metadata
-      metadata.subType = subType
+      // Add eInvoiceMethod to metadata
+      metadata.eInvoiceMethod = eInvoiceMethod
 
       // Rename einvoice to eInvoice and ensure it's an array
       if (metadata.einvoice !== undefined) {
@@ -101,7 +101,7 @@ export class MigrateEInvoiceServiceFormat1738000000000 implements MigrationInter
         ['eInvoice', JSON.stringify(metadata), service.id]
       )
 
-      console.log(`[Migration] Migrated service ${service.id}: ${oldType} -> eInvoice (subType: ${subType})`)
+      console.log(`[Migration] Migrated service ${service.id}: ${oldType} -> eInvoice (eInvoiceMethod: ${eInvoiceMethod})`)
     }
 
     console.log(`[Migration] Successfully migrated ${services.length} eInvoice services`)
@@ -139,9 +139,9 @@ export class MigrateEInvoiceServiceFormat1738000000000 implements MigrationInter
         }
       }
 
-      // Get old type from subType
-      const subType = metadata.subType || 'Direct'
-      const oldType = reverseMapping[subType] || 'einv-direct'
+      // Get old type from eInvoiceMethod
+      const eInvoiceMethod = metadata.eInvoiceMethod || 'Direct'
+      const oldType = reverseMapping[eInvoiceMethod] || 'einv-direct'
 
       // Rename eInvoice back to einvoice and convert to object
       if (metadata.eInvoice !== undefined) {
@@ -151,8 +151,8 @@ export class MigrateEInvoiceServiceFormat1738000000000 implements MigrationInter
         delete metadata.eInvoice
       }
 
-      // Remove subType from metadata
-      delete metadata.subType
+      // Remove eInvoiceMethod from metadata
+      delete metadata.eInvoiceMethod
 
       // Update the service record
       await queryRunner.query(

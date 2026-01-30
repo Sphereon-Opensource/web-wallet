@@ -6,7 +6,7 @@
  */
 
 import {getAgentBaseUrl} from '@agent/environment'
-import {EINV_SERVICE_TYPE, EINV_SUB_TYPES, EInvSubType, isEInvoicingServiceType, isEInvoicingSubType} from '@/src/constants/eInvoicingDefaults'
+import {EINV_SERVICE_TYPE, EINVOICE_METHODS, EInvoiceMethodType, isEInvoicingServiceType, isEInvoicingMethod} from '@/src/constants/eInvoicingDefaults'
 
 /**
  * Contact party information from the contact manager
@@ -27,7 +27,7 @@ export interface ContactParty {
  */
 export interface EInvoicingEndpoint {
   id: string
-  subType: EInvSubType
+  eInvoiceMethod: EInvoiceMethodType
   serviceEndpoint: string
   description?: string
   entityName?: string
@@ -63,16 +63,16 @@ export interface ResolvedRecipient {
 /**
  * Service label mapping for display
  */
-export const getServiceTypeLabel = (subType: EInvSubType): string => {
-  switch (subType) {
-    case EINV_SUB_TYPES.DIRECT:
+export const getServiceTypeLabel = (eInvoiceMethod: EInvoiceMethodType): string => {
+  switch (eInvoiceMethod) {
+    case EINVOICE_METHODS.DIRECT:
       return 'Direct'
-    case EINV_SUB_TYPES.PEPPOL:
+    case EINVOICE_METHODS.PEPPOL:
       return 'Peppol'
-    case EINV_SUB_TYPES.PPF_FR:
+    case EINVOICE_METHODS.PPF_FR:
       return 'France PPF'
     default:
-      return subType
+      return eInvoiceMethod
   }
 }
 
@@ -204,10 +204,10 @@ export async function resolveEInvoicingEndpoints(did: string): Promise<EInvoicin
         continue
       }
 
-      // Get the subType
-      const subType = (service as any).subType as string
-      if (!subType || !isEInvoicingSubType(subType)) {
-        console.warn('[RecipientService] Service missing valid subType:', service.id)
+      // Get the eInvoiceMethod
+      const eInvoiceMethod = (service as any).eInvoiceMethod as string
+      if (!eInvoiceMethod || !isEInvoicingMethod(eInvoiceMethod)) {
+        console.warn('[RecipientService] Service missing valid eInvoiceMethod:', service.id)
         continue
       }
 
@@ -234,7 +234,7 @@ export async function resolveEInvoicingEndpoints(did: string): Promise<EInvoicin
 
       endpoints.push({
         id: service.id,
-        subType: subType as EInvSubType,
+        eInvoiceMethod: eInvoiceMethod as EInvoiceMethodType,
         serviceEndpoint,
         description: (service as any).description,
         entityName: eInvoiceData.entityName as string | undefined,

@@ -197,7 +197,7 @@ export const identifiersDataProvider = (): DataProvider => ({
       return Promise.reject(Error(`Identifier with id ${id} not found`))
     }
 
-    // Enrich services with metadata (including eInvoice data and subType)
+    // Enrich services with metadata (including eInvoice data and eInvoiceMethod)
     const enrichedServices = await Promise.all(
       (identity.services || []).map(async (service) => {
         try {
@@ -213,9 +213,9 @@ export const identifiersDataProvider = (): DataProvider => ({
               // Also set the eInvoice array for display
               enriched.eInvoice = Array.isArray(metadata.eInvoice) ? metadata.eInvoice : [metadata.eInvoice]
             }
-            // Restore subType from metadata
-            if (metadata.subType) {
-              enriched.subType = metadata.subType
+            // Restore eInvoiceMethod from metadata
+            if (metadata.eInvoiceMethod) {
+              enriched.eInvoiceMethod = metadata.eInvoiceMethod
             }
             return enriched
           }
@@ -364,12 +364,12 @@ export const identifiersDataProvider = (): DataProvider => ({
       )
     }
 
-    // Update metadata for services with eInvoice data/subType and ensure inbox/folder exist
+    // Update metadata for services with eInvoice data/eInvoiceMethod and ensure inbox/folder exist
     // Veramo's didManagerCreate doesn't persist custom metadata, so we need to update it separately
     // Uses unified identifierServiceManager for consistent behavior
     if (variables.services) {
       for (const service of variables.services) {
-        // Save metadata (eInvoice and subType)
+        // Save metadata (eInvoice and eInvoiceMethod)
         await saveServiceMetadata(identifier.did, service.id, service)
 
         // For eInvoicing services, ensure the inbox and folder exist

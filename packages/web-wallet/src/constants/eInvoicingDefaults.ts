@@ -7,7 +7,7 @@
  *   "type": "eInvoice",
  *   "id": "service-id",
  *   "serviceEndpoint": "https://example.com/inbox/einvoices/folder",
- *   "subType": "Peppol",
+ *   "eInvoiceMethod": "Peppol",
  *   "eInvoice": [{ entityName, country, ... }]
  * }
  */
@@ -15,8 +15,8 @@
 // The service type is always "eInvoice"
 export const EINV_SERVICE_TYPE = 'eInvoice' as const
 
-// SubType identifiers for the specific eInvoicing network
-export const EINV_SUB_TYPES = {
+// EInvoiceMethod identifiers for the specific eInvoicing network
+export const EINVOICE_METHODS = {
   DIRECT: 'Direct',
   PEPPOL: 'Peppol',
   PPF_FR: 'PPF-FR',
@@ -33,8 +33,8 @@ export const EINV_TRANSPORT_TYPES = {
 export const PPF_MODES = ['pdp', 'direct', 'via-pdp'] as const
 export type PpfMode = (typeof PPF_MODES)[number]
 
-// Type for eInvoicing sub types
-export type EInvSubType = (typeof EINV_SUB_TYPES)[keyof typeof EINV_SUB_TYPES]
+// Type for eInvoicing methods
+export type EInvoiceMethodType = (typeof EINVOICE_METHODS)[keyof typeof EINVOICE_METHODS]
 
 // Direct eInvoicing defaults
 export const EINV_DIRECT_DEFAULTS = {
@@ -72,22 +72,22 @@ export const isEInvoicingServiceType = (type: string): boolean => {
 }
 
 /**
- * Check if a subType is a valid eInvoicing subType
+ * Check if an eInvoiceMethod is a valid eInvoicing method
  */
-export const isEInvoicingSubType = (subType: string): subType is EInvSubType => {
-  return Object.values(EINV_SUB_TYPES).includes(subType as EInvSubType)
+export const isEInvoicingMethod = (eInvoiceMethod: string): eInvoiceMethod is EInvoiceMethodType => {
+  return Object.values(EINVOICE_METHODS).includes(eInvoiceMethod as EInvoiceMethodType)
 }
 
 /**
- * Get defaults for an eInvoicing subType
+ * Get defaults for an eInvoicing method
  */
-export const getEInvoicingDefaults = (subType: EInvSubType) => {
-  switch (subType) {
-    case EINV_SUB_TYPES.DIRECT:
+export const getEInvoicingDefaults = (eInvoiceMethod: EInvoiceMethodType) => {
+  switch (eInvoiceMethod) {
+    case EINVOICE_METHODS.DIRECT:
       return EINV_DIRECT_DEFAULTS
-    case EINV_SUB_TYPES.PEPPOL:
+    case EINVOICE_METHODS.PEPPOL:
       return EINV_PEPPOL_DEFAULTS
-    case EINV_SUB_TYPES.PPF_FR:
+    case EINVOICE_METHODS.PPF_FR:
       return EINV_PPF_FR_DEFAULTS
     default:
       return null

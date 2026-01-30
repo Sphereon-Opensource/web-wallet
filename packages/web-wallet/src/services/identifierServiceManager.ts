@@ -8,12 +8,12 @@
 import { getAgent, getAgentBaseUrl } from '@agent'
 import {
   EINV_SERVICE_TYPE,
-  EINV_SUB_TYPES,
+  EINVOICE_METHODS,
   isEInvoicingServiceType,
-  isEInvoicingSubType,
+  isEInvoicingMethod,
   getEInvoicingDefaults,
   generateInboxEndpoint,
-  EInvSubType,
+  EInvoiceMethodType,
   EInvoiceDataItem,
 } from '@/src/constants/eInvoicingDefaults'
 import { IdentifierServiceEndpoint, EInvoiceServiceData } from '@typings'
@@ -39,7 +39,7 @@ export interface AddServiceResult {
 
 export interface ServiceMetadata {
   eInvoice?: EInvoiceServiceData
-  subType?: string
+  eInvoiceMethod?: string
 }
 
 // ============================================================================
@@ -110,8 +110,8 @@ export async function ensureEInvoiceDcqlDefinition(): Promise<void> {
 /**
  * Build the eInvoice data item for the eInvoice array in the service endpoint
  */
-export function buildEInvoiceDataItem(data: Record<string, unknown>, subType: EInvSubType): EInvoiceDataItem | null {
-  const defaults = getEInvoicingDefaults(subType)
+export function buildEInvoiceDataItem(data: Record<string, unknown>, eInvoiceMethod: EInvoiceMethodType): EInvoiceDataItem | null {
+  const defaults = getEInvoicingDefaults(eInvoiceMethod)
   if (!defaults) {
     return null
   }
@@ -124,11 +124,11 @@ export function buildEInvoiceDataItem(data: Record<string, unknown>, subType: EI
     transportType: defaults.transportType,
   }
 
-  switch (subType) {
-    case EINV_SUB_TYPES.DIRECT:
+  switch (eInvoiceMethod) {
+    case EINVOICE_METHODS.DIRECT:
       return baseData
 
-    case EINV_SUB_TYPES.PEPPOL:
+    case EINVOICE_METHODS.PEPPOL:
       return {
         ...baseData,
         peppolParticipantId: data.peppolParticipantId as string,
@@ -136,7 +136,7 @@ export function buildEInvoiceDataItem(data: Record<string, unknown>, subType: EI
         ...(data.peppolAs4Endpoint ? { peppolAs4Endpoint: data.peppolAs4Endpoint as string } : {}),
       }
 
-    case EINV_SUB_TYPES.PPF_FR:
+    case EINVOICE_METHODS.PPF_FR:
       const recipientIdsStr = data.ppfRecipientIds as string
       const ppfRecipientIds = recipientIdsStr
         ? recipientIdsStr
@@ -163,9 +163,9 @@ export function buildEInvoiceDataItem(data: Record<string, unknown>, subType: EI
  */
 export function buildInternalServiceData(
   data: Record<string, unknown>,
-  subType: EInvSubType
+  eInvoiceMethod: EInvoiceMethodType
 ): EInvoiceServiceData | null {
-  const dataItem = buildEInvoiceDataItem(data, subType)
+  const dataItem = buildEInvoiceDataItem(data, eInvoiceMethod)
   if (!dataItem) {
     return null
   }
@@ -200,14 +200,14 @@ export function buildServiceEndpoint(
   const normalizedId = serviceId.startsWith('#') ? serviceId : `#${serviceId}`
 
   if (isEInvoicingServiceType(serviceType)) {
-    const subType = formData.subType as EInvSubType
-    if (!isEInvoicingSubType(subType)) {
-      throw new Error(`Invalid eInvoicing subType: ${subType}`)
+    const eInvoiceMethod = formData.eInvoiceMethod as EInvoiceMethodType
+    if (!isEInvoicingMethod(eInvoiceMethod)) {
+      throw new Error(`Invalid eInvoicing method: ${eInvoiceMethod}`)
     }
 
-    const defaults = getEInvoicingDefaults(subType)
-    const eInvoiceDataItem = buildEInvoiceDataItem(formData, subType)
-    const internalData = buildInternalServiceData(formData, subType)
+    const defaults = getEInvoicingDefaults(eInvoiceMethod)
+    const eInvoiceDataItem = buildEInvoiceDataItem(formData, eInvoiceMethod)
+    const internalData = buildInternalServiceData(formData, eInvoiceMethod)
 
     // Build endpoint URL for eInvoicing
     const inboxName = (formData.inboxName as string) || 'einvoices'
@@ -219,7 +219,7 @@ export function buildServiceEndpoint(
       type: EINV_SERVICE_TYPE,
       serviceEndpoint: endpointUrl,
       description: defaults?.description,
-      subType: subType,
+      eInvoiceMethod: eInvoiceMethod,
       eInvoice: eInvoiceDataItem ? [eInvoiceDataItem] : undefined,
       _internal: internalData || undefined,
     }
@@ -238,7 +238,7 @@ export function buildServiceEndpoint(
 // ============================================================================
 
 /**
- * Save service metadata (eInvoice data and subType) to the agent.
+ * Save service metadata (eInvoice data and eInvoiceMethod) to the agent.
  * This is needed because Veramo doesn't persist custom properties in the DID document.
  */
 export async function saveServiceMetadata(
@@ -247,7 +247,7 @@ export async function saveServiceMetadata(
   service: IdentifierServiceEndpoint
 ): Promise<boolean> {
   // Only save metadata if there's something to save
-  if (!service._internal && !service.subType) {
+  if (!service._internal && !service.eInvoiceMethod) {
     return true
   }
 
@@ -257,13 +257,13 @@ export async function saveServiceMetadata(
     if (service._internal) {
       metadata.eInvoice = service._internal
     }
-    if (service.subType) {
-      metadata.subType = service.subType
+    if (service.eInvoiceMethod) {
+      metadata.eInvoiceMethod = service.eInvoiceMethod
     }
 
     console.log(`[IdentifierServiceManager] Saving metadata for service ${serviceId}:`, {
       hasEInvoice: !!metadata.eInvoice,
-      subType: metadata.subType,
+      eInvoiceMethod: metadata.eInvoiceMethod,
     })
 
     await getAgent().updateServiceMetadata({
@@ -366,7 +366,7 @@ export async function addServiceToDid(options: AddServiceOptions): Promise<AddSe
       did,
       serviceId: service.id,
       type: service.type,
-      subType: service.subType,
+      eInvoiceMethod: service.eInvoiceMethod,
       hasEInvoice: !!service.eInvoice,
       hasInternal: !!service._internal,
     })
@@ -386,8 +386,8 @@ export async function addServiceToDid(options: AddServiceOptions): Promise<AddSe
 
     // Add eInvoice-specific fields for the DID document
     if (service.type === EINV_SERVICE_TYPE) {
-      if (service.subType) {
-        serviceData.subType = service.subType
+      if (service.eInvoiceMethod) {
+        serviceData.eInvoiceMethod = service.eInvoiceMethod
       }
       if (service.eInvoice) {
         serviceData.eInvoice = service.eInvoice
@@ -400,7 +400,7 @@ export async function addServiceToDid(options: AddServiceOptions): Promise<AddSe
       service: serviceData as any,
     })
 
-    // Save metadata (eInvoice and subType) separately since Veramo doesn't persist custom fields
+    // Save metadata (eInvoice and eInvoiceMethod) separately since Veramo doesn't persist custom fields
     await saveServiceMetadata(did, service.id, service)
 
     // Ensure inbox and folder exist for eInvoicing services
@@ -466,8 +466,8 @@ export async function replaceServicesOnDid(
 
       // Add eInvoice-specific fields
       if (service.type === EINV_SERVICE_TYPE) {
-        if (service.subType) {
-          serviceData.subType = service.subType
+        if (service.eInvoiceMethod) {
+          serviceData.eInvoiceMethod = service.eInvoiceMethod
         }
         if (service.eInvoice) {
           serviceData.eInvoice = service.eInvoice

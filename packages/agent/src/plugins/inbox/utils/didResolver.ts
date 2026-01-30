@@ -8,8 +8,8 @@ import type { EInvoiceServiceEndpoint } from '../types'
 /** The service type for eInvoicing services */
 const EINV_SERVICE_TYPE = 'eInvoice'
 
-/** Valid eInvoicing subTypes */
-const EINV_SUB_TYPES = ['Direct', 'Peppol', 'PPF-FR']
+/** Valid eInvoicing methods */
+const EINVOICE_METHODS = ['Direct', 'Peppol', 'PPF-FR']
 
 /**
  * Resolve a DID to get the DID document.
@@ -64,10 +64,10 @@ export async function resolveRecipientDid(did: string, throwOnError = false): Pr
  *
  * Looks for services with:
  * - type: "eInvoice"
- * - Optionally filters by subType if serviceType is specified
+ * - Optionally filters by eInvoiceMethod if serviceType is specified
  *
  * @param didDocument - The DID document to search
- * @param serviceType - Optional subType to filter by (e.g., 'Direct', 'Peppol', 'PPF-FR')
+ * @param serviceType - Optional eInvoiceMethod to filter by (e.g., 'Direct', 'Peppol', 'PPF-FR')
  * @returns The eInvoice service endpoint or null if not found
  */
 export function findInboxServiceEndpoint(
@@ -88,9 +88,9 @@ export function findInboxServiceEndpoint(
       return false
     }
 
-    // If a specific subType is requested, check for it
-    if (serviceType && EINV_SUB_TYPES.includes(serviceType)) {
-      return s.subType === serviceType
+    // If a specific eInvoiceMethod is requested, check for it
+    if (serviceType && EINVOICE_METHODS.includes(serviceType)) {
+      return s.eInvoiceMethod === serviceType
     }
 
     return true
