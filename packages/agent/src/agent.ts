@@ -371,7 +371,7 @@ const expressSupport = expressBuilder().build({ startListening: false })
 
 /**
  * Add middleware to enrich DID documents with service metadata.
- * This ensures eInvoice properties (subType, eInvoice array) are included
+ * This ensures eInvoice properties (eInvoiceMethod, eInvoice array) are included
  * in the served DID documents.
  */
 if (IS_INBOX_ENABLED) {

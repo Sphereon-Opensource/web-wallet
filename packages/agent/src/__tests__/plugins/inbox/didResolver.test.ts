@@ -57,14 +57,14 @@ describe('findInboxServiceEndpoint', () => {
       })
     })
 
-    it('should find service with new format (type: eInvoice, subType: Direct)', () => {
+    it('should find service with new format (type: eInvoice, eInvoiceMethod: Direct)', () => {
       const didDocument = {
         id: 'did:web:example.com',
         service: [
           {
             id: '#einvoice-direct',
             type: 'eInvoice',
-            subType: 'Direct',
+            eInvoiceMethod: 'Direct',
             serviceEndpoint: 'https://example.com/inbox',
             eInvoice: [{
               entityName: 'Test Corp',
@@ -81,14 +81,14 @@ describe('findInboxServiceEndpoint', () => {
       })
     })
 
-    it('should find service with new format (type: eInvoice, subType: Peppol)', () => {
+    it('should find service with new format (type: eInvoice, eInvoiceMethod: Peppol)', () => {
       const didDocument = {
         id: 'did:web:example.com',
         service: [
           {
             id: '#einvoice-peppol',
             type: 'eInvoice',
-            subType: 'Peppol',
+            eInvoiceMethod: 'Peppol',
             serviceEndpoint: 'https://example.com/as4',
             eInvoice: [{
               entityName: 'Test Corp',
@@ -106,14 +106,14 @@ describe('findInboxServiceEndpoint', () => {
       })
     })
 
-    it('should find service with new format (type: eInvoice, subType: PPF-FR)', () => {
+    it('should find service with new format (type: eInvoice, eInvoiceMethod: PPF-FR)', () => {
       const didDocument = {
         id: 'did:web:example.com',
         service: [
           {
             id: '#einvoice-ppf',
             type: 'eInvoice',
-            subType: 'PPF-FR',
+            eInvoiceMethod: 'PPF-FR',
             serviceEndpoint: 'https://example.com/ppf',
             eInvoice: [{
               entityName: 'Test Corp',

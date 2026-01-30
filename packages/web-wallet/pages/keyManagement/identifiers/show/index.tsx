@@ -12,7 +12,7 @@ import {staticPropsWithSST} from '@/src/i18n/server'
 import {getAgent, resolver, getAgentBaseUrl} from '@agent'
 import {getDidMethodFromDID} from '@helpers/DID/DIDService'
 import {DataResource, EInvoiceServiceData} from '@typings'
-import {isEInvoicingServiceType, EINV_SUB_TYPES, EINV_SERVICE_TYPE, EInvoiceDataItem} from '@/src/constants/eInvoicingDefaults'
+import {isEInvoicingServiceType, EINVOICE_METHODS, EINV_SERVICE_TYPE, EInvoiceDataItem} from '@/src/constants/eInvoicingDefaults'
 import { addServiceToDid } from '@/src/services/identifierServiceManager'
 import addServiceEndpointSchemaJson from '@/src/schemas/data/addServiceEndpointSchema.json' assert {type: 'json'}
 import addServiceEndpointUISchema from '@/src/schemas/ui/addServiceEndpointUISchema.json' assert {type: 'json'}
@@ -39,7 +39,7 @@ interface KeyDisplayItem {
 interface ServiceDisplayItem {
   id: string
   type: string
-  subType?: string
+  eInvoiceMethod?: string
   serviceEndpoint: string
   description?: string
   eInvoice?: EInvoiceDataItem[] // New format: capital I, array
@@ -222,7 +222,7 @@ const ShowIdentifierDetails: FC = (): ReactElement => {
       return {
         id: service.id,
         type: service.type,
-        subType: svc.subType,
+        eInvoiceMethod: svc.eInvoiceMethod,
         serviceEndpoint: typeof service.serviceEndpoint === 'string'
           ? service.serviceEndpoint
           : Array.isArray(service.serviceEndpoint)
@@ -402,17 +402,17 @@ const ShowIdentifierDetails: FC = (): ReactElement => {
   }
 
   // Get service type label
-  const getServiceTypeLabel = (service: {type: string; subType?: string}): string => {
-    if (service.type === EINV_SERVICE_TYPE && service.subType) {
-      switch (service.subType) {
-        case EINV_SUB_TYPES.DIRECT:
+  const getServiceTypeLabel = (service: {type: string; eInvoiceMethod?: string}): string => {
+    if (service.type === EINV_SERVICE_TYPE && service.eInvoiceMethod) {
+      switch (service.eInvoiceMethod) {
+        case EINVOICE_METHODS.DIRECT:
           return 'eInvoice - Direct'
-        case EINV_SUB_TYPES.PEPPOL:
+        case EINVOICE_METHODS.PEPPOL:
           return 'eInvoice - Peppol'
-        case EINV_SUB_TYPES.PPF_FR:
+        case EINVOICE_METHODS.PPF_FR:
           return 'eInvoice - France PPF'
         default:
-          return `eInvoice - ${service.subType}`
+          return `eInvoice - ${service.eInvoiceMethod}`
       }
     }
     return service.type

@@ -6,7 +6,7 @@ import { DataSource } from 'typeorm'
  *
  * Veramo's service table only stores standard DID document service properties
  * (id, type, serviceEndpoint, description). We store additional properties
- * like subType and eInvoice data in a separate `metadata` column.
+ * like eInvoiceMethod and eInvoice data in a separate `metadata` column.
  *
  * This middleware intercepts DID document responses and merges the metadata
  * back into the service objects, so the full eInvoice configuration is
@@ -129,9 +129,9 @@ async function enrichServicesWithMetadata(services: any[], dbConnection: Promise
         // Merge metadata into service
         const enrichedService = { ...service }
 
-        // Add subType if present in metadata
-        if (metadata.subType) {
-          enrichedService.subType = metadata.subType
+        // Add eInvoiceMethod if present in metadata
+        if (metadata.eInvoiceMethod) {
+          enrichedService.eInvoiceMethod = metadata.eInvoiceMethod
         }
 
         // Add eInvoice if present in metadata

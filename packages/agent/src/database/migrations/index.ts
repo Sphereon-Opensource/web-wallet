@@ -19,7 +19,7 @@ if (!DB_TYPE.includes('postgres')) {
 export const IssuerMigrations = [CreateWebWallet1700163641000, CleanupWorkflowTables1736780300000, AddCredentialDesignBranding1763717017000, FixUpdateCredentialDesignFunction1737700000000, SeedCredentialIssuanceWizard1764000000000]
 
 // Inbox migrations - run when inbox is enabled
-// MigrateEInvoiceServiceFormat migrates old service types (einv-direct, etc.) to new format (type: eInvoice, subType: Direct)
+// MigrateEInvoiceServiceFormat migrates old service types (einv-direct, etc.) to new format (type: eInvoice, eInvoiceMethod: Direct)
 export const InboxMigrations = IS_INBOX_ENABLED ? [CreateInboxAndEInvoice1736780400000, MigrateEInvoiceServiceFormat1738000000000] : []
 
 // Legacy export for backwards compatibility
