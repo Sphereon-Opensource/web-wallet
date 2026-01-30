@@ -53,20 +53,20 @@ const EINVOICE_DCQL_QUERY = {
   query: {
     credentials: [
       {
-        id: 'einvoice-credential',
+        id: 'einvoice',
         format: 'dc+sd-jwt',
-        require_cryptographic_holder_binding: false,
-        multiple: false,
         meta: {
           vct_values: ['urn:org:fides:einvoice:1'],
         },
         claims: [
           { path: ['invoice_id'] },
           { path: ['invoice_date'] },
+          { path: ['due_date'] },
           { path: ['currency_code'] },
-          { path: ['payable_amount'] },
-          { path: ['seller_name'] },
-          { path: ['buyer_name'] },
+          { path: ['tax_exclusive_amount'] },
+          { path: ['tax_amount'] },
+          { path: ['tax_inclusive_amount'] },
+          { path: ['evidence'] },
         ],
       },
     ],
