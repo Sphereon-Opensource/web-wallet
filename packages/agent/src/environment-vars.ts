@@ -156,10 +156,27 @@ export const DID_WEB_CERT_PEM = env('DID_WEB_CERT_PEM', ENV_VAR_PREFIX)
 export const DID_WEB_PRIVATE_KEY_PEM = env('DID_WEB_PRIVATE_KEY_PEM', ENV_VAR_PREFIX)
 export const DID_WEB_CERT_CHAIN_PEM = env('DID_WEB_CERT_CHAIN_PEM', ENV_VAR_PREFIX)
 
-export const AUTHENTICATION_ENABLED = env('AUTHENTICATION_ENABLED', ENV_VAR_PREFIX) === 'false'
+// ===== AUTHENTICATION & AUTHORIZATION =====
+export const AUTHENTICATION_ENABLED = env('AUTHENTICATION_ENABLED', ENV_VAR_PREFIX) === 'true'
 export const AUTHENTICATION_STRATEGY = env('AUTHENTICATION_STRATEGY', ENV_VAR_PREFIX)
-export const AUTHORIZATION_ENABLED = env('AUTHORIZATION_ENABLED', ENV_VAR_PREFIX) === 'false'
+export const AUTHORIZATION_ENABLED = env('AUTHORIZATION_ENABLED', ENV_VAR_PREFIX) === 'true'
 export const AUTHORIZATION_GLOBAL_REQUIRE_USER_IN_ROLES = env('AUTHORIZATION_GLOBAL_REQUIRE_USER_IN_ROLES', ENV_VAR_PREFIX)
+
+// ===== OIDC BEARER AUTH =====
+// OIDC Bearer Auth configuration (used when AUTHENTICATION_STRATEGY is set)
+export const OIDC_ISSUER = env('OIDC_ISSUER', ENV_VAR_PREFIX)
+export const OIDC_AUDIENCE = env('OIDC_AUDIENCE', ENV_VAR_PREFIX)
+export const OIDC_JWKS_URI = env('OIDC_JWKS_URI', ENV_VAR_PREFIX)
+export const OIDC_ALGORITHMS = env('OIDC_ALGORITHMS', ENV_VAR_PREFIX)
+  ?.split(',')
+  .map((alg) => alg.trim()) as Array<'RS256' | 'RS384' | 'RS512' | 'ES256' | 'ES384' | 'ES512' | 'PS256' | 'PS384' | 'PS512'> | undefined
+
+// Per-API authentication overrides (comma-delimited, defaults to AUTHENTICATION_ENABLED if not set)
+// Values: 'contact-manager', 'status-list', 'oid4vp', 'oid4vci'
+// Example: DISABLE_AUTH_FOR_APIS=contact-manager,status-list
+export const DISABLE_AUTH_FOR_APIS = env('DISABLE_AUTH_FOR_APIS', ENV_VAR_PREFIX)
+  ?.split(',')
+  .map((api) => api.trim().toLowerCase()) ?? []
 
 export const OID4VP_DEFINITIONS: string[] = process.env.OID4VP_DEFINITIONS
   ? process.env.OID4VP_DEFINITIONS.split(/[, ]/).map((val) => val.trim())

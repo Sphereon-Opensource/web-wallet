@@ -11,6 +11,7 @@ import {
   DEFAULT_X5C,
   DID_API_BASE_PATH,
   DID_API_RESOLVE_MODE,
+  DISABLE_AUTH_FOR_APIS,
   INTERNAL_PORT,
   IS_CONTACT_MANAGER_ENABLED,
   IS_FEDERATION_ENABLED,
@@ -23,6 +24,10 @@ import {
   IS_STATUS_LIST_ENABLED,
   IS_VC_API_ENABLED,
   OID4VP_DEFINITIONS,
+  OIDC_ALGORITHMS,
+  OIDC_AUDIENCE,
+  OIDC_ISSUER,
+  OIDC_JWKS_URI,
   REST_KMS_APPLICATION_ID,
   REST_KMS_BASE_URL,
   REST_KMS_PROVIDER_ID,
@@ -34,27 +39,27 @@ import {
   VC_API_DEFAULT_PROOF_FORMAT,
 } from './environment-vars.js'
 
-import { ImportDcqlQueryItem, PDManager } from '@sphereon/ssi-sdk.pd-manager'
-import { AuthorizationServerMetadata, ClientAuthMethod, IssuerMetadataV1_0_15 } from '@sphereon/oid4vci-common'
+import {ImportDcqlQueryItem, PDManager} from '@sphereon/ssi-sdk.pd-manager'
+import {AuthorizationServerMetadata, ClientAuthMethod, IssuerMetadataV1_0_15} from '@sphereon/oid4vci-common'
 
-import { createAgent, IAgentContext, IAgentPlugin, TAgent } from '@veramo/core'
-import { VcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
+import {createAgent, IAgentContext, IAgentPlugin, TAgent} from '@veramo/core'
+import {VcdmCredentialPlugin} from '@sphereon/ssi-sdk.credential-vcdm'
 import {
   CredentialProviderJsonld,
   LdDefaultContexts,
   SphereonEd25519Signature2018,
   SphereonEd25519Signature2020,
 } from '@sphereon/ssi-sdk.credential-vcdm-jsonld-provider'
-import { CredentialProviderVcdm2Jose } from '@sphereon/ssi-sdk.credential-vcdm2-jose-provider'
+import {CredentialProviderVcdm2Jose} from '@sphereon/ssi-sdk.credential-vcdm2-jose-provider'
 
-import { CredentialPlugin } from '@veramo/credential-w3c'
-import { DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore } from '@veramo/data-store'
-import { DIDManager } from '@veramo/did-manager'
-import { DIDResolverPlugin } from '@veramo/did-resolver'
-import { SphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
-import { KeyManagementSystem, SecretBox } from '@veramo/kms-local'
-import { RestKeyManagementSystem } from '@sphereon/ssi-sdk.kms-rest'
-import { SphereonKeyManagementSystem } from '@sphereon/ssi-sdk-ext.kms-local'
+import {CredentialPlugin} from '@veramo/credential-w3c'
+import {DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore} from '@veramo/data-store'
+import {DIDManager} from '@veramo/did-manager'
+import {DIDResolverPlugin} from '@veramo/did-resolver'
+import {SphereonKeyManager} from '@sphereon/ssi-sdk-ext.key-manager'
+import {KeyManagementSystem, SecretBox} from '@veramo/kms-local'
+import {RestKeyManagementSystem} from '@sphereon/ssi-sdk.kms-rest'
+import {SphereonKeyManagementSystem} from '@sphereon/ssi-sdk-ext.kms-local'
 import {
   createDidProviders,
   createDidResolver,
@@ -65,15 +70,21 @@ import {
   getOrCreateDIDWebFromEnv,
   getOrCreateIdentifiersFromFS,
 } from './utils'
-import { VcApiServer } from '@sphereon/ssi-sdk.w3c-vc-api'
-import { DidWebServer, UniResolverApiServer } from '@sphereon/ssi-sdk.uni-resolver-registrar-api'
-import { DID_PREFIX, DIDMethods, TAgentTypes } from './types'
-import { createDidDocumentEnricherMiddleware } from './middleware/didDocumentEnricher'
-import { StatuslistManagementApiServer } from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
-import { ContactManagerApiServer } from '@sphereon/ssi-sdk.contact-manager-rest-api'
-import { ContactManager } from '@sphereon/ssi-sdk.contact-manager'
-import { ContactStore, DigitalCredentialStore, EventLoggerStore, IssuanceBrandingStore, PDStore } from '@sphereon/ssi-sdk.data-store'
-import { IIssuerInstanceArgs, OID4VCIIssuer } from '@sphereon/ssi-sdk.oid4vci-issuer'
+import {VcApiServer} from '@sphereon/ssi-sdk.w3c-vc-api'
+import {DidWebServer, UniResolverApiServer} from '@sphereon/ssi-sdk.uni-resolver-registrar-api'
+import {DID_PREFIX, DIDMethods, TAgentTypes} from './types'
+import {createDidDocumentEnricherMiddleware} from './middleware/didDocumentEnricher'
+import {StatuslistManagementApiServer} from '@sphereon/ssi-sdk.vc-status-list-issuer-rest-api'
+import {ContactManagerApiServer} from '@sphereon/ssi-sdk.contact-manager-rest-api'
+import {ContactManager} from '@sphereon/ssi-sdk.contact-manager'
+import {
+  ContactStore,
+  DigitalCredentialStore,
+  EventLoggerStore,
+  IssuanceBrandingStore,
+  PDStore,
+} from '@sphereon/ssi-sdk.data-store'
+import {IIssuerInstanceArgs, OID4VCIIssuer} from '@sphereon/ssi-sdk.oid4vci-issuer'
 import {
   IIssuerInstanceOptions,
   IIssuerOptions,
@@ -81,22 +92,22 @@ import {
   IMetadataImportArgs,
   OID4VCIStore,
 } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
-import { IOID4VCIRestAPIOpts, IRequiredContext, OID4VCIRestAPI } from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
-import { EventLogger } from '@sphereon/ssi-sdk.event-logger'
-import { RemoteServerApiServer } from '@sphereon/ssi-sdk.remote-server-rest-api'
-import { IssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
-import { CredentialProofFormat, defaultHasher, LoggingEventType } from '@sphereon/ssi-types'
-import { createOID4VPRP, extractDidFromManagedIdentifier, getDefaultOID4VPRPOptions } from './utils/oid4vp'
-import { PresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
-import { ISIOPv2RPRestAPIOpts, SIOPv2RPApiServer } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-api'
-import { DidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
-import { PublicKeyHosting } from '@sphereon/ssi-sdk.public-key-hosting'
-import { CredentialStore } from '@sphereon/ssi-sdk.credential-store'
-import { EbsiSupport } from '@sphereon/ssi-sdk.ebsi-support'
-import { OID4VCIHolder } from '@sphereon/ssi-sdk.oid4vci-holder'
-import { addDefaultsToOpts } from './utils/oid4vci'
-import { getCredentialDataSupplier } from './utils/oid4vciCredentialSuppliers'
-import { SIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
+import {IOID4VCIRestAPIOpts, IRequiredContext, OID4VCIRestAPI} from '@sphereon/ssi-sdk.oid4vci-issuer-rest-api'
+import {EventLogger} from '@sphereon/ssi-sdk.event-logger'
+import {RemoteServerApiServer} from '@sphereon/ssi-sdk.remote-server-rest-api'
+import {IssuanceBranding} from '@sphereon/ssi-sdk.issuance-branding'
+import {CredentialProofFormat, defaultHasher, LoggingEventType} from '@sphereon/ssi-types'
+import {createOID4VPRP, extractDidFromManagedIdentifier, getDefaultOID4VPRPOptions} from './utils/oid4vp'
+import {PresentationExchange} from '@sphereon/ssi-sdk.presentation-exchange'
+import {ISIOPv2RPRestAPIOpts, SIOPv2RPApiServer} from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-api'
+import {DidAuthSiopOpAuthenticator} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
+import {PublicKeyHosting} from '@sphereon/ssi-sdk.public-key-hosting'
+import {CredentialStore} from '@sphereon/ssi-sdk.credential-store'
+import {EbsiSupport} from '@sphereon/ssi-sdk.ebsi-support'
+import {OID4VCIHolder} from '@sphereon/ssi-sdk.oid4vci-holder'
+import {addDefaultsToOpts} from './utils/oid4vci'
+import {getCredentialDataSupplier} from './utils/oid4vciCredentialSuppliers'
+import {SIOPv2RP} from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import {
   CONTACT_MANAGER_API_FEATURES,
   DID_API_FEATURES,
@@ -110,41 +121,41 @@ import {
   syncDefinitionsOpts,
   VC_API_FEATURES,
 } from './environment-vars-with-deps'
-import { dbConnection } from './database'
-import { KeyValueStore, KeyValueTypeORMStoreAdapter } from '@sphereon/ssi-sdk.kv-store-temp'
-import { IdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { JwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
-import { SDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
-import { generateSalt, verifySDJWTSignature } from './utils/CryptoUtils'
-import { animoFunkeCert, funkeTestCA, sphereonCA } from './trustanchors'
-import { MDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
-import { DataSources } from '@sphereon/ssi-sdk.agent-config'
-import { StatusListPlugin } from '@sphereon/ssi-sdk.vc-status-list-issuer'
-import { getOrCreateConfiguredStatusList } from './utils/statuslist'
-import { CredentialValidation } from '@sphereon/ssi-sdk.credential-validation'
-import { OIDFMetadataServer, OIDFMetadataStore } from '@sphereon/ssi-sdk.oidf-metatdata-server'
-import { IEndpointOpts } from '@sphereon/ssi-express-support'
-import { PdManagerApiServer } from '@sphereon/ssi-sdk.pd-manager-rest-api'
-import { LinkedVPManager } from '@sphereon/ssi-sdk.linked-vp'
-import { ILinkedVPManagerAPIEndpointOpts, LinkedVpApiServer, LinkedVPManagerApiServerArgs } from '@sphereon/ssi-sdk.linked-vp-rest-api'
-import { AbstractKeyManagementSystem } from '@veramo/key-manager'
-import { ServiceMetadataPlugin } from './plugins/serviceMetadataPlugin'
-import { InboxPlugin } from './plugins/inbox'
-import { AssetPlugin } from './plugins/asset'
-import { OutboxPlugin } from './plugins/outbox'
-import { CredentialDesignPlugin } from './plugins/credentialDesign'
-import { FormsPlugin } from './plugins/forms'
-import { InboxApiServer } from './api/inboxApiServer'
-import { AssetApiServer } from './api/assetApiServer'
-import { OutboxApiServer } from './api/outboxApiServer'
-import { EInvoiceApiServer } from './api/einvoiceApiServer'
-import { CredentialDesignApiServer } from './api/credentialDesignApiServer'
-import { FormsApiServer } from './api/formsApiServer'
-import { UtilityApiServer } from './api/utilityApiServer'
-import { BookingVerificationApiServer } from './api/bookingVerificationApiServer'
-import { processVerifiedPresentation } from './utils/inboxVerificationHandler'
-import { hasInboxContext } from './utils/inboxCredentialHandler'
-import { hasBookingVerificationContext, completeBookingVerification } from './utils/bookingVerificationHandler'
+import {dbConnection} from './database'
+import {KeyValueStore, KeyValueTypeORMStoreAdapter} from '@sphereon/ssi-sdk.kv-store-temp'
+import {IdentifierResolution} from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import {JwtService} from '@sphereon/ssi-sdk-ext.jwt-service'
+import {SDJwtPlugin} from '@sphereon/ssi-sdk.sd-jwt'
+import {generateSalt, verifySDJWTSignature} from './utils/CryptoUtils'
+import {animoFunkeCert, funkeTestCA, sphereonCA} from './trustanchors'
+import {MDLMdoc} from '@sphereon/ssi-sdk.mdl-mdoc'
+import {DataSources} from '@sphereon/ssi-sdk.agent-config'
+import {StatusListPlugin} from '@sphereon/ssi-sdk.vc-status-list-issuer'
+import {getOrCreateConfiguredStatusList} from './utils/statuslist'
+import {CredentialValidation} from '@sphereon/ssi-sdk.credential-validation'
+import {OIDFMetadataServer, OIDFMetadataStore} from '@sphereon/ssi-sdk.oidf-metatdata-server'
+import {IEndpointOpts, OIDCBearerAuth} from '@sphereon/ssi-express-support'
+import {PdManagerApiServer} from '@sphereon/ssi-sdk.pd-manager-rest-api'
+import {LinkedVPManager} from '@sphereon/ssi-sdk.linked-vp'
+import {LinkedVpApiServer} from '@sphereon/ssi-sdk.linked-vp-rest-api'
+import {AbstractKeyManagementSystem} from '@veramo/key-manager'
+import {ServiceMetadataPlugin} from './plugins/serviceMetadataPlugin'
+import {InboxPlugin} from './plugins/inbox'
+import {AssetPlugin} from './plugins/asset'
+import {OutboxPlugin} from './plugins/outbox'
+import {CredentialDesignPlugin} from './plugins/credentialDesign'
+import {FormsPlugin} from './plugins/forms'
+import {InboxApiServer} from './api/inboxApiServer'
+import {AssetApiServer} from './api/assetApiServer'
+import {OutboxApiServer} from './api/outboxApiServer'
+import {EInvoiceApiServer} from './api/einvoiceApiServer'
+import {CredentialDesignApiServer} from './api/credentialDesignApiServer'
+import {FormsApiServer} from './api/formsApiServer'
+import {UtilityApiServer} from './api/utilityApiServer'
+import {BookingVerificationApiServer} from './api/bookingVerificationApiServer'
+import {processVerifiedPresentation} from './utils/inboxVerificationHandler'
+import {hasInboxContext} from './utils/inboxCredentialHandler'
+import {completeBookingVerification, hasBookingVerificationContext} from './utils/bookingVerificationHandler'
 
 const cliMode: boolean = process.env.RUN_MODE === 'cli'
 
@@ -365,6 +376,31 @@ if (!cliMode) {
 }
 
 /**
+ * Initialize OIDC Bearer Auth strategy if configured
+ * This must be done before building the express server
+ */
+if (AUTHENTICATION_ENABLED && AUTHENTICATION_STRATEGY && OIDC_ISSUER) {
+  console.log(`[Auth] Initializing OIDC Bearer Auth strategy '${AUTHENTICATION_STRATEGY}' with issuer: ${OIDC_ISSUER}`)
+  const oidcAuth = OIDCBearerAuth.init(AUTHENTICATION_STRATEGY).withIssuer(OIDC_ISSUER)
+
+  if (OIDC_AUDIENCE) {
+    oidcAuth.withAudience(OIDC_AUDIENCE)
+  }
+  if (OIDC_JWKS_URI) {
+    oidcAuth.withJwksUri(OIDC_JWKS_URI)
+  }
+  if (OIDC_ALGORITHMS) {
+    oidcAuth.withAlgorithms(OIDC_ALGORITHMS)
+  }
+
+  await oidcAuth.connectPassport().catch((error) => {
+    console.error(`[Auth] Failed to initialize OIDC Bearer Auth:`, error)
+    throw error
+  })
+  console.log(`[Auth] OIDC Bearer Auth strategy '${AUTHENTICATION_STRATEGY}' initialized successfully`)
+}
+
+/**
  * Build a common express REST API configuration first, used by the exposed Routers/Services below
  */
 const expressSupport = expressBuilder().build({ startListening: false })
@@ -385,6 +421,7 @@ const globalAuth = {
   authentication: {
     enabled: AUTHENTICATION_ENABLED,
     strategy: AUTHENTICATION_STRATEGY,
+    session: false,
   },
   authorization: {
     enabled: AUTHORIZATION_ENABLED,
@@ -509,8 +546,9 @@ if (!cliMode) {
         basePath: process.env.OID4VP_AGENT_BASE_PATH ?? '',
         globalAuth: {
           authentication: {
-            enabled: false,
-            strategy: 'bearer-auth',
+            enabled: AUTHENTICATION_ENABLED && !DISABLE_AUTH_FOR_APIS.includes('oid4vp'),
+            strategy: AUTHENTICATION_STRATEGY,
+            session: false,
           },
           secureSiopEndpoints: false,
         },
@@ -635,7 +673,9 @@ if (!cliMode) {
         endpointOpts: {
           globalAuth: {
             authentication: {
-              enabled: false,
+              enabled: AUTHENTICATION_ENABLED && !DISABLE_AUTH_FOR_APIS.includes('contact-manager'),
+              strategy: AUTHENTICATION_STRATEGY,
+              session: false,
             },
           },
         },
@@ -678,6 +718,7 @@ if (!cliMode) {
 
   /**
    * Enable the Veramo remote server API
+   * Note: Authentication is not enforced here - RemoteServerApiServer will be replaced with proper auth support
    */
   if (expressSupport && REMOTE_SERVER_API_FEATURES.length > 0) {
     new RemoteServerApiServer({
@@ -685,13 +726,6 @@ if (!cliMode) {
       expressSupport,
       opts: {
         exposedMethods: REMOTE_SERVER_API_FEATURES,
-        endpointOpts: {
-          globalAuth: {
-            authentication: {
-              enabled: false,
-            },
-          },
-        },
       },
     })
   }
@@ -709,10 +743,27 @@ if (!cliMode) {
         if (!credentialIssuer) {
           throw Error(`No credential issuer could be deduced from the options: ${JSON.stringify(opts)}`)
         }
+
+        // Merge global auth settings into endpoint options if not explicitly disabled
+        const endpointOpts: IEndpointOpts = {
+          ...(opts.endpointOpts ?? {}),
+          globalAuth: (opts.endpointOpts as IEndpointOpts | undefined)?.globalAuth ?? {
+            authentication: {
+              enabled: AUTHENTICATION_ENABLED && !DISABLE_AUTH_FOR_APIS.includes('oid4vci'),
+              strategy: AUTHENTICATION_STRATEGY,
+              session: false,
+            },
+            authorization: {
+              enabled: AUTHORIZATION_ENABLED,
+              requireUserInRoles: AUTHORIZATION_GLOBAL_REQUIRE_USER_IN_ROLES,
+            },
+          },
+        } as IEndpointOpts
+
         void OID4VCIRestAPI.init({
           opts: {
             baseUrl: credentialIssuer,
-            endpointOpts: opts.endpointOpts as IEndpointOpts,
+            endpointOpts,
             asClientOpts: opts.issuerOpts.asClientOpts,
           } as IOID4VCIRestAPIOpts,
           context: context as unknown as IRequiredContext,
@@ -766,8 +817,9 @@ if (!cliMode) {
         endpointOpts: {
           globalAuth: {
             authentication: {
-              enabled: false,
-              // strategy: bearerStrategy,
+              enabled: AUTHENTICATION_ENABLED && !DISABLE_AUTH_FOR_APIS.includes('status-list'),
+              strategy: AUTHENTICATION_STRATEGY,
+              session: false,
             },
           },
           vcApiCredentialStatus: {

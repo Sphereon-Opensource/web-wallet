@@ -60,7 +60,16 @@ const createAgentInstance = (): TAgent<TAgentTypes> => {
     new OID4VCIRestClient({
       baseUrl: getVcApiUrl(),
       authentication: {
-        enabled: false,
+        enabled: true,
+        bearerToken: async () => {
+          if (typeof window !== 'undefined') {
+            const token = sessionStorage.getItem('accessToken')
+            if (token) {
+              return token
+            }
+          }
+          return Promise.reject(new Error('No access token available'))
+        },
       },
     }),
     new DidAuthSiopOpAuthenticator(),

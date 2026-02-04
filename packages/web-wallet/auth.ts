@@ -91,6 +91,61 @@ function decodeJwtPayload(token: string): Record<string, unknown> | undefined {
   }
 }
 
+/**
+ * Refreshes an access token using the refresh token
+ */
+async function refreshAccessToken(token: {
+  accessToken?: string
+  refreshToken?: string
+  accessTokenExpires?: number
+  oidcRoles?: string[]
+  error?: string
+  [key: string]: unknown
+}): Promise<typeof token> {
+  try {
+    const issuer = process.env.OIDC_ISSUER as string
+    const tokenEndpoint = `${issuer}/protocol/openid-connect/token`
+
+    const response = await fetch(tokenEndpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        client_id: process.env.OIDC_CLIENT_ID as string,
+        client_secret: process.env.OIDC_CLIENT_SECRET as string,
+        grant_type: 'refresh_token',
+        refresh_token: token.refreshToken as string,
+      }),
+    })
+
+    const refreshedTokens = await response.json()
+
+    if (!response.ok) {
+      console.error('[auth] Token refresh failed:', refreshedTokens)
+      throw refreshedTokens
+    }
+
+    const newAccessToken = refreshedTokens.access_token
+    const tokenPayload = decodeJwtPayload(newAccessToken)
+
+    return {
+      ...token,
+      accessToken: newAccessToken,
+      accessTokenExpires: Date.now() + (refreshedTokens.expires_in ?? 300) * 1000,
+      refreshToken: refreshedTokens.refresh_token ?? token.refreshToken,
+      oidcRoles: extractRolesFromToken(tokenPayload),
+      error: undefined,
+    }
+  } catch (error) {
+    console.error('[auth] Error refreshing access token:', error)
+    return {
+      ...token,
+      error: 'RefreshAccessTokenError',
+    }
+  }
+}
+
 export const authOptions: NextAuthConfig = {
   // Configure one or more authentication providers
   providers: [
@@ -114,25 +169,49 @@ export const authOptions: NextAuthConfig = {
   secret: `UItTuD1HcGXIj8ZfHUswhYdNd40Lc325R8VlxQPUoR0=`,
   useSecureCookies: useSecureCookies,
   callbacks: {
-    jwt({token, trigger, session, account}) {
-      if (trigger === 'update') token.name = session.user.name
+    async jwt({token, trigger, session, account}) {
+      if (trigger === 'update') {
+        token.name = session.user.name
+      }
+
+      // Initial sign in
       if (account?.provider === 'keycloak') {
         token.accessToken = account.access_token
+        token.refreshToken = account.refresh_token
+        // expires_at is in seconds, convert to milliseconds
+        token.accessTokenExpires = account.expires_at ? account.expires_at * 1000 : Date.now() + 300 * 1000
 
         // Extract roles from the access token
         if (account.access_token) {
           const tokenPayload = decodeJwtPayload(account.access_token)
           token.oidcRoles = extractRolesFromToken(tokenPayload)
         }
+        return token
       }
+
+      // Return previous token if the access token has not expired yet
+      // Refresh 60 seconds before expiry to avoid edge cases
+      const expiresAt = token.accessTokenExpires as number | undefined
+      if (expiresAt && Date.now() < expiresAt - 60 * 1000) {
+        return token
+      }
+
+      // Access token has expired, try to refresh it
+      if (token.refreshToken) {
+        return await refreshAccessToken(token as Parameters<typeof refreshAccessToken>[0])
+      }
+
       return token
     },
     async session({session, token}) {
       if (token?.accessToken) {
-        session.accessToken = token.accessToken
+        session.accessToken = token.accessToken as string
       }
       if (token?.oidcRoles) {
-        session.oidcRoles = token.oidcRoles
+        session.oidcRoles = token.oidcRoles as string[]
+      }
+      if (token?.error) {
+        session.error = token.error as string
       }
       return session
     },
@@ -181,13 +260,21 @@ declare module 'next-auth' {
     accessToken?: string
     /** OIDC roles extracted from the access token */
     oidcRoles?: string[]
+    /** Error from token refresh */
+    error?: string
   }
 }
 
 declare module 'next-auth/jwt' {
   interface JWT {
     accessToken?: string
+    /** Refresh token for obtaining new access tokens */
+    refreshToken?: string
+    /** Timestamp when the access token expires */
+    accessTokenExpires?: number
     /** OIDC roles extracted from the access token */
     oidcRoles?: string[]
+    /** Error from token refresh */
+    error?: string
   }
 }
