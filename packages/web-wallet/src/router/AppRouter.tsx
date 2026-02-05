@@ -147,8 +147,10 @@ const AppRouter: React.FC = () => {
               <Outlet />
             </Authenticated>
           }>
-          {/* Landing page route */}
+          {/* Landing page routes - including locale prefixes for Next.js i18n */}
           <Route path="/" element={<LandingPage />} />
+          <Route path="/en" element={<LandingPage />} />
+          <Route path="/nl" element={<LandingPage />} />
 
           {/* Assets - Holder and Admin */}
           <Route path={MainRoute.ASSETS}>

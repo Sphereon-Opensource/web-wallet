@@ -240,7 +240,7 @@ const _app = (props: React.PropsWithChildren<unknown>) => {
 
 const AppLayout: React.FC<{title: string}> = ({title}) => {
   const location = useLocation()
-  const isLandingPage = location.pathname === '/'
+  const isLandingPage = location.pathname === '/' || location.pathname === '/en' || location.pathname === '/nl'
 
   return (
     <div className={styles.container}>
