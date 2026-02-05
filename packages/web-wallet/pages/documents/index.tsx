@@ -1,20 +1,23 @@
-import React from 'react'
-import {useTranslate} from '@refinedev/core'
-import AppHeaderBar from '@components/bars/AppHeaderBar'
-import style from './index.module.css'
+import React, {useEffect} from 'react'
+import {useNavigate} from 'react-router-dom'
 import {staticPropsWithSST} from '../../src/i18n/server'
 
+/**
+ * Documents page - redirects to /assets
+ *
+ * Documents are stored in the asset store (document store).
+ * This page simply redirects to the assets page where all documents can be viewed.
+ */
 const DocumentsListPage: React.FC = () => {
-  const translate = useTranslate()
+  const navigate = useNavigate()
 
-  return (
-    <div className={style.container}>
-      <AppHeaderBar title={translate('documents_overview_title')} />
-      <div style={{padding: '2rem', textAlign: 'center', color: '#666'}}>
-        <p>Documents feature is not available.</p>
-      </div>
-    </div>
-  )
+  useEffect(() => {
+    // Redirect to assets page where documents are stored
+    navigate('/assets', {replace: true})
+  }, [navigate])
+
+  // Show nothing while redirecting
+  return null
 }
 
 export const getStaticProps = async ({locale = 'en'}: {locale?: string}) => staticPropsWithSST({locale})

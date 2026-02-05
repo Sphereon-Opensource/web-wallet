@@ -146,20 +146,123 @@ const SentInvoiceDetailPage: React.FC = () => {
     handleBack()
   }, [handleBack])
 
-  // Handle evidence download
-  const handleDownloadEvidence = useCallback((evidence: InvoiceEvidence) => {
-    console.log('Downloading evidence:', evidence.name)
-    // Open evidence URL in new tab if available
-    if (evidence.id && evidence.id.startsWith('http')) {
-      window.open(evidence.id, '_blank')
+  // Handle evidence download - downloads via API proxy to handle CORS and trigger file save
+  const handleDownloadEvidence = useCallback(async (evidence: InvoiceEvidence) => {
+    console.log('[SentInvoiceDetailPage] Downloading evidence:', evidence.name)
+
+    try {
+      // Build request body
+      // For sent invoices, evidence files ARE stored in our asset store, so prefer digestMultibase
+      const requestBody: {url?: string; digestMultibase?: string; filename: string} = {
+        filename: evidence.name,
+      }
+
+      if (evidence.digestMultibase) {
+        // Sent invoices have evidence stored in our asset store - use digestMultibase
+        requestBody.digestMultibase = evidence.digestMultibase
+      } else if (evidence.id && evidence.id.startsWith('http')) {
+        // Fallback to URL if available
+        requestBody.url = evidence.id
+      } else {
+        console.error('[SentInvoiceDetailPage] No valid URL or digestMultibase for evidence:', evidence)
+        alert('Unable to download evidence: No valid source available')
+        return
+      }
+
+      // Step 1: Register the download and get a key
+      const registerResponse = await fetch('/api/assets/download', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(requestBody),
+      })
+
+      if (!registerResponse.ok) {
+        const error = await registerResponse.json().catch(() => ({error: registerResponse.statusText}))
+        throw new Error(error.error || `Failed to register download: ${registerResponse.status}`)
+      }
+
+      const {key} = await registerResponse.json()
+
+      // Step 2: Download using the key
+      const downloadResponse = await fetch(`/api/assets/download?key=${encodeURIComponent(key)}`)
+
+      if (!downloadResponse.ok) {
+        const error = await downloadResponse.json().catch(() => ({error: downloadResponse.statusText}))
+        throw new Error(error.error || `Download failed: ${downloadResponse.status}`)
+      }
+
+      // Create blob and trigger download
+      const blob = await downloadResponse.blob()
+      const downloadUrl = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = downloadUrl
+      link.download = evidence.name
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(downloadUrl)
+
+      console.log('[SentInvoiceDetailPage] Evidence downloaded successfully:', evidence.name)
+    } catch (error) {
+      console.error('[SentInvoiceDetailPage] Error downloading evidence:', error)
+      alert(`Failed to download evidence: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
   }, [])
 
-  // Handle evidence view
-  const handleViewEvidence = useCallback((evidence: InvoiceEvidence) => {
-    console.log('Viewing evidence:', evidence.name)
-    if (evidence.id && evidence.id.startsWith('http')) {
-      window.open(evidence.id, '_blank')
+  // Handle evidence view - opens evidence in new tab (for PDFs, etc.)
+  const handleViewEvidence = useCallback(async (evidence: InvoiceEvidence) => {
+    console.log('[SentInvoiceDetailPage] Viewing evidence:', evidence.name)
+
+    try {
+      // Build request body
+      // For sent invoices, evidence files ARE stored in our asset store, so prefer digestMultibase
+      const requestBody: {url?: string; digestMultibase?: string; filename: string} = {
+        filename: evidence.name,
+      }
+
+      if (evidence.digestMultibase) {
+        // Sent invoices have evidence stored in our asset store - use digestMultibase
+        requestBody.digestMultibase = evidence.digestMultibase
+      } else if (evidence.id && evidence.id.startsWith('http')) {
+        // Fallback to URL if available
+        requestBody.url = evidence.id
+      } else {
+        console.error('[SentInvoiceDetailPage] No valid URL or digestMultibase for evidence:', evidence)
+        alert('Unable to view evidence: No valid source available')
+        return
+      }
+
+      // Step 1: Register the download and get a key
+      const registerResponse = await fetch('/api/assets/download', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(requestBody),
+      })
+
+      if (!registerResponse.ok) {
+        const error = await registerResponse.json().catch(() => ({error: registerResponse.statusText}))
+        throw new Error(error.error || `Failed to register download: ${registerResponse.status}`)
+      }
+
+      const {key} = await registerResponse.json()
+
+      // Step 2: Download using the key
+      const downloadResponse = await fetch(`/api/assets/download?key=${encodeURIComponent(key)}`)
+
+      if (!downloadResponse.ok) {
+        const error = await downloadResponse.json().catch(() => ({error: downloadResponse.statusText}))
+        throw new Error(error.error || `Failed to load evidence: ${downloadResponse.status}`)
+      }
+
+      // Create blob URL and open in new tab
+      const blob = await downloadResponse.blob()
+      const viewUrl = window.URL.createObjectURL(blob)
+      window.open(viewUrl, '_blank')
+
+      console.log('[SentInvoiceDetailPage] Evidence opened in new tab:', evidence.name)
+    } catch (error) {
+      console.error('[SentInvoiceDetailPage] Error viewing evidence:', error)
+      alert(`Failed to view evidence: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
   }, [])
 

@@ -6,6 +6,7 @@ import UBLInvoiceDetailView from '@components/views/UBLInvoiceView/UBLInvoiceDet
 import {InboxEInvoice, InboxEvidence} from '@components/views/InboxView/types'
 import {InvoiceEvidence, InvoiceParty, UBLInvoiceData} from '@components/views/UBLInvoiceView/types'
 import {fetchInboxInvoiceById, approveInvoice, rejectInvoice, fetchEvidenceFile, updateInboxCredentialParsedData} from '@/src/services/inboxService'
+import {uploadAsset, publishAssetForEvidence, fetchAssets} from '@/src/services/assetService'
 import {staticPropsWithSST} from '@/src/i18n/server'
 import styles from './[id].module.css'
 
@@ -89,21 +90,128 @@ const InboxItemDetailPage: React.FC = () => {
     handleBack()
   }, [handleBack])
 
-  // Handle evidence download
-  const handleDownloadEvidence = useCallback((evidence: InvoiceEvidence) => {
-    console.log('Downloading evidence:', evidence.name)
-    // Open evidence URL in new tab if available
-    if (evidence.id && evidence.id.startsWith('http')) {
-      window.open(evidence.id, '_blank')
+  // Handle evidence download - downloads via API proxy to handle CORS and trigger file save
+  const handleDownloadEvidence = useCallback(async (evidence: InvoiceEvidence) => {
+    console.log('[InboxDetailPage] Downloading evidence:', evidence.name)
+
+    try {
+      // Build request body
+      // Note: "stored" status means we've fetched/parsed the evidence, NOT that it's in our asset store
+      // Evidence files are only in the asset store after approval, so prefer the external URL
+      const requestBody: {url?: string; digestMultibase?: string; filename: string} = {
+        filename: evidence.name,
+      }
+
+      // Always prefer the external URL if available (evidence.id contains the original URL)
+      if (evidence.id && evidence.id.startsWith('http')) {
+        requestBody.url = evidence.id
+      } else if (evidence.digestMultibase) {
+        // Fallback to digestMultibase (for evidence that was uploaded to our asset store)
+        requestBody.digestMultibase = evidence.digestMultibase
+      } else {
+        console.error('[InboxDetailPage] No valid URL or digestMultibase for evidence:', evidence)
+        alert('Unable to download evidence: No valid source available')
+        return
+      }
+
+      // Step 1: Register the download and get a key
+      const registerResponse = await fetch('/api/assets/download', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(requestBody),
+      })
+
+      if (!registerResponse.ok) {
+        const error = await registerResponse.json().catch(() => ({error: registerResponse.statusText}))
+        throw new Error(error.error || `Failed to register download: ${registerResponse.status}`)
+      }
+
+      const {key} = await registerResponse.json()
+
+      // Step 2: Download using the key
+      const downloadResponse = await fetch(`/api/assets/download?key=${encodeURIComponent(key)}`)
+
+      if (!downloadResponse.ok) {
+        const error = await downloadResponse.json().catch(() => ({error: downloadResponse.statusText}))
+        throw new Error(error.error || `Download failed: ${downloadResponse.status}`)
+      }
+
+      // Create blob and trigger download
+      const blob = await downloadResponse.blob()
+      const downloadUrl = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = downloadUrl
+      link.download = evidence.name
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(downloadUrl)
+
+      console.log('[InboxDetailPage] Evidence downloaded successfully:', evidence.name)
+    } catch (error) {
+      console.error('[InboxDetailPage] Error downloading evidence:', error)
+      alert(`Failed to download evidence: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
   }, [])
 
-  // Handle evidence view
-  const handleViewEvidence = useCallback((evidence: InvoiceEvidence) => {
-    console.log('Viewing evidence:', evidence.name)
-    // Open evidence URL in new tab if available
-    if (evidence.id && evidence.id.startsWith('http')) {
-      window.open(evidence.id, '_blank')
+  // Handle evidence view - opens evidence in new tab (for PDFs, etc.)
+  const handleViewEvidence = useCallback(async (evidence: InvoiceEvidence) => {
+    console.log('[InboxDetailPage] Viewing evidence:', evidence.name)
+
+    try {
+      // Build request body
+      // Note: "stored" status means we've fetched/parsed the evidence, NOT that it's in our asset store
+      // Evidence files are only in the asset store after approval, so prefer the external URL
+      const requestBody: {url?: string; digestMultibase?: string; filename: string} = {
+        filename: evidence.name,
+      }
+
+      // Always prefer the external URL if available
+      if (evidence.id && evidence.id.startsWith('http')) {
+        requestBody.url = evidence.id
+      } else if (evidence.digestMultibase) {
+        // Fallback to digestMultibase (for evidence that was uploaded to our asset store)
+        requestBody.digestMultibase = evidence.digestMultibase
+      } else {
+        console.error('[InboxDetailPage] No valid URL or digestMultibase for evidence:', evidence)
+        alert('Unable to view evidence: No valid source available')
+        return
+      }
+
+      // Step 1: Register the download and get a key
+      const registerResponse = await fetch('/api/assets/download', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(requestBody),
+      })
+
+      if (!registerResponse.ok) {
+        const error = await registerResponse.json().catch(() => ({error: registerResponse.statusText}))
+        throw new Error(error.error || `Failed to register download: ${registerResponse.status}`)
+      }
+
+      const {key} = await registerResponse.json()
+
+      // Step 2: Download using the key
+      const downloadResponse = await fetch(`/api/assets/download?key=${encodeURIComponent(key)}`)
+
+      if (!downloadResponse.ok) {
+        const error = await downloadResponse.json().catch(() => ({error: downloadResponse.statusText}))
+        throw new Error(error.error || `Failed to load evidence: ${downloadResponse.status}`)
+      }
+
+      // Create blob URL and open in new tab
+      const blob = await downloadResponse.blob()
+      const viewUrl = window.URL.createObjectURL(blob)
+      window.open(viewUrl, '_blank')
+
+      // Note: We don't revoke the URL immediately so the new tab can load it
+      // The URL will be garbage collected when the tab closes
+
+      console.log('[InboxDetailPage] Evidence opened in new tab:', evidence.name)
+    } catch (error) {
+      console.error('[InboxDetailPage] Error viewing evidence:', error)
+      alert(`Failed to view evidence: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
   }, [])
 
@@ -272,25 +380,119 @@ const InboxItemDetailPage: React.FC = () => {
     }
   }, [invoice])
 
+  // Store evidence files in document store
+  const storeEvidenceInDocumentStore = useCallback(async (evidenceList: InvoiceEvidence[], credentialCorrelationId: string): Promise<void> => {
+    console.log('[InboxDetailPage] Storing', evidenceList.length, 'evidence files in document store')
+
+    for (const evidence of evidenceList) {
+      try {
+        // Skip if no valid source
+        if (!evidence.id || !evidence.id.startsWith('http')) {
+          console.warn('[InboxDetailPage] Skipping evidence without valid URL:', evidence.name)
+          continue
+        }
+
+        // Check if already stored (by digestMultibase)
+        if (evidence.digestMultibase) {
+          const existingAssets = await fetchAssets({})
+          const alreadyStored = existingAssets.assets.some(
+            a => a.digestMultibase === evidence.digestMultibase
+          )
+          if (alreadyStored) {
+            console.log('[InboxDetailPage] Evidence already in document store:', evidence.name)
+            continue
+          }
+        }
+
+        // Fetch the evidence file via our proxy (two-step key-based flow)
+        // Step 1: Register the download and get a key
+        const registerResponse = await fetch('/api/assets/download', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            url: evidence.id,
+            filename: evidence.name,
+          }),
+        })
+
+        if (!registerResponse.ok) {
+          console.error('[InboxDetailPage] Failed to register evidence download:', evidence.name)
+          continue
+        }
+
+        const {key} = await registerResponse.json()
+
+        // Step 2: Download using the key
+        const downloadResponse = await fetch(`/api/assets/download?key=${encodeURIComponent(key)}`)
+
+        if (!downloadResponse.ok) {
+          console.error('[InboxDetailPage] Failed to fetch evidence for storage:', evidence.name)
+          continue
+        }
+
+        // Create a File object from the blob
+        const blob = await downloadResponse.blob()
+        const contentType = downloadResponse.headers.get('content-type') || evidence.mimeType || 'application/octet-stream'
+        const file = new File([blob], evidence.name, {type: contentType})
+
+        // Determine asset type
+        let assetType: 'UBLInvoice' | 'SupportingDocument' | 'Document' = 'Document'
+        if (evidence.type.includes('UBLInvoice') || evidence.name.toLowerCase().endsWith('.xml')) {
+          assetType = 'UBLInvoice'
+        } else if (evidence.type.includes('SupportingDocument')) {
+          assetType = 'SupportingDocument'
+        }
+
+        // Upload to document store
+        console.log('[InboxDetailPage] Uploading evidence to document store:', evidence.name, assetType)
+        const asset = await uploadAsset(file, {
+          assetType,
+          description: `Evidence for invoice credential ${credentialCorrelationId}`,
+          metadata: {
+            evidenceId: evidence.id,
+            digestMultibase: evidence.digestMultibase,
+            credentialCorrelationId,
+          },
+        })
+
+        // Publish the asset for 7 years (eInvoice retention requirement)
+        await publishAssetForEvidence(asset.id)
+        console.log('[InboxDetailPage] Evidence stored and published:', evidence.name, asset.id)
+      } catch (error) {
+        console.error('[InboxDetailPage] Error storing evidence:', evidence.name, error)
+        // Continue with other evidence files
+      }
+    }
+  }, [])
+
   // Handle approve action
   const handleApprove = useCallback(async (invoiceData: UBLInvoiceData) => {
     if (!invoice) return
     console.log('[InboxDetailPage] Approving invoice:', invoiceData.invoiceId)
     setIsProcessing(true)
     try {
+      // First, store all evidence files in the document store
+      if (invoice.evidence && invoice.evidence.length > 0) {
+        console.log('[InboxDetailPage] Storing evidence files before approval...')
+        await storeEvidenceInDocumentStore(invoice.evidence, invoice.correlationId)
+      }
+
+      // Then approve the invoice (updates credential state)
       const success = await approveInvoice(invoice)
       if (success) {
         console.log('[InboxDetailPage] Invoice approved successfully')
         navigate(getBackPath())
       } else {
         console.error('[InboxDetailPage] Failed to approve invoice')
+        alert('Failed to approve invoice. Please try again.')
       }
     } catch (error) {
       console.error('[InboxDetailPage] Error approving invoice:', error)
+      alert(`Error approving invoice: ${error instanceof Error ? error.message : 'Unknown error'}`)
     } finally {
       setIsProcessing(false)
     }
-  }, [invoice, navigate, getBackPath])
+  }, [invoice, navigate, getBackPath, storeEvidenceInDocumentStore])
 
   // Handle reject action
   const handleReject = useCallback(async (invoiceData: UBLInvoiceData) => {
