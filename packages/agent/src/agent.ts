@@ -379,7 +379,22 @@ if (!cliMode) {
  * Initialize OIDC Bearer Auth strategy if configured
  * This must be done before building the express server
  */
-if (AUTHENTICATION_ENABLED && AUTHENTICATION_STRATEGY && OIDC_ISSUER) {
+if (AUTHENTICATION_ENABLED) {
+  if (!AUTHENTICATION_STRATEGY || AUTHENTICATION_STRATEGY.trim() === '') {
+    console.error('[Auth] AUTHENTICATION_ENABLED is true but AUTHENTICATION_STRATEGY is not set or empty')
+    process.exit(1)
+  }
+  if (!OIDC_ISSUER || OIDC_ISSUER.trim() === '') {
+    console.error('[Auth] AUTHENTICATION_ENABLED is true but OIDC_ISSUER is not set or empty')
+    process.exit(1)
+  }
+  try {
+    new URL(OIDC_ISSUER)
+  } catch {
+    console.error(`[Auth] OIDC_ISSUER is not a valid URL: ${OIDC_ISSUER}`)
+    process.exit(1)
+  }
+
   console.log(`[Auth] Initializing OIDC Bearer Auth strategy '${AUTHENTICATION_STRATEGY}' with issuer: ${OIDC_ISSUER}`)
   const oidcAuth = OIDCBearerAuth.init(AUTHENTICATION_STRATEGY).withIssuer(OIDC_ISSUER)
 
