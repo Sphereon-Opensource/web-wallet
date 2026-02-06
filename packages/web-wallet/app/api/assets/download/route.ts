@@ -20,20 +20,26 @@ interface DownloadEntry {
 const downloadRegistry = new Map<string, DownloadEntry>()
 
 /**
- * Download expiry time in milliseconds (60 hours = 3600 minutes)
+ * Download expiry time in milliseconds (1 hour)
  */
-const DOWNLOAD_EXPIRY_MS = 3600 * 60 * 1000
+const DOWNLOAD_EXPIRY_MS = 60 * 1000
 
 /**
  * Cleanup interval (run every 10 minutes)
  */
 const CLEANUP_INTERVAL_MS = 10 * 60 * 1000
 
+let lastPruneTime = 0
+
 /**
  * Prune expired download entries
  */
 function pruneExpiredEntries(): void {
   const now = Date.now()
+  if (now - lastPruneTime < CLEANUP_INTERVAL_MS) {
+    return
+  }
+  lastPruneTime = now
   let pruned = 0
   for (const [key, entry] of downloadRegistry.entries()) {
     if (now - entry.createdAt > DOWNLOAD_EXPIRY_MS) {
@@ -44,11 +50,6 @@ function pruneExpiredEntries(): void {
   if (pruned > 0) {
     console.log(`[API/assets/download] Pruned ${pruned} expired download entries`)
   }
-}
-
-// Start cleanup interval (only in non-edge runtime)
-if (typeof setInterval !== 'undefined') {
-  setInterval(pruneExpiredEntries, CLEANUP_INTERVAL_MS)
 }
 
 /**
@@ -147,6 +148,9 @@ export async function GET(request: NextRequest) {
       {status: 401}
     )
   }
+
+  // Also prune expired entries on each download
+  pruneExpiredEntries()
 
   try {
     const {searchParams} = new URL(request.url)
