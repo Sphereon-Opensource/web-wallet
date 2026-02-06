@@ -1342,7 +1342,24 @@ export async function fetchEvidenceFile(evidence: InboxEvidence): Promise<Fetche
   }
 
   try {
-    const response = await fetch(evidence.id)
+    // Use the download proxy to avoid CORS issues with external URLs
+    const registerResponse = await fetch('/api/assets/download', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        url: evidence.id,
+        filename: evidence.name,
+      }),
+    })
+
+    if (!registerResponse.ok) {
+      const err = await registerResponse.json().catch(() => ({error: registerResponse.statusText}))
+      throw new Error(`Failed to register evidence download: ${err.error || registerResponse.statusText}`)
+    }
+
+    const {key} = await registerResponse.json()
+
+    const response = await fetch(`/api/assets/download?key=${encodeURIComponent(key)}`)
     if (!response.ok) {
       if (response.status === 404) {
         throw new Error(`Evidence file not found at ${evidence.id}. The file may not have been uploaded to the asset store, or the URL is incorrect.`)
